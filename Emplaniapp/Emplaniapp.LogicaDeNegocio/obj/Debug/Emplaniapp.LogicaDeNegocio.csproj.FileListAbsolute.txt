@@ -1,0 +1,6 @@
+C:\Users\Yazmin\source\repos\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Emplaniapp.LogicaDeNegocio.dll
+C:\Users\Yazmin\source\repos\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Emplaniapp.LogicaDeNegocio.pdb
+C:\Users\Yazmin\source\repos\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplaniapp.LogicaDeNegocio.csproj.AssemblyReference.cache
+C:\Users\Yazmin\source\repos\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplaniapp.LogicaDeNegocio.csproj.CoreCompileInputs.cache
+C:\Users\Yazmin\source\repos\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplaniapp.LogicaDeNegocio.dll
+C:\Users\Yazmin\source\repos\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplaniapp.LogicaDeNegocio.pdb
