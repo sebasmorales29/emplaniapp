@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Remuneracion;
+using Emplaniapp.Abstracciones.ModelosParaUI;
+using Emplaniapp.LogicaDeNegocio.Tipo_Remuneracion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,10 +11,24 @@ namespace Emplaniapp.UI.Controllers
 {
     public class VariablesFinancierasController : Controller
     {
+
+        // Interfaces ---------------------------------
+        IListarTipoRemuneracionLN _listarTRemuLN;
+
+
+        public VariablesFinancierasController()
+        {
+            _listarTRemuLN = new ListarTipoRemuneracionLN();
+        }
+
+
+
         // GET: VariablesFinancieras
         public ActionResult Index()
         {
-            return View();
+            List<TipoRemuneracionDto> listaTipoRemu = _listarTRemuLN.Listar();
+
+            return View(listaTipoRemu);
         }
 
         // GET: VariablesFinancieras/Details/5

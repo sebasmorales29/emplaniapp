@@ -8,8 +8,9 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
 {
     public class TipoRemuneracionDto
     {
-        public int idTipoRemuneracion { get; set; }
+        public int Id { get; set; }
         public string nombreTipoRemuneracion { get; set; }
+        public double porcentajeRemuneracion { get; set; }
         public int idEstado { get; set; }
     }
 }
