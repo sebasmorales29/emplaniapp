@@ -10,10 +10,12 @@ namespace Emplaniapp.Abstracciones.ModelosAD
     [Table("TipoRetenciones")]
     public class TipoRetencion
     {
-        [Column("idTipoRetenciones")]
+        [Column("idTipoRetencion")]
         public int Id { get; set; }
+
+        [Column("nombreTipoRetencio")]
         public string nombreTipoRetencion { get; set; }
-        public int porcentajeRetencion { get; set; }
+        public  double porcentajeRetencion { get; set; }
         public int idEstado { get; set; }
 
     }

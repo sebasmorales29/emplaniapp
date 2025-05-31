@@ -14,7 +14,7 @@ namespace Emplaniapp.AccesoADatos
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TipoRemuneracion>().ToTable("TipoRemuneracion");
-            modelBuilder.Entity<TipoRetencion>().ToTable("TipoRetencion");
+            modelBuilder.Entity<TipoRetencion>().ToTable("TipoRetenciones");
         }
 
 
