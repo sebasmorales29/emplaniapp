@@ -1,9 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35919.96 d17.13
+VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emplaniapp.UI", "Emplaniapp.UI\Emplaniapp.UI.csproj", "{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9D7D935E-57B1-468A-938D-9F359CD6BA87} = {9D7D935E-57B1-468A-938D-9F359CD6BA87}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emplaniapp.Abstracciones", "Emplaniapp.Abstracciones\Emplaniapp.Abstracciones.csproj", "{678406EA-2967-405B-A033-164C72140787}"
 EndProject

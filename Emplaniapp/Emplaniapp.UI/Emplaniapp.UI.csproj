@@ -256,12 +256,12 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Empleado\ListarEmpleados.cshtml" />
+    <Content Include="Views\VariablesFinancieras\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\DatosPersonales\" />
     <Folder Include="Views\HojaResumen\" />
-    <Folder Include="Views\VariablesFinancieras\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

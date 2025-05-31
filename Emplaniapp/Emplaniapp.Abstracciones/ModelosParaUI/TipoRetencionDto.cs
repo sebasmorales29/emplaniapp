@@ -8,8 +8,9 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
 {
     public class TipoRetencionDto
     {
-        public int idTipoRetencion { get; set; }
+        public int Id { get; set; }
         public string nombreTipoRetencion { get; set; }
+        public double porcentajeRetencion { get; set; }
         public int idEstado { get; set; }
     }
 }
