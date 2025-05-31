@@ -1,0 +1,122 @@
+﻿@using Emplaniapp.Abstracciones.ModelosParaUI;
+@model Tuple<List<TipoRemuneracionDto>, List<TipoRetencionDto>>
+
+
+@{
+    ViewBag.Title = "Variables Financieras";
+}
+
+<h1>Variables Financieras</h1>
+<br/>
+<br/>
+
+<!-- Remuneraciones ------------------------------------------------- -->
+<div class="row">
+    <div id="T_Remuneraiones" class="col-md-5">
+
+        <h2>Remuneraciones</h2><br/>
+
+        <h4>Salarios Aprobados</h4>
+        <p>
+            @Html.ActionLink("Agregar Remuneración", "Create")
+        </p>
+
+        <hr />
+
+        <h4>Otras Remuneraciones</h4>
+        <p>
+            @Html.ActionLink("Agregar Remuneración", "Create")
+        </p>
+        <table id="TablaTipoRemuneraciones" class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Tipo")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Valor %")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Estado")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Acciones")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Item1)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.nombreTipoRemuneracion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.porcentajeRemuneracion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.idEstado)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                            @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+    <div class="col-md-2"></div>
+
+
+    <!-- Tipo de Retenciones ------------------------------------------------------------ -->
+
+    <div id="T_Retenciones" class="col-md-5">
+
+        <h2>Retenciones</h2><br />
+        <p>
+            @Html.ActionLink("Agregar Retención", "Create")
+        </p>
+        <table id="TablaTipoRetenciones" class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Tipo")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Valor %")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Estado")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Acciones")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Item2)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.nombreTipoRetencion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.porcentajeRetencion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.idEstado)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                            @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
