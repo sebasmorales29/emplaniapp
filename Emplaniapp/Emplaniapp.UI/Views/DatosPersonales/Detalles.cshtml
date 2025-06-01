@@ -1,0 +1,293 @@
+@model Emplaniapp.Abstracciones.ModelosParaUI.EmpleadoDto
+
+@{
+    ViewBag.Title = $"{Model.nombre} {Model.primerApellido} {Model.segundoApellido}";
+    var seccionActiva = ViewBag.Seccion ?? "Datos personales";
+}
+
+<style>
+    .nav-enlaces {
+        margin-bottom: 20px;
+    }
+    
+    .nav-enlaces a {
+        display: inline-block;
+        padding: 8px 15px;
+        margin-right: 5px;
+        color: #333;
+        text-decoration: none;
+        border-bottom: 2px solid transparent;
+    }
+    
+    .nav-enlaces a.active {
+        font-weight: bold;
+        border-bottom: 2px solid #4a87c7;
+        color: #4a87c7;
+    }
+    
+    .nav-enlaces a:hover {
+        border-bottom: 2px solid #4a87c7;
+        color: #4a87c7;
+    }
+
+    .seccion-box {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        background-color: #fff;
+    }
+
+    .seccion-header {
+        padding: 10px 15px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #ddd;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .seccion-header h3 {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .seccion-body {
+        padding: 15px;
+    }
+
+    .datos-row {
+        display: flex;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 8px 0;
+    }
+
+    .datos-row:last-child {
+        border-bottom: none;
+    }
+
+    .datos-label {
+        width: 40%;
+        font-weight: bold;
+        color: #555;
+    }
+
+    .datos-value {
+        width: 60%;
+    }
+
+    .btn-editar {
+        padding: 2px 8px;
+        font-size: 12px;
+    }
+</style>
+
+<div class="container">
+    <!-- Navegación de retorno -->
+    <div class="row">
+        <div class="col-md-12">
+            <p>
+                <a href="@Url.Action("Index", "HojaResumen")" class="btn btn-link">
+                    < Volver a Hoja Resumen
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Título del empleado -->
+    <div class="row">
+        <div class="col-md-12">
+            <h2>@Model.nombre @Model.primerApellido @Model.segundoApellido</h2>
+        </div>
+    </div>
+
+    <!-- Enlaces de navegación -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="nav-enlaces">
+                <a href="@Url.Action("Detalles", new { id = Model.idEmpleado })" class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
+                <a href="@Url.Action("Historial", new { id = Model.idEmpleado })" class="@(seccionActiva == "Historial" ? "active" : "")">Historial</a>
+                <a href="@Url.Action("Remuneraciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
+                <a href="@Url.Action("Retenciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
+                <a href="@Url.Action("Observaciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
+                <a href="@Url.Action("Liquidacion", new { id = Model.idEmpleado })" class="@(seccionActiva == "Liquidación" ? "active" : "")">Liquidación</a>
+            </div>
+            <hr />
+        </div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="row">
+        <div class="col-md-12">
+            @if (seccionActiva == "Datos personales")
+            {
+                <div id="contenido-datos-personales">
+                    <div class="row">
+                        <!-- Información personal -->
+                        <div class="col-md-6">
+                            <div class="seccion-box">
+                                <div class="seccion-header">
+                                    <h3>Información personal</h3>
+                                </div>
+                                <div class="seccion-body">
+                                    <div class="datos-row">
+                                        <div class="datos-label">Nombre:</div>
+                                        <div class="datos-value">@Model.nombre</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Primer Apellido:</div>
+                                        <div class="datos-value">@Model.primerApellido</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Segundo apellido:</div>
+                                        <div class="datos-value">@Model.segundoApellido</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Nacimiento:</div>
+                                        <div class="datos-value">@Model.fechaNacimiento.ToString("dd/MM/yyyy")</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Cédula:</div>
+                                        <div class="datos-value">@Model.cedula</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Dirección Física:</div>
+                                        <div class="datos-value">800 mts Este de la Farmacia La Arboleda, en San Miguel de Desamparados, San José</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Correo electrónico:</div>
+                                        <div class="datos-value">@Model.correoInstitucional</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Teléfono:</div>
+                                        <div class="datos-value">@Model.numeroTelefonico</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <!-- Datos Laborales -->
+                            <div class="seccion-box">
+                                <div class="seccion-header">
+                                    <h3>Datos Laborales</h3>
+                                    <a href="@Url.Action("EditarDatosLaborales", new { id = Model.idEmpleado })" class="btn btn-primary btn-editar">Editar</a>
+                                </div>
+                                <div class="seccion-body">
+                                    <div class="datos-row">
+                                        <div class="datos-label">Nº Ocupación:</div>
+                                        <div class="datos-value">9832</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Cargo:</div>
+                                        <div class="datos-value">@Model.nombreCargo</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Fecha de Ingreso:</div>
+                                        <div class="datos-value">@Model.fechaContratacion.ToString("dd/MM/yyyy")</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Fecha de Salida:</div>
+                                        <div class="datos-value">@(Model.fechaSalida.HasValue ? Model.fechaSalida.Value.ToString("dd/MM/yyyy") : "--/--/----")</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Inicio Vacaciones:</div>
+                                        <div class="datos-value">--/--/----</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Datos Financieros -->
+                            <div class="seccion-box">
+                                <div class="seccion-header">
+                                    <h3>Datos Financieros</h3>
+                                    <a href="@Url.Action("EditarDatosFinancieros", new { id = Model.idEmpleado })" class="btn btn-primary btn-editar">Editar</a>
+                                </div>
+                                <div class="seccion-body">
+                                    <div class="datos-row">
+                                        <div class="datos-label">Periocidad de pago:</div>
+                                        <div class="datos-value">@Model.periocidadPago</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Salario Aprobado:</div>
+                                        <div class="datos-value">@Model.salarioAprobado.ToString("N0")</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Salario Diario:</div>
+                                        <div class="datos-value">@Model.salarioDiario.ToString("N0")</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Tipo de Moneda:</div>
+                                        <div class="datos-value">@Model.nombreMoneda</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Cuenta IBAN:</div>
+                                        <div class="datos-value">@Model.cuentaIBAN</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Banco:</div>
+                                        <div class="datos-value">@Model.nombreBanco</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (seccionActiva == "Historial")
+            {
+                <div id="contenido-historial">
+                    <h3>Historial</h3>
+                    <div class="alert alert-info">
+                        <p>La sección de Historial está en desarrollo.</p>
+                    </div>
+                </div>
+            }
+            else if (seccionActiva == "Remuneraciones")
+            {
+                <div id="contenido-remuneraciones">
+                    <h3>Remuneraciones</h3>
+                    <div class="alert alert-info">
+                        <p>La sección de Remuneraciones está en desarrollo.</p>
+                    </div>
+                </div>
+            }
+            else if (seccionActiva == "Retenciones")
+            {
+                <div id="contenido-retenciones">
+                    <h3>Retenciones</h3>
+                    <div class="alert alert-info">
+                        <p>La sección de Retenciones está en desarrollo.</p>
+                    </div>
+                </div>
+            }
+            else if (seccionActiva == "Observaciones")
+            {
+                <div id="contenido-observaciones">
+                    <h3>Observaciones</h3>
+                    <div class="alert alert-info">
+                        <p>La sección de Observaciones está en desarrollo.</p>
+                    </div>
+                </div>
+            }
+            else if (seccionActiva == "Liquidación")
+            {
+                <div id="contenido-liquidacion">
+                    <h3>Liquidación</h3>
+                    <div class="alert alert-info">
+                        <p>La sección de Liquidación está en desarrollo.</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            // No se necesita JavaScript para la navegación, ya que ahora los enlaces apuntan directamente a las acciones del controlador
+        });
+    </script>
+} 
