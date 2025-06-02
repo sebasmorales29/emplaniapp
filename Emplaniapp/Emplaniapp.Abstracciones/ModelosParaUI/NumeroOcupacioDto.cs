@@ -9,7 +9,5 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
     public class NumeroOcupacioDto
     {
         public int idNumeroOcupacion { get; set; }
-        public int numero { get; set; }
-        public int idEstado { get; set; }
-    }
+        public int numero { get; set; }    }
 }

@@ -16,3 +16,9 @@ C:\Users\sebas\OneDrive\Escritorio\emplaniappClone\emplaniapp\Emplaniapp\Emplani
 C:\Users\sebas\OneDrive\Escritorio\emplaniappClone\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.CoreCompileInputs.cache
 C:\Users\sebas\OneDrive\Escritorio\emplaniappClone\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.dll
 C:\Users\sebas\OneDrive\Escritorio\emplaniappClone\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.pdb
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Emplaniapp.Abstracciones.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Emplaniapp.Abstracciones.pdb
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.AssemblyReference.cache
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.CoreCompileInputs.cache
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.pdb

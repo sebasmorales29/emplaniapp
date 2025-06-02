@@ -42,10 +42,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InterfacesAD\HojaResumen\ListarHojaResumen\IListarHojaResumenAD.cs" />
     <Compile Include="InterfacesAD\Tipo_Remuneracion\IListarTipoRemuneracionAD.cs" />
     <Compile Include="InterfacesAD\Tipo_Retencion\IListarTipoRetencionAD.cs" />
+    <Compile Include="InterfacesParaUI\Hoja_Resumen\listarHojaResumen\IlistarHojaResumenLN.cs" />
     <Compile Include="InterfacesParaUI\Tipo_Remuneracion\IListarTipoRemuneracionLN.cs" />
     <Compile Include="InterfacesParaUI\Tipo_Retenciones\IListarTipoRetencionLN.cs" />
+    <Compile Include="ModelosAD\Cargos.cs" />
+    <Compile Include="ModelosAD\Empleado.cs" />
+    <Compile Include="ModelosAD\Estado.cs" />
+    <Compile Include="ModelosAD\Liquidaciones.cs" />
+    <Compile Include="ModelosAD\PagoQuincenal.cs" />
+    <Compile Include="ModelosAD\PeriodoPago.cs" />
+    <Compile Include="ModelosAD\Remuneracion.cs" />
+    <Compile Include="ModelosAD\Retencion.cs" />
     <Compile Include="ModelosAD\TipoRemuneracion.cs" />
     <Compile Include="ModelosAD\TipoRetencion.cs" />
     <Compile Include="ModelosParaUI\BancoDto.cs" />
@@ -56,6 +66,7 @@
     <Compile Include="ModelosParaUI\DistristoDto.cs" />
     <Compile Include="ModelosParaUI\EmpleadoDto.cs" />
     <Compile Include="ModelosParaUI\EstadoDto.cs" />
+    <Compile Include="ModelosParaUI\HojaResumenDto.cs" />
     <Compile Include="ModelosParaUI\LiquidacionesYObservacionesDto.cs" />
     <Compile Include="ModelosParaUI\NumeroOcupacioDto.cs" />
     <Compile Include="ModelosParaUI\ProvinciaDto.cs" />

@@ -12,7 +12,7 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public int idEmpleado { get; set; }
         public int idTipoRetencio { get; set; }
         public string nombreTipoRetencio { get; set; }
-        public double rebajo { get; set; }
+        public decimal? rebajo { get; set; }
         public DateTime fechaRetencio { get; set; }
         public int idEstado { get; set; }
         public string nombreEstado { get; set; }

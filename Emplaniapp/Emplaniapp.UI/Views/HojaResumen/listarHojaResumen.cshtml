@@ -1,0 +1,148 @@
+﻿@model IEnumerable<Emplaniapp.Abstracciones.ModelosParaUI.HojaResumenDto>
+
+@{
+    ViewBag.Title = "Hoja Resumen";
+}
+
+<div class="container">
+    <h2 class="mb-4">Hoja Resumen</h2>
+
+    @using (Html.BeginForm("Filtrar", "HojaResumen", FormMethod.Post))
+    {
+        <div class="row mb-3 align-items-end">
+            <div class="col-md-4">
+                <input type="text" name="filtro" value="@ViewBag.Filtro" class="form-control" placeholder="Buscar por nombre o cédula " />
+            </div>
+            <div class="col-md-3">
+                @Html.DropDownList("idCargo", new SelectList(ViewBag.Cargos, "Value", "Text", ViewBag.idCargo), "Todos los cargos", new { @class = "form-control" })
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            </div>
+
+            @if (!string.IsNullOrEmpty(ViewBag.Filtro as string) || (ViewBag.idCargo != null && ViewBag.idCargo.ToString() != "0"))
+            {
+                <div class="col-md-3">
+                    <a href="@Url.Action("listarHojaResumen", "HojaResumen")" class="btn btn-secondary w-100">Quitar Filtros</a>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Tabla -->
+    <table class="table table-bordered table-hover table-striped tabla-centrada" id="tablaResumen">
+        <thead class="thead-light">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().NombreEmpleado)</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().SalarioAprobado)</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().TotalRemuneraciones)</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().TotalRetenciones)</th>
+                <th>Liquidación</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().SalarioNeto)</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().nombreEstado)</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.NombreEmpleado)</td>
+                    <td>@Html.DisplayFor(modelItem => item.SalarioAprobado)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TotalRemuneraciones)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TotalRetenciones)</td>
+                    <td>
+                        @if (item.MontoLiquidacion == null || item.MontoLiquidacion == 0)
+                        {
+                            @:N/A
+                        }
+                        else
+                        {
+                            <div>
+                                <strong>Monto:</strong> @item.MontoLiquidacion<br />
+                                <strong>Fecha:</strong> @(item.FechaLiquidacion)
+                            </div>
+                        }
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.SalarioNeto)</td>
+                    <td>
+                        <span class="label @(item.idEstado == 1 ? "label-success" : "label-danger")">
+                            @Html.DisplayFor(modelItem => item.nombreEstado)
+                        </span>
+                    </td>
+                    <td>
+                        @Html.ActionLink("Detalles", "Details", new { id = item.IdEmpleado }, new { @class = "btn btn-info btn-sm btn-celeste mb-1" })<br />
+                        @Html.ActionLink("Cambiar Estado", "CambiarEstado", new { id = item.IdEmpleado }, new { @class = "btn btn-info btn-sm btn-celeste mb-1" })<br />
+                        <button class="btn btn-sm aprobar-btn mb-1 @(item.Aprobado ? "btn-success" : "btn-celeste")" data-id="@item.IdEmpleado">
+                            @(item.Aprobado ? "Aprobado" : "Aprobar")
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .aprobar-btn {
+        width: 100%;
+    }
+
+    .btn-celeste {
+        background-color: #5bc0de;
+        border-color: #46b8da;
+        color: white;
+    }
+
+    .label-success {
+        background-color: #5cb85c;
+        color: white;
+        padding: 3px 6px;
+        border-radius: 3px;
+    }
+
+    .label-danger {
+        background-color: #d9534f;
+        color: white;
+        padding: 3px 6px;
+        border-radius: 3px;
+    }
+    .tabla-centrada td,
+    .tabla-centrada th {
+        text-align: center;
+        vertical-align: middle;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $("#buscarEmpleado").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#tablaResumen tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+        $(".aprobar-btn").click(function () {
+            var btn = $(this);
+            if (!btn.hasClass("btn-success")) {
+                // Aquí iría la lógica real como AJAX
+                btn.removeClass("btn-celeste").addClass("btn-success").text("Aprobado");
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $("#buscarEmpleado").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#tablaResumen tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+        $("#limpiarFiltro").click(function () {
+            $("#buscarEmpleado").val('');
+            $("#buscarEmpleado").trigger("keyup");
+        });
+    });
+</script>

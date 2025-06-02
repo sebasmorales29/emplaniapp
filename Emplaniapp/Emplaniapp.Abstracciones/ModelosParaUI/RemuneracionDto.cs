@@ -15,11 +15,11 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public DateTime fechaRemuneracion { get; set; }
         public int? horasTrabajadas { get; set; }
         public int? horasExtras { get; set; }
-        public double? comision { get; set; }
-        public double? pagoQuincenal { get; set; }
-        public double? horasFeriados { get; set; }
-        public double? horasVacaciones { get; set; }
-        public double? horasLicencias { get; set; }
+        public decimal? comision { get; set; }
+        public decimal? pagoQuincenal { get; set; }
+        public decimal? horasFeriados { get; set; }
+        public decimal? horasVacaciones { get; set; }
+        public decimal? horasLicencias { get; set; }
         public int idEstado { get; set; }
         public string nombreEstado { get; set; }
     }
