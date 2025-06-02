@@ -11,6 +11,5 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public int idCalle { get; set; }
         public string nombreCalle { get; set; }
         public int idDistrito { get; set; }
-        public int idEstado { get; set; }
     }
 }

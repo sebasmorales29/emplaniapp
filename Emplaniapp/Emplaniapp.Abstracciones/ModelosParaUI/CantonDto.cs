@@ -11,6 +11,5 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public int idCanton { get; set; }
         public string nombreCanton { get; set; }
         public int idProvincia { get; set; }
-        public int idEstado { get; set; }
     }
 }

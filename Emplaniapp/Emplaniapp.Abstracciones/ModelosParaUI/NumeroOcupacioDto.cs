@@ -10,6 +10,5 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
     {
         public int idNumeroOcupacion { get; set; }
         public int numero { get; set; }
-        public int idEstado { get; set; }
     }
 }
