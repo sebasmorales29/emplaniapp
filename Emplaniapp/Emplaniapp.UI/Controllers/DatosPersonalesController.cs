@@ -1,4 +1,5 @@
-﻿using System;
+﻿/**
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -235,6 +236,7 @@ namespace Emplaniapp.UI.Controllers
             return View(model);
         }
 
+
         // GET: DatosPersonales/EditarDatosFinancieros/5
         public ActionResult EditarDatosFinancieros(int id)
         {
@@ -406,3 +408,4 @@ namespace Emplaniapp.UI.Controllers
         public string Banco { get; set; }
     }
 }
+**/

@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contexto.cs" />
+    <Compile Include="Hoja_Resumen\ListarHojaResumen\listarHojaResumenAD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tipo_Remuneracion\ListarTipoRemuneracionAD.cs" />
     <Compile Include="Tipo_Retencion\ListarTipoRetencionAD.cs" />
