@@ -43,9 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InterfacesAD\Hoja_Resumen\ListarHojaResumen\IListarHojaResumenAD.cs" />
+    <Compile Include="InterfacesAD\IDatosPersonalesAD.cs" />
     <Compile Include="InterfacesAD\Tipo_Remuneracion\IListarTipoRemuneracionAD.cs" />
     <Compile Include="InterfacesAD\Tipo_Retencion\IListarTipoRetencionAD.cs" />
     <Compile Include="InterfacesParaUI\Hoja_Resumen\ListarHojaResumen\IlistarHojaResumenLN.cs" />
+    <Compile Include="InterfacesParaUI\IDatosPersonalesLN.cs" />
     <Compile Include="InterfacesParaUI\Tipo_Remuneracion\IListarTipoRemuneracionLN.cs" />
     <Compile Include="InterfacesParaUI\Tipo_Retenciones\IListarTipoRetencionLN.cs" />
     <Compile Include="ModelosAD\Cargos.cs" />

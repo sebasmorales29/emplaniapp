@@ -71,7 +71,7 @@
                         </span>
                     </td>
                     <td>
-                        @Html.ActionLink("Detalles", "Details", new { id = item.IdEmpleado }, new { @class = "btn btn-info btn-sm btn-celeste mb-1" })<br />
+                        @Html.ActionLink("Detalles", "Detalles", "DatosPersonales", new { id = item.IdEmpleado }, new { @class = "btn btn-info btn-sm btn-celeste mb-1" })<br />
                         @Html.ActionLink("Cambiar Estado", "CambiarEstado", new { id = item.IdEmpleado }, new { @class = "btn btn-info btn-sm btn-celeste mb-1" })<br />
                         <button class="btn btn-sm aprobar-btn mb-1 @(item.Aprobado ? "btn-success" : "btn-celeste")" data-id="@item.IdEmpleado">
                             @(item.Aprobado ? "Aprobado" : "Aprobar")

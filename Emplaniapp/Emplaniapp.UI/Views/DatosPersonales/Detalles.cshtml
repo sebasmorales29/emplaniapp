@@ -80,6 +80,40 @@
     .btn-editar {
         padding: 2px 8px;
         font-size: 12px;
+        background-color: #4a87c7;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        text-decoration: none;
+    }
+
+    .btn-editar:hover {
+        background-color: #3a77b7;
+        color: white;
+    }
+
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .alert-success {
+        color: #3c763d;
+        background-color: #dff0d8;
+        border-color: #d6e9c6;
+    }
+
+    .btn-link-return {
+        color: #4a87c7;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .btn-link-return:hover {
+        color: #3a77b7;
+        text-decoration: none;
     }
 </style>
 
@@ -88,12 +122,20 @@
     <div class="row">
         <div class="col-md-12">
             <p>
-                <a href="@Url.Action("Index", "HojaResumen")" class="btn btn-link">
+                <a href="@Url.Action("listarHojaResumen", "HojaResumen")" class="btn-link-return">
                     < Volver a Hoja Resumen
                 </a>
             </p>
         </div>
     </div>
+
+    <!-- Mensaje de éxito -->
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Mensaje"]
+        </div>
+    }
 
     <!-- Título del empleado -->
     <div class="row">
@@ -136,7 +178,7 @@
                                         <div class="datos-value">@Model.nombre</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Primer Apellido:</div>
+                                        <div class="datos-label">Primera Apellido:</div>
                                         <div class="datos-value">@Model.primerApellido</div>
                                     </div>
                                     <div class="datos-row">
@@ -172,7 +214,7 @@
                             <div class="seccion-box">
                                 <div class="seccion-header">
                                     <h3>Datos Laborales</h3>
-                                    <a href="@Url.Action("EditarDatosLaborales", new { id = Model.idEmpleado })" class="btn btn-primary btn-editar">Editar</a>
+                                    <a href="@Url.Action("EditarDatosLaborales", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
                                 </div>
                                 <div class="seccion-body">
                                     <div class="datos-row">
@@ -202,20 +244,20 @@
                             <div class="seccion-box">
                                 <div class="seccion-header">
                                     <h3>Datos Financieros</h3>
-                                    <a href="@Url.Action("EditarDatosFinancieros", new { id = Model.idEmpleado })" class="btn btn-primary btn-editar">Editar</a>
+                                    <a href="@Url.Action("EditarDatosFinancieros", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
                                 </div>
                                 <div class="seccion-body">
                                     <div class="datos-row">
-                                        <div class="datos-label">Periocidad de pago:</div>
+                                        <div class="datos-label">Periodicidad de pago:</div>
                                         <div class="datos-value">@Model.periocidadPago</div>
                                     </div>
                                     <div class="datos-row">
                                         <div class="datos-label">Salario Aprobado:</div>
-                                        <div class="datos-value">@Model.salarioAprobado.ToString("N0")</div>
+                                        <div class="datos-value">@Model.salarioAprobado.ToString("C")</div>
                                     </div>
                                     <div class="datos-row">
                                         <div class="datos-label">Salario Diario:</div>
-                                        <div class="datos-value">@Model.salarioDiario.ToString("N0")</div>
+                                        <div class="datos-value">@Model.salarioDiario.ToString("C")</div>
                                     </div>
                                     <div class="datos-row">
                                         <div class="datos-label">Tipo de Moneda:</div>
