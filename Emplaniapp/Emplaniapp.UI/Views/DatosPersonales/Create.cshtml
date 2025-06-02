@@ -1,0 +1,321 @@
+@model Emplaniapp.Abstracciones.ModelosParaUI.EmpleadoDto
+
+@{
+    ViewBag.Title = "Crear Nuevo Empleado";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-user-plus"></i> Crear Nuevo Empleado
+                </h2>
+                <a href="@Url.Action("Index", "HojaResumen")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver a Hoja Resumen
+                </a>
+            </div>
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            }
+
+            @using (Html.BeginForm("Create", "DatosPersonales", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <!-- Información Personal -->
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-user"></i> Información Personal
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.nombre, "Primer Nombre *", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.nombre, new { @class = "form-control", required = "required", placeholder = "Ingrese el primer nombre" })
+                                    @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.segundoNombre, "Segundo Nombre", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.segundoNombre, new { @class = "form-control", placeholder = "Ingrese el segundo nombre (opcional)" })
+                                    @Html.ValidationMessageFor(model => model.segundoNombre, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.primerApellido, "Primer Apellido *", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.primerApellido, new { @class = "form-control", required = "required", placeholder = "Ingrese el primer apellido" })
+                                    @Html.ValidationMessageFor(model => model.primerApellido, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.segundoApellido, "Segundo Apellido *", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.segundoApellido, new { @class = "form-control", required = "required", placeholder = "Ingrese el segundo apellido" })
+                                    @Html.ValidationMessageFor(model => model.segundoApellido, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.cedula, "Cédula *", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.cedula, new { @class = "form-control", required = "required", type = "number", placeholder = "123456789" })
+                                    @Html.ValidationMessageFor(model => model.cedula, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.fechaNacimiento, "Fecha de Nacimiento *", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.fechaNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", required = "required", type = "date" })
+                                    @Html.ValidationMessageFor(model => model.fechaNacimiento, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.numeroTelefonico, "Número Telefónico *", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.numeroTelefonico, new { @class = "form-control", required = "required", placeholder = "8888-8888" })
+                                    @Html.ValidationMessageFor(model => model.numeroTelefonico, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.correoInstitucional, "Correo Institucional *", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.correoInstitucional, new { @class = "form-control", required = "required", type = "email", placeholder = "empleado@empresa.com" })
+                                    @Html.ValidationMessageFor(model => model.correoInstitucional, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información Laboral -->
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-briefcase"></i> Información Laboral
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.idCargo, "Cargo *", new { @class = "form-label font-weight-bold" })
+                                    @Html.DropDownListFor(model => model.idCargo, (IEnumerable<SelectListItem>)ViewBag.Cargos, "-- Seleccione un cargo --", new { @class = "form-control", required = "required" })
+                                    @Html.ValidationMessageFor(model => model.idCargo, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.fechaContratacion, "Fecha de Contratación *", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.fechaContratacion, "{0:yyyy-MM-dd}", new { @class = "form-control", required = "required", type = "date" })
+                                    @Html.ValidationMessageFor(model => model.fechaContratacion, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.fechaSalida, "Fecha de Salida", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.fechaSalida, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                    @Html.ValidationMessageFor(model => model.fechaSalida, "", new { @class = "text-danger" })
+                                    <small class="text-muted">Dejar vacío para empleados activos</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.periocidadPago, "Periocidad de Pago *", new { @class = "form-label font-weight-bold" })
+                                    @Html.DropDownListFor(model => model.periocidadPago, (IEnumerable<SelectListItem>)ViewBag.PeriocidadesPago, "-- Seleccione periocidad --", new { @class = "form-control", required = "required" })
+                                    @Html.ValidationMessageFor(model => model.periocidadPago, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información Financiera -->
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="fas fa-dollar-sign"></i> Información Financiera
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.salarioAprobado, "Salario Aprobado *", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.salarioAprobado, new { @class = "form-control", required = "required", type = "number", step = "0.01", placeholder = "0.00", id = "salarioAprobado" })
+                                    @Html.ValidationMessageFor(model => model.salarioAprobado, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.salarioDiario, "Salario Diario *", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.salarioDiario, new { @class = "form-control", required = "required", type = "number", step = "0.01", placeholder = "0.00", id = "salarioDiario", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(model => model.salarioDiario, "", new { @class = "text-danger" })
+                                    <small class="text-muted">Se calcula automáticamente</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.idMoneda, "Tipo de Moneda *", new { @class = "form-label font-weight-bold" })
+                                    @Html.DropDownListFor(model => model.idMoneda, (IEnumerable<SelectListItem>)ViewBag.TiposMoneda, "-- Seleccione moneda --", new { @class = "form-control", required = "required" })
+                                    @Html.ValidationMessageFor(model => model.idMoneda, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.cuentaIBAN, "Cuenta IBAN *", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.cuentaIBAN, new { @class = "form-control", required = "required", placeholder = "CR123456789012345678" })
+                                    @Html.ValidationMessageFor(model => model.cuentaIBAN, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.idBanco, "Banco *", new { @class = "form-label font-weight-bold" })
+                                    @Html.DropDownListFor(model => model.idBanco, (IEnumerable<SelectListItem>)ViewBag.Bancos, "-- Seleccione banco --", new { @class = "form-control", required = "required" })
+                                    @Html.ValidationMessageFor(model => model.idBanco, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.salarioPorMinuto, "Salario por Minuto", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.salarioPorMinuto, new { @class = "form-control", type = "number", step = "0.01", placeholder = "0.00", id = "salarioPorMinuto", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(model => model.salarioPorMinuto, "", new { @class = "text-danger" })
+                                    <small class="text-muted">Se calcula automáticamente</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.salarioPoHora, "Salario por Hora", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.salarioPoHora, new { @class = "form-control", type = "number", step = "0.01", placeholder = "0.00", id = "salarioPorHora", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(model => model.salarioPoHora, "", new { @class = "text-danger" })
+                                    <small class="text-muted">Se calcula automáticamente</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.salarioPorHoraExtra, "Salario por Hora Extra", new { @class = "form-label font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.salarioPorHoraExtra, new { @class = "form-control", type = "number", step = "0.01", placeholder = "0.00", id = "salarioPorHoraExtra", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(model => model.salarioPorHoraExtra, "", new { @class = "text-danger" })
+                                    <small class="text-muted">Se calcula automáticamente (1.5x hora normal)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn btn-success btn-lg me-3">
+                                    <i class="fas fa-save"></i> Crear Empleado
+                                </button>
+                                <a href="@Url.Action("Index", "HojaResumen")" class="btn btn-secondary btn-lg">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    
+    <script>
+        $(document).ready(function() {
+            // Establecer fecha de contratación por defecto a hoy
+            if (!$('#fechaContratacion').val()) {
+                var today = new Date().toISOString().split('T')[0];
+                $('#fechaContratacion').val(today);
+            }
+
+            // Calcular salarios automáticamente cuando cambia el salario aprobado
+            $('#salarioAprobado').on('input', function() {
+                calcularSalarios();
+            });
+
+            // Calcular al cargar la página si ya hay un valor
+            if ($('#salarioAprobado').val()) {
+                calcularSalarios();
+            }
+
+            function calcularSalarios() {
+                var salarioAprobado = parseFloat($('#salarioAprobado').val()) || 0;
+                
+                if (salarioAprobado > 0) {
+                    // Calcular salario diario (basado en 30 días del mes)
+                    var salarioDiario = salarioAprobado / 30;
+                    $('#salarioDiario').val(salarioDiario.toFixed(2));
+                    
+                    // Calcular salario por hora (8 horas laborales por día)
+                    var salarioPorHora = salarioDiario / 8;
+                    $('#salarioPorHora').val(salarioPorHora.toFixed(2));
+                    
+                    // Calcular salario por minuto
+                    var salarioPorMinuto = salarioPorHora / 60;
+                    $('#salarioPorMinuto').val(salarioPorMinuto.toFixed(2));
+                    
+                    // Calcular hora extra (1.5x el salario por hora)
+                    var salarioPorHoraExtra = salarioPorHora * 1.5;
+                    $('#salarioPorHoraExtra').val(salarioPorHoraExtra.toFixed(2));
+                } else {
+                    // Limpiar campos si no hay salario aprobado
+                    $('#salarioDiario, #salarioPorHora, #salarioPorMinuto, #salarioPorHoraExtra').val('');
+                }
+            }
+
+            // Validación personalizada
+            (function() {
+                'use strict';
+                window.addEventListener('load', function() {
+                    var forms = document.getElementsByClassName('needs-validation');
+                    var validation = Array.prototype.filter.call(forms, function(form) {
+                        form.addEventListener('submit', function(event) {
+                            if (form.checkValidity() === false) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+                            form.classList.add('was-validated');
+                        }, false);
+                    });
+                }, false);
+            })();
+        });
+    </script>
+} 

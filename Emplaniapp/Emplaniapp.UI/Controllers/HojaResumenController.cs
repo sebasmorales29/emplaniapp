@@ -4,18 +4,35 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Emplaniapp.Abstracciones.ModelosParaUI;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Empleado;
+using Emplaniapp.LogicaDeNegocio.Empleado;
 
 namespace Emplaniapp.UI.Controllers
 {
     public class HojaResumenController : Controller
     {
+        // Servicios
+        private IEmpleadoLN _empleadoLN;
+
+        public HojaResumenController()
+        {
+            _empleadoLN = new EmpleadoLN();
+        }
+
         // GET: HojaResumen
         public ActionResult Index()
         {
-            // En un escenario real, obtendríamos los empleados de la base de datos
-            // Por ahora, crearemos datos de ejemplo
-            var empleados = ObtenerEmpleados();
-            return View(empleados);
+            try
+            {
+                // Obtener los empleados reales de la base de datos
+                var empleados = _empleadoLN.ListarTodos();
+                return View(empleados);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al cargar los empleados: " + ex.Message;
+                return View(new List<EmpleadoDto>());
+            }
         }
 
         // GET: HojaResumen/VerDetalles/5
@@ -28,170 +45,46 @@ namespace Emplaniapp.UI.Controllers
         // GET: HojaResumen/Create
         public ActionResult Create()
         {
-            return View();
+            // Redirige al controlador de DatosPersonales para crear un empleado
+            return RedirectToAction("Create", "DatosPersonales");
         }
 
         // POST: HojaResumen/Create
         [HttpPost]
         public ActionResult Create(FormCollection collection)
         {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            // Redirige al controlador de DatosPersonales
+            return RedirectToAction("Create", "DatosPersonales");
         }
 
         // GET: HojaResumen/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            // Redirige al controlador de DatosPersonales para editar un empleado
+            return RedirectToAction("Edit", "DatosPersonales", new { id = id });
         }
 
         // POST: HojaResumen/Edit/5
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            // Redirige al controlador de DatosPersonales
+            return RedirectToAction("Edit", "DatosPersonales", new { id = id });
         }
 
         // GET: HojaResumen/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            // Redirige al controlador de DatosPersonales para eliminar un empleado
+            return RedirectToAction("Delete", "DatosPersonales", new { id = id });
         }
 
         // POST: HojaResumen/Delete/5
         [HttpPost]
         public ActionResult Delete(int id, FormCollection collection)
         {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            // Redirige al controlador de DatosPersonales
+            return RedirectToAction("Delete", "DatosPersonales", new { id = id });
         }
-
-        #region Métodos Auxiliares
-
-        // Método para obtener la lista de empleados (simulado)
-        private List<EmpleadoDto> ObtenerEmpleados()
-        {
-            // Crear una lista de empleados (datos de ejemplo)
-            return new List<EmpleadoDto>
-            {
-                new EmpleadoDto
-                {
-                    idEmpleado = 1,
-                    nombre = "Yazmin",
-                    segundoNombre = "",
-                    primerApellido = "Rivera",
-                    segundoApellido = "Rodríguez",
-                    fechaNacimiento = new DateTime(1992, 11, 23),
-                    cedula = 128048070,
-                    numeroTelefonico = "7821-9903",
-                    correoInstitucional = "yazriv@gmail.com",
-                    idDireccion = 1,
-                    idCargo = 2,
-                    nombreCargo = "Contador",
-                    fechaContratacion = new DateTime(2021, 9, 9),
-                    fechaSalida = null,
-                    periocidadPago = "Quincenal",
-                    salarioDiario = 13400,
-                    salarioAprobado = 1545000,
-                    salarioPorMinuto = 27.91,
-                    salarioPoHora = 1675.00,
-                    salarioPorHoraExtra = 3350.00,
-                    idMoneda = 1,
-                    nombreMoneda = "Colones",
-                    cuentaIBAN = "3456789087456789098890987",
-                    idBanco = 1,
-                    nombreBanco = "BN",
-                    idEstado = 1,
-                    nombreEstado = "Activo"
-                },
-                new EmpleadoDto
-                {
-                    idEmpleado = 2,
-                    nombre = "Juan",
-                    segundoNombre = "Carlos",
-                    primerApellido = "Pérez",
-                    segundoApellido = "Gómez",
-                    fechaNacimiento = new DateTime(1990, 5, 15),
-                    cedula = 123456789,
-                    numeroTelefonico = "8888-8888",
-                    correoInstitucional = "juan.perez@example.com",
-                    idDireccion = 2,
-                    idCargo = 1,
-                    nombreCargo = "Administrador",
-                    fechaContratacion = new DateTime(2020, 1, 10),
-                    fechaSalida = null,
-                    periocidadPago = "Mensual",
-                    salarioDiario = 100000,
-                    salarioAprobado = 3000000,
-                    salarioPorMinuto = 0.1,
-                    salarioPoHora = 10000,
-                    salarioPorHoraExtra = 15000,
-                    idMoneda = 1,
-                    nombreMoneda = "Colones",
-                    cuentaIBAN = "CR123456789012345678",
-                    idBanco = 2,
-                    nombreBanco = "BCR",
-                    idEstado = 1,
-                    nombreEstado = "Activo"
-                },
-                new EmpleadoDto
-                {
-                    idEmpleado = 3,
-                    nombre = "María",
-                    segundoNombre = "José",
-                    primerApellido = "Rodríguez",
-                    segundoApellido = "Castro",
-                    fechaNacimiento = new DateTime(1985, 10, 20),
-                    cedula = 987654321,
-                    numeroTelefonico = "7777-7777",
-                    correoInstitucional = "maria.rodriguez@example.com",
-                    idDireccion = 3,
-                    idCargo = 3,
-                    nombreCargo = "Gerente",
-                    fechaContratacion = new DateTime(2018, 3, 1),
-                    fechaSalida = null,
-                    periocidadPago = "Quincenal",
-                    salarioDiario = 80000,
-                    salarioAprobado = 2400000,
-                    salarioPorMinuto = 0.08,
-                    salarioPoHora = 8000,
-                    salarioPorHoraExtra = 12000,
-                    idMoneda = 1,
-                    nombreMoneda = "Colones",
-                    cuentaIBAN = "CR987654321098765432",
-                    idBanco = 3,
-                    nombreBanco = "BAC",
-                    idEstado = 1,
-                    nombreEstado = "Activo"
-                }
-            };
-        }
-
-        #endregion
     }
 }

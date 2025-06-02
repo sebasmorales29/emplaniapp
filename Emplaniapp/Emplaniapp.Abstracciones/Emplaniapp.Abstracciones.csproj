@@ -42,10 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InterfacesAD\Empleado\IEmpleadoAD.cs" />
     <Compile Include="InterfacesAD\Tipo_Remuneracion\IListarTipoRemuneracionAD.cs" />
     <Compile Include="InterfacesAD\Tipo_Retencion\IListarTipoRetencionAD.cs" />
+    <Compile Include="InterfacesParaUI\Empleado\IEmpleadoLN.cs" />
     <Compile Include="InterfacesParaUI\Tipo_Remuneracion\IListarTipoRemuneracionLN.cs" />
     <Compile Include="InterfacesParaUI\Tipo_Retenciones\IListarTipoRetencionLN.cs" />
+    <Compile Include="ModelosAD\Banco.cs" />
+    <Compile Include="ModelosAD\Cargo.cs" />
+    <Compile Include="ModelosAD\Empleado.cs" />
+    <Compile Include="ModelosAD\Estado.cs" />
+    <Compile Include="ModelosAD\TipoMoneda.cs" />
     <Compile Include="ModelosAD\TipoRemuneracion.cs" />
     <Compile Include="ModelosAD\TipoRetencion.cs" />
     <Compile Include="ModelosParaUI\BancoDto.cs" />

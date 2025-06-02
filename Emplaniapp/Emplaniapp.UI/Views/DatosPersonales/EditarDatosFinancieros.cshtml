@@ -63,10 +63,10 @@
                             </div>
 
                             <div class="form-group">
-                                @Html.LabelFor(model => model.TipoMoneda, "Tipo de Moneda", new { @class = "control-label col-md-4" })
+                                @Html.LabelFor(model => model.IdTipoMoneda, "Tipo de Moneda", new { @class = "control-label col-md-4" })
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.TipoMoneda, (IEnumerable<SelectListItem>)ViewBag.TiposMoneda, new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(model => model.TipoMoneda, "", new { @class = "text-danger" })
+                                    @Html.DropDownListFor(model => model.IdTipoMoneda, (IEnumerable<SelectListItem>)ViewBag.TiposMoneda, "-- Seleccione una moneda --", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.IdTipoMoneda, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
@@ -79,10 +79,10 @@
                             </div>
 
                             <div class="form-group">
-                                @Html.LabelFor(model => model.Banco, "Banco", new { @class = "control-label col-md-4" })
+                                @Html.LabelFor(model => model.IdBanco, "Banco", new { @class = "control-label col-md-4" })
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.Banco, (IEnumerable<SelectListItem>)ViewBag.Bancos, new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(model => model.Banco, "", new { @class = "text-danger" })
+                                    @Html.DropDownListFor(model => model.IdBanco, (IEnumerable<SelectListItem>)ViewBag.Bancos, "-- Seleccione un banco --", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.IdBanco, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 

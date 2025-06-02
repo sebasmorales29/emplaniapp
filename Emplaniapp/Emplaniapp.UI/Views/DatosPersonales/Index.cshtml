@@ -1,0 +1,139 @@
+@model List<Emplaniapp.Abstracciones.ModelosParaUI.EmpleadoDto>
+
+@{
+    ViewBag.Title = "Gestión de Empleados";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-users"></i> Gestión de Empleados
+                </h2>
+                <a href="@Url.Action("Create")" class="btn btn-success">
+                    <i class="fas fa-user-plus"></i> Agregar Empleado
+                </a>
+            </div>
+
+            @if (TempData["Mensaje"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i> @TempData["Mensaje"]
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            }
+
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Lista de Empleados</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Cédula</th>
+                                        <th>Nombre Completo</th>
+                                        <th>Cargo</th>
+                                        <th>Estado</th>
+                                        <th>Fecha Contratación</th>
+                                        <th>Correo</th>
+                                        <th class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var empleado in Model)
+                                    {
+                                        <tr>
+                                            <td>@empleado.cedula</td>
+                                            <td>
+                                                <strong>@empleado.nombre @empleado.primerApellido @empleado.segundoApellido</strong>
+                                                @if (!string.IsNullOrEmpty(empleado.segundoNombre))
+                                                {
+                                                    <br><small class="text-muted">@empleado.segundoNombre</small>
+                                                }
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-info">@empleado.nombreCargo</span>
+                                            </td>
+                                            <td>
+                                                @if (empleado.nombreEstado == "Activo")
+                                                {
+                                                    <span class="badge badge-success">@empleado.nombreEstado</span>
+                                                }
+                                                else if (empleado.nombreEstado == "Inactivo")
+                                                {
+                                                    <span class="badge badge-warning">@empleado.nombreEstado</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-secondary">@empleado.nombreEstado</span>
+                                                }
+                                            </td>
+                                            <td>@empleado.fechaContratacion.ToString("dd/MM/yyyy")</td>
+                                            <td>
+                                                <small>@empleado.correoInstitucional</small>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group" role="group">
+                                                    <a href="@Url.Action("Detalles", new { id = empleado.idEmpleado })" 
+                                                       class="btn btn-info btn-sm" title="Ver Detalles">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="@Url.Action("Edit", new { id = empleado.idEmpleado })" 
+                                                       class="btn btn-warning btn-sm" title="Editar">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="@Url.Action("Delete", new { id = empleado.idEmpleado })" 
+                                                       class="btn btn-danger btn-sm" title="Eliminar"
+                                                       onclick="return confirm('¿Está seguro que desea eliminar este empleado?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No hay empleados registrados</h5>
+                            <p class="text-muted">Comience agregando su primer empleado</p>
+                            <a href="@Url.Action("Create")" class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i> Agregar Primer Empleado
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+    </script>
+} 

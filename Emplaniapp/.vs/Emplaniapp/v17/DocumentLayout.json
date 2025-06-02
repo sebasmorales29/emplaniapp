@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\sebas\\onedrive\\escritorio\\emplaniappclone\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\variablesfinancieras\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\variablesfinancieras\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\DatosPersonales\\EditarDatosPersonales.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Emplaniapp.UI\\Views\\DatosPersonales\\EditarDatosPersonales.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Contexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -13,6 +13,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\VariablesFinancierasController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Controllers\\VariablesFinancierasController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\TipoRetencionDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -97,19 +101,31 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml",
-              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml",
-              "ViewState": "AgIAADMAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAA==",
+              "Title": "EditarDatosPersonales.cshtml",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\DatosPersonales\\EditarDatosPersonales.cshtml",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\DatosPersonales\\EditarDatosPersonales.cshtml",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\DatosPersonales\\EditarDatosPersonales.cshtml",
+              "RelativeToolTip": "Emplaniapp.UI\\Views\\DatosPersonales\\EditarDatosPersonales.cshtml",
+              "ViewState": "AgIAAFMAAAAAAAAAAAAkwGMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-31T18:47:30.553Z",
+              "WhenOpened": "2025-06-02T22:17:04.065Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml",
+              "RelativeToolTip": "Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAADQAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-05-31T18:47:30.553Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "TipoRetencionDto.cs",
               "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\TipoRetencionDto.cs",
               "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\ModelosParaUI\\TipoRetencionDto.cs",
@@ -121,7 +137,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "TipoRetencion.cs",
               "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\TipoRetencion.cs",
               "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\ModelosAD\\TipoRetencion.cs",
@@ -139,7 +155,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Login.cshtml",
               "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Account\\Login.cshtml",
@@ -152,7 +168,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "Register.cshtml",
               "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\Register.cshtml",
               "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Account\\Register.cshtml",
@@ -164,7 +180,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "TipoRemuneracion.cs",
               "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniappClone\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\TipoRemuneracion.cs",
               "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\ModelosAD\\TipoRemuneracion.cs",

@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Empleado\EmpleadoLN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tipo_Remuneracion\ListarTipoRemuneracionLN.cs" />
     <Compile Include="Tipo_Retencion\ListarTipoRetencionLN.cs" />

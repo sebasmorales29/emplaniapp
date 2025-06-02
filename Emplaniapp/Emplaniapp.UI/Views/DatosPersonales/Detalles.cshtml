@@ -99,6 +99,26 @@
     <div class="row">
         <div class="col-md-12">
             <h2>@Model.nombre @Model.primerApellido @Model.segundoApellido</h2>
+            
+            @if (TempData["Mensaje"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i> @TempData["Mensaje"]
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            }
+            
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            }
         </div>
     </div>
 
@@ -129,12 +149,20 @@
                             <div class="seccion-box">
                                 <div class="seccion-header">
                                     <h3>Información personal</h3>
+                                    <a href="@Url.Action("EditarDatosPersonales", new { id = Model.idEmpleado })" class="btn btn-primary btn-editar">Editar</a>
                                 </div>
                                 <div class="seccion-body">
                                     <div class="datos-row">
                                         <div class="datos-label">Nombre:</div>
                                         <div class="datos-value">@Model.nombre</div>
                                     </div>
+                                    @if (!string.IsNullOrEmpty(Model.segundoNombre))
+                                    {
+                                        <div class="datos-row">
+                                            <div class="datos-label">Segundo Nombre:</div>
+                                            <div class="datos-value">@Model.segundoNombre</div>
+                                        </div>
+                                    }
                                     <div class="datos-row">
                                         <div class="datos-label">Primer Apellido:</div>
                                         <div class="datos-value">@Model.primerApellido</div>
