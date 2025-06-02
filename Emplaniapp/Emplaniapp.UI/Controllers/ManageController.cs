@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -32,9 +31,9 @@ namespace Emplaniapp.UI.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -82,7 +81,10 @@ namespace Emplaniapp.UI.Controllers
         public async Task<ActionResult> RemoveLogin(string loginProvider, string providerKey)
         {
             ManageMessageId? message;
-            var result = await UserManager.RemoveLoginAsync(User.Identity.GetUserId(), new UserLoginInfo(loginProvider, providerKey));
+            var result = await UserManager.RemoveLoginAsync(
+                User.Identity.GetUserId(),
+                new UserLoginInfo(loginProvider, providerKey)
+            );
             if (result.Succeeded)
             {
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -117,7 +119,10 @@ namespace Emplaniapp.UI.Controllers
                 return View(model);
             }
             // Generar el token y enviarlo
-            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), model.Number);
+            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(
+                User.Identity.GetUserId(),
+                model.Number
+            );
             if (UserManager.SmsService != null)
             {
                 var message = new IdentityMessage
@@ -164,9 +169,14 @@ namespace Emplaniapp.UI.Controllers
         // GET: /Manage/VerifyPhoneNumber
         public async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
         {
-            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), phoneNumber);
-            // Enviar un SMS a través del proveedor de SMS para verificar el número de teléfono
-            return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
+            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(
+                User.Identity.GetUserId(),
+                phoneNumber
+            );
+            // Enviar un SMS a través del proveedor de SMS para verificar el número
+            return phoneNumber == null
+                ? View("Error")
+                : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
         }
 
         //
@@ -179,7 +189,11 @@ namespace Emplaniapp.UI.Controllers
             {
                 return View(model);
             }
-            var result = await UserManager.ChangePhoneNumberAsync(User.Identity.GetUserId(), model.PhoneNumber, model.Code);
+            var result = await UserManager.ChangePhoneNumberAsync(
+                User.Identity.GetUserId(),
+                model.PhoneNumber,
+                model.Code
+            );
             if (result.Succeeded)
             {
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -189,7 +203,7 @@ namespace Emplaniapp.UI.Controllers
                 }
                 return RedirectToAction("Index", new { Message = ManageMessageId.AddPhoneSuccess });
             }
-            // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
+            // Si llegamos a este punto, hubo un error
             ModelState.AddModelError("", "No se ha podido comprobar el teléfono");
             return View(model);
         }
@@ -200,7 +214,10 @@ namespace Emplaniapp.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RemovePhoneNumber()
         {
-            var result = await UserManager.SetPhoneNumberAsync(User.Identity.GetUserId(), null);
+            var result = await UserManager.SetPhoneNumberAsync(
+                User.Identity.GetUserId(),
+                null
+            );
             if (!result.Succeeded)
             {
                 return RedirectToAction("Index", new { Message = ManageMessageId.Error });
@@ -230,7 +247,11 @@ namespace Emplaniapp.UI.Controllers
             {
                 return View(model);
             }
-            var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+            var result = await UserManager.ChangePasswordAsync(
+                User.Identity.GetUserId(),
+                model.OldPassword,
+                model.NewPassword
+            );
             if (result.Succeeded)
             {
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -259,7 +280,10 @@ namespace Emplaniapp.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
+                var result = await UserManager.AddPasswordAsync(
+                    User.Identity.GetUserId(),
+                    model.NewPassword
+                );
                 if (result.Succeeded)
                 {
                     var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -272,7 +296,7 @@ namespace Emplaniapp.UI.Controllers
                 AddErrors(result);
             }
 
-            // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
+            // Si algo falla, volvemos a mostrar el formulario
             return View(model);
         }
 
@@ -290,36 +314,15 @@ namespace Emplaniapp.UI.Controllers
                 return View("Error");
             }
             var userLogins = await UserManager.GetLoginsAsync(User.Identity.GetUserId());
-            var otherLogins = AuthenticationManager.GetExternalAuthenticationTypes().Where(auth => userLogins.All(ul => auth.AuthenticationType != ul.LoginProvider)).ToList();
+            // Como hemos quitado la parte de proveedores externos,
+            // aquí simplemente devolvemos el listado de "Logins actuales"
             ViewBag.ShowRemoveButton = user.PasswordHash != null || userLogins.Count > 1;
             return View(new ManageLoginsViewModel
             {
                 CurrentLogins = userLogins,
-                OtherLogins = otherLogins
+                // Otros "OtherLogins" los ponemos vacíos porque no hay externos
+                OtherLogins = Enumerable.Empty<AuthenticationDescription>().ToList()
             });
-        }
-
-        //
-        // POST: /Manage/LinkLogin
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult LinkLogin(string provider)
-        {
-            // Solicitar la redirección al proveedor de inicio de sesión externo para vincular un inicio de sesión para el usuario actual
-            return new AccountController.ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"), User.Identity.GetUserId());
-        }
-
-        //
-        // GET: /Manage/LinkLoginCallback
-        public async Task<ActionResult> LinkLoginCallback()
-        {
-            var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, User.Identity.GetUserId());
-            if (loginInfo == null)
-            {
-                return RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
-            }
-            var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
-            return result.Succeeded ? RedirectToAction("ManageLogins") : RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
         }
 
         protected override void Dispose(bool disposing)
@@ -333,9 +336,7 @@ namespace Emplaniapp.UI.Controllers
             base.Dispose(disposing);
         }
 
-#region Aplicaciones auxiliares
-        // Se usa para la protección XSRF al agregar inicios de sesión externos
-        private const string XsrfKey = "XsrfId";
+        #region Aplicaciones auxiliares
 
         private IAuthenticationManager AuthenticationManager
         {
@@ -356,21 +357,13 @@ namespace Emplaniapp.UI.Controllers
         private bool HasPassword()
         {
             var user = UserManager.FindById(User.Identity.GetUserId());
-            if (user != null)
-            {
-                return user.PasswordHash != null;
-            }
-            return false;
+            return user != null && user.PasswordHash != null;
         }
 
         private bool HasPhoneNumber()
         {
             var user = UserManager.FindById(User.Identity.GetUserId());
-            if (user != null)
-            {
-                return user.PhoneNumber != null;
-            }
-            return false;
+            return user != null && user.PhoneNumber != null;
         }
 
         public enum ManageMessageId
@@ -384,6 +377,6 @@ namespace Emplaniapp.UI.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }
