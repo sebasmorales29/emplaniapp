@@ -1,7 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Suplidora Royal Ltda.</title>
@@ -12,15 +13,29 @@
             display: flex;
             align-items: center;
         }
-        .navbar-brand img {
-            margin-right: 10px;
-        }
+
+            .navbar-brand img {
+                margin-right: 10px;
+            }
+
         .navbar {
             background-color: #4a87c7 !important;
         }
+
         .navbar-nav .nav-link {
             color: white !important;
         }
+        /* Estilos para el nombre de usuario */
+        .navbar-user {
+            color: white;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+            .navbar-user i {
+                margin-right: 5px;
+            }
     </style>
 </head>
 <body>
@@ -39,27 +54,53 @@
             </button>
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-
                     <!-- Tablero de Control-->
-                    <li>@Html.ActionLink("Tablero de Control", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-
-                    <!-- Hoja Resumen-->
-                    <li>@Html.ActionLink("Hoja Resumen", "Index", "HojaResumen", new { area = "" }, new { @class = "nav-link" })</li>
-                    
-                    <!-- Variables Financieras -->
-                    <li>@Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link" })</li>
-
-                </ul>
-                <ul class="navbar-nav">
-                    <li>
-                        <a href="@Url.Action("LogOff", "Account")" class="nav-link">
-                            <i class="glyphicon glyphicon-log-out"></i> Salir
-                        </a>
+                    <li class="nav-item">
+                        @Html.ActionLink("Tablero de Control", "Index", "Home", new { area = "" }, new { @class = "nav-link" })
                     </li>
+                    <!-- Hoja Resumen-->
+                    <li class="nav-item">
+                        @Html.ActionLink("Hoja Resumen", "listarHojaResumen", "HojaResumen", new { area = "" }, new { @class = "nav-link" })
+                    </li>
+                    <!-- Variables Financieras -->
+                    <li class="nav-item">
+                        @Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link" })
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav">
+                    @if (Request.IsAuthenticated)
+                    {
+                        <!-- Si el usuario está autenticado, mostrar nombre de usuario y botón de Salir -->
+                        <li class="nav-item navbar-user">
+                            <i class="glyphicon glyphicon-user"></i>
+                            @User.Identity.GetUserName()
+                        </li>
+                        <li class="nav-item">
+                            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "form-inline" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-link nav-link" style="padding: 0;">
+                                    <i class="glyphicon glyphicon-log-out"></i> Salir
+                                </button>
+                            }
+                        </li>
+                    }
+                    else
+                    {
+                        <!-- Si NO está autenticado, mostrar enlaces a Login y Register -->
+                        <li class="nav-item">
+                            @Html.ActionLink("Registrar", "Register", "Account", new { area = "" }, new { @class = "nav-link" })
+                        </li>
+                        <li class="nav-item">
+                            @Html.ActionLink("Iniciar sesión", "Login", "Account", new { area = "" }, new { @class = "nav-link" })
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
     </nav>
+
     <div class="container body-content">
         @RenderBody()
         <hr />
