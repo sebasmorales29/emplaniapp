@@ -33,11 +33,11 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
 
         // Datos salariales
         public string periocidadPago { get; set; } 
-        public double salarioDiario { get; set; }
-        public double salarioAprobado { get; set; }
-        public double salarioPorMinuto { get; set; }
-        public double salarioPoHora { get; set; }
-        public double salarioPorHoraExtra { get; set; }
+        public decimal salarioDiario { get; set; }
+        public decimal salarioAprobado { get; set; }
+        public decimal salarioPorMinuto { get; set; }
+        public decimal salarioPoHora { get; set; }
+        public decimal salarioPorHoraExtra { get; set; }
 
         // Moneda y banco
         public int idMoneda { get; set; }

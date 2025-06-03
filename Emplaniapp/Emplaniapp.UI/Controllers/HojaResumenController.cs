@@ -3,20 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Hoja_Resumen.ListarHojaResumen;
 using Emplaniapp.Abstracciones.ModelosParaUI;
+using Emplaniapp.LogicaDeNegocio.Hoja_Resumen.ListarHojaResumen;
 
 namespace Emplaniapp.UI.Controllers
 {
     public class HojaResumenController : Controller
     {
-        // GET: HojaResumen
-        public ActionResult Index()
+        private IlistarHojaResumenLN _listarHojaResumenLN;
+
+
+        public HojaResumenController()
         {
-            // En un escenario real, obtendríamos los empleados de la base de datos
-            // Por ahora, crearemos datos de ejemplo
-            var empleados = ObtenerEmpleados();
-            return View(empleados);
+            _listarHojaResumenLN = new listarHojaResumenLN();
         }
+
+        private List<SelectListItem> ObtenerCargos()
+        {
+            return _listarHojaResumenLN.ObtenerCargos()
+                .Select(p => new SelectListItem
+                {
+                    Value = p.idCargo.ToString(),
+                    Text = p.nombreCargo
+                }).ToList();
+        }
+
+        // GET: HojaResumen
+        public ActionResult listarHojaResumen()
+        {
+            List<HojaResumenDto> laListaDeHojaDeResumen = _listarHojaResumenLN.ObtenerHojasResumen();
+            ViewBag.Cargos = ObtenerCargos();
+            return View(laListaDeHojaDeResumen);
+        }
+
+        [HttpPost]
+        public ActionResult Filtrar(string filtro, int? idCargo)
+        {
+            var listaFiltrada = _listarHojaResumenLN.ObtenerFiltrado(filtro, idCargo);
+            ViewBag.Filtro = filtro;
+            ViewBag.idCargo = idCargo;
+            ViewBag.Cargos = ObtenerCargos();
+            return View("listarHojaResumen", listaFiltrada);
+        }
+
 
         // GET: HojaResumen/VerDetalles/5
         public ActionResult VerDetalles(int id)
@@ -91,7 +121,7 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        #region Métodos Auxiliares
+         /** #region Métodos Auxiliares
 
         // Método para obtener la lista de empleados (simulado)
         private List<EmpleadoDto> ObtenerEmpleados()
@@ -192,6 +222,6 @@ namespace Emplaniapp.UI.Controllers
             };
         }
 
-        #endregion
+        #endregion */
     }
 }
