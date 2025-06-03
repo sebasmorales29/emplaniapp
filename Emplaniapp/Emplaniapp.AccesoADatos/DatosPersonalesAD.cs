@@ -1,10 +1,11 @@
-using Emplaniapp.Abstracciones.InterfacesAD;
-using Emplaniapp.Abstracciones.ModelosParaUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Emplaniapp.Abstracciones.InterfacesAD;
+using Emplaniapp.Abstracciones.ModelosParaUI;
+using Emplaniapp.Abstracciones.ModelosAD;
 
 namespace Emplaniapp.AccesoADatos
 {
@@ -170,14 +171,16 @@ namespace Emplaniapp.AccesoADatos
 
         public List<BancoDto> ObtenerBancos()
         {
-            // Por ahora retornamos datos hardcodeados
-            return new List<BancoDto>
+            using (var contexto = new Contexto())
             {
-                new BancoDto { idBanco = 1, nombreBanco = "Banco Nacional" },
-                new BancoDto { idBanco = 2, nombreBanco = "Banco de Costa Rica" },
-                new BancoDto { idBanco = 3, nombreBanco = "BAC Credomatic" },
-                new BancoDto { idBanco = 4, nombreBanco = "Banco Popular" }
-            };
+                // Por ahora retornamos datos hardcodeados
+                return new List<BancoDto>
+                {
+                    new BancoDto { idBanco = 1, nombreBanco = "Banco Nacional" },
+                    new BancoDto { idBanco = 2, nombreBanco = "Banco de Costa Rica" },
+                    new BancoDto { idBanco = 3, nombreBanco = "BAC San José" }
+                };
+            }
         }
     }
 } 

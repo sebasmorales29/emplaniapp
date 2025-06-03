@@ -42,6 +42,5 @@ namespace Emplaniapp.AccesoADatos
         public DbSet<Liquidaciones> Liquidaciones { get; set; }
         public DbSet<Cargos> Cargos { get; set; }
 
-
     }
 }
