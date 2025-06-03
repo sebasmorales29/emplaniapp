@@ -6,17 +6,20 @@ using System.Web.Mvc;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Hoja_Resumen.ListarHojaResumen;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.LogicaDeNegocio.Hoja_Resumen.ListarHojaResumen;
+using Emplaniapp.Abstracciones.InterfacesParaUI;
+using Emplaniapp.LogicaDeNegocio;
 
 namespace Emplaniapp.UI.Controllers
 {
     public class HojaResumenController : Controller
     {
         private IlistarHojaResumenLN _listarHojaResumenLN;
-
+        private IDatosPersonalesLN _datosPersonalesLN;
 
         public HojaResumenController()
         {
             _listarHojaResumenLN = new listarHojaResumenLN();
+            _datosPersonalesLN = new DatosPersonalesLN();
         }
 
         private List<SelectListItem> ObtenerCargos()
@@ -29,24 +32,85 @@ namespace Emplaniapp.UI.Controllers
                 }).ToList();
         }
 
+        private List<SelectListItem> ObtenerEstados()
+        {
+            return _listarHojaResumenLN.ObtenerEstados()
+                .Select(e => new SelectListItem
+                {
+                    Value = e.idEstado.ToString(),
+                    Text = e.nombreEstado
+                }).ToList();
+        }
+
         // GET: HojaResumen
         public ActionResult listarHojaResumen()
         {
             List<HojaResumenDto> laListaDeHojaDeResumen = _listarHojaResumenLN.ObtenerHojasResumen();
             ViewBag.Cargos = ObtenerCargos();
+            ViewBag.Estados = ObtenerEstados();
+            ViewBag.TotalEmpleados = _listarHojaResumenLN.ObtenerTotalEmpleados(null, null, null);
             return View(laListaDeHojaDeResumen);
         }
 
         [HttpPost]
-        public ActionResult Filtrar(string filtro, int? idCargo)
+        public ActionResult Filtrar(string filtro, int? idCargo, int? idEstado)
         {
-            var listaFiltrada = _listarHojaResumenLN.ObtenerFiltrado(filtro, idCargo);
+            var listaFiltrada = _listarHojaResumenLN.ObtenerFiltrado(filtro, idCargo, idEstado);
             ViewBag.Filtro = filtro;
             ViewBag.idCargo = idCargo;
+            ViewBag.idEstado = idEstado;
             ViewBag.Cargos = ObtenerCargos();
+            ViewBag.Estados = ObtenerEstados();
+            ViewBag.TotalEmpleados = _listarHojaResumenLN.ObtenerTotalEmpleados(filtro, idCargo, idEstado);
             return View("listarHojaResumen", listaFiltrada);
         }
 
+        // GET: HojaResumen/CambiarEstado/5
+        public ActionResult CambiarEstado(int id)
+        {
+            var empleado = _listarHojaResumenLN.ObtenerEmpleadoPorId(id);
+            if (empleado == null)
+            {
+                return HttpNotFound();
+            }
+
+            ViewBag.Estados = _listarHojaResumenLN.ObtenerEstados()
+                .Select(e => new SelectListItem
+                {
+                    Value = e.idEstado.ToString(),
+                    Text = e.nombreEstado,
+                    Selected = e.idEstado == empleado.idEstado
+                }).ToList();
+
+            return View(empleado);
+        }
+
+        // POST: HojaResumen/CambiarEstado/5
+        [HttpPost]
+        public ActionResult CambiarEstado(int id, int idEstado)
+        {
+            try
+            {
+                bool resultado = _listarHojaResumenLN.CambiarEstadoEmpleado(id, idEstado);
+                if (resultado)
+                {
+                    TempData["Mensaje"] = "Estado del empleado cambiado exitosamente.";
+                    TempData["TipoMensaje"] = "success";
+                }
+                else
+                {
+                    TempData["Mensaje"] = "Error al cambiar el estado del empleado.";
+                    TempData["TipoMensaje"] = "error";
+                }
+                return RedirectToAction("listarHojaResumen");
+            }
+            catch
+            {
+                TempData["Mensaje"] = "Error al cambiar el estado del empleado.";
+                TempData["TipoMensaje"] = "error";
+                return RedirectToAction("listarHojaResumen");
+            }
+        }
 
         // GET: HojaResumen/VerDetalles/5
         public ActionResult VerDetalles(int id)
@@ -121,7 +185,7 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-         /** #region Métodos Auxiliares
+        /** #region Métodos Auxiliares
 
         // Método para obtener la lista de empleados (simulado)
         private List<EmpleadoDto> ObtenerEmpleados()

@@ -1,0 +1,126 @@
+@model Emplaniapp.Abstracciones.ModelosParaUI.EmpleadoDto
+
+@{
+    ViewBag.Title = "Cambiar Estado de Empleado";
+}
+
+<div class="container">
+    <h2>Cambiar Estado de Empleado</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Información del Empleado</h4>
+                </div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>Nombre Completo:</dt>
+                        <dd>@Model.nombre @Model.segundoNombre @Model.primerApellido @Model.segundoApellido</dd>
+
+                        <dt>Cédula:</dt>
+                        <dd>@Model.cedula</dd>
+
+                        <dt>Cargo:</dt>
+                        <dd>@Model.nombreCargo</dd>
+
+                        <dt>Estado Actual:</dt>
+                        <dd>
+                            <span class="label @(Model.idEstado == 1 ? "label-success" : Model.idEstado == 2 ? "label-danger" : "label-warning")">
+                                @Model.nombreEstado
+                            </span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            @using (Html.BeginForm("CambiarEstado", "HojaResumen", FormMethod.Post))
+            {
+                @Html.Hidden("id", Model.idEmpleado)
+                
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4>Seleccionar Nuevo Estado</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="idEstado" class="control-label">Nuevo Estado:</label>
+                            @Html.DropDownList("idEstado", ViewBag.Estados as IEnumerable<SelectListItem>, "Seleccione un estado", new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="glyphicon glyphicon-refresh"></i> Cambiar Estado
+                            </button>
+                            @Html.ActionLink("Cancelar", "listarHojaResumen", null, new { @class = "btn btn-default btn-lg" })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .panel {
+        margin-bottom: 20px;
+    }
+    
+    .dl-horizontal dt {
+        width: 160px;
+        text-align: left;
+        font-weight: bold;
+        clear: left;
+        float: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding-right: 10px;
+        margin-bottom: 8px;
+    }
+    
+    .dl-horizontal dd {
+        margin-left: 180px;
+        margin-bottom: 8px;
+        padding-left: 10px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group:last-child {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+    
+    .label-success {
+        background-color: #5cb85c;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 3px;
+        font-size: 12px;
+    }
+    
+    .label-danger {
+        background-color: #dc3545;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 3px;
+        font-size: 12px;
+    }
+    
+    .label-warning {
+        background-color: #fd7e14;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 3px;
+        font-size: 12px;
+    }
+
+    .btn-lg {
+        margin-right: 10px;
+    }
+</style> 
