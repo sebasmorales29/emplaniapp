@@ -4,12 +4,6 @@ C:\Users\Yazmin\source\repos\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Empla
 C:\Users\Yazmin\source\repos\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.CoreCompileInputs.cache
 C:\Users\Yazmin\source\repos\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.dll
 C:\Users\Yazmin\source\repos\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.pdb
-C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Emplaniapp.Abstracciones.dll
-C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Emplaniapp.Abstracciones.pdb
-C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.AssemblyReference.cache
-C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.CoreCompileInputs.cache
-C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.dll
-C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.pdb
 C:\Users\sebas\OneDrive\Escritorio\emplaniappClone\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Emplaniapp.Abstracciones.dll
 C:\Users\sebas\OneDrive\Escritorio\emplaniappClone\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Emplaniapp.Abstracciones.pdb
 C:\Users\sebas\OneDrive\Escritorio\emplaniappClone\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.AssemblyReference.cache
@@ -34,3 +28,9 @@ C:\Users\sebas\OneDrive\Escritorio\emplaniappClonee\emplaniapp\Emplaniapp\Emplan
 C:\Users\sebas\OneDrive\Escritorio\emplaniappClonee\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.CoreCompileInputs.cache
 C:\Users\sebas\OneDrive\Escritorio\emplaniappClonee\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.dll
 C:\Users\sebas\OneDrive\Escritorio\emplaniappClonee\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.pdb
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Emplaniapp.Abstracciones.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Emplaniapp.Abstracciones.pdb
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.AssemblyReference.cache
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.pdb
