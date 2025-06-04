@@ -1,0 +1,251 @@
+@model Emplaniapp.UI.Models.AgregarEmpleadoViewModel
+
+@{
+    ViewBag.Title = "Agregar Empleado";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">Agregar Nuevo Empleado</h2>
+                @Html.ActionLink("Volver a Lista", "listarHojaResumen", null, new { @class = "btn btn-secondary" })
+            </div>
+        </div>
+    </div>
+
+    @* Información de debug *@
+    <div class="alert alert-info">
+        <h5>Información de Debug:</h5>
+        <p><strong>Cargos disponibles:</strong> @(((SelectList)ViewBag.Cargos).Count()) elementos</p>
+        <p><strong>Tipos de moneda:</strong> @(((SelectList)ViewBag.TiposMoneda).Count()) elementos</p>
+        <p><strong>Bancos:</strong> @(((SelectList)ViewBag.Bancos).Count()) elementos</p>
+        <p><strong>Periodicidades:</strong> @(((SelectList)ViewBag.PeriocidadesPago).Count()) elementos</p>
+    </div>
+
+    @* Mensaje de debug temporal *@
+    @if (TempData["DebugMessage"] != null)
+    {
+        <div class="alert alert-warning">
+            <h5><i class="fa fa-exclamation-triangle"></i> Información de Diagnóstico:</h5>
+            <p>@TempData["DebugMessage"]</p>
+            <p><strong>Instrucciones:</strong></p>
+            <ol>
+                <li>Abrir Visual Studio</li>
+                <li>Ir a Ver -> Salida (Output)</li>
+                <li>Seleccionar "Debug" en el dropdown</li>
+                <li>Intentar crear empleado nuevamente</li>
+                <li>Copiar todos los mensajes que aparezcan</li>
+            </ol>
+        </div>
+    }
+
+    @using (Html.BeginForm("AgregarEmpleado", "HojaResumen", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @* Mostrar errores de validación *@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- SECCIÓN 1: DATOS PERSONALES -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="fa fa-user"></i> Datos Personales</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", @placeholder = "Ingrese el nombre" } })
+                                    @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.SegundoNombre, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.SegundoNombre, new { htmlAttributes = new { @class = "form-control", @placeholder = "Segundo nombre (opcional)" } })
+                                    @Html.ValidationMessageFor(model => model.SegundoNombre, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.PrimerApellido, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.PrimerApellido, new { htmlAttributes = new { @class = "form-control", @placeholder = "Primer apellido" } })
+                                    @Html.ValidationMessageFor(model => model.PrimerApellido, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.SegundoApellido, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.SegundoApellido, new { htmlAttributes = new { @class = "form-control", @placeholder = "Segundo apellido" } })
+                                    @Html.ValidationMessageFor(model => model.SegundoApellido, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Cedula, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Cedula, new { htmlAttributes = new { @class = "form-control", @placeholder = "123456789" } })
+                                    @Html.ValidationMessageFor(model => model.Cedula, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.FechaNacimiento, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.FechaNacimiento, new { htmlAttributes = new { @class = "form-control", @type = "date", @value = "1990-01-01" } })
+                                    @Html.ValidationMessageFor(model => model.FechaNacimiento, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.NumeroTelefonico, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.NumeroTelefonico, new { htmlAttributes = new { @class = "form-control", @placeholder = "8888-8888" } })
+                                    @Html.ValidationMessageFor(model => model.NumeroTelefonico, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.CorreoInstitucional, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CorreoInstitucional, new { htmlAttributes = new { @class = "form-control", @placeholder = "empleado@empresa.com" } })
+                                    @Html.ValidationMessageFor(model => model.CorreoInstitucional, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: DATOS LABORALES -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0"><i class="fa fa-briefcase"></i> Datos Laborales</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.IdCargo, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(model => model.IdCargo, (SelectList)ViewBag.Cargos, "Seleccione un cargo", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.IdCargo, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.FechaContratacion, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.FechaContratacion, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+                                    @Html.ValidationMessageFor(model => model.FechaContratacion, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.FechaSalida, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.FechaSalida, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+                                    @Html.ValidationMessageFor(model => model.FechaSalida, "", new { @class = "text-danger" })
+                                    <small class="form-text text-muted">Dejar vacío si está activo</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.PeriocidadPago, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(model => model.PeriocidadPago, (SelectList)ViewBag.PeriocidadesPago, "Seleccione periodicidad", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.PeriocidadPago, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.SalarioAprobado, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.SalarioAprobado, new { htmlAttributes = new { @class = "form-control", @placeholder = "0.00", @step = "0.01" } })
+                                    @Html.ValidationMessageFor(model => model.SalarioAprobado, "", new { @class = "text-danger" })
+                                    <small class="form-text text-muted">Los demás salarios se calcularán automáticamente</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3: DATOS BANCARIOS -->
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0"><i class="fa fa-bank"></i> Datos Bancarios</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.IdTipoMoneda, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(model => model.IdTipoMoneda, (SelectList)ViewBag.TiposMoneda, "Seleccione moneda", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.IdTipoMoneda, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.IdBanco, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(model => model.IdBanco, (SelectList)ViewBag.Bancos, "Seleccione banco", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.IdBanco, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.CuentaIBAN, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CuentaIBAN, new { htmlAttributes = new { @class = "form-control", @placeholder = "CR12345678901234567890" } })
+                                    @Html.ValidationMessageFor(model => model.CuentaIBAN, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTONES DE ACCIÓN -->
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="btn btn-success btn-lg mr-3">
+                            <i class="fa fa-save"></i> Crear Empleado
+                        </button>
+                        @Html.ActionLink("Cancelar", "listarHojaResumen", null, new { @class = "btn btn-secondary btn-lg" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .card-header {
+        font-weight: bold;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .control-label {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .text-danger {
+        font-size: 0.875em;
+    }
+</style>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+} 
