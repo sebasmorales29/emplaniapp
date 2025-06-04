@@ -8,6 +8,7 @@ using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.LogicaDeNegocio.Hoja_Resumen.ListarHojaResumen;
 using Emplaniapp.Abstracciones.InterfacesParaUI;
 using Emplaniapp.LogicaDeNegocio;
+using Emplaniapp.UI.Models;
 
 namespace Emplaniapp.UI.Controllers
 {
@@ -42,6 +43,34 @@ namespace Emplaniapp.UI.Controllers
                 }).ToList();
         }
 
+        private SelectList ObtenerCargosSelectList(object selectedValue = null)
+        {
+            var cargos = _datosPersonalesLN.ObtenerCargos();
+            return new SelectList(cargos, "idCargo", "nombreCargo", selectedValue);
+        }
+
+        private SelectList ObtenerTiposMonedasSelectList(object selectedValue = null)
+        {
+            var monedas = _datosPersonalesLN.ObtenerTiposMoneda();
+            return new SelectList(monedas, "idMoneda", "nombreMoneda", selectedValue);
+        }
+
+        private SelectList ObtenerBancosSelectList(object selectedValue = null)
+        {
+            var bancos = _datosPersonalesLN.ObtenerBancos();
+            return new SelectList(bancos, "idBanco", "nombreBanco", selectedValue);
+        }
+
+        private SelectList ObtenerPeriocidadesPagoSelectList(object selectedValue = null)
+        {
+            var periodicidades = new List<object>
+            {
+                new { Value = "Quincenal", Text = "Quincenal" },
+                new { Value = "Mensual", Text = "Mensual" }
+            };
+            return new SelectList(periodicidades, "Value", "Text", selectedValue);
+        }
+
         // GET: HojaResumen
         public ActionResult listarHojaResumen()
         {
@@ -50,6 +79,115 @@ namespace Emplaniapp.UI.Controllers
             ViewBag.Estados = ObtenerEstados();
             ViewBag.TotalEmpleados = _listarHojaResumenLN.ObtenerTotalEmpleados(null, null, null);
             return View(laListaDeHojaDeResumen);
+        }
+
+        // GET: HojaResumen/AgregarEmpleado
+        public ActionResult AgregarEmpleado()
+        {
+            var model = new AgregarEmpleadoViewModel
+            {
+                FechaNacimiento = DateTime.Now.AddYears(-25), // Valor por defecto
+                FechaContratacion = DateTime.Now,
+                IdDireccion = 1, // Dirección por defecto
+                IdEstado = 1     // Estado Activo por defecto
+            };
+
+            var cargos = ObtenerCargosSelectList();
+            var tiposMoneda = ObtenerTiposMonedasSelectList();
+            var bancos = ObtenerBancosSelectList();
+            var periodicidades = ObtenerPeriocidadesPagoSelectList();
+
+            System.Diagnostics.Debug.WriteLine("Cantidad de cargos: " + cargos.Count());
+            System.Diagnostics.Debug.WriteLine("Cantidad de monedas: " + tiposMoneda.Count());
+            System.Diagnostics.Debug.WriteLine("Cantidad de bancos: " + bancos.Count());
+            System.Diagnostics.Debug.WriteLine("Cantidad de periodicidades: " + periodicidades.Count());
+
+            ViewBag.Cargos = cargos;
+            ViewBag.TiposMoneda = tiposMoneda;
+            ViewBag.Bancos = bancos;
+            ViewBag.PeriocidadesPago = periodicidades;
+
+            return View(model);
+        }
+
+        // POST: HojaResumen/AgregarEmpleado
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AgregarEmpleado(AgregarEmpleadoViewModel model)
+        {
+            System.Diagnostics.Debug.WriteLine("=== INICIANDO CREACIÓN DE EMPLEADO ===");
+            System.Diagnostics.Debug.WriteLine("Nombre: " + model.Nombre);
+            System.Diagnostics.Debug.WriteLine("Primer Apellido: " + model.PrimerApellido);
+            System.Diagnostics.Debug.WriteLine("Segundo Apellido: " + model.SegundoApellido);
+            System.Diagnostics.Debug.WriteLine("Cédula: " + model.Cedula);
+            System.Diagnostics.Debug.WriteLine("IdCargo: " + model.IdCargo);
+            System.Diagnostics.Debug.WriteLine("Periodicidad: " + model.PeriocidadPago);
+            System.Diagnostics.Debug.WriteLine("Salario: " + model.SalarioAprobado);
+            System.Diagnostics.Debug.WriteLine("IdTipoMoneda: " + model.IdTipoMoneda);
+            System.Diagnostics.Debug.WriteLine("IdBanco: " + model.IdBanco);
+            System.Diagnostics.Debug.WriteLine("IBAN: " + model.CuentaIBAN);
+            
+            if (ModelState.IsValid)
+            {
+                System.Diagnostics.Debug.WriteLine("ModelState es válido, creando EmpleadoDto");
+                
+                // Convertir ViewModel a EmpleadoDto
+                var empleadoDto = new EmpleadoDto
+                {
+                    nombre = model.Nombre,
+                    segundoNombre = model.SegundoNombre,
+                    primerApellido = model.PrimerApellido,
+                    segundoApellido = model.SegundoApellido,
+                    fechaNacimiento = model.FechaNacimiento,
+                    cedula = model.Cedula,
+                    numeroTelefonico = model.NumeroTelefonico,
+                    correoInstitucional = model.CorreoInstitucional,
+                    idDireccion = model.IdDireccion,
+                    idCargo = model.IdCargo,
+                    fechaContratacion = model.FechaContratacion,
+                    fechaSalida = model.FechaSalida,
+                    periocidadPago = model.PeriocidadPago,
+                    salarioAprobado = model.SalarioAprobado,
+                    idMoneda = model.IdTipoMoneda,
+                    cuentaIBAN = model.CuentaIBAN,
+                    idBanco = model.IdBanco,
+                    idEstado = model.IdEstado
+                };
+
+                System.Diagnostics.Debug.WriteLine("EmpleadoDto creado, llamando a lógica de negocio");
+
+                bool resultado = _datosPersonalesLN.CrearEmpleado(empleadoDto);
+
+                System.Diagnostics.Debug.WriteLine("Resultado final: " + resultado);
+
+                if (resultado)
+                {
+                    TempData["Mensaje"] = "Empleado creado exitosamente";
+                    TempData["TipoMensaje"] = "success";
+                    return RedirectToAction("listarHojaResumen");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Error al crear el empleado. Verifique que todos los datos sean correctos. [DEBUG] Revisar logs de Visual Studio para detalles específicos.");
+                    TempData["DebugMessage"] = "Revisar ventana Output -> Debug en Visual Studio para ver logs detallados del error.";
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("ModelState NO es válido:");
+                foreach (var error in ModelState)
+                {
+                    System.Diagnostics.Debug.WriteLine("Campo: " + error.Key + " - Errores: " + string.Join(", ", error.Value.Errors.Select(e => e.ErrorMessage)));
+                }
+            }
+
+            // Si llegamos aquí, algo falló, volver a mostrar el formulario
+            ViewBag.Cargos = ObtenerCargosSelectList(model.IdCargo);
+            ViewBag.TiposMoneda = ObtenerTiposMonedasSelectList(model.IdTipoMoneda);
+            ViewBag.Bancos = ObtenerBancosSelectList(model.IdBanco);
+            ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList(model.PeriocidadPago);
+
+            return View(model);
         }
 
         [HttpPost]

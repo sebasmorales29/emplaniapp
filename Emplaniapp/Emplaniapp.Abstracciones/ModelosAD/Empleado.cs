@@ -14,6 +14,7 @@ namespace Emplaniapp.Abstracciones.ModelosAD
         
         [Column("idEmpleado")]
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int idEmpleado { get; set; }
         public string nombre { get; set; }
         public string segundoNombre { get; set; }
