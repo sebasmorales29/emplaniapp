@@ -9,7 +9,6 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
     public class BancoDto
     {
         public int idBanco { get; set; }
-        public string mombreBanco { get; set; }
-        public int idEstado { get; set; }
+        public string nombreBanco { get; set; }
     }
 }

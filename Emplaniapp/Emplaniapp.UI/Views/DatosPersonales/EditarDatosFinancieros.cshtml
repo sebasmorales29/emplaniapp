@@ -1,20 +1,10 @@
-@model Emplaniapp.UI.Controllers.DatosFinancierosViewModel
+@model Emplaniapp.UI.Models.DatosFinancierosViewModel
 
 @{
     ViewBag.Title = "Editar Datos Financieros";
 }
 
 <div class="container">
-    <!-- Navegación de retorno -->
-    <div class="row">
-        <div class="col-md-12">
-            <p>
-                @Html.ActionLink("< Volver a datos del empleado", "Detalles", new { id = Model.IdEmpleado }, new { @class = "btn btn-link" })
-            </p>
-        </div>
-    </div>
-
-    <!-- Título -->
     <div class="row">
         <div class="col-md-12">
             <h2>Editar Datos Financieros</h2>
@@ -22,97 +12,75 @@
         </div>
     </div>
 
-    <!-- Formulario de edición -->
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>Información Financiera</h4>
-                </div>
-                <div class="panel-body">
-                    @using (Html.BeginForm())
-                    {
-                        @Html.AntiForgeryToken()
-                        @Html.HiddenFor(model => model.IdEmpleado)
+    @using (Html.BeginForm("EditarDatosFinancieros", "DatosPersonales", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.IdEmpleado)
 
-                        <div class="form-horizontal">
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.PeriocidadPago, "Periocidad de Pago", new { @class = "control-label col-md-4" })
-                                <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.PeriocidadPago, (IEnumerable<SelectListItem>)ViewBag.PeriocidadesPago, new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(model => model.PeriocidadPago, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.SalarioAprobado, "Salario Aprobado", new { @class = "control-label col-md-4" })
-                                <div class="col-md-8">
-                                    @Html.EditorFor(model => model.SalarioAprobado, new { htmlAttributes = new { @class = "form-control", type = "number" } })
-                                    @Html.ValidationMessageFor(model => model.SalarioAprobado, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.SalarioDiario, "Salario Diario", new { @class = "control-label col-md-4" })
-                                <div class="col-md-8">
-                                    @Html.EditorFor(model => model.SalarioDiario, new { htmlAttributes = new { @class = "form-control", type = "number" } })
-                                    @Html.ValidationMessageFor(model => model.SalarioDiario, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.TipoMoneda, "Tipo de Moneda", new { @class = "control-label col-md-4" })
-                                <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.TipoMoneda, (IEnumerable<SelectListItem>)ViewBag.TiposMoneda, new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(model => model.TipoMoneda, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.CuentaIBAN, "Cuenta IBAN", new { @class = "control-label col-md-4" })
-                                <div class="col-md-8">
-                                    @Html.EditorFor(model => model.CuentaIBAN, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.CuentaIBAN, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.Banco, "Banco", new { @class = "control-label col-md-4" })
-                                <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.Banco, (IEnumerable<SelectListItem>)ViewBag.Bancos, new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(model => model.Banco, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="col-md-offset-4 col-md-8">
-                                    <input type="submit" value="Guardar Cambios" class="btn btn-primary" />
-                                    <a href="@Url.Action("Detalles", new { id = Model.IdEmpleado })" class="btn btn-default">Cancelar</a>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.PeriocidadPago, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.PeriocidadPago, (SelectList)ViewBag.PeriocidadesPago, "Seleccione una periodicidad", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PeriocidadPago, "", new { @class = "text-danger" })
             </div>
         </div>
-    </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SalarioAprobado, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SalarioAprobado, new { htmlAttributes = new { @class = "form-control", @type = "number", @step = "0.01" } })
+                @Html.ValidationMessageFor(model => model.SalarioAprobado, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SalarioDiario, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SalarioDiario, new { htmlAttributes = new { @class = "form-control", @type = "number", @step = "0.01" } })
+                @Html.ValidationMessageFor(model => model.SalarioDiario, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IdTipoMoneda, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.IdTipoMoneda, (SelectList)ViewBag.TiposMoneda, "Seleccione una moneda", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.IdTipoMoneda, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CuentaIBAN, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CuentaIBAN, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CuentaIBAN, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IdBanco, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.IdBanco, (SelectList)ViewBag.Bancos, "Seleccione un banco", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.IdBanco, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                @Html.ActionLink("Cancelar", "Detalles", new { id = Model.IdEmpleado }, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    }
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        </div>
+    }
 </div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    <script>
-        $(document).ready(function () {
-            // Calcula automáticamente el salario diario cuando cambia el salario aprobado
-            $("#SalarioAprobado").change(function () {
-                var salarioAprobado = parseFloat($(this).val());
-                if (!isNaN(salarioAprobado)) {
-                    // Suponiendo un mes de 30 días para el cálculo
-                    var salarioDiario = salarioAprobado / 30;
-                    $("#SalarioDiario").val(salarioDiario.toFixed(2));
-                }
-            });
-        });
-    </script>
 } 

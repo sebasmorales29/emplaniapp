@@ -1,0 +1,53 @@
+﻿@model Emplaniapp.Abstracciones.ModelosParaUI.TipoRetencionDto
+
+@{
+    ViewBag.Title = "Eliminar Reteneción";
+}
+
+<h2>Eliminar Reteneción</h2>
+
+<h3>¿Desea eliminar la siguiente información?</h3>
+<div>
+   
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombreTipoRetencion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombreTipoRetencion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.porcentajeRetencion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.porcentajeRetencion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.idEstado)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.idEstado)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+<div class="form-actions no-color">
+    <br />
+    <input type="submit" value="Eliminar" class="btn btn-outline-danger" /> 
+
+    <br />
+    <br />
+    @Html.ActionLink("Volver a Variables Financieras", "Index")
+</div>
+    }
+</div>

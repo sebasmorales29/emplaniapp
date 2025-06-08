@@ -10,6 +10,5 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
     {
         public int idMoneda { get; set; }
         public string nombreMoneda { get; set; }
-        public int idEstado { get; set; }
     }
 }
