@@ -1,25 +1,24 @@
 ﻿using System;
+using Emplaniapp.UI.Models;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
-using Emplaniapp.UI.Models;
 
 namespace Emplaniapp.UI
 {
-    // Nota: cambiamos la clase a partial y quitamos el atributo [OwinStartup] aquí.
     public partial class Startup
     {
-        // Este método es invocado desde Startup.cs
         public void ConfigureAuth(IAppBuilder app)
         {
-            // 1) Registrar el contexto de Identity y los managers
+            // 1) Contexto, UserManager, SignInManager, RoleManager
             app.CreatePerOwinContext(ApplicationDbContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
             app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);
+            app.CreatePerOwinContext<ApplicationRoleManager>(ApplicationRoleManager.Create);
 
-            // 2) Configurar la autenticación mediante Cookies
+            // 2) Cookie auth
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
@@ -29,9 +28,24 @@ namespace Emplaniapp.UI
             });
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
-            // 3) (Opcional) Proveedores externos:
-            // app.UseGoogleAuthentication(...);
-            // app.UseFacebookAuthentication(...);
+            // 3) Seed de roles sin HttpContext
+            SeedRoles();
+        }
+
+        private void SeedRoles()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var store = new RoleStore<IdentityRole>(context);
+                var manager = new RoleManager<IdentityRole>(store);
+
+                string[] roles = { "Administrador", "Contador", "Empleado" };
+                foreach (var role in roles)
+                {
+                    if (!manager.RoleExists(role))
+                        manager.Create(new IdentityRole(role));
+                }
+            }
         }
     }
 }
