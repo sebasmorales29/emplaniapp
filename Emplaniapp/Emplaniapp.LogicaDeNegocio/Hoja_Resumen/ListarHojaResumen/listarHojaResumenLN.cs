@@ -24,14 +24,34 @@ namespace Emplaniapp.LogicaDeNegocio.Hoja_Resumen.ListarHojaResumen
         }
 
 
-        public List<HojaResumenDto> ObtenerFiltrado(string filtro, int? idCargo)
+        public List<HojaResumenDto> ObtenerFiltrado(string filtro, int? idCargo, int? idEstado)
         {
-            return _listarHojaResumenAD.ObtenerFiltrado(filtro, idCargo);
+            return _listarHojaResumenAD.ObtenerFiltrado(filtro, idCargo, idEstado);
         }
 
         public List<CargoDto> ObtenerCargos()
         {
             return _listarHojaResumenAD.ObtenerCargos();
+        }
+
+        public int ObtenerTotalEmpleados(string filtro, int? idCargo, int? idEstado)
+        {
+            return _listarHojaResumenAD.ObtenerTotalEmpleados(filtro, idCargo, idEstado);
+        }
+
+        public List<EstadoDto> ObtenerEstados()
+        {
+            return _listarHojaResumenAD.ObtenerEstados();
+        }
+
+        public bool CambiarEstadoEmpleado(int idEmpleado, int idEstado)
+        {
+            return _listarHojaResumenAD.CambiarEstadoEmpleado(idEmpleado, idEstado);
+        }
+
+        public EmpleadoDto ObtenerEmpleadoPorId(int idEmpleado)
+        {
+            return _listarHojaResumenAD.ObtenerEmpleadoPorId(idEmpleado);
         }
     }
 }

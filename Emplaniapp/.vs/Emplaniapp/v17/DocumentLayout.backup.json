@@ -1,26 +1,26 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\",
+  "WorkspaceRootPath": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplapp\\Emplaniapp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\variablesfinancieras\\deletereten.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\variablesfinancieras\\deletereten.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\henry\\onedrive\\escritorio\\emplapp\\emplaniapp\\emplaniapp.ui\\models\\accountviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\models\\accountviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\variablesfinancieras\\createremu.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\variablesfinancieras\\createremu.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\henry\\onedrive\\escritorio\\emplapp\\emplaniapp\\emplaniapp.ui\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\modelosparaui\\tiporetenciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\modelosparaui\\tiporetenciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\henry\\onedrive\\escritorio\\emplapp\\emplaniapp\\emplaniapp.ui\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\variablesfinancieras\\editreten.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\variablesfinancieras\\editreten.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\henry\\onedrive\\escritorio\\emplapp\\emplaniapp\\emplaniapp.ui\\app_start\\startup.auth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\app_start\\startup.auth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\variablesfinancieras\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\variablesfinancieras\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\henry\\onedrive\\escritorio\\emplapp\\emplaniapp\\emplaniapp.ui\\app_start\\identityconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\app_start\\identityconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,21 +30,15 @@
       "DocumentGroups": [
         {
           "DockedWidth": 199,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 8,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\VariablesFinancieras\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-03T01:36:59.816Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
               "$type": "Bookmark",
@@ -59,63 +53,68 @@
               "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\AccountController.cs",
+              "ToolTip": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "Emplaniapp.UI\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAAFMAAAAAAAAAAAAswG4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-09T00:57:36.385Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "DeleteReten.cshtml",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\VariablesFinancieras\\DeleteReten.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\VariablesFinancieras\\DeleteReten.cshtml",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\VariablesFinancieras\\DeleteReten.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\VariablesFinancieras\\DeleteReten.cshtml",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAAACYAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-03T02:28:38.758Z",
+              "DocumentIndex": 4,
+              "Title": "IdentityConfig.cs",
+              "DocumentMoniker": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplapp\\Emplaniapp\\Emplaniapp.UI\\App_Start\\IdentityConfig.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\App_Start\\IdentityConfig.cs",
+              "ToolTip": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplapp\\Emplaniapp\\Emplaniapp.UI\\App_Start\\IdentityConfig.cs",
+              "RelativeToolTip": "Emplaniapp.UI\\App_Start\\IdentityConfig.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-09T00:53:59.794Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "EditReten.cshtml",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\VariablesFinancieras\\EditReten.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\VariablesFinancieras\\EditReten.cshtml",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\VariablesFinancieras\\EditReten.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\VariablesFinancieras\\EditReten.cshtml",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAADsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-03T02:26:02.095Z",
+              "Title": "Startup.Auth.cs",
+              "DocumentMoniker": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplapp\\Emplaniapp\\Emplaniapp.UI\\App_Start\\Startup.Auth.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\App_Start\\Startup.Auth.cs",
+              "ToolTip": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplapp\\Emplaniapp\\Emplaniapp.UI\\App_Start\\Startup.Auth.cs",
+              "RelativeToolTip": "Emplaniapp.UI\\App_Start\\Startup.Auth.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-09T00:41:12.287Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "TipoRetencionDto.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\TipoRetencionDto.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\ModelosParaUI\\TipoRetencionDto.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\TipoRetencionDto.cs",
-              "RelativeToolTip": "Emplaniapp.Abstracciones\\ModelosParaUI\\TipoRetencionDto.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAABAAAAAiAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "AccountViewModels.cs",
+              "DocumentMoniker": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplapp\\Emplaniapp\\Emplaniapp.UI\\Models\\AccountViewModels.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Models\\AccountViewModels.cs",
+              "ToolTip": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplapp\\Emplaniapp\\Emplaniapp.UI\\Models\\AccountViewModels.cs",
+              "RelativeToolTip": "Emplaniapp.UI\\Models\\AccountViewModels.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAADwvy0AAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-03T02:25:06.853Z",
+              "WhenOpened": "2025-06-09T00:39:51.471Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "CreateRemu.cshtml",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\VariablesFinancieras\\CreateRemu.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\VariablesFinancieras\\CreateRemu.cshtml",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\VariablesFinancieras\\CreateRemu.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\VariablesFinancieras\\CreateRemu.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADkAAAAKAAAAAAAAAA==",
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\Register.cshtml",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Account\\Register.cshtml",
+              "ToolTip": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\Register.cshtml",
+              "RelativeToolTip": "Emplaniapp.UI\\Views\\Account\\Register.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-03T01:30:55.654Z",
+              "WhenOpened": "2025-06-09T00:38:33.645Z",
               "EditorCaption": ""
             }
           ]
