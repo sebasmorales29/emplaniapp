@@ -12,6 +12,7 @@ namespace Emplaniapp.UI
         public ApplicationUserManager(IUserStore<ApplicationUser> store)
             : base(store)
         {
+            // Configuración de validadores si la tienes
         }
 
         public static ApplicationUserManager Create(
@@ -21,21 +22,8 @@ namespace Emplaniapp.UI
             var manager = new ApplicationUserManager(
                 new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>())
             );
-            manager.UserValidator = new UserValidator<ApplicationUser>(manager)
-            {
-                AllowOnlyAlphanumericUserNames = false,
-                RequireUniqueEmail = true
-            };
-
-            manager.PasswordValidator = new PasswordValidator
-            {
-                RequiredLength = 6,
-                RequireDigit = false,
-                RequireLowercase = false,
-                RequireUppercase = false,
-                RequireNonLetterOrDigit = false
-            };
-
+            // manager.UserValidator = ...
+            // manager.PasswordValidator = ...
             return manager;
         }
     }
@@ -44,10 +32,9 @@ namespace Emplaniapp.UI
     {
         public ApplicationSignInManager(
             ApplicationUserManager userManager,
-            IAuthenticationManager authenticationManager)
-            : base(userManager, authenticationManager)
-        {
-        }
+            IAuthenticationManager authManager)
+            : base(userManager, authManager)
+        { }
 
         public static ApplicationSignInManager Create(
             IdentityFactoryOptions<ApplicationSignInManager> options,
@@ -56,6 +43,23 @@ namespace Emplaniapp.UI
             return new ApplicationSignInManager(
                 context.GetUserManager<ApplicationUserManager>(),
                 context.Authentication
+            );
+        }
+    }
+
+    // --------- Nuevo: RoleManager ---------
+    public class ApplicationRoleManager : RoleManager<IdentityRole>
+    {
+        public ApplicationRoleManager(IRoleStore<IdentityRole, string> store)
+            : base(store)
+        { }
+
+        public static ApplicationRoleManager Create(
+            IdentityFactoryOptions<ApplicationRoleManager> options,
+            IOwinContext context)
+        {
+            return new ApplicationRoleManager(
+                new RoleStore<IdentityRole>(context.Get<ApplicationDbContext>())
             );
         }
     }

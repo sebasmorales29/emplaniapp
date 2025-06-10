@@ -40,3 +40,15 @@ C:\Users\sebas\OneDrive\Escritorio\emplaniappPROYECTO\emplaniapp\Emplaniapp\Empl
 C:\Users\sebas\OneDrive\Escritorio\emplaniappPROYECTO\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.CoreCompileInputs.cache
 C:\Users\sebas\OneDrive\Escritorio\emplaniappPROYECTO\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.dll
 C:\Users\sebas\OneDrive\Escritorio\emplaniappPROYECTO\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.pdb
+C:\Users\Henry\OneDrive\Escritorio\emplapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Emplaniapp.Abstracciones.dll
+C:\Users\Henry\OneDrive\Escritorio\emplapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Emplaniapp.Abstracciones.pdb
+C:\Users\Henry\OneDrive\Escritorio\emplapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.AssemblyReference.cache
+C:\Users\Henry\OneDrive\Escritorio\emplapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.CoreCompileInputs.cache
+C:\Users\Henry\OneDrive\Escritorio\emplapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.dll
+C:\Users\Henry\OneDrive\Escritorio\emplapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.pdb
+C:\Users\Henry\OneDrive\Escritorio\emplaniapp1\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Emplaniapp.Abstracciones.dll
+C:\Users\Henry\OneDrive\Escritorio\emplaniapp1\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Emplaniapp.Abstracciones.pdb
+C:\Users\Henry\OneDrive\Escritorio\emplaniapp1\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.AssemblyReference.cache
+C:\Users\Henry\OneDrive\Escritorio\emplaniapp1\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.csproj.CoreCompileInputs.cache
+C:\Users\Henry\OneDrive\Escritorio\emplaniapp1\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.dll
+C:\Users\Henry\OneDrive\Escritorio\emplaniapp1\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplaniapp.Abstracciones.pdb
