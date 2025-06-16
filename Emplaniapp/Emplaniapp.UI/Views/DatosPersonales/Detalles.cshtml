@@ -118,16 +118,14 @@
 </style>
 
 <div class="container">
-    <!-- Navegación de retorno -->
-    <div class="row">
-        <div class="col-md-12">
-            <p>
-                <a href="@Url.Action("listarHojaResumen", "HojaResumen")" class="btn-link-return">
-                    < Volver a Hoja Resumen
-                </a>
-            </p>
-        </div>
-    </div>
+    @if (User.IsInRole("Administrador") || User.IsInRole("Contador"))
+    {
+        @Html.ActionLink("← Volver a Empleados", "listarHojaResumen", "HojaResumen", null, new { @class = "btn btn-outline-secondary mb-3" })
+    }
+    else
+    {
+        @Html.ActionLink("← Volver a Inicio", "Index", "Home", null, new { @class = "btn btn-outline-secondary mb-3" })
+    }
 
     <!-- Mensaje de éxito -->
     @if (TempData["Mensaje"] != null)
@@ -148,12 +146,13 @@
     <div class="row">
         <div class="col-md-12">
             <div class="nav-enlaces">
-                <a href="@Url.Action("Detalles", new { id = Model.idEmpleado })" class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
-                <a href="@Url.Action("Historial", new { id = Model.idEmpleado })" class="@(seccionActiva == "Historial" ? "active" : "")">Historial</a>
-                <a href="@Url.Action("Remuneraciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
-                <a href="@Url.Action("Retenciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
-                <a href="@Url.Action("Observaciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
-                <a href="@Url.Action("Liquidacion", new { id = Model.idEmpleado })" class="@(seccionActiva == "Liquidación" ? "active" : "")">Liquidación</a>
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Datos personales" })" class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Historial" })" class="@(seccionActiva == "Historial" ? "active" : "")">Historial</a>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a href="@Url.Action("RolesYPermisos", "Usuario", new { id = Model.idEmpleado })" class="@(seccionActiva == "Roles y Permisos" ? "active" : "")">Roles y Permisos</a>
+                }
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Observaciones" })" class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
             </div>
             <hr />
         </div>
@@ -171,6 +170,10 @@
                             <div class="seccion-box">
                                 <div class="seccion-header">
                                     <h3>Información personal</h3>
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <a href="@Url.Action("EditarDatosPersonales", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
+                                    }
                                 </div>
                                 <div class="seccion-body">
                                     <div class="datos-row">
@@ -214,7 +217,10 @@
                             <div class="seccion-box">
                                 <div class="seccion-header">
                                     <h3>Datos Laborales</h3>
-                                    <a href="@Url.Action("EditarDatosLaborales", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <a href="@Url.Action("EditarDatosLaborales", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
+                                    }
                                 </div>
                                 <div class="seccion-body">
                                     <div class="datos-row">
@@ -244,7 +250,10 @@
                             <div class="seccion-box">
                                 <div class="seccion-header">
                                     <h3>Datos Financieros</h3>
-                                    <a href="@Url.Action("EditarDatosFinancieros", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <a href="@Url.Action("EditarDatosFinancieros", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
+                                    }
                                 </div>
                                 <div class="seccion-body">
                                     <div class="datos-row">
@@ -279,11 +288,8 @@
             }
             else if (seccionActiva == "Historial")
             {
-                <div id="contenido-historial">
-                    <h3>Historial</h3>
-                    <div class="alert alert-info">
-                        <p>La sección de Historial está en desarrollo.</p>
-                    </div>
+                <div id="contenedor-lista-historial">
+                    @{ Html.RenderAction("Historial", "Historial", new { id = Model.idEmpleado }); }
                 </div>
             }
             else if (seccionActiva == "Remuneraciones")
@@ -306,11 +312,8 @@
             }
             else if (seccionActiva == "Observaciones")
             {
-                <div id="contenido-observaciones">
-                    <h3>Observaciones</h3>
-                    <div class="alert alert-info">
-                        <p>La sección de Observaciones está en desarrollo.</p>
-                    </div>
+                <div id="contenedor-lista-observaciones">
+                    <p>Cargando observaciones...</p>
                 </div>
             }
             else if (seccionActiva == "Liquidación")
@@ -327,9 +330,125 @@
 </div>
 
 @section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
     <script>
-        $(function () {
-            // No se necesita JavaScript para la navegación, ya que ahora los enlaces apuntan directamente a las acciones del controlador
+        $(document).ready(function () {
+            
+            // --- INICIO: Lógica de carga y filtrado de observaciones ---
+            function cargarObservaciones() {
+                var empleadoId = @Model.idEmpleado;
+                var container = $('#contenedor-lista-observaciones');
+                
+                // Leer valores de los filtros
+                var ano = container.find('#filtro-ano').val();
+                var mes = container.find('#filtro-mes').val();
+                var usuarioId = container.find('#filtro-usuario').val();
+
+                var url = '@Url.Action("ObtenerListaObservaciones", "DatosPersonales")' + 
+                          '?id=' + empleadoId + 
+                          '&ano=' + (ano || '') + 
+                          '&mes=' + (mes || '') + 
+                          '&usuarioId=' + (usuarioId || '');
+
+                container.html("<p>Cargando observaciones...</p>");
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            container.html(response.html);
+                        } else {
+                            container.html("<p class='text-danger'>Hubo un problema al obtener las observaciones.</p>");
+                        }
+                    },
+                    error: function (xhr) {
+                        container.html("<p class='text-danger'>Error al cargar las observaciones: " + xhr.status + " " + xhr.statusText + "</p>");
+                    }
+                });
+            }
+
+            if ('@seccionActiva' === 'Observaciones') {
+                cargarObservaciones();
+            }
+
+            // Listener para el botón de aplicar filtros
+            $('#contenedor-lista-observaciones').on('click', '#btn-aplicar-filtros', function() {
+                cargarObservaciones();
+            });
+
+            // Listener para el botón de quitar filtros
+            $('#contenedor-lista-observaciones').on('click', '#btn-quitar-filtros', function() {
+                var container = $('#contenedor-lista-observaciones');
+                // Limpiar los dropdowns
+                container.find('#filtro-ano').val('');
+                container.find('#filtro-mes').val('');
+                container.find('#filtro-usuario').val('');
+                // Recargar la lista sin filtros
+                cargarObservaciones();
+            });
+            // --- FIN: Lógica de carga y filtrado ---
+
+
+            // --- INICIO: Lógica del modal para agregar/editar observaciones ---
+            var modalContainer = $('#modal-container');
+            var modalContent = $('#modal-content-container'); // Contenedor para todo el contenido del modal
+
+            // 1. Escuchar clics en botones que abren el modal (se usa delegación de eventos para que funcione con contenido cargado por AJAX)
+            $('#contenedor-lista-observaciones').on('click', '.btn-agregar-observacion, .btn-editar-observacion', function () {
+                var url = $(this).data('url');
+                
+                // 2. Cargar el formulario COMPLETO (header, body, footer) desde el servidor
+                modalContent.load(url, function () {
+                    // 3. Mostrar el modal
+                    modalContainer.modal('show');
+                    // Volver a registrar el validador de jQuery Unobtrusive en el nuevo contenido
+                    $.validator.unobtrusive.parse(modalContent.find('form'));
+                });
+            });
+
+            // 4. Escuchar clic en el botón Guardar del modal (usando delegación de eventos)
+            modalContainer.on('click', '#btn-guardar-observacion', function () {
+                var form = modalContent.find('form');
+
+                // Validar el formulario del lado del cliente
+                if (!form.valid()) {
+                    return;
+                }
+
+                // 5. Enviar el formulario vía AJAX
+                $.ajax({
+                    url: form.attr('action'),
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            modalContainer.modal('hide');
+                            
+                            // Recargar la lista de observaciones para ver el nuevo item
+                            cargarObservaciones(); 
+                        } else {
+                            // Si el servidor devuelve el formulario con errores de validación
+                            // La respuesta ya es el HTML del formulario completo, lo reemplazamos
+                            modalContent.html(response);
+                            $.validator.unobtrusive.parse(modalContent.find('form'));
+                        }
+                    },
+                    error: function () {
+                        alert('Ocurrió un error de comunicación con el servidor.');
+                    }
+                });
+            });
+            // --- FIN: Lógica del modal ---
         });
     </script>
-} 
+}
+
+<!-- Modal Genérico (Solo el contenedor) -->
+<div class="modal fade" id="modal-container" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="modal-content-container">
+            <!-- El contenido completo del modal (header, body, footer) se cargará aquí -->
+        </div>
+    </div>
+</div> 

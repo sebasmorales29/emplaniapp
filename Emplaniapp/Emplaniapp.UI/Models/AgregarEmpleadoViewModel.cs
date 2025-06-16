@@ -87,5 +87,26 @@ namespace Emplaniapp.UI.Models
 
         // ESTADO (por defecto Activo)
         public int IdEstado { get; set; } = 1;
+
+        // --- Campos para la creación del usuario ---
+
+        [Required(ErrorMessage = "El nombre de usuario es obligatorio")]
+        [Display(Name = "Nombre de Usuario")]
+        public string UserName { get; set; }
+
+        [Required(ErrorMessage = "La contraseña es obligatoria")]
+        [StringLength(100, ErrorMessage = "La {0} debe tener al menos {2} caracteres de longitud.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Contraseña")]
+        public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirmar Contraseña")]
+        [Compare("Password", ErrorMessage = "La contraseña y la confirmación no coinciden.")]
+        public string ConfirmPassword { get; set; }
+
+        [Required(ErrorMessage = "El rol es obligatorio")]
+        [Display(Name = "Rol de Usuario")]
+        public string Role { get; set; }
     }
 } 
