@@ -50,5 +50,6 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         // Estado del empleado
         public int idEstado { get; set; }
         public string nombreEstado { get; set; }
+        public string IdNetUser { get; set; }
     }
 }

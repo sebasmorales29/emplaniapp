@@ -2,10 +2,14 @@
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Emplaniapp.Abstracciones.Entidades;
 using Emplaniapp.UI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using System.Security.Claims;
+using Emplaniapp.AccesoADatos;
+using Emplaniapp.Abstracciones.ModelosAD;
 
 namespace Emplaniapp.UI.Controllers
 {
@@ -39,6 +43,12 @@ namespace Emplaniapp.UI.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            // --- CÓDIGO DE DIAGNÓSTICO TEMPORAL ---
+            // Descomente esta línea para generar un nuevo hash si la contraseña del admin no funciona.
+            // var newHash = UserManager.PasswordHasher.HashPassword("Password123.");
+            // System.Diagnostics.Debug.WriteLine("NUEVO HASH PARA 'Password123.': " + newHash);
+            // --- FIN CÓDIGO DE DIAGNÓSTICO ---
+
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -51,23 +61,83 @@ namespace Emplaniapp.UI.Controllers
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
+            {
                 return View(model);
+            }
 
-            var result = await SignInManager.PasswordSignInAsync(
-                model.UserName,
-                model.Password,
-                model.RememberMe,
-                shouldLockout: false
-            );
+            // --- INICIO DE CÓDIGO DE DEPURACIÓN ---
+            System.Diagnostics.Debug.WriteLine($"Intento de inicio de sesión para el usuario: '{model.UserName}'.");
+            var userForCheck = await UserManager.FindByNameAsync(model.UserName);
+            if (userForCheck == null)
+            {
+                System.Diagnostics.Debug.WriteLine($"Resultado: El usuario '{model.UserName}' NO FUE ENCONTRADO en la base de datos.");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"Resultado: Usuario '{model.UserName}' ENCONTRADO. Verificando contraseña...");
+            }
+            // --- FIN DE CÓDIGO DE DEPURACIÓN ---
+
+            // Usar SignInManager para gestionar el inicio de sesión.
+            // Esto maneja todos los casos: usuario no encontrado, contraseña incorrecta, lockout, etc.
+            var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
+            
+            // --- INICIO DE CÓDIGO DE DEPURACIÓN ---
+            System.Diagnostics.Debug.WriteLine($"Resultado de PasswordSignInAsync: {result}");
+            // --- FIN DE CÓDIGO DE DEPURACIÓN ---
 
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    var user = await UserManager.FindByNameAsync(model.UserName);
+                    if (user == null)
+                    {
+                        // Esto no debería ocurrir si SignInStatus.Success, pero es una salvaguarda.
+                        ModelState.AddModelError("", "Error inesperado al iniciar sesión.");
+                        return View(model);
+                    }
+
+                    // --- LÓGICA DE ACCESO BASADA EN ROLES (CORREGIDA) ---
+                    var roles = await UserManager.GetRolesAsync(user.Id);
+                    bool esAdminOContador = roles.Contains("Administrador") || roles.Contains("Contador");
+
+                    using (var db = new Contexto())
+                    {
+                        var empleado = db.Empleados.FirstOrDefault(e => e.IdNetUser == user.Id);
+
+                        // Administradores y Contadores siempre tienen acceso.
+                        // Otros roles (como Empleado) solo si su registro de empleado existe y está activo.
+                        bool tieneAcceso = esAdminOContador || (empleado != null && empleado.idEstado == 1);
+
+                        if (tieneAcceso)
+                        {
+                            // Una vez validado, creamos una identidad enriquecida con nuestros claims.
+                            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie); // Limpiamos la cookie de SignInManager.
+                            
+                            var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+                            
+                            // Agregamos el idEmpleado al "pasaporte" (claim) del usuario.
+                            if (empleado != null)
+                            {
+                                identity.AddClaim(new Claim("idEmpleado", empleado.idEmpleado.ToString()));
+                            }
+                            
+                            AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = model.RememberMe }, identity);
+
+                            return RedirectToLocal(returnUrl);
+                        }
+                    }
+                    
+                    // Si el empleado no está activo o no existe, nos aseguramos de desconectar y mostramos el error.
+                    AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                    ModelState.AddModelError("", "El usuario no está activo o no tiene acceso.");
+                    return View(model);
+
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Usuario o contraseña incorrectos.");
                     return View(model);
@@ -81,7 +151,7 @@ namespace Emplaniapp.UI.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
         //
@@ -127,9 +197,18 @@ namespace Emplaniapp.UI.Controllers
                 // Asignar el rol elegido
                 await UserManager.AddToRoleAsync(user.Id, model.Role);
 
-                await SignInManager.SignInAsync(
-                    user, isPersistent: false, rememberBrowser: false
-                );
+                // Enlazar el IdNetUser con el Empleado recién creado
+                using (var db = new Contexto())
+                {
+                    var empleado = db.Empleados.FirstOrDefault(e => e.cedula == model.Cedula);
+                    if (empleado != null)
+                    {
+                        empleado.IdNetUser = user.Id;
+                        await db.SaveChangesAsync();
+                    }
+                }
+                
+                //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 return RedirectToAction("Index", "Home");
             }
 

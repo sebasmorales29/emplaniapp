@@ -5,14 +5,21 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Emplaniapp.Abstracciones.Entidades;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Emplaniapp.AccesoADatos
 {
-    public class Contexto : DbContext
+    public class Contexto : IdentityDbContext<ApplicationUser>
     {
-        public Contexto() : base("name=Contexto")//Nombre de instancia a la que se esta llamadno
+        public Contexto() : base("DefaultConnection", throwIfV1Schema: false)
         {
 
+        }
+
+        public static Contexto Create()
+        {
+            return new Contexto();
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -27,13 +34,18 @@ namespace Emplaniapp.AccesoADatos
             modelBuilder.Entity<PagoQuincenal>().ToTable("PagoQuincenal");
             modelBuilder.Entity<Liquidaciones>().ToTable("Liquidaciones");
             modelBuilder.Entity<Cargos>().ToTable("Cargos");
+            modelBuilder.Entity<Empleado>()
+                .Property(e => e.IdNetUser)
+                .IsOptional();
+
+            base.OnModelCreating(modelBuilder);
         }
 
 
         // Entidades ---------------------------------------
         public DbSet<TipoRemuneracion> TipoRemu {  get; set; }
         public DbSet<TipoRetencion> TipoReten {  get; set; }
-        public DbSet<Empleado> Empleado { get; set; }
+        public DbSet<Empleado> Empleados { get; set; }
         public DbSet<Remuneracion> Remuneracion { get; set; }
         public DbSet<Estado> Estado { get; set; }
         public DbSet<Retencion> Retenciones { get; set; }
@@ -41,6 +53,7 @@ namespace Emplaniapp.AccesoADatos
         public DbSet<PagoQuincenal> PagoQuincenal { get; set; }
         public DbSet<Liquidaciones> Liquidaciones { get; set; }
         public DbSet<Cargos> Cargos { get; set; }
+        public DbSet<Observacion> Observaciones { get; set; }
 
     }
 }

@@ -1,99 +1,126 @@
 ﻿@model Emplaniapp.UI.Models.LoginViewModel
-
 @{
     ViewBag.Title = "Iniciar sesión";
-    Layout = "~/Views/Shared/_Layout.cshtml";  // seguimos usando el layout
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
 }
 
 <style>
-    .login-row {
-        height: 100vh;
-        margin: 0;
+    /* Contenedor del Logo */
+    .login-logo {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #4a87c7;
+    }
+    .login-logo .glyphicon {
+        font-size: 50px;
+    }
+    .login-logo h1 {
+        font-size: 28px;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+    
+    /* Título del Formulario */
+    .login-form-title {
+        text-align: left;
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
     }
 
-    .login-form-col {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    /* Campos y Botones */
+    .form-group { margin-bottom: 1.5rem; }
+    .form-control {
+        border-radius: 8px;
+        padding: 10px;
+        height: auto;
     }
 
-    .login-img-col {
-        background: url('https://th.bing.com/th/id/R.0e0ef1388b39166a3617baa7c6ea4fd2?rik=OhuQGUXe7hfe5g&pid=ImgRaw&r=0') no-repeat center center;
-        background-size: cover;
-        height: 100vh; 
-        width: 50vw; 
-        position: fixed; 
-        top: 0;
-        right: 0;
-        z-index: -1; 
+    /* Contenedor para la Contraseña y el Ojo */
+    .password-wrapper {
+        position: relative;
+    }
+    .password-wrapper .form-control {
+        padding-right: 40px; 
+    }
+    .toggle-password {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #777;
     }
 
-    .login-form-wrapper {
-        width: 50vw; 
-        padding-left: 5vw; 
+    /* Enlace de Olvidó Contraseña */
+    .forgot-password-link {
+        display: block;
+        text-align: left;
+        margin-top: -1rem;
+        margin-bottom: 1.5rem;
+        font-size: 14px;
+    }
+
+    /* Botón Principal */
+    .btn-primary {
+        background-color: #4a87c7;
+        border-color: #4a87c7;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 16px;
+        font-weight: 600;
     }
 </style>
 
-<div class="login-img-col"></div>
-
-<div class="container-fluid p-0">
-    <div class="row login-row">
-        <!-- Sólo la mitad izquierda para el formulario -->
-        <div class="col-6 login-form-col">
-            <div class="login-form-wrapper">
-                <div class="text-center mb-4">
-                    <img src="https://www.emojiall.com/images/240/lg/1f5c1.png"
-                         alt="Logo" style="height:50px;" />
-                    <h3 class="mt-3">Iniciar Sesión</h3>
-                </div>
-
-                @using (Html.BeginForm("Login", "Account", FormMethod.Post))
-                {
-                    @Html.AntiForgeryToken()
-                    @Html.ValidationSummary("", new { @class = "text-danger" })
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.UserName, "Usuario")
-                        @Html.TextBoxFor(m => m.UserName,
-                            new { @class = "form-control", placeholder = "Usuario" })
-                        @Html.ValidationMessageFor(m => m.UserName,
-                            "", new { @class = "text-danger" })
-                    </div>
-
-                    <!-- Aquí quitamos el input-group -->
-                    <div class="form-group mt-3">
-                        @Html.LabelFor(m => m.Password, "Contraseña")
-                        @Html.PasswordFor(m => m.Password,
-                            new { @class = "form-control", placeholder = "Contraseña" })
-                        @Html.ValidationMessageFor(m => m.Password,
-                            "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="form-group form-check mt-3">
-                        @Html.CheckBoxFor(m => m.RememberMe,
-                            new { @class = "form-check-input", id = "RememberMe" })
-                        @Html.LabelFor(m => m.RememberMe,
-                            "¿Recordar mi contraseña?",
-                            new { @class = "form-check-label" })
-                    </div>
-
-                    <div class="mt-3">
-                        @Html.ActionLink("¿No recuerdas tu contraseña? Ingresa aquí",
-                            "ForgotPassword", "Account")
-                    </div>
-
-                    <div class="d-grid mt-4">
-                        <button type="submit"
-                                class="btn btn-primary btn-lg w-50">
-                            Ingresar
-                        </button>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
+<div class="login-logo">
+    <span class="glyphicon glyphicon-folder-close"></span>
+    <h1>Emplaniapp</h1>
 </div>
+
+<h2 class="login-form-title">Iniciar Sesión</h2>
+
+@using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserName)
+        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Password)
+        <div class="password-wrapper">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            <span class="glyphicon glyphicon-eye-open toggle-password"></span>
+        </div>
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="forgot-password-link">
+        @Html.ActionLink("¿No recuerda su contraseña? Ingrese aquí", "ForgotPassword")
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Ingresar" class="btn btn-primary btn-block" />
+    </div>
+}
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            $('.toggle-password').click(function () {
+                $(this).toggleClass('glyphicon-eye-open glyphicon-eye-close');
+                var input = $("#Password");
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                } else {
+                    input.attr('type', 'password');
+                }
+            });
+        });
+    </script>
 }

@@ -97,11 +97,16 @@
                         </span>
                     </td>
                     <td>
-                        @Html.ActionLink("Detalles", "Detalles", "DatosPersonales", new { id = item.IdEmpleado }, new { @class = "btn btn-info btn-sm btn-celeste mb-1" })<br />
-                        @Html.ActionLink("Cambiar Estado", "CambiarEstado", new { id = item.IdEmpleado }, new { @class = "btn btn-info btn-sm btn-celeste mb-1" })<br />
-                        <button class="btn btn-sm aprobar-btn mb-1 @(item.Aprobado ? "btn-success" : "btn-celeste")" data-id="@item.IdEmpleado">
-                            @(item.Aprobado ? "Aprobado" : "Aprobar")
-                        </button>
+                        @Html.ActionLink("Detalles", "VerDetalles", new { id = item.IdEmpleado }, new { @class = "btn btn-info btn-sm" })
+                        @Html.ActionLink("Cambiar Estado", "CambiarEstado", new { id = item.IdEmpleado }, new { @class = "btn btn-warning btn-sm" })
+                        
+                        @if (User.IsInRole("Contador"))
+                        {
+                            if (!item.Aprobado)
+                            {
+                                <button type="button" class="btn btn-success btn-sm btn-aprobar" data-id="@item.IdEmpleado">Aprobar</button>
+                            }
+                        }
                     </td>
                 </tr>
             }

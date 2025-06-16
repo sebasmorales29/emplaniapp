@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace Emplaniapp.UI.Controllers
 {
+    [Authorize(Roles = "Administrador, Contador")]
     public class VariablesFinancierasController : Controller
     {
 

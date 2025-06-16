@@ -9,18 +9,43 @@ using Emplaniapp.LogicaDeNegocio.Hoja_Resumen.ListarHojaResumen;
 using Emplaniapp.Abstracciones.InterfacesParaUI;
 using Emplaniapp.LogicaDeNegocio;
 using Emplaniapp.UI.Models;
+using Microsoft.AspNet.Identity.Owin;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
+using Emplaniapp.Abstracciones.Entidades;
 
 namespace Emplaniapp.UI.Controllers
 {
+    [Authorize(Roles = "Administrador, Contador")]
     public class HojaResumenController : Controller
     {
         private IlistarHojaResumenLN _listarHojaResumenLN;
         private IDatosPersonalesLN _datosPersonalesLN;
+        private ApplicationUserManager _userManager;
+        private ApplicationRoleManager _roleManager;
 
         public HojaResumenController()
         {
             _listarHojaResumenLN = new listarHojaResumenLN();
             _datosPersonalesLN = new DatosPersonalesLN();
+        }
+
+        public HojaResumenController(ApplicationUserManager userManager, ApplicationRoleManager roleManager)
+        {
+            UserManager = userManager;
+            RoleManager = roleManager;
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get => _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            private set => _userManager = value;
+        }
+
+        public ApplicationRoleManager RoleManager
+        {
+            get => _roleManager ?? HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+            private set => _roleManager = value;
         }
 
         private List<SelectListItem> ObtenerCargos()
@@ -92,20 +117,11 @@ namespace Emplaniapp.UI.Controllers
                 IdEstado = 1     // Estado Activo por defecto
             };
 
-            var cargos = ObtenerCargosSelectList();
-            var tiposMoneda = ObtenerTiposMonedasSelectList();
-            var bancos = ObtenerBancosSelectList();
-            var periodicidades = ObtenerPeriocidadesPagoSelectList();
-
-            System.Diagnostics.Debug.WriteLine("Cantidad de cargos: " + cargos.Count());
-            System.Diagnostics.Debug.WriteLine("Cantidad de monedas: " + tiposMoneda.Count());
-            System.Diagnostics.Debug.WriteLine("Cantidad de bancos: " + bancos.Count());
-            System.Diagnostics.Debug.WriteLine("Cantidad de periodicidades: " + periodicidades.Count());
-
-            ViewBag.Cargos = cargos;
-            ViewBag.TiposMoneda = tiposMoneda;
-            ViewBag.Bancos = bancos;
-            ViewBag.PeriocidadesPago = periodicidades;
+            ViewBag.Cargos = ObtenerCargosSelectList();
+            ViewBag.TiposMoneda = ObtenerTiposMonedasSelectList();
+            ViewBag.Bancos = ObtenerBancosSelectList();
+            ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList();
+            ViewBag.RolesList = RoleManager.Roles.ToList().Select(r => new SelectListItem { Value = r.Name, Text = r.Name }).ToList();
 
             return View(model);
         }
@@ -113,79 +129,99 @@ namespace Emplaniapp.UI.Controllers
         // POST: HojaResumen/AgregarEmpleado
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AgregarEmpleado(AgregarEmpleadoViewModel model)
+        public async Task<ActionResult> AgregarEmpleado(AgregarEmpleadoViewModel model)
         {
-            System.Diagnostics.Debug.WriteLine("=== INICIANDO CREACIÓN DE EMPLEADO ===");
-            System.Diagnostics.Debug.WriteLine("Nombre: " + model.Nombre);
-            System.Diagnostics.Debug.WriteLine("Primer Apellido: " + model.PrimerApellido);
-            System.Diagnostics.Debug.WriteLine("Segundo Apellido: " + model.SegundoApellido);
-            System.Diagnostics.Debug.WriteLine("Cédula: " + model.Cedula);
-            System.Diagnostics.Debug.WriteLine("IdCargo: " + model.IdCargo);
-            System.Diagnostics.Debug.WriteLine("Periodicidad: " + model.PeriocidadPago);
-            System.Diagnostics.Debug.WriteLine("Salario: " + model.SalarioAprobado);
-            System.Diagnostics.Debug.WriteLine("IdTipoMoneda: " + model.IdTipoMoneda);
-            System.Diagnostics.Debug.WriteLine("IdBanco: " + model.IdBanco);
-            System.Diagnostics.Debug.WriteLine("IBAN: " + model.CuentaIBAN);
-            
+            // Añadimos un log para ver qué datos llegan al controlador
+            System.Diagnostics.Debug.WriteLine($"Intento de crear empleado. UserName: {model.UserName}, Rol: {model.Role}");
+
             if (ModelState.IsValid)
             {
-                System.Diagnostics.Debug.WriteLine("ModelState es válido, creando EmpleadoDto");
-                
-                // Convertir ViewModel a EmpleadoDto
-                var empleadoDto = new EmpleadoDto
+                // 1. Crear el usuario de ASP.NET Identity usando el UserName del modelo
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.CorreoInstitucional };
+                var result = await UserManager.CreateAsync(user, model.Password);
+
+                // --- INICIO DE CÓDIGO DE DEPURACIÓN ---
+                if (result.Succeeded)
                 {
-                    nombre = model.Nombre,
-                    segundoNombre = model.SegundoNombre,
-                    primerApellido = model.PrimerApellido,
-                    segundoApellido = model.SegundoApellido,
-                    fechaNacimiento = model.FechaNacimiento,
-                    cedula = model.Cedula,
-                    numeroTelefonico = model.NumeroTelefonico,
-                    correoInstitucional = model.CorreoInstitucional,
-                    idDireccion = model.IdDireccion,
-                    idCargo = model.IdCargo,
-                    fechaContratacion = model.FechaContratacion,
-                    fechaSalida = model.FechaSalida,
-                    periocidadPago = model.PeriocidadPago,
-                    salarioAprobado = model.SalarioAprobado,
-                    idMoneda = model.IdTipoMoneda,
-                    cuentaIBAN = model.CuentaIBAN,
-                    idBanco = model.IdBanco,
-                    idEstado = model.IdEstado
-                };
+                    System.Diagnostics.Debug.WriteLine($"ÉXITO: Usuario de Identity '{user.UserName}' (ID: {user.Id}) creado correctamente.");
+                    // --- FIN DE CÓDIGO DE DEPURACIÓN ---
 
-                System.Diagnostics.Debug.WriteLine("EmpleadoDto creado, llamando a lógica de negocio");
+                    // 2. Asignar rol al usuario
+                    await UserManager.AddToRoleAsync(user.Id, model.Role);
+                    System.Diagnostics.Debug.WriteLine($"ÉXITO: Rol '{model.Role}' asignado al usuario '{user.UserName}'.");
 
-                bool resultado = _datosPersonalesLN.CrearEmpleado(empleadoDto);
+                    // 3. Crear el DTO del empleado para la lógica de negocio
+                    var empleadoDto = new EmpleadoDto
+                    {
+                        // Enlazar el usuario de Identity con el empleado
+                        IdNetUser = user.Id,
 
-                System.Diagnostics.Debug.WriteLine("Resultado final: " + resultado);
+                        // Datos del formulario
+                        nombre = model.Nombre,
+                        segundoNombre = model.SegundoNombre,
+                        primerApellido = model.PrimerApellido,
+                        segundoApellido = model.SegundoApellido,
+                        fechaNacimiento = model.FechaNacimiento,
+                        cedula = model.Cedula,
+                        numeroTelefonico = model.NumeroTelefonico,
+                        correoInstitucional = model.CorreoInstitucional,
+                        idDireccion = model.IdDireccion,
+                        idCargo = model.IdCargo,
+                        fechaContratacion = model.FechaContratacion,
+                        fechaSalida = model.FechaSalida,
+                        periocidadPago = model.PeriocidadPago,
+                        salarioAprobado = model.SalarioAprobado,
+                        idMoneda = model.IdTipoMoneda,
+                        cuentaIBAN = model.CuentaIBAN,
+                        idBanco = model.IdBanco,
+                        idEstado = model.IdEstado
+                    };
 
-                if (resultado)
-                {
-                    TempData["Mensaje"] = "Empleado creado exitosamente";
-                    TempData["TipoMensaje"] = "success";
-                    return RedirectToAction("listarHojaResumen");
+                    // 4. Guardar el empleado en la base de datos
+                    bool creacionEmpleadoExitosa = _datosPersonalesLN.CrearEmpleado(empleadoDto);
+
+                    if (creacionEmpleadoExitosa)
+                    {
+                        TempData["Mensaje"] = "Empleado y usuario creados exitosamente.";
+                        TempData["TipoMensaje"] = "success";
+                        return RedirectToAction("listarHojaResumen");
+                    }
+                    else
+                    {
+                        // Si falla la creación del empleado, hay que borrar el usuario que ya creamos para no dejar datos huérfanos.
+                        await UserManager.DeleteAsync(user);
+                        ModelState.AddModelError("", "Hubo un error al guardar los datos del empleado.");
+                        System.Diagnostics.Debug.WriteLine("ERROR: Falló la creación del EMPLEADO en la BD, se ha borrado el usuario de Identity para evitar datos huérfanos.");
+                    }
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Error al crear el empleado. Verifique que todos los datos sean correctos. [DEBUG] Revisar logs de Visual Studio para detalles específicos.");
-                    TempData["DebugMessage"] = "Revisar ventana Output -> Debug en Visual Studio para ver logs detallados del error.";
+                    // --- INICIO DE CÓDIGO DE DEPURACIÓN ---
+                    System.Diagnostics.Debug.WriteLine($"ERROR: Falló la creación del usuario de Identity '{model.UserName}'. Razones:");
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                        System.Diagnostics.Debug.WriteLine($"- {error}");
+                    }
+                    // --- FIN DE CÓDIGO DE DEPURACIÓN ---
                 }
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("ModelState NO es válido:");
-                foreach (var error in ModelState)
+                System.Diagnostics.Debug.WriteLine("ERROR: ModelState no es válido.");
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var error in errors)
                 {
-                    System.Diagnostics.Debug.WriteLine("Campo: " + error.Key + " - Errores: " + string.Join(", ", error.Value.Errors.Select(e => e.ErrorMessage)));
+                    System.Diagnostics.Debug.WriteLine($"- {error.ErrorMessage}");
                 }
             }
 
-            // Si llegamos aquí, algo falló, volver a mostrar el formulario
+            // Si llegamos aquí, algo falló. Recargamos los dropdowns y devolvemos la vista.
             ViewBag.Cargos = ObtenerCargosSelectList(model.IdCargo);
             ViewBag.TiposMoneda = ObtenerTiposMonedasSelectList(model.IdTipoMoneda);
             ViewBag.Bancos = ObtenerBancosSelectList(model.IdBanco);
             ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList(model.PeriocidadPago);
+            ViewBag.RolesList = RoleManager.Roles.ToList().Select(r => new SelectListItem { Value = r.Name, Text = r.Name }).ToList();
 
             return View(model);
         }
@@ -255,6 +291,33 @@ namespace Emplaniapp.UI.Controllers
         {
             // Redirige al controlador de DatosPersonales para ver los detalles del empleado
             return RedirectToAction("Detalles", "DatosPersonales", new { id = id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> ValidateAdminPassword(string password)
+        {
+            if (string.IsNullOrEmpty(password))
+            {
+                return Json(new { success = false, message = "La contraseña no puede estar vacía." });
+            }
+
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (user == null)
+            {
+                return Json(new { success = false, message = "No se pudo identificar al usuario." });
+            }
+
+            var correctPassword = await UserManager.CheckPasswordAsync(user, password);
+
+            if (correctPassword)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Contraseña incorrecta." });
+            }
         }
 
         // GET: HojaResumen/Create
@@ -427,3 +490,4 @@ namespace Emplaniapp.UI.Controllers
         #endregion */
     }
 }
+
