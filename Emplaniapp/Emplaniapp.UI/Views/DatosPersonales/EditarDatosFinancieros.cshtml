@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    @using (Html.BeginForm("EditarDatosFinancieros", "DatosPersonales", FormMethod.Post, new { @class = "form-horizontal" }))
+    @using (Html.BeginForm("EditarDatosFinancieros", "DatosPersonales", FormMethod.Post, new { @class = "form-horizontal", id = "editForm" }))
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.IdEmpleado)
@@ -73,6 +73,9 @@
         </div>
     }
 
+    <!-- Renderiza el modal de confirmación -->
+    @Html.Partial("_AdminPasswordModal")
+
     @if (!ViewData.ModelState.IsValid)
     {
         <div class="alert alert-danger">
@@ -83,4 +86,47 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            var mainForm = $('#editForm');
+
+            mainForm.on('submit', function (e) {
+                e.preventDefault();
+                $('#adminPasswordInput').val('');
+                $('#adminPasswordError').hide().text('');
+                $('#adminPasswordModal').modal('show');
+            });
+
+            $('#confirmAdminPasswordBtn').on('click', function () {
+                var password = $('#adminPasswordInput').val();
+                var errorDiv = $('#adminPasswordError');
+                var token = mainForm.find('input[name="__RequestVerificationToken"]').val();
+
+                if (!password) {
+                    errorDiv.text('La contraseña no puede estar vacía.').show();
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("ValidateAdminPassword", "HojaResumen")',
+                    method: 'POST',
+                    data: {
+                        __RequestVerificationToken: token,
+                        password: password
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#adminPasswordModal').modal('hide');
+                            mainForm.off('submit').submit();
+                        } else {
+                            errorDiv.text(response.message).show();
+                        }
+                    },
+                    error: function () {
+                        errorDiv.text('Error de comunicación con el servidor.').show();
+                    }
+                });
+            });
+        });
+    </script>
 } 

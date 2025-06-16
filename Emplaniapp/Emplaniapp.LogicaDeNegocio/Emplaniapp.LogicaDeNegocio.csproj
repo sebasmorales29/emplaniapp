@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="DatosPersonalesLN.cs" />
     <Compile Include="Hoja_Resumen\ListarHojaResumen\listarHojaResumenLN.cs" />
+    <Compile Include="ObservacionLN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tipo_Remuneracion\AgregarTipoRemuneracionLN.cs" />
     <Compile Include="Tipo_Remuneracion\EditarTipoRemuneracionLN.cs" />

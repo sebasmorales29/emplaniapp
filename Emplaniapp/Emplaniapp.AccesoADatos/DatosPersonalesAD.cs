@@ -15,7 +15,7 @@ namespace Emplaniapp.AccesoADatos
         {
             using (var contexto = new Contexto())
             {
-                var empleado = contexto.Empleado.FirstOrDefault(e => e.idEmpleado == idEmpleado);
+                var empleado = contexto.Empleados.FirstOrDefault(e => e.idEmpleado == idEmpleado);
                 if (empleado == null) return null;
 
                 // Obtener información relacionada
@@ -87,9 +87,12 @@ namespace Emplaniapp.AccesoADatos
 
                     var nuevoEmpleado = new Empleado
                     {
+                        // Asignar el IdNetUser que viene desde el controlador
+                        IdNetUser = empleadoDto.IdNetUser,
+
                         // NO asignar idEmpleado - se genera automáticamente
                         nombre = empleadoDto.nombre,
-                        segundoNombre = empleadoDto.segundoNombre ?? "",
+                        segundoNombre = empleadoDto.segundoNombre,
                         primerApellido = empleadoDto.primerApellido,
                         segundoApellido = empleadoDto.segundoApellido,
                         fechaNacimiento = empleadoDto.fechaNacimiento,
@@ -124,7 +127,7 @@ namespace Emplaniapp.AccesoADatos
 
                     System.Diagnostics.Debug.WriteLine("Empleado creado, agregando al contexto");
 
-                    contexto.Empleado.Add(nuevoEmpleado);
+                    contexto.Empleados.Add(nuevoEmpleado);
                     
                     System.Diagnostics.Debug.WriteLine("Guardando cambios...");
                     contexto.SaveChanges();
@@ -162,13 +165,13 @@ namespace Emplaniapp.AccesoADatos
             {
                 using (var contexto = new Contexto())
                 {
-                    var empleado = contexto.Empleado.FirstOrDefault(e => e.idEmpleado == empleadoDto.idEmpleado);
+                    var empleado = contexto.Empleados.FirstOrDefault(e => e.idEmpleado == empleadoDto.idEmpleado);
                     if (empleado == null) return false;
 
                     empleado.nombre = empleadoDto.nombre;
                     empleado.segundoNombre = empleadoDto.segundoNombre;
                     empleado.primerApellido = empleadoDto.primerApellido;
-                    empleado.segundoApellido = empleadoDto.segundoApellido;
+                    empleado.segundoApellido = empleadoDto.segundoApellido ?? "";
                     empleado.fechaNacimiento = empleadoDto.fechaNacimiento;
                     empleado.cedula = empleadoDto.cedula;
                     empleado.numeroTelefonico = empleadoDto.numeroTelefonico;
@@ -190,7 +193,7 @@ namespace Emplaniapp.AccesoADatos
             {
                 using (var contexto = new Contexto())
                 {
-                    var empleado = contexto.Empleado.FirstOrDefault(e => e.idEmpleado == idEmpleado);
+                    var empleado = contexto.Empleados.FirstOrDefault(e => e.idEmpleado == idEmpleado);
                     if (empleado == null) return false;
 
                     empleado.idCargo = idCargo;
@@ -214,7 +217,7 @@ namespace Emplaniapp.AccesoADatos
             {
                 using (var contexto = new Contexto())
                 {
-                    var empleado = contexto.Empleado.FirstOrDefault(e => e.idEmpleado == idEmpleado);
+                    var empleado = contexto.Empleados.FirstOrDefault(e => e.idEmpleado == idEmpleado);
                     if (empleado == null) return false;
 
                     empleado.salarioAprobado = salarioAprobado;

@@ -1,22 +1,23 @@
 -- =====================================================================================
--- SCRIPT COMPLETO PARA BASE DE DATOS EMPLANIAPP
--- Versión: Final - Funcional al 100%
--- Descripción: Script consolidado que crea la base de datos completa desde cero
+-- SCRIPT FINAL Y LIMPIO PARA BASE DE DATOS EMPLANIAPP
+-- Versión: 2.0
+-- Descripción: Script que crea la estructura de la BD y los datos maestros.
+--              El usuario 'admin' se crea con este script.
 -- =====================================================================================
 
--- Crear la base de datos
-IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'EmplaniappBD')
+-- Crear la base de datos si no existe
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'EmplaniappBDPrueba')
 BEGIN
-    CREATE DATABASE EmplaniappBD;
-    PRINT 'Base de datos EmplaniappBD creada exitosamente';
+    CREATE DATABASE EmplaniappBDPrueba;
+    PRINT 'Base de datos EmplaniappBDPrueba creada exitosamente';
 END
 ELSE
 BEGIN
-    PRINT 'La base de datos EmplaniappBD ya existe';
+    PRINT 'La base de datos EmplaniappBDPrueba ya existe';
 END
 GO
 
-USE EmplaniappBD;
+USE EmplaniappBDPrueba;
 GO
 
 PRINT '=== INICIANDO CREACIÓN DE TABLAS ===';
@@ -24,8 +25,6 @@ PRINT '=== INICIANDO CREACIÓN DE TABLAS ===';
 -- =====================================================================================
 -- TABLAS GEOGRÁFICAS
 -- =====================================================================================
-
--- Tabla Estado
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Estado]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Estado (
@@ -35,7 +34,6 @@ BEGIN
     PRINT 'Tabla Estado creada';
 END
 
--- Tabla Provincia
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Provincia]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Provincia (
@@ -45,55 +43,44 @@ BEGIN
     PRINT 'Tabla Provincia creada';
 END
 
--- Tabla Canton
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Canton]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Canton (
         idCanton INT PRIMARY KEY NOT NULL,
         nombreCanton VARCHAR(100) NOT NULL,
-        idProvincia INT NOT NULL,
-        FOREIGN KEY (idProvincia) REFERENCES Provincia(idProvincia)
+        idProvincia INT NOT NULL FOREIGN KEY REFERENCES Provincia(idProvincia)
     );
     PRINT 'Tabla Canton creada';
 END
 
--- Tabla Distrito
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Distrito]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Distrito (
         idDistrito INT PRIMARY KEY NOT NULL,
         nombreDistrito VARCHAR(100) NOT NULL,
-        idCanton INT NOT NULL,
-        FOREIGN KEY (idCanton) REFERENCES Canton(idCanton)
+        idCanton INT NOT NULL FOREIGN KEY REFERENCES Canton(idCanton)
     );
     PRINT 'Tabla Distrito creada';
 END
 
--- Tabla Calle
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Calle]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Calle (
         idCalle INT PRIMARY KEY NOT NULL,
         nombreCalle VARCHAR(100) NOT NULL,
-        idDistrito INT NOT NULL,
-        FOREIGN KEY (idDistrito) REFERENCES Distrito(idDistrito)
+        idDistrito INT NOT NULL FOREIGN KEY REFERENCES Distrito(idDistrito)
     );
     PRINT 'Tabla Calle creada';
 END
 
--- Tabla Direccion
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Direccion]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Direccion (
         idDireccion INT PRIMARY KEY NOT NULL,
-        idProvincia INT NOT NULL,
-        idCanton INT NOT NULL,
-        idDistrito INT NOT NULL,
-        idCalle INT NOT NULL,
-        FOREIGN KEY (idProvincia) REFERENCES Provincia(idProvincia),
-        FOREIGN KEY (idCanton) REFERENCES Canton(idCanton),
-        FOREIGN KEY (idDistrito) REFERENCES Distrito(idDistrito),
-        FOREIGN KEY (idCalle) REFERENCES Calle(idCalle)
+        idProvincia INT NOT NULL FOREIGN KEY REFERENCES Provincia(idProvincia),
+        idCanton INT NOT NULL FOREIGN KEY REFERENCES Canton(idCanton),
+        idDistrito INT NOT NULL FOREIGN KEY REFERENCES Distrito(idDistrito),
+        idCalle INT NOT NULL FOREIGN KEY REFERENCES Calle(idCalle)
     );
     PRINT 'Tabla Direccion creada';
 END
@@ -101,8 +88,6 @@ END
 -- =====================================================================================
 -- TABLAS DE EMPLEADOS Y CARGOS
 -- =====================================================================================
-
--- Tabla NumeroOcupacion
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[NumeroOcupacion]') AND type in (N'U'))
 BEGIN
     CREATE TABLE NumeroOcupacion (
@@ -112,14 +97,12 @@ BEGIN
     PRINT 'Tabla NumeroOcupacion creada';
 END
 
--- Tabla Cargos
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Cargos]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Cargos (
         idCargo INT PRIMARY KEY NOT NULL,
         nombreCargo VARCHAR(100) NOT NULL,
-        idNumeroOcupacion INT NOT NULL,
-        FOREIGN KEY (idNumeroOcupacion) REFERENCES NumeroOcupacion(idNumeroOcupacion)
+        idNumeroOcupacion INT NOT NULL FOREIGN KEY REFERENCES NumeroOcupacion(idNumeroOcupacion)
     );
     PRINT 'Tabla Cargos creada';
 END
@@ -127,8 +110,6 @@ END
 -- =====================================================================================
 -- TABLAS FINANCIERAS
 -- =====================================================================================
-
--- Tabla TipoMoneda (con IDENTITY)
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TipoMoneda]') AND type in (N'U'))
 BEGIN
     CREATE TABLE TipoMoneda (
@@ -138,7 +119,6 @@ BEGIN
     PRINT 'Tabla TipoMoneda creada';
 END
 
--- Tabla Bancos (con IDENTITY)
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Bancos]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Bancos (
@@ -149,151 +129,21 @@ BEGIN
 END
 
 -- =====================================================================================
--- TABLA EMPLEADO (CON IDENTITY CONFIGURADO CORRECTAMENTE)
+-- TABLAS ASP.NET IDENTITY (ESTÁNDAR)
 -- =====================================================================================
-
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Empleado]') AND type in (N'U'))
-BEGIN
-    CREATE TABLE Empleado (
-        idEmpleado INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
-        nombre VARCHAR(100) NOT NULL,
-        segundoNombre VARCHAR(100) NOT NULL,
-        primerApellido VARCHAR(100) NOT NULL,
-        segundoApellido VARCHAR(100) NOT NULL,
-        fechaNacimiento DATE NOT NULL,
-        cedula INT NOT NULL CHECK (cedula BETWEEN 100000000 AND 999999999),
-        numeroTelefonico VARCHAR(50) NOT NULL,
-        correoInstitucional VARCHAR(100) NOT NULL,
-        idDireccion INT NOT NULL,
-        idCargo INT NOT NULL,
-        fechaContratacion DATE NOT NULL,
-        fechaSalida DATE NULL,
-        periocidadPago VARCHAR(50) NOT NULL,
-        salarioDiario DECIMAL(12,2) NOT NULL,
-        salarioAprobado DECIMAL(12,2) NOT NULL,
-        salarioPorMinuto DECIMAL(12,2) NOT NULL,
-        salarioPoHora DECIMAL(12,2) NOT NULL,
-        salarioPorHoraExtra DECIMAL(12,2) NOT NULL,
-        idTipoMoneda INT NOT NULL,
-        cuentaIBAN VARCHAR(100) NOT NULL,
-        idBanco INT NOT NULL,
-        idEstado INT NOT NULL,
-        FOREIGN KEY (idDireccion) REFERENCES Direccion(idDireccion),
-        FOREIGN KEY (idCargo) REFERENCES Cargos(idCargo),
-        FOREIGN KEY (idTipoMoneda) REFERENCES TipoMoneda(idTipoMoneda),
-        FOREIGN KEY (idBanco) REFERENCES Bancos(idBanco),
-        FOREIGN KEY (idEstado) REFERENCES Estado(idEstado)
-    );
-    PRINT 'Tabla Empleado creada con idEmpleado IDENTITY';
-END
-
--- =====================================================================================
--- TABLAS DE REMUNERACIONES Y RETENCIONES
--- =====================================================================================
-
--- Tabla TipoRemuneracion
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TipoRemuneracion]') AND type in (N'U'))
-BEGIN
-    CREATE TABLE TipoRemuneracion (
-        idTipoRemuneracion INT PRIMARY KEY NOT NULL,
-        nombreTipoRemuneracion VARCHAR(100) NOT NULL,
-        porcentajeRemuneracion INT NOT NULL,
-        idEstado INT NOT NULL,
-        FOREIGN KEY (idEstado) REFERENCES Estado(idEstado)
-    );
-    PRINT 'Tabla TipoRemuneracion creada';
-END
-
--- Tabla Remuneracion
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Remuneracion]') AND type in (N'U'))
-BEGIN
-    CREATE TABLE Remuneracion (
-        idRemuneracion INT PRIMARY KEY NOT NULL,
-        idEmpleado INT NOT NULL,
-        idTipoRemuneracion INT NOT NULL,
-        fechaRemuneracion DATE NOT NULL,
-        horasTrabajadas INT NULL,
-        horasExtras INT NULL,
-        comision DECIMAL(12,2) NULL,
-        pagoQuincenal DECIMAL(12,2) NULL,
-        horasFeriados DECIMAL(12,2) NULL,
-        horasVacaciones DECIMAL(12,2) NULL,
-        horasLicencias DECIMAL(12,2) NULL,
-        idEstado INT NOT NULL,
-        FOREIGN KEY (idEmpleado) REFERENCES Empleado(idEmpleado),
-        FOREIGN KEY (idTipoRemuneracion) REFERENCES TipoRemuneracion(idTipoRemuneracion),
-        FOREIGN KEY (idEstado) REFERENCES Estado(idEstado)
-    );
-    PRINT 'Tabla Remuneracion creada';
-END
-
--- Tabla TipoRetenciones
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TipoRetenciones]') AND type in (N'U'))
-BEGIN
-    CREATE TABLE TipoRetenciones (
-        idTipoRetencion INT PRIMARY KEY NOT NULL,
-        nombreTipoRetencio VARCHAR(100) NOT NULL,
-        porcentajeRetencion INT NOT NULL,
-        idEstado INT NOT NULL,
-        FOREIGN KEY (idEstado) REFERENCES Estado(idEstado)
-    );
-    PRINT 'Tabla TipoRetenciones creada';
-END
-
--- Tabla Retenciones
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Retenciones]') AND type in (N'U'))
-BEGIN
-    CREATE TABLE Retenciones (
-        idRetencion INT PRIMARY KEY NOT NULL,
-        idEmpleado INT NOT NULL,
-        idTipoRetencion INT NOT NULL,
-        rebajo DECIMAL(12,2) NOT NULL,
-        fechaRetencion DATE NOT NULL,
-        idEstado INT NOT NULL,
-        FOREIGN KEY (idEmpleado) REFERENCES Empleado(idEmpleado),
-        FOREIGN KEY (idTipoRetencion) REFERENCES TipoRetenciones(idTipoRetencion),
-        FOREIGN KEY (idEstado) REFERENCES Estado(idEstado)
-    );
-    PRINT 'Tabla Retenciones creada';
-END
-
--- Tabla Liquidaciones
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Liquidaciones]') AND type in (N'U'))
-BEGIN
-    CREATE TABLE Liquidaciones (
-        idLiquidacion INT PRIMARY KEY NOT NULL,
-        idEmpleado INT NOT NULL,
-        costoLiquidacion DECIMAL(12,2) NULL,
-        motivoLiquidacion VARCHAR(255) NULL,
-        observacionLiquidacion VARCHAR(255) NULL,
-        fechaLiquidacion DATE NULL,
-        idEstado INT NOT NULL,
-        FOREIGN KEY (idEmpleado) REFERENCES Empleado(idEmpleado),
-        FOREIGN KEY (idEstado) REFERENCES Estado(idEstado)
-    );
-    PRINT 'Tabla Liquidaciones creada';
-END
-
--- =====================================================================================
--- TABLAS ASP.NET IDENTITY
--- =====================================================================================
-
--- Tabla AspNetRoles
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AspNetRoles]') AND type in (N'U'))
 BEGIN
     CREATE TABLE [dbo].[AspNetRoles](
-        [Id] [nvarchar](128) NOT NULL,
-        [Name] [nvarchar](256) NOT NULL,
-        CONSTRAINT [PK_dbo.AspNetRoles] PRIMARY KEY CLUSTERED ([Id] ASC)
+        [Id] [nvarchar](128) NOT NULL PRIMARY KEY,
+        [Name] [nvarchar](256) NOT NULL
     );
     PRINT 'Tabla AspNetRoles creada';
 END
 
--- Tabla AspNetUsers
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AspNetUsers]') AND type in (N'U'))
 BEGIN
     CREATE TABLE [dbo].[AspNetUsers](
-        [Id] [nvarchar](128) NOT NULL,
+        [Id] [nvarchar](128) NOT NULL PRIMARY KEY,
         [Email] [nvarchar](256) NULL,
         [EmailConfirmed] [bit] NOT NULL,
         [PasswordHash] [nvarchar](max) NULL,
@@ -304,72 +154,143 @@ BEGIN
         [LockoutEndDateUtc] [datetime] NULL,
         [LockoutEnabled] [bit] NOT NULL,
         [AccessFailedCount] [int] NOT NULL,
-        [UserName] [nvarchar](256) NOT NULL,
-        CONSTRAINT [PK_dbo.AspNetUsers] PRIMARY KEY CLUSTERED ([Id] ASC)
+        [UserName] [nvarchar](256) NOT NULL
     );
     PRINT 'Tabla AspNetUsers creada';
 END
 
--- Tabla AspNetUserClaims
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AspNetUserClaims]') AND type in (N'U'))
+-- =====================================================================================
+-- TABLA EMPLEADO (ESTRUCTURA CORREGIDA Y ALINEADA CON EL PROYECTO)
+-- =====================================================================================
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Empleado]') AND type in (N'U'))
 BEGIN
-    CREATE TABLE [dbo].[AspNetUserClaims](
-        [Id] [int] IDENTITY(1,1) NOT NULL,
-        [UserId] [nvarchar](128) NOT NULL,
-        [ClaimType] [nvarchar](max) NULL,
-        [ClaimValue] [nvarchar](max) NULL,
-        CONSTRAINT [PK_dbo.AspNetUserClaims] PRIMARY KEY CLUSTERED ([Id] ASC),
-        CONSTRAINT [FK_dbo.AspNetUserClaims_dbo.AspNetUsers_UserId] FOREIGN KEY([UserId]) REFERENCES [dbo].[AspNetUsers] ([Id]) ON DELETE CASCADE
+    CREATE TABLE Empleado (
+        idEmpleado INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+        nombre VARCHAR(100) NOT NULL,
+        primerApellido VARCHAR(100) NOT NULL,
+        segundoApellido VARCHAR(100) NOT NULL,
+        fechaNacimiento DATE NOT NULL,
+        cedula INT NOT NULL UNIQUE CHECK (cedula BETWEEN 100000000 AND 999999999),
+        numeroTelefonico VARCHAR(50) NOT NULL,
+        correoInstitucional VARCHAR(100) NOT NULL,
+        idDireccion INT NOT NULL FOREIGN KEY REFERENCES Direccion(idDireccion),
+        idCargo INT NOT NULL FOREIGN KEY REFERENCES Cargos(idCargo),
+        fechaContratacion DATE NOT NULL,
+        fechaSalida DATE NULL,
+        periocidadPago VARCHAR(50) NOT NULL,
+        salarioDiario DECIMAL(18,2) NOT NULL,
+        salarioAprobado DECIMAL(18,2) NOT NULL,
+        salarioPorMinuto DECIMAL(18,2) NOT NULL,
+        salarioPoHora DECIMAL(18,2) NOT NULL,
+        salarioPorHoraExtra DECIMAL(18,2) NOT NULL,
+        idTipoMoneda INT NOT NULL FOREIGN KEY REFERENCES TipoMoneda(idTipoMoneda),
+        cuentaIBAN VARCHAR(100) NOT NULL,
+        idBanco INT NOT NULL FOREIGN KEY REFERENCES Bancos(idBanco),
+        idEstado INT NOT NULL FOREIGN KEY REFERENCES Estado(idEstado),
+        -- Columna CRÍTICA añadida para vincular con el usuario de login
+        IdNetUser NVARCHAR(128) NULL FOREIGN KEY REFERENCES AspNetUsers(Id)
     );
-    PRINT 'Tabla AspNetUserClaims creada';
-END
-
--- Tabla AspNetUserLogins
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AspNetUserLogins]') AND type in (N'U'))
-BEGIN
-    CREATE TABLE [dbo].[AspNetUserLogins](
-        [LoginProvider] [nvarchar](128) NOT NULL,
-        [ProviderKey] [nvarchar](128) NOT NULL,
-        [UserId] [nvarchar](128) NOT NULL,
-        CONSTRAINT [PK_dbo.AspNetUserLogins] PRIMARY KEY CLUSTERED ([LoginProvider] ASC, [ProviderKey] ASC, [UserId] ASC),
-        CONSTRAINT [FK_dbo.AspNetUserLogins_dbo.AspNetUsers_UserId] FOREIGN KEY([UserId]) REFERENCES [dbo].[AspNetUsers] ([Id]) ON DELETE CASCADE
-    );
-    PRINT 'Tabla AspNetUserLogins creada';
-END
-
--- Tabla AspNetUserRoles
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AspNetUserRoles]') AND type in (N'U'))
-BEGIN
-    CREATE TABLE [dbo].[AspNetUserRoles](
-        [UserId] [nvarchar](128) NOT NULL,
-        [RoleId] [nvarchar](128) NOT NULL,
-        CONSTRAINT [PK_dbo.AspNetUserRoles] PRIMARY KEY CLUSTERED ([UserId] ASC, [RoleId] ASC),
-        CONSTRAINT [FK_dbo.AspNetUserRoles_dbo.AspNetRoles_RoleId] FOREIGN KEY([RoleId]) REFERENCES [dbo].[AspNetRoles] ([Id]) ON DELETE CASCADE,
-        CONSTRAINT [FK_dbo.AspNetUserRoles_dbo.AspNetUsers_UserId] FOREIGN KEY([UserId]) REFERENCES [dbo].[AspNetUsers] ([Id]) ON DELETE CASCADE
-    );
-    PRINT 'Tabla AspNetUserRoles creada';
+    PRINT 'Tabla Empleado creada con estructura CORREGIDA';
 END
 
 -- =====================================================================================
--- TABLAS ADICIONALES DEL SISTEMA
+-- TABLA OBSERVACIONES (ESTRUCTURA COMPLETAMENTE CORREGIDA)
+-- =====================================================================================
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Observaciones]') AND type in (N'U'))
+BEGIN
+    DROP TABLE [dbo].[Observaciones];
+    PRINT 'Tabla Observaciones obsoleta eliminada.';
+END
+
+CREATE TABLE [dbo].[Observaciones] (
+    [IdObservacion]  INT            IDENTITY (1, 1) NOT NULL,
+    [IdEmpleado]     INT            NOT NULL,
+    [Titulo]         NVARCHAR (200) NOT NULL,
+    [Descripcion]    NVARCHAR (MAX) NOT NULL,
+    [FechaCreacion]  DATETIME       NOT NULL,
+    [IdUsuarioCreo]  NVARCHAR (128) NOT NULL,
+    [FechaEdicion]   DATETIME       NULL,
+    [IdUsuarioEdito] NVARCHAR (128) NULL,
+    CONSTRAINT [PK_Observaciones] PRIMARY KEY CLUSTERED ([IdObservacion] ASC),
+    CONSTRAINT [FK_Observaciones_Empleado] FOREIGN KEY ([IdEmpleado]) REFERENCES [dbo].[Empleado] ([idEmpleado]),
+    CONSTRAINT [FK_Observaciones_UsuarioCreo] FOREIGN KEY ([IdUsuarioCreo]) REFERENCES [dbo].[AspNetUsers] ([Id]),
+    CONSTRAINT [FK_Observaciones_UsuarioEdito] FOREIGN KEY ([IdUsuarioEdito]) REFERENCES [dbo].[AspNetUsers] ([Id])
+);
+PRINT 'Tabla Observaciones creada con la estructura CORRECTA para la funcionalidad actual.';
+GO
+
+-- =====================================================================================
+-- OTRAS TABLAS DEL SISTEMA (SE MANTIENEN DEL SCRIPT ORIGINAL)
 -- =====================================================================================
 
--- Tabla Observaciones
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Observaciones]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TipoRemuneracion]') AND type in (N'U'))
 BEGIN
-    CREATE TABLE Observaciones (
-        idObservaciones INT PRIMARY KEY NOT NULL,
-        idEmpleado INT NOT NULL,
+    CREATE TABLE TipoRemuneracion (
+        idTipoRemuneracion INT PRIMARY KEY NOT NULL,
+        nombreTipoRemuneracion VARCHAR(100) NOT NULL,
+        porcentajeRemuneracion INT NOT NULL,
+        idEstado INT NOT NULL FOREIGN KEY REFERENCES Estado(idEstado)
+    );
+    PRINT 'Tabla TipoRemuneracion creada';
+END
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Remuneracion]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE Remuneracion (
+        idRemuneracion INT PRIMARY KEY NOT NULL,
+        idEmpleado INT NOT NULL FOREIGN KEY REFERENCES Empleado(idEmpleado),
+        idTipoRemuneracion INT NOT NULL FOREIGN KEY REFERENCES TipoRemuneracion(idTipoRemuneracion),
+        fechaRemuneracion DATE NOT NULL,
+        horasTrabajadas INT NULL,
+        horasExtras INT NULL,
+        comision DECIMAL(12,2) NULL,
+        pagoQuincenal DECIMAL(12,2) NULL,
+        horasFeriados DECIMAL(12,2) NULL,
+        horasVacaciones DECIMAL(12,2) NULL,
+        horasLicencias DECIMAL(12,2) NULL,
+        idEstado INT NOT NULL FOREIGN KEY REFERENCES Estado(idEstado)
+    );
+    PRINT 'Tabla Remuneracion creada';
+END
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TipoRetenciones]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE TipoRetenciones (
+        idTipoRetencion INT PRIMARY KEY NOT NULL,
+        nombreTipoRetencio VARCHAR(100) NOT NULL,
+        porcentajeRetencion INT NOT NULL,
+        idEstado INT NOT NULL FOREIGN KEY REFERENCES Estado(idEstado)
+    );
+    PRINT 'Tabla TipoRetenciones creada';
+END
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Retenciones]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE Retenciones (
+        idRetencion INT PRIMARY KEY NOT NULL,
+        idEmpleado INT NOT NULL FOREIGN KEY REFERENCES Empleado(idEmpleado),
+        idTipoRetencion INT NOT NULL FOREIGN KEY REFERENCES TipoRetenciones(idTipoRetencion),
+        rebajo DECIMAL(12,2) NOT NULL,
+        fechaRetencion DATE NOT NULL,
+        idEstado INT NOT NULL FOREIGN KEY REFERENCES Estado(idEstado)
+    );
+    PRINT 'Tabla Retenciones creada';
+END
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Liquidaciones]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE Liquidaciones (
+        idLiquidacion INT PRIMARY KEY NOT NULL,
+        idEmpleado INT NOT NULL FOREIGN KEY REFERENCES Empleado(idEmpleado),
+        costoLiquidacion DECIMAL(12,2) NULL,
+        motivoLiquidacion VARCHAR(255) NULL,
         observacionLiquidacion VARCHAR(255) NULL,
-        fechaObservacion DATE NULL,
-        idUsuario [nvarchar](128) NOT NULL,
-        FOREIGN KEY (idEmpleado) REFERENCES Empleado(idEmpleado),
-        FOREIGN KEY (idUsuario) REFERENCES AspNetUsers(Id)
+        fechaLiquidacion DATE NULL,
+        idEstado INT NOT NULL FOREIGN KEY REFERENCES Estado(idEstado)
     );
-    PRINT 'Tabla Observaciones creada';
+    PRINT 'Tabla Liquidaciones creada';
 END
 
--- Tabla PeriodoPago
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PeriodoPago]') AND type in (N'U'))
 BEGIN
     CREATE TABLE PeriodoPago (
@@ -377,71 +298,69 @@ BEGIN
         PeriodoPago VARCHAR(255) NOT NULL,
         aprobacion BIT NOT NULL,
         fechaAprobado DATE NULL,
-        idUsuario [nvarchar](128) NOT NULL,
-        registroPeriodoPago NVARCHAR(MAX) NOT NULL,
-        FOREIGN KEY (idUsuario) REFERENCES AspNetUsers(Id)
+        idUsuario [nvarchar](128) NOT NULL FOREIGN KEY REFERENCES AspNetUsers(Id),
+        registroPeriodoPago NVARCHAR(MAX) NOT NULL
     );
     PRINT 'Tabla PeriodoPago creada';
 END
 
--- Tabla PagoQuincenal
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PagoQuincenal]') AND type in (N'U'))
 BEGIN
     CREATE TABLE PagoQuincenal (
         idPagoQuincenal INT PRIMARY KEY NOT NULL,
         fechaInicio DATE NOT NULL,
         fechaFin DATE NOT NULL,
-        idPeriodoPago INT NOT NULL,
-        idEmpleado INT NOT NULL,
-        idRemuneracion INT NOT NULL,
-        idRetencion INT NOT NULL,
+        idPeriodoPago INT NOT NULL FOREIGN KEY REFERENCES PeriodoPago(idPeriodoPago),
+        idEmpleado INT NOT NULL FOREIGN KEY REFERENCES Empleado(idEmpleado),
+        idRemuneracion INT NOT NULL FOREIGN KEY REFERENCES Remuneracion(idRemuneracion),
+        idRetencion INT NOT NULL FOREIGN KEY REFERENCES Retenciones(idRetencion),
         salarioNeto DECIMAL(12,2) NOT NULL,
-        idLiquidacion INT NULL,
+        idLiquidacion INT NULL FOREIGN KEY REFERENCES Liquidaciones(idLiquidacion),
         total DECIMAL(12,2) NOT NULL,
         aprobacion BIT NOT NULL,
-        idUsuario [nvarchar](128) NULL,
-        FOREIGN KEY (idPeriodoPago) REFERENCES PeriodoPago(idPeriodoPago),
-        FOREIGN KEY (idEmpleado) REFERENCES Empleado(idEmpleado),
-        FOREIGN KEY (idRemuneracion) REFERENCES Remuneracion(idRemuneracion),
-        FOREIGN KEY (idRetencion) REFERENCES Retenciones(idRetencion),
-        FOREIGN KEY (idLiquidacion) REFERENCES Liquidaciones(idLiquidacion),
-        FOREIGN KEY (idUsuario) REFERENCES AspNetUsers(Id)
+        idUsuario [nvarchar](128) NULL FOREIGN KEY REFERENCES AspNetUsers(Id)
     );
     PRINT 'Tabla PagoQuincenal creada';
 END
 
--- Tabla HistorialAccionesEmpleados
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[HistorialAccionesEmpleados]') AND type in (N'U'))
+-- RESTO DE TABLAS IDENTITY
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AspNetUserClaims]') AND type in (N'U'))
 BEGIN
-    CREATE TABLE HistorialAccionesEmpleados (
-        idAccionEmpleado INT PRIMARY KEY NOT NULL,
-        descripcion NVARCHAR(255),
-        idEmpleado INT NOT NULL,
-        idUsuario [nvarchar](128) NOT NULL,
-        fecha DATE NOT NULL,
-        documentoRegistro NVARCHAR(MAX) NULL,
-        FOREIGN KEY (idEmpleado) REFERENCES Empleado(idEmpleado),
-        FOREIGN KEY (idUsuario) REFERENCES AspNetUsers(Id)
+    CREATE TABLE [dbo].[AspNetUserClaims](
+        [Id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        [UserId] [nvarchar](128) NOT NULL FOREIGN KEY REFERENCES [dbo].[AspNetUsers] ([Id]) ON DELETE CASCADE,
+        [ClaimType] [nvarchar](max) NULL,
+        [ClaimValue] [nvarchar](max) NULL
     );
-    PRINT 'Tabla HistorialAccionesEmpleados creada';
+    PRINT 'Tabla AspNetUserClaims creada';
 END
 
--- Tabla HistorialAccionesSistema
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[HistorialAccionesSistema]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AspNetUserLogins]') AND type in (N'U'))
 BEGIN
-    CREATE TABLE HistorialAccionesSistema (
-        idAccionSistema INT PRIMARY KEY NOT NULL,
-        descripcion NVARCHAR(255),
-        idUsuario [nvarchar](128) NOT NULL,
-        fecha DATE NOT NULL,
-        documentoRegistro NVARCHAR(MAX) NULL,
-        FOREIGN KEY (idUsuario) REFERENCES AspNetUsers(Id)
+    CREATE TABLE [dbo].[AspNetUserLogins](
+        [LoginProvider] [nvarchar](128) NOT NULL,
+        [ProviderKey] [nvarchar](128) NOT NULL,
+        [UserId] [nvarchar](128) NOT NULL,
+        CONSTRAINT [PK_dbo.AspNetUserLogins] PRIMARY KEY CLUSTERED ([LoginProvider], [ProviderKey], [UserId]),
+        CONSTRAINT [FK_dbo.AspNetUserLogins_dbo.AspNetUsers_UserId] FOREIGN KEY([UserId]) REFERENCES [dbo].[AspNetUsers] ([Id]) ON DELETE CASCADE
     );
-    PRINT 'Tabla HistorialAccionesSistema creada';
+    PRINT 'Tabla AspNetUserLogins creada';
+END
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AspNetUserRoles]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[AspNetUserRoles](
+        [UserId] [nvarchar](128) NOT NULL,
+        [RoleId] [nvarchar](128) NOT NULL,
+        CONSTRAINT [PK_dbo.AspNetUserRoles] PRIMARY KEY CLUSTERED ([UserId], [RoleId]),
+        CONSTRAINT [FK_dbo.AspNetUserRoles_dbo.AspNetRoles_RoleId] FOREIGN KEY([RoleId]) REFERENCES [dbo].[AspNetRoles] ([Id]) ON DELETE CASCADE,
+        CONSTRAINT [FK_dbo.AspNetUserRoles_dbo.AspNetUsers_UserId] FOREIGN KEY([UserId]) REFERENCES [dbo].[AspNetUsers] ([Id]) ON DELETE CASCADE
+    );
+    PRINT 'Tabla AspNetUserRoles creada';
 END
 
 PRINT '=== TODAS LAS TABLAS CREADAS EXITOSAMENTE ===';
-
+GO
 -- =====================================================================================
 -- INSERCIÓN DE DATOS MAESTROS
 -- =====================================================================================
@@ -449,120 +368,190 @@ PRINT '=== TODAS LAS TABLAS CREADAS EXITOSAMENTE ===';
 PRINT '=== INICIANDO INSERCIÓN DE DATOS MAESTROS ===';
 
 -- Insertar Estados
-IF NOT EXISTS (SELECT 1 FROM Estado WHERE idEstado = 1)
-    INSERT INTO Estado (idEstado, nombreEstado) VALUES (1, 'Activo');
+IF NOT EXISTS (SELECT 1 FROM Estado WHERE idEstado = 1) INSERT INTO Estado (idEstado, nombreEstado) VALUES (1, 'Activo');
+IF NOT EXISTS (SELECT 1 FROM Estado WHERE idEstado = 2) INSERT INTO Estado (idEstado, nombreEstado) VALUES (2, 'Inactivo');
+IF NOT EXISTS (SELECT 1 FROM Estado WHERE idEstado = 3) INSERT INTO Estado (idEstado, nombreEstado) VALUES (3, 'En Licencia');
+PRINT 'Estados (Activo, Inactivo, En Licencia) insertados';
 
-IF NOT EXISTS (SELECT 1 FROM Estado WHERE idEstado = 2)
-    INSERT INTO Estado (idEstado, nombreEstado) VALUES (2, 'Inactivo');
-
-IF NOT EXISTS (SELECT 1 FROM Estado WHERE idEstado = 3)
-    INSERT INTO Estado (idEstado, nombreEstado) VALUES (3, 'En Licencia');
-
-PRINT 'Estados insertados';
-
--- Insertar NumeroOcupacion básicos
-IF NOT EXISTS (SELECT 1 FROM NumeroOcupacion WHERE idNumeroOcupacion = 1)
-    INSERT INTO NumeroOcupacion (idNumeroOcupacion, numeroOcupacion) VALUES (1, 1000);
-
-IF NOT EXISTS (SELECT 1 FROM NumeroOcupacion WHERE idNumeroOcupacion = 2)
-    INSERT INTO NumeroOcupacion (idNumeroOcupacion, numeroOcupacion) VALUES (2, 2000);
-
-IF NOT EXISTS (SELECT 1 FROM NumeroOcupacion WHERE idNumeroOcupacion = 3)
-    INSERT INTO NumeroOcupacion (idNumeroOcupacion, numeroOcupacion) VALUES (3, 3000);
-
-PRINT 'NumeroOcupacion insertados';
-
--- Insertar Cargos básicos
-IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 1)
-    INSERT INTO Cargos (idCargo, nombreCargo, idNumeroOcupacion) VALUES (1, 'Administrador', 1);
-
-IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 2)
-    INSERT INTO Cargos (idCargo, nombreCargo, idNumeroOcupacion) VALUES (2, 'Contador', 2);
-
-IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 3)
-    INSERT INTO Cargos (idCargo, nombreCargo, idNumeroOcupacion) VALUES (3, 'Gerente', 3);
-
-IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 4)
-    INSERT INTO Cargos (idCargo, nombreCargo, idNumeroOcupacion) VALUES (4, 'Asistente', 1);
-
-IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 5)
-    INSERT INTO Cargos (idCargo, nombreCargo, idNumeroOcupacion) VALUES (5, 'Desarrollador', 2);
-
-IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 6)
-    INSERT INTO Cargos (idCargo, nombreCargo, idNumeroOcupacion) VALUES (6, 'Analista', 2);
-
-IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 7)
-    INSERT INTO Cargos (idCargo, nombreCargo, idNumeroOcupacion) VALUES (7, 'Supervisor', 3);
-
-IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 8)
-    INSERT INTO Cargos (idCargo, nombreCargo, idNumeroOcupacion) VALUES (8, 'Coordinador', 3);
-
-PRINT 'Cargos insertados';
+-- Insertar Cargos y Ocupaciones
+IF NOT EXISTS (SELECT 1 FROM NumeroOcupacion WHERE idNumeroOcupacion = 1) INSERT INTO NumeroOcupacion VALUES (1, 1001);
+IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 1) INSERT INTO Cargos VALUES (1, 'Administrador', 1);
+IF NOT EXISTS (SELECT 1 FROM NumeroOcupacion WHERE idNumeroOcupacion = 2) INSERT INTO NumeroOcupacion VALUES (2, 2001);
+IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 2) INSERT INTO Cargos VALUES (2, 'Contador', 2);
+IF NOT EXISTS (SELECT 1 FROM NumeroOcupacion WHERE idNumeroOcupacion = 3) INSERT INTO NumeroOcupacion VALUES (3, 3001);
+IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 3) INSERT INTO Cargos VALUES (3, 'Gerente', 3);
+IF NOT EXISTS (SELECT 1 FROM NumeroOcupacion WHERE idNumeroOcupacion = 4) INSERT INTO NumeroOcupacion VALUES (4, 4001);
+IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 4) INSERT INTO Cargos VALUES (4, 'Asistente', 4);
+IF NOT EXISTS (SELECT 1 FROM NumeroOcupacion WHERE idNumeroOcupacion = 5) INSERT INTO NumeroOcupacion VALUES (5, 5001);
+IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 5) INSERT INTO Cargos VALUES (5, 'Transportista', 5);
+IF NOT EXISTS (SELECT 1 FROM NumeroOcupacion WHERE idNumeroOcupacion = 6) INSERT INTO NumeroOcupacion VALUES (6, 6001);
+IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 6) INSERT INTO Cargos VALUES (6, 'Analista', 6);
+IF NOT EXISTS (SELECT 1 FROM NumeroOcupacion WHERE idNumeroOcupacion = 7) INSERT INTO NumeroOcupacion VALUES (7, 7001);
+IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 7) INSERT INTO Cargos VALUES (7, 'Supervisor', 7);
+IF NOT EXISTS (SELECT 1 FROM NumeroOcupacion WHERE idNumeroOcupacion = 8) INSERT INTO NumeroOcupacion VALUES (8, 8001);
+IF NOT EXISTS (SELECT 1 FROM Cargos WHERE idCargo = 8) INSERT INTO Cargos VALUES (8, 'Coordinador', 8);
+PRINT 'Cargos y Ocupaciones insertados';
 
 -- Insertar datos geográficos básicos
-IF NOT EXISTS (SELECT 1 FROM Provincia WHERE idProvincia = 1)
-    INSERT INTO Provincia (idProvincia, nombreProvincia) VALUES (1, 'San José');
-
-IF NOT EXISTS (SELECT 1 FROM Canton WHERE idCanton = 1)
-    INSERT INTO Canton (idCanton, nombreCanton, idProvincia) VALUES (1, 'San José', 1);
-
-IF NOT EXISTS (SELECT 1 FROM Distrito WHERE idDistrito = 1)
-    INSERT INTO Distrito (idDistrito, nombreDistrito, idCanton) VALUES (1, 'Carmen', 1);
-
-IF NOT EXISTS (SELECT 1 FROM Calle WHERE idCalle = 1)
-    INSERT INTO Calle (idCalle, nombreCalle, idDistrito) VALUES (1, 'Avenida Central', 1);
-
-IF NOT EXISTS (SELECT 1 FROM Direccion WHERE idDireccion = 1)
-    INSERT INTO Direccion (idDireccion, idProvincia, idCanton, idDistrito, idCalle) 
-    VALUES (1, 1, 1, 1, 1);
-
+IF NOT EXISTS (SELECT 1 FROM Provincia WHERE idProvincia = 1) INSERT INTO Provincia VALUES (1, 'San José');
+IF NOT EXISTS (SELECT 1 FROM Canton WHERE idCanton = 1) INSERT INTO Canton VALUES (1, 'San José', 1);
+IF NOT EXISTS (SELECT 1 FROM Distrito WHERE idDistrito = 1) INSERT INTO Distrito VALUES (1, 'Carmen', 1);
+IF NOT EXISTS (SELECT 1 FROM Calle WHERE idCalle = 1) INSERT INTO Calle VALUES (1, 'Avenida Central', 1);
+IF NOT EXISTS (SELECT 1 FROM Direccion WHERE idDireccion = 1) INSERT INTO Direccion VALUES (1, 1, 1, 1, 1);
 PRINT 'Datos geográficos básicos insertados';
 
 -- Insertar tipos de moneda
-IF NOT EXISTS (SELECT 1 FROM TipoMoneda WHERE nombreMoneda = 'Colones')
-    INSERT INTO TipoMoneda (nombreMoneda) VALUES ('Colones');
-
-IF NOT EXISTS (SELECT 1 FROM TipoMoneda WHERE nombreMoneda = 'Dólares')
-    INSERT INTO TipoMoneda (nombreMoneda) VALUES ('Dólares');
-
+IF NOT EXISTS (SELECT 1 FROM TipoMoneda WHERE nombreMoneda = 'Colones Costarricenses')
+    INSERT INTO TipoMoneda (nombreMoneda) VALUES ('Colones Costarricenses');
+IF NOT EXISTS (SELECT 1 FROM TipoMoneda WHERE nombreMoneda = 'Dólares Americanos')
+    INSERT INTO TipoMoneda (nombreMoneda) VALUES ('Dólares Americanos');
 PRINT 'Tipos de moneda insertados';
 
 -- Insertar bancos
-IF NOT EXISTS (SELECT 1 FROM Bancos WHERE nombreBanco = 'Banco Nacional')
-    INSERT INTO Bancos (nombreBanco) VALUES ('Banco Nacional');
-
+IF NOT EXISTS (SELECT 1 FROM Bancos WHERE nombreBanco = 'Banco Nacional de Costa Rica')
+    INSERT INTO Bancos (nombreBanco) VALUES ('Banco Nacional de Costa Rica');
 IF NOT EXISTS (SELECT 1 FROM Bancos WHERE nombreBanco = 'Banco de Costa Rica')
     INSERT INTO Bancos (nombreBanco) VALUES ('Banco de Costa Rica');
-
-IF NOT EXISTS (SELECT 1 FROM Bancos WHERE nombreBanco = 'BAC San José')
-    INSERT INTO Bancos (nombreBanco) VALUES ('BAC San José');
-
+IF NOT EXISTS (SELECT 1 FROM Bancos WHERE nombreBanco = 'BAC Credomatic')
+    INSERT INTO Bancos (nombreBanco) VALUES ('BAC Credomatic');
 PRINT 'Bancos insertados';
 
+PRINT '=== DATOS MAESTROS INSERTADOS EXITOSAMENTE ===';
+GO
+
 -- =====================================================================================
--- VERIFICACIÓN FINAL
+-- INSERCIÓN DE USUARIO ADMINISTRADOR Y DATOS ASOCIADOS
 -- =====================================================================================
+PRINT '=== INICIANDO CREACIÓN DE USUARIO Y ROL DE ADMINISTRADOR ===';
+GO
 
-PRINT '=== VERIFICACIÓN DE DATOS INSERTADOS ===';
+-- Suprimir la salida de recuento de filas afectadas para que los PRINT sean más claros
+SET NOCOUNT ON;
 
-SELECT 'Estados' as Tabla, COUNT(*) as Total FROM Estado;
-SELECT 'Cargos' as Tabla, COUNT(*) as Total FROM Cargos;
-SELECT 'Direcciones' as Tabla, COUNT(*) as Total FROM Direccion;
-SELECT 'TipoMoneda' as Tabla, COUNT(*) as Total FROM TipoMoneda;
-SELECT 'Bancos' as Tabla, COUNT(*) as Total FROM Bancos;
+-- Declarar variables para los IDs para asegurar consistencia
+DECLARE @AdminRoleId NVARCHAR(128) = '1';
+DECLARE @AdminUserId NVARCHAR(128); -- No lo predefinimos, lo obtendremos de la BD
 
-PRINT '=== BASE DE DATOS EMPLANIAPPBD CONFIGURADA EXITOSAMENTE ===';
-PRINT 'La base de datos está lista para usarse con el proyecto EmplaniApp';
-PRINT 'Tabla Empleado configurada con idEmpleado IDENTITY(1,1)';
-PRINT 'Todos los datos maestros han sido insertados';
+-- 1. Insertar el rol de Administrador si no existe
+IF NOT EXISTS (SELECT 1 FROM [dbo].[AspNetRoles] WHERE [Name] = 'Administrador')
+BEGIN
+    -- Usamos un ID predecible para el rol para consistencia
+    INSERT INTO [dbo].[AspNetRoles] ([Id], [Name])
+    VALUES (@AdminRoleId, 'Administrador');
+    PRINT 'Rol "Administrador" creado.';
+END
+ELSE
+BEGIN
+    -- Si ya existe, obtenemos su ID
+    SELECT @AdminRoleId = Id FROM [dbo].[AspNetRoles] WHERE [Name] = 'Administrador';
+    PRINT 'Rol "Administrador" ya existe.';
+END
 
--- Mostrar información útil
-SELECT 'INFORMACIÓN IMPORTANTE' as Mensaje, 'La tabla Empleado tiene idEmpleado como IDENTITY - NO asignar ID manualmente' as Detalle
-UNION ALL
-SELECT 'DATOS DISPONIBLES', CAST(COUNT(*) as VARCHAR) + ' cargos disponibles para asignar empleados' FROM Cargos
-UNION ALL
-SELECT 'MONEDAS', CAST(COUNT(*) as VARCHAR) + ' tipos de moneda configurados' FROM TipoMoneda
-UNION ALL
-SELECT 'BANCOS', CAST(COUNT(*) as VARCHAR) + ' bancos configurados' FROM Bancos;
+-- 2. Insertar el usuario 'admin' si no existe
+IF NOT EXISTS (SELECT 1 FROM [dbo].[AspNetUsers] WHERE [UserName] = 'admin')
+BEGIN
+    SET @AdminUserId = NEWID(); -- Generamos un nuevo GUID para el nuevo usuario
+    INSERT INTO [dbo].[AspNetUsers] 
+        ([Id], [Email], [EmailConfirmed], [PasswordHash], [SecurityStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEndDateUtc], [LockoutEnabled], [AccessFailedCount], [UserName])
+    VALUES 
+        (@AdminUserId, 
+         'admin@emplaniapp.com', 
+         1, 
+         'AKYg28DrixVhlLzGa4gZfcfNvg+Q+JwMtSwIj/w9REjSKIDRtbV8m62JCVoo7OoXYQ==', -- Hash para 'Password123.' (GENERADO POR LA APP)
+         NEWID(), -- Security Stamp
+         NULL, 0, 0, NULL, 1, 0, 
+         'admin');
+    PRINT 'Usuario "admin" creado.';
+END
+ELSE
+BEGIN
+    -- Si el usuario ya existe, obtenemos su ID para usarlo después
+    SELECT @AdminUserId = [Id] FROM [dbo].[AspNetUsers] WHERE [UserName] = 'admin';
+    PRINT 'Usuario "admin" ya existe.';
+END
 
-GO 
+-- 3. Vincular usuario 'admin' con rol 'Administrador'
+IF NOT EXISTS (SELECT 1 FROM [dbo].[AspNetUserRoles] WHERE [UserId] = @AdminUserId AND [RoleId] = @AdminRoleId)
+BEGIN
+    INSERT INTO [dbo].[AspNetUserRoles] ([UserId], [RoleId])
+    VALUES (@AdminUserId, @AdminRoleId);
+    PRINT 'Usuario "admin" asignado al rol "Administrador".';
+END
+ELSE
+BEGIN
+    PRINT 'Usuario "admin" ya estaba asignado al rol "Administrador".';
+END
+
+-- 4. Insertar o ACTUALIZAR el registro de Empleado para el usuario 'admin'
+-- Esto asegura que el IdNetUser esté correctamente vinculado, incluso si el script se corre varias veces.
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Empleado] WHERE [correoInstitucional] = 'admin@emplaniapp.com')
+BEGIN
+    -- Se usan valores por defecto para rellenar los campos obligatorios.
+    INSERT INTO [dbo].[Empleado] (
+        [nombre], [primerApellido], [segundoApellido], [fechaNacimiento], [cedula], 
+        [numeroTelefonico], [correoInstitucional], [idDireccion], [idCargo], [fechaContratacion], 
+        [fechaSalida], [periocidadPago], [salarioDiario], [salarioAprobado], [salarioPorMinuto], 
+        [salarioPoHora], [salarioPorHoraExtra], [idTipoMoneda], [cuentaIBAN], [idBanco], 
+        [idEstado], [IdNetUser])
+    VALUES (
+        'Admin', 'User', '', '1990-01-01', 999999999,
+        '00000000', 'admin@emplaniapp.com', 1, 1, GETDATE(),
+        NULL, 'Quincenal', 0, 0, 0,
+        0, 0, 1, 'CR00000000000000000000', 1,
+        1, @AdminUserId
+    );
+    PRINT 'Registro de Empleado para el usuario "admin" creado y vinculado.';
+END
+ELSE
+BEGIN
+    -- Si el empleado ya existe, nos aseguramos de que el IdNetUser sea el correcto.
+    UPDATE [dbo].[Empleado]
+    SET [IdNetUser] = @AdminUserId
+    WHERE [correoInstitucional] = 'admin@emplaniapp.com' AND [IdNetUser] IS NULL;
+    PRINT 'El registro de Empleado para "admin" ya existía, se aseguró el vínculo con IdNetUser.';
+END
+
+-- Resetear NOCOUNT a su estado original
+SET NOCOUNT OFF;
+
+PRINT '=== CONFIGURACIÓN DE USUARIO "admin" COMPLETADA ===';
+GO
+
+-- Finalmente, se añade la columna opcional segundoNombre como se especificó
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'segundoNombre' AND Object_ID = Object_ID(N'dbo.Empleado'))
+BEGIN
+    ALTER TABLE Empleado ADD segundoNombre NVARCHAR(MAX) NULL;
+    PRINT 'Columna [segundoNombre] añadida a la tabla Empleado.';
+END
+GO
+
+PRINT '=== BASE DE DATOS EMPLANIAPPBDPrueba CONFIGURADA EXITOSAMENTE ===';
+GO
+
+-- Script para agregar los roles 'Contador' y 'Empleado' a la base de datos.
+-- Ejecuta este script en la base de datos de Emplaniapp.
+
+-- Se inserta el rol de Contador
+-- La función NEWID() genera un identificador único para el rol.
+IF NOT EXISTS (SELECT 1 FROM dbo.AspNetRoles WHERE Name = 'Contador')
+BEGIN
+    INSERT INTO dbo.AspNetRoles (Id, Name) VALUES (NEWID(), 'Contador');
+    PRINT 'Rol "Contador" agregado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El rol "Contador" ya existe.';
+END
+GO
+
+-- Se inserta el rol de Empleado
+IF NOT EXISTS (SELECT 1 FROM dbo.AspNetRoles WHERE Name = 'Empleado')
+BEGIN
+    INSERT INTO dbo.AspNetRoles (Id, Name) VALUES (NEWID(), 'Empleado');
+    PRINT 'Rol "Empleado" agregado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El rol "Empleado" ya existe.';
+END
+GO
