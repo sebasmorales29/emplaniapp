@@ -163,3 +163,9 @@ C:\Users\sebas\OneDrive\Escritorio\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNego
 C:\Users\sebas\OneDrive\Escritorio\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplania.A24F63F7.Up2Date
 C:\Users\sebas\OneDrive\Escritorio\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplaniapp.LogicaDeNegocio.dll
 C:\Users\sebas\OneDrive\Escritorio\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplaniapp.LogicaDeNegocio.pdb
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Microsoft.AspNet.Identity.Core.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Microsoft.AspNet.Identity.Core.xml
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\es\Microsoft.AspNet.Identity.EntityFramework.resources.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\es\Microsoft.AspNet.Identity.Core.resources.dll
