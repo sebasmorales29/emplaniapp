@@ -1,26 +1,10 @@
 ﻿// IdentityModels.cs
-using System.Data.Entity;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
+// El contenido (ApplicationUser y ApplicationDbContext) se ha movido
+// a Emplaniapp.Abstracciones y Emplaniapp.AccesoADatos para seguir
+// una arquitectura en capas correcta. Este archivo se puede eliminar
+// o dejar en blanco de forma segura.
 
 namespace Emplaniapp.UI.Models
 {
-    public class ApplicationUser : IdentityUser
-    {
-        // Puedes añadir propiedades extra aquí, por ejemplo:
-        // public string NombreCompleto { get; set; }
-    }
-
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
-    {
-        public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
-        {
-        }
-
-        public static ApplicationDbContext Create()
-        {
-            return new ApplicationDbContext();
-        }
-    }
+    
 }

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace Emplaniapp.UI.Models
 {
@@ -36,7 +38,22 @@ namespace Emplaniapp.UI.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirmar contraseña")]
-        [Compare("Password", ErrorMessage = "La contraseña y la confirmación no coinciden.")]
+        [System.ComponentModel.DataAnnotations.Compare(
+        "Password",
+        ErrorMessage = "La contraseña y la confirmación no coinciden."
+    )]
         public string ConfirmPassword { get; set; }
+  
+
+        // Nuevo: rol seleccionado
+        [Required]
+        [Display(Name = "Rol")]
+        public string Role { get; set; }
+
+        [Display(Name = "Cédula (sólo para rol Empleado)")]
+        public int? Cedula { get; set; }
+
+        // Nueva: lista de roles para el dropdown
+        public IEnumerable<SelectListItem> RolesList { get; set; }
     }
 }

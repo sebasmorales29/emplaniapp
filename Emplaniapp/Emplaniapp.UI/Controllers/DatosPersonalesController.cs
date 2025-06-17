@@ -1,15 +1,47 @@
-﻿/**
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 using Emplaniapp.Abstracciones.ModelosParaUI;
+using Emplaniapp.Abstracciones.InterfacesParaUI;
+using Emplaniapp.LogicaDeNegocio;
+using Emplaniapp.UI.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using System.IO;
 
 namespace Emplaniapp.UI.Controllers
 {
+    [Authorize]
     public class DatosPersonalesController : Controller
     {
+        private IDatosPersonalesLN _datosPersonalesLN;
+        private IObservacionLN _observacionLN;
+        private ApplicationUserManager _userManager;
+
+        // Constructor para uso normal del controlador
+        public DatosPersonalesController()
+        {
+            _datosPersonalesLN = new DatosPersonalesLN();
+            _observacionLN = new ObservacionLN();
+        }
+
+        // Constructor para inyección de dependencias (usado por Identity/OWIN)
+        public DatosPersonalesController(ApplicationUserManager userManager)
+        {
+            UserManager = userManager;
+            _datosPersonalesLN = new DatosPersonalesLN();
+            _observacionLN = new ObservacionLN();
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get => _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            private set => _userManager = value;
+        }
+
         // Hacer un layout parcial según figma (propuesta 2)
 
         // 1. Datos Personales
@@ -25,10 +57,37 @@ namespace Emplaniapp.UI.Controllers
             return View();
         }
 
-        // GET: DatosPersonales/Details/5
-        public ActionResult Details(int id)
+        // ACCIÓN UNIFICADA PARA MOSTRAR EL PERFIL DEL EMPLEADO Y SUS SECCIONES
+        public ActionResult Detalles(int? id, string seccion = "Datos personales")
         {
-            return View();
+            int idEmpleado;
+
+            if (id.HasValue)
+            {
+                // Si se provee un ID en la URL (ej: admin viendo un perfil)
+                idEmpleado = id.Value;
+            }
+            else
+            {
+                // Si no hay ID, buscarlo en las claims del usuario (ej: empleado viendo su propio perfil)
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                var idEmpleadoClaim = claimsIdentity?.FindFirst("idEmpleado");
+
+                if (idEmpleadoClaim == null || !int.TryParse(idEmpleadoClaim.Value, out idEmpleado))
+                {
+                    return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "No se pudo identificar al empleado.");
+                }
+            }
+
+            var empleado = _datosPersonalesLN.ObtenerEmpleadoPorId(idEmpleado);
+            
+            if (empleado == null)
+            {
+                return HttpNotFound();
+            }
+
+            ViewBag.Seccion = seccion;
+            return View(empleado);
         }
 
         // GET: DatosPersonales/Create
@@ -44,7 +103,6 @@ namespace Emplaniapp.UI.Controllers
             try
             {
                 // TODO: Add insert logic here
-
                 return RedirectToAction("Index");
             }
             catch
@@ -66,7 +124,6 @@ namespace Emplaniapp.UI.Controllers
             try
             {
                 // TODO: Add update logic here
-
                 return RedirectToAction("Index");
             }
             catch
@@ -88,7 +145,6 @@ namespace Emplaniapp.UI.Controllers
             try
             {
                 // TODO: Add delete logic here
-
                 return RedirectToAction("Index");
             }
             catch
@@ -97,114 +153,60 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        // GET: DatosPersonales/Detalles/5
-        public ActionResult Detalles(int id)
+        // GET: DatosPersonales/EditarDatosPersonales/5
+        public ActionResult EditarDatosPersonales(int id)
         {
-            // En un escenario real, aquí obtendríamos los datos del empleado de la base de datos
-            // Por ahora, crearemos un empleado de ejemplo similar al de la imagen
-            var empleado = ObtenerEmpleadoPorId(id);
-            
+            var empleado = _datosPersonalesLN.ObtenerEmpleadoPorId(id);
             if (empleado == null)
             {
                 return HttpNotFound();
             }
-
             return View(empleado);
         }
 
-        // GET: DatosPersonales/Historial/5
-        public ActionResult Historial(int id)
+        // POST: DatosPersonales/ActualizarDatosPersonales
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ActualizarDatosPersonales(EmpleadoDto model)
         {
-            var empleado = ObtenerEmpleadoPorId(id);
-            
-            if (empleado == null)
+            if (ModelState.IsValid)
             {
-                return HttpNotFound();
+                bool resultado = _datosPersonalesLN.ActualizarDatosPersonales(model);
+                if (resultado)
+                {
+                    TempData["Mensaje"] = "Datos personales actualizados con éxito.";
+                    return RedirectToAction("Detalles", new { id = model.idEmpleado });
+                }
+                else
+                {
+                    ModelState.AddModelError("", "No se pudieron actualizar los datos.");
+                }
             }
-
-            ViewBag.Seccion = "Historial";
-            return View("Detalles", empleado);
-        }
-
-        // GET: DatosPersonales/Remuneraciones/5
-        public ActionResult Remuneraciones(int id)
-        {
-            var empleado = ObtenerEmpleadoPorId(id);
-            
-            if (empleado == null)
-            {
-                return HttpNotFound();
-            }
-
-            ViewBag.Seccion = "Remuneraciones";
-            return View("Detalles", empleado);
-        }
-
-        // GET: DatosPersonales/Retenciones/5
-        public ActionResult Retenciones(int id)
-        {
-            var empleado = ObtenerEmpleadoPorId(id);
-            
-            if (empleado == null)
-            {
-                return HttpNotFound();
-            }
-
-            ViewBag.Seccion = "Retenciones";
-            return View("Detalles", empleado);
-        }
-
-        // GET: DatosPersonales/Observaciones/5
-        public ActionResult Observaciones(int id)
-        {
-            var empleado = ObtenerEmpleadoPorId(id);
-            
-            if (empleado == null)
-            {
-                return HttpNotFound();
-            }
-
-            ViewBag.Seccion = "Observaciones";
-            return View("Detalles", empleado);
-        }
-
-        // GET: DatosPersonales/Liquidacion/5
-        public ActionResult Liquidacion(int id)
-        {
-            var empleado = ObtenerEmpleadoPorId(id);
-            
-            if (empleado == null)
-            {
-                return HttpNotFound();
-            }
-
-            ViewBag.Seccion = "Liquidación";
-            return View("Detalles", empleado);
+            return View("EditarDatosPersonales", model);
         }
 
         // GET: DatosPersonales/EditarDatosLaborales/5
         public ActionResult EditarDatosLaborales(int id)
         {
-            var empleado = ObtenerEmpleadoPorId(id);
+            var empleado = _datosPersonalesLN.ObtenerEmpleadoPorId(id);
             
             if (empleado == null)
             {
                 return HttpNotFound();
             }
             
-            // Crear un modelo para la edición de datos laborales
             var datosLaborales = new DatosLaboralesViewModel
             {
                 IdEmpleado = empleado.idEmpleado,
-                NumeroOcupacion = "9832", // En un caso real, obtendríamos este dato
+                NumeroOcupacion = "9832", // Por ahora hardcodeado
+                IdCargo = empleado.idCargo,
                 Cargo = empleado.nombreCargo,
                 FechaIngreso = empleado.fechaContratacion,
                 FechaSalida = empleado.fechaSalida,
-                InicioVacaciones = null // En un caso real, obtendríamos este dato
+                InicioVacaciones = null // Por ahora null
             };
             
-            // Aquí cargaríamos listas para dropdowns como cargos disponibles
-            ViewBag.Cargos = ObtenerCargos();
+            ViewBag.Cargos = ObtenerCargosSelectList(empleado.idCargo);
             
             return View(datosLaborales);
         }
@@ -216,53 +218,54 @@ namespace Emplaniapp.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+                bool resultado = _datosPersonalesLN.ActualizarDatosLaborales(
+                    model.IdEmpleado, 
+                    model.IdCargo, 
+                    model.FechaIngreso, 
+                    model.FechaSalida);
+
+                if (resultado)
                 {
-                    // Aquí actualizaríamos los datos en la base de datos
-                    // Por ahora solo redirigimos de vuelta a los detalles
-                    
-                    // Simulamos éxito
                     TempData["Mensaje"] = "Datos laborales actualizados correctamente";
+                    TempData["TipoMensaje"] = "success";
                     return RedirectToAction("Detalles", new { id = model.IdEmpleado });
                 }
-                catch (Exception ex)
+                else
                 {
-                    ModelState.AddModelError("", "Error al guardar los cambios: " + ex.Message);
+                    ModelState.AddModelError("", "Error al guardar los cambios");
                 }
             }
             
-            // Si llegamos aquí, algo falló, recargamos los datos para el formulario
-            ViewBag.Cargos = ObtenerCargos();
+            ViewBag.Cargos = ObtenerCargosSelectList(model.IdCargo);
             return View(model);
         }
-
 
         // GET: DatosPersonales/EditarDatosFinancieros/5
         public ActionResult EditarDatosFinancieros(int id)
         {
-            var empleado = ObtenerEmpleadoPorId(id);
+            var empleado = _datosPersonalesLN.ObtenerEmpleadoPorId(id);
             
             if (empleado == null)
             {
                 return HttpNotFound();
             }
             
-            // Crear un modelo para la edición de datos financieros
             var datosFinancieros = new DatosFinancierosViewModel
             {
                 IdEmpleado = empleado.idEmpleado,
                 PeriocidadPago = empleado.periocidadPago,
                 SalarioAprobado = empleado.salarioAprobado,
                 SalarioDiario = empleado.salarioDiario,
+                IdTipoMoneda = empleado.idMoneda,
                 TipoMoneda = empleado.nombreMoneda,
                 CuentaIBAN = empleado.cuentaIBAN,
+                IdBanco = empleado.idBanco,
                 Banco = empleado.nombreBanco
             };
             
-            // Aquí cargaríamos listas para dropdowns
-            ViewBag.TiposMoneda = ObtenerTiposMoneda();
-            ViewBag.Bancos = ObtenerBancos();
-            ViewBag.PeriocidadesPago = ObtenerPeriocidadesPago();
+            ViewBag.TiposMoneda = ObtenerTiposMonedasSelectList(empleado.idMoneda);
+            ViewBag.Bancos = ObtenerBancosSelectList(empleado.idBanco);
+            ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList(empleado.periocidadPago);
             
             return View(datosFinancieros);
         }
@@ -274,138 +277,257 @@ namespace Emplaniapp.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+                bool resultado = _datosPersonalesLN.ActualizarDatosFinancieros(
+                    model.IdEmpleado,
+                    model.SalarioAprobado,
+                    model.SalarioDiario,
+                    model.PeriocidadPago,
+                    model.IdTipoMoneda,
+                    model.CuentaIBAN,
+                    model.IdBanco);
+
+                if (resultado)
                 {
-                    // Aquí actualizaríamos los datos en la base de datos
-                    // Por ahora solo redirigimos de vuelta a los detalles
-                    
-                    // Simulamos éxito
                     TempData["Mensaje"] = "Datos financieros actualizados correctamente";
+                    TempData["TipoMensaje"] = "success";
                     return RedirectToAction("Detalles", new { id = model.IdEmpleado });
                 }
-                catch (Exception ex)
+                else
                 {
-                    ModelState.AddModelError("", "Error al guardar los cambios: " + ex.Message);
+                    ModelState.AddModelError("", "Error al guardar los cambios");
                 }
             }
             
-            // Si llegamos aquí, algo falló, recargamos los datos para el formulario
-            ViewBag.TiposMoneda = ObtenerTiposMoneda();
-            ViewBag.Bancos = ObtenerBancos();
-            ViewBag.PeriocidadesPago = ObtenerPeriocidadesPago();
+            ViewBag.TiposMoneda = ObtenerTiposMonedasSelectList(model.IdTipoMoneda);
+            ViewBag.Bancos = ObtenerBancosSelectList(model.IdBanco);
+            ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList(model.PeriocidadPago);
             return View(model);
         }
 
         #region Métodos Auxiliares
         
-        // Método para obtener un empleado por su ID (simulado por ahora)
-        private EmpleadoDto ObtenerEmpleadoPorId(int id)
+        private SelectList ObtenerCargosSelectList(object selectedValue = null)
         {
-            // En un escenario real, esto sería una consulta a la base de datos
-            // Por ahora, creamos un empleado de ejemplo basado en la imagen
-            return new EmpleadoDto
-            {
-                idEmpleado = id,
-                nombre = "Yazmin",
-                segundoNombre = "",
-                primerApellido = "Rivera",
-                segundoApellido = "Rodríguez",
-                fechaNacimiento = new DateTime(1992, 11, 23),
-                cedula = 128048070,
-                numeroTelefonico = "7821-9903",
-                correoInstitucional = "yazriv@gmail.com",
-                idDireccion = 1,
-                idCargo = 2,
-                nombreCargo = "Contador",
-                fechaContratacion = new DateTime(2021, 9, 9),
-                fechaSalida = null,
-                periocidadPago = "Quincenal",
-                salarioDiario = 13400,
-                salarioAprobado = 1545000,
-                salarioPorMinuto = 27.91,
-                salarioPoHora = 1675.00,
-                salarioPorHoraExtra = 3350.00,
-                idMoneda = 1,
-                nombreMoneda = "Colones",
-                cuentaIBAN = "3456789087456789098890987",
-                idBanco = 1,
-                nombreBanco = "BN",
-                idEstado = 1,
-                nombreEstado = "Activo"
-            };
+            var cargos = _datosPersonalesLN.ObtenerCargos()
+                .Select(c => new SelectListItem
+                {
+                    Value = c.idCargo.ToString(),
+                    Text = c.nombreCargo
+                }).ToList();
+            
+            return new SelectList(cargos, "Value", "Text", selectedValue);
         }
-        
-        // Método para obtener la lista de cargos (simulado)
-        private List<SelectListItem> ObtenerCargos()
+
+        private SelectList ObtenerTiposMonedasSelectList(object selectedValue = null)
         {
-            return new List<SelectListItem>
-            {
-                new SelectListItem { Value = "1", Text = "Administrador" },
-                new SelectListItem { Value = "2", Text = "Contador" },
-                new SelectListItem { Value = "3", Text = "Gerente" },
-                new SelectListItem { Value = "4", Text = "Recepcionista" },
-                new SelectListItem { Value = "5", Text = "Desarrollador" }
-            };
+            var monedas = _datosPersonalesLN.ObtenerTiposMoneda()
+                .Select(m => new SelectListItem
+                {
+                    Value = m.idMoneda.ToString(),
+                    Text = m.nombreMoneda
+                }).ToList();
+            
+            return new SelectList(monedas, "Value", "Text", selectedValue);
         }
-        
-        // Método para obtener tipos de moneda (simulado)
-        private List<SelectListItem> ObtenerTiposMoneda()
+
+        private SelectList ObtenerBancosSelectList(object selectedValue = null)
         {
-            return new List<SelectListItem>
-            {
-                new SelectListItem { Value = "1", Text = "Colones" },
-                new SelectListItem { Value = "2", Text = "Dólares" },
-                new SelectListItem { Value = "3", Text = "Euros" }
-            };
+            var bancos = _datosPersonalesLN.ObtenerBancos()
+                .Select(b => new SelectListItem
+                {
+                    Value = b.idBanco.ToString(),
+                    Text = b.nombreBanco
+                }).ToList();
+            
+            return new SelectList(bancos, "Value", "Text", selectedValue);
         }
-        
-        // Método para obtener bancos (simulado)
-        private List<SelectListItem> ObtenerBancos()
+
+        private SelectList ObtenerPeriocidadesPagoSelectList(object selectedValue = null)
         {
-            return new List<SelectListItem>
+            var periodicidades = new List<object>
             {
-                new SelectListItem { Value = "1", Text = "BN" },
-                new SelectListItem { Value = "2", Text = "BCR" },
-                new SelectListItem { Value = "3", Text = "BAC" },
-                new SelectListItem { Value = "4", Text = "Scotiabank" }
+                new { Value = "Quincenal", Text = "Quincenal" },
+                new { Value = "Mensual", Text = "Mensual" }
             };
+            return new SelectList(periodicidades, "Value", "Text", selectedValue);
         }
-        
-        // Método para obtener periocidades de pago (simulado)
-        private List<SelectListItem> ObtenerPeriocidadesPago()
+
+        #endregion
+
+        #region Observaciones
+
+        // GET: DatosPersonales/ObtenerListaObservaciones/5
+        [HttpGet]
+        public ActionResult ObtenerListaObservaciones(int id, int? ano, int? mes, string usuarioId)
         {
-            return new List<SelectListItem>
+            // 1. Obtener TODAS las observaciones para este empleado para popular los filtros
+            var todasLasObservaciones = _observacionLN.ObtenerObservacionesPorEmpleado(id);
+
+            // 2. Llenar los ViewBags para los dropdowns de filtros
+            ViewBag.AnosDisponibles = todasLasObservaciones
+                .Select(o => o.FechaCreacion.Year)
+                .Distinct()
+                .OrderByDescending(y => y)
+                .ToList();
+
+            ViewBag.MesesDisponibles = Enumerable.Range(1, 12).Select(m => new SelectListItem
             {
-                new SelectListItem { Value = "Quincenal", Text = "Quincenal" },
-                new SelectListItem { Value = "Mensual", Text = "Mensual" },
-                new SelectListItem { Value = "Semanal", Text = "Semanal" }
-            };
+                Value = m.ToString(),
+                Text = new DateTime(2000, m, 1).ToString("MMMM")
+            }).ToList();
+
+            var usuariosIds = todasLasObservaciones
+                .Select(o => o.IdUsuarioCreo)
+                .Union(todasLasObservaciones.Select(o => o.IdUsuarioEdito))
+                .Where(uid => !string.IsNullOrEmpty(uid))
+                .Distinct()
+                .ToList();
+
+            var usuariosDisponibles = new List<SelectListItem>();
+            if (usuariosIds.Any())
+            {
+                usuariosDisponibles = UserManager.Users
+                    .Where(u => usuariosIds.Contains(u.Id))
+                    .Select(u => new SelectListItem { Value = u.Id, Text = u.UserName })
+                    .ToList();
+            }
+            ViewBag.UsuariosDisponibles = usuariosDisponibles;
+
+            // Guardar los filtros seleccionados para devolverlos a la vista
+            ViewBag.AnoSeleccionado = ano;
+            ViewBag.MesSeleccionado = mes;
+            ViewBag.UsuarioSeleccionado = usuarioId;
+            ViewBag.FiltrosActivos = ano.HasValue || mes.HasValue || !string.IsNullOrEmpty(usuarioId);
+
+
+            // 3. Filtrar la lista de observaciones según los parámetros recibidos
+            var observacionesFiltradas = todasLasObservaciones;
+
+            if (ano.HasValue)
+            {
+                observacionesFiltradas = observacionesFiltradas.Where(o => o.FechaCreacion.Year == ano.Value).ToList();
+            }
+            if (mes.HasValue)
+            {
+                observacionesFiltradas = observacionesFiltradas.Where(o => o.FechaCreacion.Month == mes.Value).ToList();
+            }
+            if (!string.IsNullOrEmpty(usuarioId))
+            {
+                observacionesFiltradas = observacionesFiltradas.Where(o => o.IdUsuarioCreo == usuarioId || o.IdUsuarioEdito == usuarioId).ToList();
+            }
+
+            // 4. Poblar los nombres de usuario para la lista filtrada
+            var userIdsParaMostrar = observacionesFiltradas
+                .Select(o => o.IdUsuarioCreo)
+                .Concat(observacionesFiltradas.Select(o => o.IdUsuarioEdito))
+                .Where(uid => !string.IsNullOrEmpty(uid))
+                .Distinct()
+                .ToList();
+
+            var users = new Dictionary<string, string>();
+            if (userIdsParaMostrar.Any())
+            {
+                users = UserManager.Users
+                    .Where(u => userIdsParaMostrar.Contains(u.Id))
+                    .ToDictionary(u => u.Id, u => u.UserName);
+            }
+
+            foreach (var obs in observacionesFiltradas)
+            {
+                if (!string.IsNullOrEmpty(obs.IdUsuarioCreo))
+                {
+                    obs.NombreUsuarioCreo = users.TryGetValue(obs.IdUsuarioCreo, out var userName) ? userName : "N/A";
+                }
+                if (!string.IsNullOrEmpty(obs.IdUsuarioEdito))
+                {
+                    obs.NombreUsuarioEdito = users.TryGetValue(obs.IdUsuarioEdito, out var userName) ? userName : "N/A";
+                }
+            }
+
+
+            // 5. Renderizar y devolver el resultado
+            ViewBag.IdEmpleado = id;
+            string partialViewHtml = RenderRazorViewToString("_ObservacionesList", observacionesFiltradas);
+            return Json(new { success = true, html = partialViewHtml }, JsonRequestBehavior.AllowGet);
         }
-        
+
+        // GET: DatosPersonales/AgregarObservacion
+        [HttpGet]
+        public ActionResult AgregarObservacion(int idEmpleado)
+        {
+            var model = new ObservacionDto
+            {
+                IdEmpleado = idEmpleado
+            };
+            return PartialView("_ObservacionForm", model);
+        }
+
+        // POST: DatosPersonales/AgregarObservacion
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AgregarObservacion(ObservacionDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.IdUsuarioCreo = User.Identity.GetUserId();
+                model.FechaCreacion = DateTime.Now;
+
+                bool resultado = _observacionLN.GuardarObservacion(model);
+
+                if (resultado)
+                {
+                    return Json(new { success = true });
+                }
+                ModelState.AddModelError("", "Ocurrió un error al guardar la observación.");
+            }
+            return PartialView("_ObservacionForm", model);
+        }
+
+        // GET: DatosPersonales/EditarObservacion/5
+        [HttpGet]
+        public ActionResult EditarObservacion(int id)
+        {
+            var model = _observacionLN.ObtenerObservacionPorId(id);
+            if (model == null)
+            {
+                return HttpNotFound();
+            }
+            return PartialView("_ObservacionForm", model);
+        }
+
+        // POST: DatosPersonales/EditarObservacion/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditarObservacion(ObservacionDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.IdUsuarioEdito = User.Identity.GetUserId();
+                model.FechaEdicion = DateTime.Now;
+
+                bool resultado = _observacionLN.ActualizarObservacion(model);
+
+                if (resultado)
+                {
+                    return Json(new { success = true });
+                }
+                ModelState.AddModelError("", "Ocurrió un error al guardar los cambios.");
+            }
+            return PartialView("_ObservacionForm", model);
+        }
+
+        protected string RenderRazorViewToString(string viewName, object model)
+        {
+            ViewData.Model = model;
+            using (var sw = new StringWriter())
+            {
+                var viewResult = ViewEngines.Engines.FindPartialView(ControllerContext, viewName);
+                var viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, sw);
+                viewResult.View.Render(viewContext, sw);
+                viewResult.ViewEngine.ReleaseView(ControllerContext, viewResult.View);
+                return sw.GetStringBuilder().ToString();
+            }
+        }
         #endregion
     }
-
-    // ViewModel para la edición de datos laborales
-    public class DatosLaboralesViewModel
-    {
-        public int IdEmpleado { get; set; }
-        public string NumeroOcupacion { get; set; }
-        public string Cargo { get; set; }
-        public DateTime FechaIngreso { get; set; }
-        public DateTime? FechaSalida { get; set; }
-        public DateTime? InicioVacaciones { get; set; }
-    }
-
-    // ViewModel para la edición de datos financieros
-    public class DatosFinancierosViewModel
-    {
-        public int IdEmpleado { get; set; }
-        public string PeriocidadPago { get; set; }
-        public double SalarioAprobado { get; set; }
-        public double SalarioDiario { get; set; }
-        public string TipoMoneda { get; set; }
-        public string CuentaIBAN { get; set; }
-        public string Banco { get; set; }
-    }
 }
-**/

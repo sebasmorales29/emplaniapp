@@ -51,10 +51,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatosPersonalesLN.cs" />
     <Compile Include="Hoja_Resumen\ListarHojaResumen\listarHojaResumenLN.cs" />
+    <Compile Include="ObservacionLN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tipo_Remuneracion\AgregarTipoRemuneracionLN.cs" />
+    <Compile Include="Tipo_Remuneracion\EditarTipoRemuneracionLN.cs" />
+    <Compile Include="Tipo_Remuneracion\EliminarTipoRemuneracionLN.cs" />
     <Compile Include="Tipo_Remuneracion\ListarTipoRemuneracionLN.cs" />
+    <Compile Include="Tipo_Remuneracion\ObtenerIdTipoRemuneracionLN.cs" />
+    <Compile Include="Tipo_Retencion\AgregarTipoRetencionLN.cs" />
+    <Compile Include="Tipo_Retencion\EditarTipoRetencionLN.cs" />
+    <Compile Include="Tipo_Retencion\EliminarTipoRetencionLN.cs" />
     <Compile Include="Tipo_Retencion\ListarTipoRetencionLN.cs" />
+    <Compile Include="Tipo_Retencion\ObtenerIdTipoRetencionLN.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Emplaniapp.Abstracciones\Emplaniapp.Abstracciones.csproj">

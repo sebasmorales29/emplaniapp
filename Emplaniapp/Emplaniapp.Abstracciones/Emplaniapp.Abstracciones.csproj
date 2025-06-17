@@ -31,6 +31,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\\packages\\EntityFramework.6.4.4\\lib\\net45\\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\\packages\\EntityFramework.6.4.4\\lib\\net45\\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\\packages\\Microsoft.AspNet.Identity.Core.2.2.4\\lib\\net45\\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\\packages\\Microsoft.AspNet.Identity.EntityFramework.2.2.4\\lib\\net45\\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -42,12 +54,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entidades\ApplicationUser.cs" />
+    <Compile Include="Entidades\Observacion.cs" />
     <Compile Include="InterfacesAD\Hoja_Resumen\ListarHojaResumen\IListarHojaResumenAD.cs" />
+    <Compile Include="InterfacesAD\IDatosPersonalesAD.cs" />
+    <Compile Include="InterfacesAD\IObservacionAD.cs" />
+    <Compile Include="InterfacesAD\Tipo_Remuneracion\IAgregarTipoRemuneracionAD.cs" />
+    <Compile Include="InterfacesAD\Tipo_Remuneracion\IEditarTipoRemuneracionAD.cs" />
+    <Compile Include="InterfacesAD\Tipo_Remuneracion\IEliminarTipoRemuneracionAD.cs" />
     <Compile Include="InterfacesAD\Tipo_Remuneracion\IListarTipoRemuneracionAD.cs" />
+    <Compile Include="InterfacesAD\Tipo_Remuneracion\IObtenerIdTipoRemuneracionAD.cs" />
+    <Compile Include="InterfacesAD\Tipo_Retencion\IAgregarTipoRetencionAD.cs" />
+    <Compile Include="InterfacesAD\Tipo_Retencion\IEditarTipoRetencionAD.cs" />
+    <Compile Include="InterfacesAD\Tipo_Retencion\IEliminarTipoRetencionAD.cs" />
     <Compile Include="InterfacesAD\Tipo_Retencion\IListarTipoRetencionAD.cs" />
+    <Compile Include="InterfacesAD\Tipo_Retencion\IObtenerIdTipoRetencionAD.cs" />
     <Compile Include="InterfacesParaUI\Hoja_Resumen\ListarHojaResumen\IlistarHojaResumenLN.cs" />
+    <Compile Include="InterfacesParaUI\IDatosPersonalesLN.cs" />
+    <Compile Include="InterfacesParaUI\IObservacionLN.cs" />
+    <Compile Include="InterfacesParaUI\Tipo_Remuneracion\IAgregarTipoRemuneracionLN.cs" />
+    <Compile Include="InterfacesParaUI\Tipo_Remuneracion\IEditarTipoRemuneracionLN.cs" />
+    <Compile Include="InterfacesParaUI\Tipo_Remuneracion\IEliminarTipoRemuneracionLN.cs" />
     <Compile Include="InterfacesParaUI\Tipo_Remuneracion\IListarTipoRemuneracionLN.cs" />
+    <Compile Include="InterfacesParaUI\Tipo_Remuneracion\IObtenerIdTipoRemuneracionLN.cs" />
+    <Compile Include="InterfacesParaUI\Tipo_Retenciones\IAgregarTipoRetencionLN.cs" />
+    <Compile Include="InterfacesParaUI\Tipo_Retenciones\IEditarTipoRetencionLN.cs" />
+    <Compile Include="InterfacesParaUI\Tipo_Retenciones\IEliminarTipoRetencionLN.cs" />
     <Compile Include="InterfacesParaUI\Tipo_Retenciones\IListarTipoRetencionLN.cs" />
+    <Compile Include="InterfacesParaUI\Tipo_Retenciones\IObtenerIdTipoRetencionLN.cs" />
     <Compile Include="ModelosAD\Cargos.cs" />
     <Compile Include="ModelosAD\Empleado.cs" />
     <Compile Include="ModelosAD\Estado.cs" />
@@ -67,8 +101,8 @@
     <Compile Include="ModelosParaUI\EmpleadoDto.cs" />
     <Compile Include="ModelosParaUI\EstadoDto.cs" />
     <Compile Include="ModelosParaUI\HojaResumenDto.cs" />
-    <Compile Include="ModelosParaUI\LiquidacionesYObservacionesDto.cs" />
     <Compile Include="ModelosParaUI\NumeroOcupacioDto.cs" />
+    <Compile Include="ModelosParaUI\ObservacionDto.cs" />
     <Compile Include="ModelosParaUI\ProvinciaDto.cs" />
     <Compile Include="ModelosParaUI\MonedaDto.cs" />
     <Compile Include="ModelosParaUI\RemuneracionDto.cs" />
@@ -76,6 +110,9 @@
     <Compile Include="ModelosParaUI\TipoRemuneracionDto.cs" />
     <Compile Include="ModelosParaUI\TipoRetencionDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

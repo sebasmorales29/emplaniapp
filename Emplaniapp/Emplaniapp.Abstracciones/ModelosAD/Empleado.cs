@@ -14,6 +14,7 @@ namespace Emplaniapp.Abstracciones.ModelosAD
         
         [Column("idEmpleado")]
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int idEmpleado { get; set; }
         public string nombre { get; set; }
         public string segundoNombre { get; set; }
@@ -36,7 +37,10 @@ namespace Emplaniapp.Abstracciones.ModelosAD
         public int idTipoMoneda { get; set; }
         public string cuentaIBAN { get; set; }
         public int idBanco { get; set; }
+        [Column("idEstado")]
         public int idEstado { get; set; }
+        [Column("IdNetUser")]
+        public string IdNetUser { get; set; }
 
     }
 }
