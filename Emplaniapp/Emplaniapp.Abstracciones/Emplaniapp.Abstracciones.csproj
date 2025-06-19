@@ -79,8 +79,8 @@
     <Compile Include="ModelosAD\NumeroOcupacion.cs" />
     <Compile Include="ModelosAD\Observacion.cs" />
     <Compile Include="InterfacesAD\Hoja_Resumen\ListarHojaResumen\IListarHojaResumenAD.cs" />
-    <Compile Include="InterfacesAD\IDatosPersonalesAD.cs" />
-    <Compile Include="InterfacesAD\IObservacionAD.cs" />
+    <Compile Include="InterfacesAD\DatosPersonales\IDatosPersonalesAD.cs" />
+    <Compile Include="InterfacesAD\Observacion\IObservacionAD.cs" />
     <Compile Include="InterfacesAD\Tipo_Remuneracion\IAgregarTipoRemuneracionAD.cs" />
     <Compile Include="InterfacesAD\Tipo_Remuneracion\IEditarTipoRemuneracionAD.cs" />
     <Compile Include="InterfacesAD\Tipo_Remuneracion\IEliminarTipoRemuneracionAD.cs" />
@@ -92,8 +92,8 @@
     <Compile Include="InterfacesAD\Tipo_Retencion\IListarTipoRetencionAD.cs" />
     <Compile Include="InterfacesAD\Tipo_Retencion\IObtenerIdTipoRetencionAD.cs" />
     <Compile Include="InterfacesParaUI\Hoja_Resumen\ListarHojaResumen\IlistarHojaResumenLN.cs" />
-    <Compile Include="InterfacesParaUI\IDatosPersonalesLN.cs" />
-    <Compile Include="InterfacesParaUI\IObservacionLN.cs" />
+    <Compile Include="InterfacesParaUI\DatosPersonales\IDatosPersonalesLN.cs" />
+    <Compile Include="InterfacesParaUI\Observacion\IObservacionLN.cs" />
     <Compile Include="InterfacesParaUI\Tipo_Remuneracion\IAgregarTipoRemuneracionLN.cs" />
     <Compile Include="InterfacesParaUI\Tipo_Remuneracion\IEditarTipoRemuneracionLN.cs" />
     <Compile Include="InterfacesParaUI\Tipo_Remuneracion\IEliminarTipoRemuneracionLN.cs" />

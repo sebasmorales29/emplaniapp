@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Emplaniapp.Abstracciones.InterfacesAD.Hoja_Resumen.ListarHojaResumen;
-using Emplaniapp.Abstracciones.ModelosAD;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 
 namespace Emplaniapp.AccesoADatos.Hoja_Resumen

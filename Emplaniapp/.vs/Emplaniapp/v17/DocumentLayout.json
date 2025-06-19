@@ -1,28 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.ui\\controllers\\datospersonalescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\controllers\\datospersonalescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\hojaresumen\\listarhojaresumen.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\hojaresumen\\listarhojaresumen.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.ui\\controllers\\hojaresumencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\controllers\\hojaresumencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\interfacesad\\hoja_resumen\\listarhojaresumen\\ilistarhojaresumenad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\interfacesad\\hoja_resumen\\listarhojaresumen\\ilistarhojaresumenad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.accesoadatos\\hoja_resumen\\listarhojaresumen\\listarhojaresumenad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|solutionrelative:emplaniapp.accesoadatos\\hoja_resumen\\listarhojaresumen\\listarhojaresumenad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -30,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 199,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -59,71 +38,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "DatosPersonalesController.cs",
-              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\DatosPersonalesController.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\DatosPersonalesController.cs",
-              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\DatosPersonalesController.cs",
-              "RelativeToolTip": "Emplaniapp.UI\\Controllers\\DatosPersonalesController.cs",
-              "ViewState": "AgIAAIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-19T07:29:58.622Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "listarHojaResumen.cshtml",
-              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\HojaResumen\\listarHojaResumen.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\HojaResumen\\listarHojaResumen.cshtml",
-              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\HojaResumen\\listarHojaResumen.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\HojaResumen\\listarHojaResumen.cshtml",
-              "ViewState": "AgIAABMAAAAAAAAAAAAgwCYAAAA0AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-19T07:21:59.501Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "HojaResumenController.cs",
-              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\HojaResumenController.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\HojaResumenController.cs",
-              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\HojaResumenController.cs",
-              "RelativeToolTip": "Emplaniapp.UI\\Controllers\\HojaResumenController.cs",
-              "ViewState": "AgIAAC4AAAAAAAAAAAAawDMAAAA/AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-19T07:15:23.646Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "IListarHojaResumenAD.cs",
-              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesAD\\Hoja_Resumen\\ListarHojaResumen\\IListarHojaResumenAD.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\InterfacesAD\\Hoja_Resumen\\ListarHojaResumen\\IListarHojaResumenAD.cs",
-              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesAD\\Hoja_Resumen\\ListarHojaResumen\\IListarHojaResumenAD.cs",
-              "RelativeToolTip": "Emplaniapp.Abstracciones\\InterfacesAD\\Hoja_Resumen\\ListarHojaResumen\\IListarHojaResumenAD.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA/AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-19T07:14:23.708Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "listarHojaResumenAD.cs",
-              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Hoja_Resumen\\ListarHojaResumen\\listarHojaResumenAD.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.AccesoADatos\\Hoja_Resumen\\ListarHojaResumen\\listarHojaResumenAD.cs",
-              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Hoja_Resumen\\ListarHojaResumen\\listarHojaResumenAD.cs",
-              "RelativeToolTip": "Emplaniapp.AccesoADatos\\Hoja_Resumen\\ListarHojaResumen\\listarHojaResumenAD.cs",
-              "ViewState": "AgIAACMAAAAAAAAAAADwv60AAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-19T07:13:44.337Z",
-              "EditorCaption": ""
             }
           ]
         },
