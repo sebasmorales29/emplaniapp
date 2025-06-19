@@ -4,11 +4,15 @@ using System.Web.Mvc;
 using Emplaniapp.Abstracciones.InterfacesParaUI;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Cargos.ListarCargos;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Estados.ListarEstados;
+using Emplaniapp.Abstracciones.InterfacesParaUI.General.FiltrarEmpleados;
+using Emplaniapp.Abstracciones.InterfacesParaUI.General.ObtenerTotalEmpleados;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Hoja_Resumen.ListarHojaResumen;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.LogicaDeNegocio;
 using Emplaniapp.LogicaDeNegocio.Cargos.ListarCargos;
 using Emplaniapp.LogicaDeNegocio.Estados.ListarEstados;
+using Emplaniapp.LogicaDeNegocio.General.FiltrarEmpleados;
+using Emplaniapp.LogicaDeNegocio.General.ObtenerTotalEmpleados;
 using Emplaniapp.LogicaDeNegocio.Hoja_Resumen.ListarHojaResumen;
 
 namespace Emplaniapp.UI.Controllers
@@ -20,7 +24,8 @@ namespace Emplaniapp.UI.Controllers
         private IDatosPersonalesLN _datosPersonalesLN;
         private IListarCargosLN _listarCargosLN;
         private IListarEstadosLN _listarEstadosLN;
-
+        private IFiltrarEmpleadosLN _filtrarEmpleadosLN;
+        private IObtenerTotalEmpleadosLN _obtenerTotalEmpleadosLN;
 
         public HojaResumenController()
         {
@@ -28,6 +33,8 @@ namespace Emplaniapp.UI.Controllers
             _datosPersonalesLN = new DatosPersonalesLN();
             _listarCargosLN = new listarCargosLN();
             _listarEstadosLN = new listarEstadosLN();
+            _filtrarEmpleadosLN = new filtrarEmpleadosLN();
+            _obtenerTotalEmpleadosLN = new obtenerTotalEmpleadosLN();
         }
         private List<SelectListItem> ObtenerCargos()
         {
@@ -39,23 +46,23 @@ namespace Emplaniapp.UI.Controllers
                 }).ToList();
         }
 
-        // GET: HojaResumen
+        // GET: Filtrar
         public ActionResult listarHojaResumen()
         {
             List<HojaResumenDto> laListaDeHojaDeResumen = _listarHojaResumenLN.ObtenerHojasResumen();
             ViewBag.Cargos = ObtenerCargos();
-            ViewBag.TotalEmpleados = _listarHojaResumenLN.ObtenerTotalEmpleados(null, null);
+            ViewBag.TotalEmpleados = _obtenerTotalEmpleadosLN.ObtenerTotalEmpleados(null, null,null,true);
             return View(laListaDeHojaDeResumen);
         }
 
         [HttpPost]
         public ActionResult Filtrar(string filtro, int? idCargo)
         {
-            var listaFiltrada = _listarHojaResumenLN.ObtenerFiltrado(filtro, idCargo);
+            var listaFiltrada = _filtrarEmpleadosLN.ObtenerFiltrado<HojaResumenDto>(filtro, idCargo, null);
             ViewBag.Filtro = filtro;
             ViewBag.idCargo = idCargo;
             ViewBag.Cargos = ObtenerCargos();
-            ViewBag.TotalEmpleados = _listarHojaResumenLN.ObtenerTotalEmpleados(filtro, idCargo);
+            ViewBag.TotalEmpleados = _obtenerTotalEmpleadosLN.ObtenerTotalEmpleados(filtro, idCargo, null, true);
             return View("listarHojaResumen", listaFiltrada);
         }
 

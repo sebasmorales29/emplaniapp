@@ -12,6 +12,8 @@ using Emplaniapp.Abstracciones.InterfacesParaUI.Empleado.ListarEmpleado;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Empleado.ModificarEstado;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Empleado.ObtenerEmpleadoPorId;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Estados.ListarEstados;
+using Emplaniapp.Abstracciones.InterfacesParaUI.General.FiltrarEmpleados;
+using Emplaniapp.Abstracciones.InterfacesParaUI.General.ObtenerTotalEmpleados;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Monedas.ListarMonedas;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.LogicaDeNegocio.Bancos.ListarBancos;
@@ -21,6 +23,8 @@ using Emplaniapp.LogicaDeNegocio.Empleado.ListarEmpleado;
 using Emplaniapp.LogicaDeNegocio.Empleado.ModificarEstado;
 using Emplaniapp.LogicaDeNegocio.Empleado.ObtenerEmpleadoPorId;
 using Emplaniapp.LogicaDeNegocio.Estados.ListarEstados;
+using Emplaniapp.LogicaDeNegocio.General.FiltrarEmpleados;
+using Emplaniapp.LogicaDeNegocio.General.ObtenerTotalEmpleados;
 using Emplaniapp.LogicaDeNegocio.Monedas.ListarMonedas;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -38,6 +42,8 @@ namespace Emplaniapp.UI.Controllers
         private IModificarEstadoLN _modificarEstadoLN;
         private IListarEstadosLN _listarEstadosLN;
         private IObtenerEmpleadoPorIdLN _obtenerEmpleadoLN;
+        private IFiltrarEmpleadosLN _filtrarEmpleadosLN;
+        private IObtenerTotalEmpleadosLN _obtenerTotalEmpleadosLN;
         private ApplicationUserManager _userManager;
         private ApplicationRoleManager _roleManager;
 
@@ -51,6 +57,8 @@ namespace Emplaniapp.UI.Controllers
             _modificarEstadoLN = new modificarEstadoLN();
             _listarEstadosLN = new listarEstadosLN();
             _obtenerEmpleadoLN = new ObtenerEmpleadoPorIdLN();
+            _filtrarEmpleadosLN = new filtrarEmpleadosLN();
+            _obtenerTotalEmpleadosLN = new obtenerTotalEmpleadosLN();
 
         }
 
@@ -104,7 +112,42 @@ namespace Emplaniapp.UI.Controllers
         public ActionResult ListarEmpleados()
         {
             List<EmpleadoDto> laListaDeEmpleados = _listarEmpleadoLN.ObtenerEmpleados();
+            ViewBag.Cargos = ObtenerCargos();
+            ViewBag.Estados = ObtenerEstados();
+            ViewBag.TotalEmpleados = _obtenerTotalEmpleadosLN.ObtenerTotalEmpleados(null, null, null, true);
             return View(laListaDeEmpleados);
+        }
+
+        private List<SelectListItem> ObtenerCargos()
+        {
+            return _listarCargosLN.ObtenerCargos()
+                .Select(p => new SelectListItem
+                {
+                    Value = p.idCargo.ToString(),
+                    Text = p.nombreCargo
+                }).ToList();
+        }
+        private List<SelectListItem> ObtenerEstados()
+        {
+            return _listarEstadosLN.ObtenerEstados()
+                .Select(p => new SelectListItem
+                {
+                    Value = p.idEstado.ToString(),
+                    Text = p.nombreEstado
+                }).ToList();
+        }
+
+        [HttpPost]
+        public ActionResult Filtrar(string filtro, int? idCargo, int? idEstado)
+        {
+            var listaFiltrada = _filtrarEmpleadosLN.ObtenerFiltrado<EmpleadoDto>(filtro, idCargo, idEstado);
+            ViewBag.Filtro = filtro;
+            ViewBag.idCargo = idCargo;
+            ViewBag.idEstado = idEstado;
+            ViewBag.Cargos = ObtenerCargos();
+            ViewBag.Estados = ObtenerEstados();
+            ViewBag.TotalEmpleados = _obtenerTotalEmpleadosLN.ObtenerTotalEmpleados(filtro, idCargo, idEstado, false);
+            return View("ListarEmpleados", listaFiltrada);
         }
 
         // GET: Empleado/Details/5
@@ -130,7 +173,7 @@ namespace Emplaniapp.UI.Controllers
             ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList();
             ViewBag.RolesList = RoleManager.Roles.ToList().Select(r => new SelectListItem { Value = r.Name, Text = r.Name }).ToList();
             return View(model);
-        }
+        }        
 
         // POST: Empleado/Create
         [HttpPost]

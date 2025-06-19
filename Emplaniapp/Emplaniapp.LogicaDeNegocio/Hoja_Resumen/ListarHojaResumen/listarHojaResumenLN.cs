@@ -22,15 +22,5 @@ namespace Emplaniapp.LogicaDeNegocio.Hoja_Resumen.ListarHojaResumen
         {
             return _listarHojaResumenAD.ObtenerHojasResumen();
         }
-
-
-        public List<HojaResumenDto> ObtenerFiltrado(string filtro, int? idCargo)
-        {
-            return _listarHojaResumenAD.ObtenerFiltrado(filtro, idCargo);
-        }
-        public int ObtenerTotalEmpleados(string filtro, int? idCargo)
-        {
-            return _listarHojaResumenAD.ObtenerTotalEmpleados(filtro, idCargo);
-        }
     }
 }

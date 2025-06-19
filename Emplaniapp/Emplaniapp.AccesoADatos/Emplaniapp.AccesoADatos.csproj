@@ -66,6 +66,8 @@
     <Compile Include="Empleado\ModificarEstado\modificarEstadoAD.cs" />
     <Compile Include="Empleado\ObtenerEmpleadoPorId\ObtenerEmpleadoPorIdAD.cs" />
     <Compile Include="Estados\ListarEstados\listarEstadosAD.cs" />
+    <Compile Include="General\FiltrarEmpleados\filtrarEmpleadosAD.cs" />
+    <Compile Include="General\ObtenerTotalEmpleados\obtenerTotalEmpleadosAD.cs" />
     <Compile Include="Hoja_Resumen\ListarHojaResumen\listarHojaResumenAD.cs" />
     <Compile Include="Monedas\ListarMonedas\listarMonedasAD.cs" />
     <Compile Include="Observaciones\ObservacionAD.cs" />
@@ -91,9 +93,7 @@
       <Name>Emplaniapp.Abstracciones</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="General\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

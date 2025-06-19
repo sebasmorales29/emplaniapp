@@ -24,7 +24,7 @@
     }
 
     .tabla-empleados td {
-        text-align: center; /* <- Centrado de celdas */
+        text-align: center;
         vertical-align: middle;
     }
 
@@ -51,7 +51,27 @@
         vertical-align: middle;
         white-space: nowrap;
     }
+
+    .total-empleados-container {
+        display: flex;
+        justify-content: flex-end;
+        margin: 20px 0;
+    }
+
+    .total-empleados-box {
+        background-color: #4a87c7;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+        border: 1px solid #3a6fa5;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        min-width: 120px;
+    }
 </style>
+
 <div class="d-flex justify-content-start mb-3" style="max-width: 200px;">
     <a href="@Url.Action("CrearEmpleado", "Empleado")"
        class="btn"
@@ -83,7 +103,41 @@
     </div>
 </div>
 
-<table class="table tabla-empleados">
+@using (Html.BeginForm("Filtrar", "Empleado", FormMethod.Post))
+{
+    <div class="row mb-3 align-items-end">
+        <div class="col-md-3">
+            <input type="text" name="filtro" value="@ViewBag.Filtro" class="form-control" placeholder="Buscar por nombre o cédula" />
+        </div>
+        <div class="col-md-3">
+            @Html.DropDownList("idCargo", new SelectList(ViewBag.Cargos, "Value", "Text", ViewBag.idCargo), "Todos los cargos", new { @class = "form-control" })
+        </div>
+        <div class="col-md-3">
+            @Html.DropDownList("idEstado", new SelectList(ViewBag.Estados, "Value", "Text", ViewBag.idEstado), "Todos los estados", new { @class = "form-control" })
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-search"></i> Filtrar
+            </button>
+        </div>
+        @if (!string.IsNullOrEmpty(ViewBag.Filtro as string) || (ViewBag.idCargo != null && ViewBag.idCargo != 0) || (ViewBag.idEstado != null && ViewBag.idEstado != 0))
+        {
+            <div class="col-md-1">
+                <a href="@Url.Action("ListarEmpleados", "Empleado")" class="btn btn-secondary w-100">
+                    <i class="fas fa-times"></i> Quitar
+                </a>
+            </div>
+        }
+    </div>
+
+    <div class="total-empleados-container">
+        <div class="total-empleados-box">
+            <span>Total: @ViewBag.TotalEmpleados</span>
+        </div>
+    </div>
+}
+
+<table class="table tabla-empleados" id="TablaEmpleado">
     <thead>
         <tr>
             <th>@Html.DisplayNameFor(model => model.First().cedula)</th>
@@ -130,6 +184,19 @@
                 modal.modal("show");
             });
         });
-    </script>
 
+        $(document).ready(function () {
+            $("#buscarEmpleado").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#TablaEmpleado tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            $("#limpiarFiltro").click(function () {
+                $("#buscarEmpleado").val('');
+                $("#buscarEmpleado").trigger("keyup");
+            });
+        });
+    </script>
 }

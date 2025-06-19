@@ -62,6 +62,8 @@
     <Compile Include="InterfacesAD\Empleado\ModificarEstado\IModificarEstadoAD.cs" />
     <Compile Include="InterfacesAD\Empleado\ObtenerEmpleadoPorId\IObtenerEmpleadoPorIdAD.cs" />
     <Compile Include="InterfacesAD\Estados\ListarEstados\IListarEstadosAD.cs" />
+    <Compile Include="InterfacesAD\General\FiltrarEmpleados\IFiltrarEmpleadosAD.cs" />
+    <Compile Include="InterfacesAD\General\OtenerTotalEmpleados\IObtenerTotalEmpleadosAD.cs" />
     <Compile Include="InterfacesAD\Monedas\ListarMonedas\IListarMonedasAD.cs" />
     <Compile Include="InterfacesParaUI\Bancos\ListarBancos\IListarBancosLN.cs" />
     <Compile Include="InterfacesParaUI\Cargos\ListarCargos\IListarCargosLN.cs" />
@@ -70,6 +72,8 @@
     <Compile Include="InterfacesParaUI\Empleado\ModificarEstado\IModificarEstadoLN.cs" />
     <Compile Include="InterfacesParaUI\Empleado\ObtenerEmpleadoPorId\IObtenerEmpleadoPorIdLN.cs" />
     <Compile Include="InterfacesParaUI\Estados\ListarEstados\IListarEstadosLN.cs" />
+    <Compile Include="InterfacesParaUI\General\FiltrarEmpleados\IFiltrarEmpleadosLN.cs" />
+    <Compile Include="InterfacesParaUI\General\ObtenerTotalEmpleados\IObtenerTotalEmpleadosLN.cs" />
     <Compile Include="InterfacesParaUI\Monedas\ListarMonedas\IlistarMonedasLN.cs" />
     <Compile Include="ModelosAD\Banco.cs" />
     <Compile Include="ModelosAD\Calle.cs" />
