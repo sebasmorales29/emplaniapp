@@ -41,6 +41,6 @@ namespace Emplaniapp.Abstracciones.Entidades
 
         // Navigation Properties
         [ForeignKey("IdEmpleado")]
-        public virtual Empleado Empleado { get; set; }
+        public virtual Empleados Empleado { get; set; }
     }
 } 

@@ -313,7 +313,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\AgregarEmpleadoViewModel.cs" />
     <Compile Include="Models\DatosFinancierosViewModel.cs" />
     <Compile Include="Models\DatosLaboralesViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -396,9 +395,6 @@
     <Content Include="Views\Empleado\ListarEmpleados.cshtml" />
     <Content Include="Views\VariablesFinancieras\Index.cshtml" />
     <Content Include="Views\HojaResumen\listarHojaResumen.cshtml" />
-    <Content Include="Views\HojaResumen\AgregarEmpleado.cshtml" />
-    <Content Include="Views\HojaResumen\CambiarEstado.cshtml" />
-    <Content Include="Views\HojaResumen\Index.cshtml" />
     <Content Include="Views\VariablesFinancieras\CreateRemu.cshtml" />
     <Content Include="Views\VariablesFinancieras\EditRemu.cshtml" />
     <Content Include="Views\VariablesFinancieras\CreateReten.cshtml" />
@@ -408,6 +404,8 @@
     <Content Include="Views\DatosPersonales\Detalles.cshtml" />
     <Content Include="Views\DatosPersonales\EditarDatosFinancieros.cshtml" />
     <Content Include="Views\DatosPersonales\EditarDatosLaborales.cshtml" />
+    <Content Include="Views\Empleado\CrearEmpleado.cshtml" />
+    <Content Include="Views\Empleado\_CambiarEstado.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

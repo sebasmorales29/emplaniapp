@@ -169,3 +169,9 @@ C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.L
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Microsoft.AspNet.Identity.Core.xml
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\es\Microsoft.AspNet.Identity.EntityFramework.resources.dll
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\es\Microsoft.AspNet.Identity.Core.resources.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Microsoft.AspNet.Identity.Core.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Microsoft.AspNet.Identity.Core.xml
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\es\Microsoft.AspNet.Identity.EntityFramework.resources.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\es\Microsoft.AspNet.Identity.Core.resources.dll

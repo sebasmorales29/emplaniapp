@@ -80,3 +80,14 @@ C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.A
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\es\Microsoft.AspNet.Identity.Core.resources.dll
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\es\Microsoft.AspNet.Identity.EntityFramework.resources.dll
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplania.9B87625F.Up2Date
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\EntityFramework.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Microsoft.AspNet.Identity.Core.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\EntityFramework.xml
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Microsoft.AspNet.Identity.Core.xml
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\es\Microsoft.AspNet.Identity.Core.resources.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\bin\Debug\es\Microsoft.AspNet.Identity.EntityFramework.resources.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.Abstracciones\obj\Debug\Emplania.9B87625F.Up2Date

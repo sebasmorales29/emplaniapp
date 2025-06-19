@@ -10,11 +10,7 @@ namespace Emplaniapp.Abstracciones.InterfacesAD.Hoja_Resumen.ListarHojaResumen
     public interface IListarHojaResumenAD
     {
         List<HojaResumenDto> ObtenerHojasResumen();
-        List<HojaResumenDto> ObtenerFiltrado(string filtro, int? idCargo, int? idEstado);
-        List<CargoDto> ObtenerCargos();
-        int ObtenerTotalEmpleados(string filtro, int? idCargo, int? idEstado);
-        List<EstadoDto> ObtenerEstados();
-        bool CambiarEstadoEmpleado(int idEmpleado, int idEstado);
-        EmpleadoDto ObtenerEmpleadoPorId(int idEmpleado);
+        List<HojaResumenDto> ObtenerFiltrado(string filtro, int? idCargo);
+        int ObtenerTotalEmpleados(string filtro, int? idCargo);
     }
 }

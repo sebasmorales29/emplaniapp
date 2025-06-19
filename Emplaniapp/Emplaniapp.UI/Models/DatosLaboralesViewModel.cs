@@ -12,7 +12,7 @@ namespace Emplaniapp.UI.Models
 
         [Required(ErrorMessage = "El cargo es requerido")]
         [Display(Name = "Cargo")]
-        public int IdCargo { get; set; }
+        public int? IdCargo { get; set; }
         
         public string Cargo { get; set; }
 

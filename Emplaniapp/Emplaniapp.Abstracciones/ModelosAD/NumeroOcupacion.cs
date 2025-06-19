@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Emplaniapp.Abstracciones.ModelosAD
 {
-    [Table("Cargos")]
-    public class Cargos
+    [Table("NumeroOcupacion")]
+    public class NumeroOcupacion
     {
-        [Column("idCargo")]
+        [Column("idNumeroOcupacion")]
         [Key]
-        public int idCargo { get; set; }
-        public string nombreCargo { get; set; }
         public int idNumeroOcupacion { get; set; }
+        public int numeroOcupacion { get; set; }
+
     }
 }

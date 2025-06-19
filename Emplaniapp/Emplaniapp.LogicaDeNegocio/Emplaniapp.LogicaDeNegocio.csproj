@@ -51,8 +51,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bancos\ListarBancos\listarBancosLN.cs" />
+    <Compile Include="Cargos\ListarCargos\listarCargosLN.cs" />
     <Compile Include="DatosPersonalesLN.cs" />
+    <Compile Include="Empleado\AgregarEmpleado\agregarEmpleadoLN.cs" />
+    <Compile Include="Empleado\ListarEmpleado\listarEmpleadoLN.cs" />
+    <Compile Include="Empleado\ModificarEstado\modificarEstadoLN.cs" />
+    <Compile Include="Empleado\ObtenerEmpleadoPorId\ObtenerEmpleadoPorIdLN.cs" />
+    <Compile Include="Estados\ListarEstados\listarEstadosLN.cs" />
     <Compile Include="Hoja_Resumen\ListarHojaResumen\listarHojaResumenLN.cs" />
+    <Compile Include="Monedas\ListarMonedas\listarMonedasLN.cs" />
     <Compile Include="ObservacionLN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tipo_Remuneracion\AgregarTipoRemuneracionLN.cs" />

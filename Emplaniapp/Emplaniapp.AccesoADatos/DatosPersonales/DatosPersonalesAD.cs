@@ -85,7 +85,7 @@ namespace Emplaniapp.AccesoADatos
 
                     System.Diagnostics.Debug.WriteLine("Salarios calculados - Diario: " + salarioDiario);
 
-                    var nuevoEmpleado = new Empleado
+                    var nuevoEmpleado = new Empleados
                     {
                         // Asignar el IdNetUser que viene desde el controlador
                         IdNetUser = empleadoDto.IdNetUser,

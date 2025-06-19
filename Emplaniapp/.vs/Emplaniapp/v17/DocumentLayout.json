@@ -1,34 +1,26 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\",
+  "WorkspaceRootPath": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.ui\\controllers\\datospersonalescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.ui\\controllers\\datospersonalescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\controllers\\datospersonalescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\emplaniapp.ui\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\hojaresumen\\listarhojaresumen.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\hojaresumen\\listarhojaresumen.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\emplaniapp.ui\\controllers\\hojaresumencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.ui\\controllers\\hojaresumencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\controllers\\hojaresumencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2EDCC612-4CB6-41C3-B7BE-11273F19397B}|Emplaniapp.LogicaDeNegocio\\Emplaniapp.LogicaDeNegocio.csproj|C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\emplaniapp.logicadenegocio\\tipo_remuneracion\\agregartiporemuneracionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2EDCC612-4CB6-41C3-B7BE-11273F19397B}|Emplaniapp.LogicaDeNegocio\\Emplaniapp.LogicaDeNegocio.csproj|solutionrelative:emplaniapp.logicadenegocio\\tipo_remuneracion\\agregartiporemuneracionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\interfacesad\\hoja_resumen\\listarhojaresumen\\ilistarhojaresumenad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\interfacesad\\hoja_resumen\\listarhojaresumen\\ilistarhojaresumenad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\emplaniapp.abstracciones\\modelosad\\tiporemuneracion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\modelosad\\tiporemuneracion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2EDCC612-4CB6-41C3-B7BE-11273F19397B}|Emplaniapp.LogicaDeNegocio\\Emplaniapp.LogicaDeNegocio.csproj|C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\emplaniapp.logicadenegocio\\datospersonalesln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2EDCC612-4CB6-41C3-B7BE-11273F19397B}|Emplaniapp.LogicaDeNegocio\\Emplaniapp.LogicaDeNegocio.csproj|solutionrelative:emplaniapp.logicadenegocio\\datospersonalesln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\emplaniapp.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+      "AbsoluteMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.accesoadatos\\hoja_resumen\\listarhojaresumen\\listarhojaresumenad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|solutionrelative:emplaniapp.accesoadatos\\hoja_resumen\\listarhojaresumen\\listarhojaresumenad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,15 +34,11 @@
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
               "$type": "Bookmark",
@@ -61,90 +49,91 @@
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AccountController.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\AccountController.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\AccountController.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\AccountController.cs",
-              "RelativeToolTip": "Emplaniapp.UI\\Controllers\\AccountController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-17T00:59:28.421Z"
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "HojaResumenController.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\HojaResumenController.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\HojaResumenController.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\HojaResumenController.cs",
-              "RelativeToolTip": "Emplaniapp.UI\\Controllers\\HojaResumenController.cs",
-              "ViewState": "AgIAACEAAAAAAAAAAAAowPQAAABJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-17T00:37:36.694Z"
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "DatosPersonalesController.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\DatosPersonalesController.cs",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\DatosPersonalesController.cs",
               "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\DatosPersonalesController.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\DatosPersonalesController.cs",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\DatosPersonalesController.cs",
               "RelativeToolTip": "Emplaniapp.UI\\Controllers\\DatosPersonalesController.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAgAAAAhAAAAAAAAAA==",
+              "ViewState": "AgIAAIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-17T00:37:19.266Z",
+              "WhenOpened": "2025-06-19T07:29:58.622Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "listarHojaResumen.cshtml",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\HojaResumen\\listarHojaResumen.cshtml",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\HojaResumen\\listarHojaResumen.cshtml",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\HojaResumen\\listarHojaResumen.cshtml",
+              "RelativeToolTip": "Emplaniapp.UI\\Views\\HojaResumen\\listarHojaResumen.cshtml",
+              "ViewState": "AgIAABMAAAAAAAAAAAAgwCYAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-19T07:21:59.501Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "HojaResumenController.cs",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\HojaResumenController.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\HojaResumenController.cs",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\HojaResumenController.cs",
+              "RelativeToolTip": "Emplaniapp.UI\\Controllers\\HojaResumenController.cs",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAawDMAAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-19T07:15:23.646Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "AgregarTipoRemuneracionLN.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.LogicaDeNegocio\\Tipo_Remuneracion\\AgregarTipoRemuneracionLN.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.LogicaDeNegocio\\Tipo_Remuneracion\\AgregarTipoRemuneracionLN.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.LogicaDeNegocio\\Tipo_Remuneracion\\AgregarTipoRemuneracionLN.cs",
-              "RelativeToolTip": "Emplaniapp.LogicaDeNegocio\\Tipo_Remuneracion\\AgregarTipoRemuneracionLN.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAgwCIAAAANAAAAAAAAAA==",
+              "Title": "IListarHojaResumenAD.cs",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesAD\\Hoja_Resumen\\ListarHojaResumen\\IListarHojaResumenAD.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\InterfacesAD\\Hoja_Resumen\\ListarHojaResumen\\IListarHojaResumenAD.cs",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesAD\\Hoja_Resumen\\ListarHojaResumen\\IListarHojaResumenAD.cs",
+              "RelativeToolTip": "Emplaniapp.Abstracciones\\InterfacesAD\\Hoja_Resumen\\ListarHojaResumen\\IListarHojaResumenAD.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-17T00:33:03.005Z"
+              "WhenOpened": "2025-06-19T07:14:23.708Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "TipoRemuneracion.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\TipoRemuneracion.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\ModelosAD\\TipoRemuneracion.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\TipoRemuneracion.cs",
-              "RelativeToolTip": "Emplaniapp.Abstracciones\\ModelosAD\\TipoRemuneracion.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA4AAAAjAAAAAAAAAA==",
+              "Title": "listarHojaResumenAD.cs",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Hoja_Resumen\\ListarHojaResumen\\listarHojaResumenAD.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.AccesoADatos\\Hoja_Resumen\\ListarHojaResumen\\listarHojaResumenAD.cs",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Hoja_Resumen\\ListarHojaResumen\\listarHojaResumenAD.cs",
+              "RelativeToolTip": "Emplaniapp.AccesoADatos\\Hoja_Resumen\\ListarHojaResumen\\listarHojaResumenAD.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAADwv60AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-17T00:32:15.706Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "DatosPersonalesLN.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.LogicaDeNegocio\\DatosPersonalesLN.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.LogicaDeNegocio\\DatosPersonalesLN.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.LogicaDeNegocio\\DatosPersonalesLN.cs",
-              "RelativeToolTip": "Emplaniapp.LogicaDeNegocio\\DatosPersonalesLN.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAA6wB4AAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-17T00:00:06.94Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Web.config",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Web.config",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Web.config",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Web.config",
-              "RelativeToolTip": "Emplaniapp.UI\\Web.config",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2025-06-16T03:52:42.394Z",
+              "WhenOpened": "2025-06-19T07:13:44.337Z",
               "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 201,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             }
           ]
         }
