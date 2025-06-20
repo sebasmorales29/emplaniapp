@@ -12,7 +12,7 @@ namespace Emplaniapp.AccesoADatos
 {
     public class Contexto : IdentityDbContext<ApplicationUser>
     {
-        public Contexto() : base("DefaultConnection", throwIfV1Schema: false)
+        public Contexto() : base("Contexto", throwIfV1Schema: false)
         {
 
         }
@@ -26,34 +26,51 @@ namespace Emplaniapp.AccesoADatos
         {
             modelBuilder.Entity<TipoRemuneracion>().ToTable("TipoRemuneracion");
             modelBuilder.Entity<TipoRetencion>().ToTable("TipoRetenciones");
-            modelBuilder.Entity<Empleado>().ToTable("Empleado");
+            modelBuilder.Entity<Empleados>().ToTable("Empleado");
             modelBuilder.Entity<Remuneracion>().ToTable("Remuneracion");
             modelBuilder.Entity<Estado>().ToTable("Estado");
             modelBuilder.Entity<Retencion>().ToTable("Retenciones");
             modelBuilder.Entity<PeriodoPago>().ToTable("PeriodoPago");
             modelBuilder.Entity<PagoQuincenal>().ToTable("PagoQuincenal");
             modelBuilder.Entity<Liquidaciones>().ToTable("Liquidaciones");
-            modelBuilder.Entity<Cargos>().ToTable("Cargos");
-            modelBuilder.Entity<Empleado>()
+            modelBuilder.Entity<Cargo>().ToTable("Cargos");
+            modelBuilder.Entity<Empleados>()
                 .Property(e => e.IdNetUser)
                 .IsOptional();
 
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Provincia>().ToTable("Provincia");
+            modelBuilder.Entity<Canton>().ToTable("Canton");
+            modelBuilder.Entity<Distrito>().ToTable("Distrito");
+            modelBuilder.Entity<Calle>().ToTable("Calle");
+            modelBuilder.Entity<Direccion>().ToTable("Direccion");
+            modelBuilder.Entity<NumeroOcupacion>().ToTable("NumeroOcupacion");
+            modelBuilder.Entity<TipoMoneda>().ToTable("TipoMoneda");
+            modelBuilder.Entity<Banco>().ToTable("Bancos");
+
         }
 
 
         // Entidades ---------------------------------------
         public DbSet<TipoRemuneracion> TipoRemu {  get; set; }
         public DbSet<TipoRetencion> TipoReten {  get; set; }
-        public DbSet<Empleado> Empleados { get; set; }
+        public DbSet<Empleados> Empleados { get; set; }
         public DbSet<Remuneracion> Remuneracion { get; set; }
         public DbSet<Estado> Estado { get; set; }
         public DbSet<Retencion> Retenciones { get; set; }
         public DbSet<PeriodoPago> PeriodoPago { get; set; }
         public DbSet<PagoQuincenal> PagoQuincenal { get; set; }
         public DbSet<Liquidaciones> Liquidaciones { get; set; }
-        public DbSet<Cargos> Cargos { get; set; }
+        public DbSet<Cargo> Cargos { get; set; }
         public DbSet<Observacion> Observaciones { get; set; }
+        public DbSet<Provincia> Provincia { get; set; }
+        public DbSet<Canton> Canton { get; set; }
+        public DbSet<Distrito> Distrito { get; set; }
+        public DbSet<Calle> Calle { get; set; }
+        public DbSet<Direccion> Direccion { get; set; }
+        public DbSet<NumeroOcupacion> NumeroOcupacion { get; set; }
+        public DbSet<TipoMoneda> TipoMoneda { get; set; }
+        public DbSet<Banco> Bancos { get; set; }
 
     }
 }

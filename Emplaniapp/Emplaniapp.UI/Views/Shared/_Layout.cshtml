@@ -70,7 +70,7 @@
                     @if (User.IsInRole("Administrador"))
                     {
                         <!-- Menú para Administrador -->
-                        <li class="nav-item">@Html.ActionLink("Empleados", "listarHojaResumen", "HojaResumen", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Empleados", "ListarEmpleados", "Empleado", new { area = "" }, new { @class = "nav-link" })</li>
                         <li class="nav-item">@Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link" })</li>
                     }
 
