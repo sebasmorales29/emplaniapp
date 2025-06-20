@@ -220,7 +220,7 @@ namespace Emplaniapp.UI.Controllers
             {
                 bool resultado = _datosPersonalesLN.ActualizarDatosLaborales(
                     model.IdEmpleado, 
-                    model.IdCargo, 
+                    (int)model.IdCargo, 
                     model.FechaIngreso, 
                     model.FechaSalida);
 
@@ -282,9 +282,9 @@ namespace Emplaniapp.UI.Controllers
                     model.SalarioAprobado,
                     model.SalarioDiario,
                     model.PeriocidadPago,
-                    model.IdTipoMoneda,
+                    (int)model.IdTipoMoneda,
                     model.CuentaIBAN,
-                    model.IdBanco);
+                    (int)model.IdBanco);
 
                 if (resultado)
                 {

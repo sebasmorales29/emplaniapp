@@ -22,7 +22,7 @@ namespace Emplaniapp.UI.Models
 
         [Required(ErrorMessage = "El tipo de moneda es requerido")]
         [Display(Name = "Tipo de Moneda")]
-        public int IdTipoMoneda { get; set; }
+        public int? IdTipoMoneda { get; set; }
         
         public string TipoMoneda { get; set; }
 
@@ -32,7 +32,7 @@ namespace Emplaniapp.UI.Models
 
         [Required(ErrorMessage = "El banco es requerido")]
         [Display(Name = "Banco")]
-        public int IdBanco { get; set; }
+        public int? IdBanco { get; set; }
         
         public string Banco { get; set; }
     }
