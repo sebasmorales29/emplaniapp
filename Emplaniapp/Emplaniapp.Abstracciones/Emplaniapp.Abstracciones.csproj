@@ -65,6 +65,8 @@
     <Compile Include="InterfacesAD\General\FiltrarEmpleados\IFiltrarEmpleadosAD.cs" />
     <Compile Include="InterfacesAD\General\OtenerTotalEmpleados\IObtenerTotalEmpleadosAD.cs" />
     <Compile Include="InterfacesAD\Monedas\ListarMonedas\IListarMonedasAD.cs" />
+    <Compile Include="InterfacesAD\Remuneraciones\IListarRemuneracionesAD.cs" />
+    <Compile Include="InterfacesAD\Retenciones\IListarRetencionesAD.cs" />
     <Compile Include="InterfacesParaUI\Bancos\ListarBancos\IListarBancosLN.cs" />
     <Compile Include="InterfacesParaUI\Cargos\ListarCargos\IListarCargosLN.cs" />
     <Compile Include="InterfacesParaUI\Empleado\AgregarEmpleado\IAgregarEmpleadoLN.cs" />
@@ -75,6 +77,8 @@
     <Compile Include="InterfacesParaUI\General\FiltrarEmpleados\IFiltrarEmpleadosLN.cs" />
     <Compile Include="InterfacesParaUI\General\ObtenerTotalEmpleados\IObtenerTotalEmpleadosLN.cs" />
     <Compile Include="InterfacesParaUI\Monedas\ListarMonedas\IlistarMonedasLN.cs" />
+    <Compile Include="InterfacesParaUI\Remuneraciones\IListarRemuneracionesLN.cs" />
+    <Compile Include="InterfacesParaUI\Retenciones\IListarRetencionesLN.cs" />
     <Compile Include="ModelosAD\Banco.cs" />
     <Compile Include="ModelosAD\Calle.cs" />
     <Compile Include="ModelosAD\Canton.cs" />
