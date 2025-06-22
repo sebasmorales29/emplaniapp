@@ -313,7 +313,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\AgregarEmpleadoViewModel.cs" />
     <Compile Include="Models\DatosFinancierosViewModel.cs" />
     <Compile Include="Models\DatosLaboralesViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -338,6 +337,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\images\imagenuno.webp" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -395,9 +395,6 @@
     <Content Include="Views\Empleado\ListarEmpleados.cshtml" />
     <Content Include="Views\VariablesFinancieras\Index.cshtml" />
     <Content Include="Views\HojaResumen\listarHojaResumen.cshtml" />
-    <Content Include="Views\HojaResumen\AgregarEmpleado.cshtml" />
-    <Content Include="Views\HojaResumen\CambiarEstado.cshtml" />
-    <Content Include="Views\HojaResumen\Index.cshtml" />
     <Content Include="Views\VariablesFinancieras\CreateRemu.cshtml" />
     <Content Include="Views\VariablesFinancieras\EditRemu.cshtml" />
     <Content Include="Views\VariablesFinancieras\CreateReten.cshtml" />
@@ -407,6 +404,8 @@
     <Content Include="Views\DatosPersonales\Detalles.cshtml" />
     <Content Include="Views\DatosPersonales\EditarDatosFinancieros.cshtml" />
     <Content Include="Views\DatosPersonales\EditarDatosLaborales.cshtml" />
+    <Content Include="Views\Empleado\CrearEmpleado.cshtml" />
+    <Content Include="Views\Empleado\_CambiarEstado.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -439,13 +438,17 @@
     <Content Include="Scripts\jquery-3.7.0.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Emplaniapp.Abstracciones\Emplaniapp.Abstracciones.csproj">
-      <Project>{678406ea-2967-405b-a033-164c72140787}</Project>
-      <Name>Emplaniapp.Abstracciones</Name>
+    <ProjectReference Include="..\Emplaniapp.AccesoADatos\Emplaniapp.AccesoADatos.csproj">
+      <Project>{9d7d935e-57b1-468a-938d-9f359cd6ba87}</Project>
+      <Name>Emplaniapp.AccesoADatos</Name>
     </ProjectReference>
     <ProjectReference Include="..\Emplaniapp.LogicaDeNegocio\Emplaniapp.LogicaDeNegocio.csproj">
       <Project>{2edcc612-4cb6-41c3-b7be-11273f19397b}</Project>
       <Name>Emplaniapp.LogicaDeNegocio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Emplaniapp.Abstracciones\Emplaniapp.Abstracciones.csproj">
+      <Project>{678406ea-2967-405b-a033-164c72140787}</Project>
+      <Name>Emplaniapp.Abstracciones</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

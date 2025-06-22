@@ -1,4 +1,5 @@
-﻿using Emplaniapp.UI.Models;
+﻿using Emplaniapp.Abstracciones.Entidades;
+using Emplaniapp.AccesoADatos;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -20,10 +21,26 @@ namespace Emplaniapp.UI
             IOwinContext context)
         {
             var manager = new ApplicationUserManager(
-                new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>())
+                new UserStore<ApplicationUser>(context.Get<Emplaniapp.AccesoADatos.Contexto>())
             );
-            // manager.UserValidator = ...
-            // manager.PasswordValidator = ...
+
+            // Configurar la lógica de validación para nombres de usuario
+            manager.UserValidator = new UserValidator<ApplicationUser>(manager)
+            {
+                AllowOnlyAlphanumericUserNames = false,
+                RequireUniqueEmail = true
+            };
+
+            // Configurar la lógica de validación para contraseñas
+            manager.PasswordValidator = new PasswordValidator
+            {
+                RequiredLength = 6,
+                RequireNonLetterOrDigit = false,
+                RequireDigit = false,
+                RequireLowercase = false,
+                RequireUppercase = false,
+            };
+
             return manager;
         }
     }
@@ -59,7 +76,7 @@ namespace Emplaniapp.UI
             IOwinContext context)
         {
             return new ApplicationRoleManager(
-                new RoleStore<IdentityRole>(context.Get<ApplicationDbContext>())
+                new RoleStore<IdentityRole>(context.Get<Contexto>())
             );
         }
     }

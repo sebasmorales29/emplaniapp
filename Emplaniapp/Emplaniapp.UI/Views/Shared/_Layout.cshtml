@@ -1,4 +1,18 @@
 ﻿@using Microsoft.AspNet.Identity
+@using System.Security.Claims
+
+@{
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    var idEmpleadoClaim = claimsIdentity?.FindFirst("idEmpleado");
+    var idEmpleado = idEmpleadoClaim?.Value;
+
+    string userRole = "Usuario"; // Valor por defecto
+    var roleClaim = claimsIdentity?.FindFirst(ClaimTypes.Role);
+    if (roleClaim != null)
+    {
+        userRole = roleClaim.Value;
+    }
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,7 +56,6 @@
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark">
         <div class="container">
             <a href="@Url.Action("Index", "Home")" class="navbar-brand">
-                <img src="~/Content/Images/logo.png" alt="Logo" height="30" />
                 <div>
                     <div>Suplidora</div>
                     <div>Royal Ltda.</div>
@@ -54,18 +67,27 @@
             </button>
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <!-- Tablero de Control-->
-                    <li class="nav-item">
-                        @Html.ActionLink("Tablero de Control", "Index", "Home", new { area = "" }, new { @class = "nav-link" })
-                    </li>
-                    <!-- Hoja Resumen-->
-                    <li class="nav-item">
-                        @Html.ActionLink("Hoja Resumen", "listarHojaResumen", "HojaResumen", new { area = "" }, new { @class = "nav-link" })
-                    </li>
-                    <!-- Variables Financieras -->
-                    <li class="nav-item">
-                        @Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link" })
-                    </li>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <!-- Menú para Administrador -->
+                        <li class="nav-item">@Html.ActionLink("Empleados", "ListarEmpleados", "Empleado", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
+
+                    @if (User.IsInRole("Contador"))
+                    {
+                        <!-- Menú para Contador -->
+                        <li class="nav-item">@Html.ActionLink("Tablero de Control", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Hoja Resumen", "listarHojaResumen", "HojaResumen", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
+
+                    @if (User.IsInRole("Empleado"))
+                    {
+                        <!-- Menú para Empleado -->
+                        <li class="nav-item">@Html.ActionLink("Perfil", "Detalles", "DatosPersonales", new { id = idEmpleado }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Reporte de Pagos", "HistorialPagos", "PagoQuincenal", new { idEmpleado = idEmpleado }, new { @class = "nav-link" })</li>
+                    }
                 </ul>
 
                 <ul class="navbar-nav">
@@ -74,7 +96,7 @@
                         <!-- Si el usuario está autenticado, mostrar nombre de usuario y botón de Salir -->
                         <li class="nav-item navbar-user">
                             <i class="glyphicon glyphicon-user"></i>
-                            @User.Identity.GetUserName()
+                            @userRole
                         </li>
                         <li class="nav-item">
                             @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "form-inline" }))
@@ -113,5 +135,31 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+    <!-- Modal de Confirmación de Contraseña de Administrador -->
+    <div class="modal fade" id="adminPasswordModal" tabindex="-1" role="dialog" aria-labelledby="adminPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adminPasswordModalLabel">Confirmación de Administrador</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Para completar esta acción, por favor ingrese su contraseña de administrador.</p>
+                    <div class="form-group">
+                        <label for="adminPasswordInput">Contraseña</label>
+                        <input type="password" class="form-control" id="adminPasswordInput" placeholder="Contraseña">
+                        <span id="adminPasswordError" class="text-danger" style="display: none;">Contraseña incorrecta.</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmAdminPasswordBtn">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

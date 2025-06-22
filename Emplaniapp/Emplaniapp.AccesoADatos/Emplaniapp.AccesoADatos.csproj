@@ -40,6 +40,12 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.4\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.4\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -51,9 +57,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bancos\ListarBancos\listarBancosAD.cs" />
+    <Compile Include="Cargos\ListarCargos\listarCargosAD.cs" />
     <Compile Include="Contexto.cs" />
-    <Compile Include="DatosPersonalesAD.cs" />
+    <Compile Include="DatosPersonales\DatosPersonalesAD.cs" />
+    <Compile Include="Empleado\AgregarEmpleado\agregarEmpleadoAD.cs" />
+    <Compile Include="Empleado\ListarEmpleado\listarEmpleadoAD.cs" />
+    <Compile Include="Empleado\ModificarEstado\modificarEstadoAD.cs" />
+    <Compile Include="Empleado\ObtenerEmpleadoPorId\ObtenerEmpleadoPorIdAD.cs" />
+    <Compile Include="Estados\ListarEstados\listarEstadosAD.cs" />
+    <Compile Include="General\FiltrarEmpleados\filtrarEmpleadosAD.cs" />
+    <Compile Include="General\ObtenerTotalEmpleados\obtenerTotalEmpleadosAD.cs" />
     <Compile Include="Hoja_Resumen\ListarHojaResumen\listarHojaResumenAD.cs" />
+    <Compile Include="Monedas\ListarMonedas\listarMonedasAD.cs" />
+    <Compile Include="Observaciones\ObservacionAD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tipo_Remuneracion\AgregarTipoRemuneracionAD.cs" />
     <Compile Include="Tipo_Remuneracion\EditarTipoRemuneracionAD.cs" />
@@ -76,6 +93,7 @@
       <Name>Emplaniapp.Abstracciones</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
