@@ -308,6 +308,8 @@
     <Compile Include="Controllers\HojaResumenController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\RemuneracionesController.cs" />
+    <Compile Include="Controllers\RetencionesController.cs" />
     <Compile Include="Controllers\VariablesFinancierasController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -348,6 +350,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
+    <Content Include="Content\EstilosDatos.css" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
     <Content Include="Scripts\jquery-3.7.0.slim.js" />
@@ -406,6 +409,10 @@
     <Content Include="Views\DatosPersonales\EditarDatosLaborales.cshtml" />
     <Content Include="Views\Empleado\CrearEmpleado.cshtml" />
     <Content Include="Views\Empleado\_CambiarEstado.cshtml" />
+    <Content Include="Views\Remuneraciones\DetallesRemu.cshtml" />
+    <Content Include="Views\Shared\_.cshtml" />
+    <Content Include="Views\Retenciones\Detalles.cshtml" />
+    <Content Include="Views\Retenciones\Lista.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
