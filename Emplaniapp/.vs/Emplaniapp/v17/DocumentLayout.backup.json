@@ -3,8 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.ui\\controllers\\remuneracionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\controllers\\remuneracionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2EDCC612-4CB6-41C3-B7BE-11273F19397B}|Emplaniapp.LogicaDeNegocio\\Emplaniapp.LogicaDeNegocio.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.logicadenegocio\\remuneraciones\\editarremuneracion\\editarremuneracionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2EDCC612-4CB6-41C3-B7BE-11273F19397B}|Emplaniapp.LogicaDeNegocio\\Emplaniapp.LogicaDeNegocio.csproj|solutionrelative:emplaniapp.logicadenegocio\\remuneraciones\\editarremuneracion\\editarremuneracionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\interfacesparaui\\remuneraciones\\editarremuneracion\\ieditarremuneracionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\interfacesparaui\\remuneraciones\\editarremuneracion\\ieditarremuneracionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\interfacesad\\remuneraciones\\editarremuneracion\\ieditarremuneracionad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\interfacesad\\remuneraciones\\editarremuneracion\\ieditarremuneracionad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.accesoadatos\\remuneraciones\\editarremuneracion\\editarremuneracionad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|solutionrelative:emplaniapp.accesoadatos\\remuneraciones\\editarremuneracion\\editarremuneracionad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\modelosad\\remuneracion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\modelosad\\remuneracion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\remuneraciones\\detallesremu.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -51,27 +67,79 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "DetallesRemu.cshtml",
-              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Remuneraciones\\DetallesRemu.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Remuneraciones\\DetallesRemu.cshtml",
-              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Remuneraciones\\DetallesRemu.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\Remuneraciones\\DetallesRemu.cshtml",
-              "ViewState": "AgIAAJMAAAAAAAAAAAAAAKcAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-23T19:29:26.161Z",
+              "Title": "IEditarRemuneracionLN.cs",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesParaUI\\Remuneraciones\\EditarRemuneracion\\IEditarRemuneracionLN.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\InterfacesParaUI\\Remuneraciones\\EditarRemuneracion\\IEditarRemuneracionLN.cs",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesParaUI\\Remuneraciones\\EditarRemuneracion\\IEditarRemuneracionLN.cs",
+              "RelativeToolTip": "Emplaniapp.Abstracciones\\InterfacesParaUI\\Remuneraciones\\EditarRemuneracion\\IEditarRemuneracionLN.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-23T21:14:59.227Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "RemuneracionesController.cs",
-              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
-              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
-              "RelativeToolTip": "Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
-              "ViewState": "AgIAAL8AAAAAAAAAAAAuwNQAAAA1AAAAAAAAAA==",
+              "Title": "EditarRemuneracionLN.cs",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.LogicaDeNegocio\\Remuneraciones\\EditarRemuneracion\\EditarRemuneracionLN.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.LogicaDeNegocio\\Remuneraciones\\EditarRemuneracion\\EditarRemuneracionLN.cs",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.LogicaDeNegocio\\Remuneraciones\\EditarRemuneracion\\EditarRemuneracionLN.cs",
+              "RelativeToolTip": "Emplaniapp.LogicaDeNegocio\\Remuneraciones\\EditarRemuneracion\\EditarRemuneracionLN.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAwAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-23T19:23:16.744Z",
+              "WhenOpened": "2025-06-23T21:07:40.988Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IEditarRemuneracionAD.cs",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesAD\\Remuneraciones\\EditarRemuneracion\\IEditarRemuneracionAD.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\InterfacesAD\\Remuneraciones\\EditarRemuneracion\\IEditarRemuneracionAD.cs",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesAD\\Remuneraciones\\EditarRemuneracion\\IEditarRemuneracionAD.cs",
+              "RelativeToolTip": "Emplaniapp.Abstracciones\\InterfacesAD\\Remuneraciones\\EditarRemuneracion\\IEditarRemuneracionAD.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-23T20:59:53.307Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "EditarRemuneracionAD.cs",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Remuneraciones\\EditarRemuneracion\\EditarRemuneracionAD.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.AccesoADatos\\Remuneraciones\\EditarRemuneracion\\EditarRemuneracionAD.cs",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Remuneraciones\\EditarRemuneracion\\EditarRemuneracionAD.cs",
+              "RelativeToolTip": "Emplaniapp.AccesoADatos\\Remuneraciones\\EditarRemuneracion\\EditarRemuneracionAD.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-23T20:20:51.124Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Remuneracion.cs",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\Remuneracion.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\ModelosAD\\Remuneracion.cs",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\Remuneracion.cs",
+              "RelativeToolTip": "Emplaniapp.Abstracciones\\ModelosAD\\Remuneracion.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABkAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-23T20:54:51.045Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DetallesRemu.cshtml",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Remuneraciones\\DetallesRemu.cshtml",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Remuneraciones\\DetallesRemu.cshtml",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Remuneraciones\\DetallesRemu.cshtml",
+              "RelativeToolTip": "Emplaniapp.UI\\Views\\Remuneraciones\\DetallesRemu.cshtml",
+              "ViewState": "AgIAAIoAAAAAAAAAAAAAAKQAAABMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-23T19:29:26.161Z",
               "EditorCaption": ""
             }
           ]

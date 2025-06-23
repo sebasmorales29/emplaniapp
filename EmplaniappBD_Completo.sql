@@ -607,4 +607,130 @@ GO
 INSERT INTO [dbo].[TipoRetenciones] ([nombreTipoRetencio], [porcentajeRetencion], [idEstado])
      VALUES ('Ministerio de Trabajo', 5.5, 1)
 GO
+INSERT INTO [dbo].[Cargos]
+           ([idCargo]
+           ,[nombreCargo]
+           ,[idNumeroOcupacion])
+     VALUES
+           (9
+           ,'Vendedor'
+           ,1)
+GO
+INSERT INTO TipoRemuneracion (nombreTipoRemuneracion, porcentajeRemuneracion, idEstado)
+VALUES ('Pago Quincenal',0, 1);
+GO
+CREATE OR ALTER PROCEDURE sp_GenerarRemuneracionesQuincenales
+    @FechaProceso DATE = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Si no se proporciona fecha, usar la actual
+    IF @FechaProceso IS NULL
+        SET @FechaProceso = GETDATE();
+    
+    DECLARE @DiaDelMes INT = DAY(@FechaProceso);
+    DECLARE @EsPrimeraQuincena BIT;
+    DECLARE @Mes INT = MONTH(@FechaProceso);
+    DECLARE @Anio INT = YEAR(@FechaProceso);
+    DECLARE @idTipoRemuneracionQuincenal INT;
+    
+    -- Determinar si es primera o segunda quincena
+    IF @DiaDelMes BETWEEN 1 AND 15
+        SET @EsPrimeraQuincena = 1;
+    ELSE
+        SET @EsPrimeraQuincena = 0;
+    
+    -- Obtener el ID del tipo de remuneración quincenal
+    SELECT @idTipoRemuneracionQuincenal = idTipoRemuneracion 
+    FROM TipoRemuneracion 
+    WHERE nombreTipoRemuneracion = 'Pago Quincenal' AND idEstado = 1;
+    
+    IF @idTipoRemuneracionQuincenal IS NULL
+    BEGIN
+        RAISERROR('No se encontró el tipo de remuneración "Pago Quincenal" activo', 16, 1);
+        RETURN;
+    END
+    
+    -- Insertar remuneraciones para empleados activos con periodicidad quincenal
+    INSERT INTO Remuneracion (
+        idEmpleado,
+        idTipoRemuneracion,
+        fechaRemuneracion,
+        pagoQuincenal,
+        idEstado
+    )
+    SELECT 
+        e.idEmpleado,
+        @idTipoRemuneracionQuincenal,
+        @FechaProceso,
+        CASE 
+            -- Si es vendedor (verifica si el cargo contiene "vendedor")
+            WHEN EXISTS (SELECT 1 FROM Cargos c WHERE c.idCargo = e.idCargo 
+                         AND (c.nombreCargo LIKE '%vendedor%' OR c.nombreCargo LIKE '%Vendedor%')) THEN 
+                CASE 
+                    WHEN @EsPrimeraQuincena = 1 THEN 350000 -- Primera quincena fija para vendedores
+                    ELSE 
+                        -- Segunda quincena para vendedores: salario aprobado - 350000
+                        CASE 
+                            WHEN e.salarioAprobado > 350000 THEN e.salarioAprobado - 350000
+                            ELSE 0 -- En caso de que el salario sea menor
+                        END
+                END
+            -- Para no vendedores: 15 días * salario diario
+            ELSE 15 * e.salarioDiario
+        END,
+        1 -- Estado activo
+    FROM 
+        Empleado e
+    WHERE 
+        e.idEstado = 1 -- Empleados activos
+        AND e.periocidadPago = 'Quincenal'
+        AND NOT EXISTS (
+            -- Verificar que no exista ya una remuneración para este empleado en esta quincena
+            SELECT 1 FROM Remuneracion r
+            WHERE r.idEmpleado = e.idEmpleado
+              AND r.idTipoRemuneracion = @idTipoRemuneracionQuincenal
+              AND YEAR(r.fechaRemuneracion) = @Anio
+              AND MONTH(r.fechaRemuneracion) = @Mes
+              AND (
+                  (@EsPrimeraQuincena = 1 AND DAY(r.fechaRemuneracion) BETWEEN 1 AND 15)
+                  OR 
+                  (@EsPrimeraQuincena = 0 AND DAY(r.fechaRemuneracion) BETWEEN 16 AND 31)
+              )
+        );
+    
+    -- Retornar las remuneraciones generadas con todos los campos necesarios
+    SELECT 
+        r.idRemuneracion,
+        r.idEmpleado,
+        e.nombre + ' ' + e.primerApellido AS nombreEmpleado,
+        r.idTipoRemuneracion,
+        tr.nombreTipoRemuneracion,
+        r.fechaRemuneracion,
+        r.horasTrabajadas,
+        r.horasExtras,
+        r.comision,
+        r.pagoQuincenal,
+        r.horasFeriados,
+        r.horasVacaciones,
+        r.horasLicencias,
+        r.idEstado,
+        est.nombreEstado,
+        CASE WHEN @EsPrimeraQuincena = 1 THEN 'Primera Quincena' ELSE 'Segunda Quincena' END AS quincena
+    FROM 
+        Remuneracion r
+        INNER JOIN Empleado e ON r.idEmpleado = e.idEmpleado
+        INNER JOIN TipoRemuneracion tr ON r.idTipoRemuneracion = tr.idTipoRemuneracion
+        INNER JOIN Estado est ON r.idEstado = est.idEstado
+    WHERE 
+        r.idTipoRemuneracion = @idTipoRemuneracionQuincenal
+        AND YEAR(r.fechaRemuneracion) = @Anio
+        AND MONTH(r.fechaRemuneracion) = @Mes
+        AND (
+            (@EsPrimeraQuincena = 1 AND DAY(r.fechaRemuneracion) BETWEEN 1 AND 15)
+            OR 
+            (@EsPrimeraQuincena = 0 AND DAY(r.fechaRemuneracion) BETWEEN 16 AND 31)
+        );
+END
 

@@ -9,6 +9,7 @@ using Emplaniapp.Abstracciones.InterfacesParaUI;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Empleado.ObtenerEmpleadoPorId;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.CrearRemuneraciones;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.EditarRemuneracion;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.EliminarRemuneracion;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Remuneracion;
 using Emplaniapp.Abstracciones.ModelosParaUI;
@@ -16,6 +17,7 @@ using Emplaniapp.LogicaDeNegocio;
 using Emplaniapp.LogicaDeNegocio.Empleado.ObtenerEmpleadoPorId;
 using Emplaniapp.LogicaDeNegocio.Remuneraciones;
 using Emplaniapp.LogicaDeNegocio.Remuneraciones.CrearRemuneraciones;
+using Emplaniapp.LogicaDeNegocio.Remuneraciones.EditarRemuneracion;
 using Emplaniapp.LogicaDeNegocio.Remuneraciones.EliminarRemuneracion;
 using Emplaniapp.LogicaDeNegocio.Tipo_Remuneracion;
 using Microsoft.AspNet.Identity.Owin;
@@ -32,6 +34,7 @@ namespace Emplaniapp.UI.Controllers
         private IListarTipoRemuneracionLN _listarTipoRemuneracionLN;
         private IObtenerEmpleadoPorIdLN _obtenerEmpleadoPorIdLN;
         private IEliminarRemuneracionLN _eliminarRemuneracionLN;
+        private IEditarRemuneracionLN _editarRemuneracionLN;
         private ApplicationUserManager _userManager;
 
         // Constructores ------------------------------------------------------------------------------
@@ -43,6 +46,7 @@ namespace Emplaniapp.UI.Controllers
             _listarTipoRemuneracionLN = new ListarTipoRemuneracionLN();
             _obtenerEmpleadoPorIdLN = new ObtenerEmpleadoPorIdLN();
             _eliminarRemuneracionLN = new EliminarRemuneracionLN();
+            _editarRemuneracionLN = new EditarRemuneracionLN();
         }
 
 

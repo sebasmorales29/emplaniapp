@@ -66,6 +66,7 @@
     <Compile Include="Observaciones\ObservacionLN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Remuneraciones\CrearRemuneraciones\CrearRemuneracionesLN.cs" />
+    <Compile Include="Remuneraciones\EditarRemuneracion\EditarRemuneracionLN.cs" />
     <Compile Include="Remuneraciones\EliminarRemuneracion\EliminarRemuneracionLN.cs" />
     <Compile Include="Remuneraciones\ListarRemuneracionesLN.cs" />
     <Compile Include="Retenciones\ListarRetencionesLN.cs" />
