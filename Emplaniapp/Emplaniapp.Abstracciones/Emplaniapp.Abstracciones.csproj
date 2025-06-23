@@ -65,6 +65,9 @@
     <Compile Include="InterfacesAD\General\FiltrarEmpleados\IFiltrarEmpleadosAD.cs" />
     <Compile Include="InterfacesAD\General\OtenerTotalEmpleados\IObtenerTotalEmpleadosAD.cs" />
     <Compile Include="InterfacesAD\Monedas\ListarMonedas\IListarMonedasAD.cs" />
+    <Compile Include="InterfacesAD\Remuneraciones\CrearRemuneracion\ICrearRemuneracionesAD.cs" />
+    <Compile Include="InterfacesAD\Remuneraciones\EditarRemuneracion\IEditarRemuneracionAD.cs" />
+    <Compile Include="InterfacesAD\Remuneraciones\EliminarRemuneracion\IEliminarRemuneracionAD.cs" />
     <Compile Include="InterfacesAD\Remuneraciones\IListarRemuneracionesAD.cs" />
     <Compile Include="InterfacesAD\Retenciones\IListarRetencionesAD.cs" />
     <Compile Include="InterfacesParaUI\Bancos\ListarBancos\IListarBancosLN.cs" />
@@ -77,6 +80,9 @@
     <Compile Include="InterfacesParaUI\General\FiltrarEmpleados\IFiltrarEmpleadosLN.cs" />
     <Compile Include="InterfacesParaUI\General\ObtenerTotalEmpleados\IObtenerTotalEmpleadosLN.cs" />
     <Compile Include="InterfacesParaUI\Monedas\ListarMonedas\IlistarMonedasLN.cs" />
+    <Compile Include="InterfacesParaUI\Remuneraciones\CrearRemuneraciones\ICrearRemuneracionesLN.cs" />
+    <Compile Include="InterfacesParaUI\Remuneraciones\EditarRemuneracion\IEditarRemuneracionLN.cs" />
+    <Compile Include="InterfacesParaUI\Remuneraciones\EliminarRemuneracion\IEliminarRemuneracionLN.cs" />
     <Compile Include="InterfacesParaUI\Remuneraciones\IListarRemuneracionesLN.cs" />
     <Compile Include="InterfacesParaUI\Retenciones\IListarRetencionesLN.cs" />
     <Compile Include="ModelosAD\Banco.cs" />

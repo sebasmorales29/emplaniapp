@@ -28,7 +28,7 @@ namespace Emplaniapp.AccesoADatos.Empleado.agregarEmpleado
                     decimal salarioDiario = 0;
                     if (empleadoDto.periocidadPago == "Quincenal")
                     {
-                        salarioDiario = empleadoDto.salarioAprobado / 15;
+                        salarioDiario = empleadoDto.salarioAprobado / 30;
                     }
                     else if (empleadoDto.periocidadPago == "Mensual")
                     {
