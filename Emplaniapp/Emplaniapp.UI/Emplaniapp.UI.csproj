@@ -413,6 +413,7 @@
     <Content Include="Views\Shared\_.cshtml" />
     <Content Include="Views\Retenciones\Detalles.cshtml" />
     <Content Include="Views\Retenciones\Lista.cshtml" />
+    <Content Include="Views\Remuneraciones\_CrearRemuneracionManual.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

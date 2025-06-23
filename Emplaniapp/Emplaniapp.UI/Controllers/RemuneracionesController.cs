@@ -1,14 +1,26 @@
-﻿using Emplaniapp.Abstracciones.InterfacesParaUI;
-using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones;
-using Emplaniapp.Abstracciones.ModelosParaUI;
-using Emplaniapp.LogicaDeNegocio;
-using Emplaniapp.LogicaDeNegocio.Remuneraciones;
-using Microsoft.AspNet.Identity.Owin;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Emplaniapp.Abstracciones.InterfacesParaUI;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Empleado.ObtenerEmpleadoPorId;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.CrearRemuneraciones;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.EditarRemuneracion;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.EliminarRemuneracion;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Remuneracion;
+using Emplaniapp.Abstracciones.ModelosParaUI;
+using Emplaniapp.LogicaDeNegocio;
+using Emplaniapp.LogicaDeNegocio.Empleado.ObtenerEmpleadoPorId;
+using Emplaniapp.LogicaDeNegocio.Remuneraciones;
+using Emplaniapp.LogicaDeNegocio.Remuneraciones.CrearRemuneraciones;
+using Emplaniapp.LogicaDeNegocio.Remuneraciones.EditarRemuneracion;
+using Emplaniapp.LogicaDeNegocio.Remuneraciones.EliminarRemuneracion;
+using Emplaniapp.LogicaDeNegocio.Tipo_Remuneracion;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace Emplaniapp.UI.Controllers
 {
@@ -18,6 +30,11 @@ namespace Emplaniapp.UI.Controllers
 
         private IListarRemuneracionesLN _listarRemu;
         private IDatosPersonalesLN _datosPersonalesLN;
+        private ICrearRemuneracionesLN _crearRemuneracionesLN;
+        private IListarTipoRemuneracionLN _listarTipoRemuneracionLN;
+        private IObtenerEmpleadoPorIdLN _obtenerEmpleadoPorIdLN;
+        private IEliminarRemuneracionLN _eliminarRemuneracionLN;
+        private IEditarRemuneracionLN _editarRemuneracionLN;
         private ApplicationUserManager _userManager;
 
         // Constructores ------------------------------------------------------------------------------
@@ -25,6 +42,11 @@ namespace Emplaniapp.UI.Controllers
         {
             _listarRemu = new ListarRemuneracionesLN();
             _datosPersonalesLN = new DatosPersonalesLN();
+            _crearRemuneracionesLN = new CrearRemuneracionesLN();
+            _listarTipoRemuneracionLN = new ListarTipoRemuneracionLN();
+            _obtenerEmpleadoPorIdLN = new ObtenerEmpleadoPorIdLN();
+            _eliminarRemuneracionLN = new EliminarRemuneracionLN();
+            _editarRemuneracionLN = new EditarRemuneracionLN();
         }
 
 
@@ -34,6 +56,9 @@ namespace Emplaniapp.UI.Controllers
         {
             _listarRemu = new ListarRemuneracionesLN();
             _datosPersonalesLN = new DatosPersonalesLN();
+            _crearRemuneracionesLN = new CrearRemuneracionesLN();
+            _listarTipoRemuneracionLN = new ListarTipoRemuneracionLN();
+            _obtenerEmpleadoPorIdLN = new ObtenerEmpleadoPorIdLN();
             UserManager = userManager;
         }
 
@@ -78,39 +103,73 @@ namespace Emplaniapp.UI.Controllers
                 (empleado,_listarRemu.Listar(idEmpleado));
 
             ViewBag.SeccionRemu = seccion;
-            return View(variables);
+            return View("DetallesRemu", variables);
 
         }
 
 
 
         // AGREGAR REMUNERACIÓN ------------------------------------------
+        private SelectList ObtenerTipoRemuneracionSelectList(int? selectedValue = null)
+        {
+            var tipoRemuneracion = _listarTipoRemuneracionLN.ObtenerTipoRemuneracion();
+            return new SelectList(tipoRemuneracion, "Id", "nombreTipoRemuneracion", selectedValue);
+        }
 
         // GET: Remuneraciones/Create
-        public ActionResult Create()
+        [HttpGet]
+        public ActionResult _CrearRemuneracionManual(int idEmpleado)
         {
-            return View();
+            var nuevoDto = new RemuneracionDto
+            {
+                idEmpleado = idEmpleado,
+                fechaRemuneracion = DateTime.Now,
+                idEstado = 1
+            };
+            ViewBag.TiposRemuneracion = ObtenerTipoRemuneracionSelectList();
+            return PartialView("_CrearRemuneracionManual", nuevoDto);
         }
 
         // POST: Remuneraciones/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> _CrearRemuneracionManual(RemuneracionDto remuneracionDto)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
+                try
+                {
+                    // Asegurarnos que el idEmpleado no se pierda
+                    remuneracionDto.fechaRemuneracion = DateTime.Now;
+                    remuneracionDto.idEstado = 1;
 
-                return RedirectToAction("Index");
+                    var resultado = await _crearRemuneracionesLN.AgregarRemuneracionManual(remuneracionDto);
+
+                    if (resultado > 0)
+                    {
+                        return Json(new { success = true, message = "Remuneración creada exitosamente" });
+                    }
+                    return Json(new { success = false, message = "No se pudo crear la remuneración" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = $"Error: {ex.Message}" });
+                }
             }
-            catch
-            {
-                return View();
-            }
+
+            ViewBag.TiposRemuneracion = ObtenerTipoRemuneracionSelectList(remuneracionDto.idTipoRemuneracion);
+
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                        .Select(e => e.ErrorMessage)
+                                        .ToList();
+
+            return Json(new { success = false, message = "Error de validación", errors });
         }
 
 
+
         // EDITAR REMUNERACIÓN ------------------------------------------
-        
+
         // GET: Remuneraciones/Edit/5
         public ActionResult Edit(int id)
         {
@@ -136,25 +195,32 @@ namespace Emplaniapp.UI.Controllers
 
         // ELIMINAR REMUNERACIÓN ------------------------------------------
 
-        // GET: Remuneraciones/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Remuneraciones/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [ValidateAntiForgeryToken]
+        public ActionResult EliminarRemuneracion(int id, int idEmpleado)
         {
             try
             {
-                // TODO: Add delete logic here
+                bool resultado = _eliminarRemuneracionLN.EliminarRemuneracion(id);
 
-                return RedirectToAction("Index");
+                if (resultado)
+                {
+                    TempData["Mensaje"] = "Remuneración eliminada correctamente";
+                    TempData["TipoMensaje"] = "success";
+                }
+                else
+                {
+                    TempData["Mensaje"] = "Error al eliminar la remuneración";
+                    TempData["TipoMensaje"] = "danger";
+                }
+
+                return RedirectToAction("DetallesRemu", new { id = idEmpleado });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                TempData["Mensaje"] = $"Error: {ex.Message}";
+                TempData["TipoMensaje"] = "danger";
+                return RedirectToAction("DetallesRemu", new { id = idEmpleado });
             }
         }
     }

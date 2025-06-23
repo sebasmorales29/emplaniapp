@@ -17,8 +17,8 @@ namespace Emplaniapp.Abstracciones.ModelosAD
         public int idEmpleado { get; set; }
         public int idTipoRemuneracion { get; set; }
         public DateTime fechaRemuneracion { get; set; }
-        public int horasTrabajadas { get; set; }
-        public int horasExtras { get; set; }
+        public int? horasTrabajadas { get; set; }
+        public int? horasExtras { get; set; }
         public decimal? comision { get; set; }
         public decimal? pagoQuincenal { get; set; }
         public decimal? horasFeriados { get; set; }
