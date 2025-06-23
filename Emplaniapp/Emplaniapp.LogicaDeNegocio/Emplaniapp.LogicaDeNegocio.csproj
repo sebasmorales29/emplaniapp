@@ -51,10 +51,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DatosPersonalesLN.cs" />
+    <Compile Include="Bancos\ListarBancos\listarBancosLN.cs" />
+    <Compile Include="Cargos\ListarCargos\listarCargosLN.cs" />
+    <Compile Include="DatosPersonales\DatosPersonalesLN.cs" />
+    <Compile Include="Empleado\AgregarEmpleado\agregarEmpleadoLN.cs" />
+    <Compile Include="Empleado\ListarEmpleado\listarEmpleadoLN.cs" />
+    <Compile Include="Empleado\ModificarEstado\modificarEstadoLN.cs" />
+    <Compile Include="Empleado\ObtenerEmpleadoPorId\ObtenerEmpleadoPorIdLN.cs" />
+    <Compile Include="Estados\ListarEstados\listarEstadosLN.cs" />
+    <Compile Include="General\FiltrarEmpleados\filtrarEmpleadosLN.cs" />
+    <Compile Include="General\ObtenerTotalEmpleados\obtenerTotalEmpleadosLN.cs" />
     <Compile Include="Hoja_Resumen\ListarHojaResumen\listarHojaResumenLN.cs" />
-    <Compile Include="ObservacionLN.cs" />
+    <Compile Include="Monedas\ListarMonedas\listarMonedasLN.cs" />
+    <Compile Include="Observaciones\ObservacionLN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Remuneraciones\CrearRemuneraciones\CrearRemuneracionesLN.cs" />
+    <Compile Include="Remuneraciones\EditarRemuneracion\EditarRemuneracionLN.cs" />
+    <Compile Include="Remuneraciones\EliminarRemuneracion\EliminarRemuneracionLN.cs" />
+    <Compile Include="Remuneraciones\ListarRemuneracionesLN.cs" />
+    <Compile Include="Retenciones\ListarRetencionesLN.cs" />
     <Compile Include="Tipo_Remuneracion\AgregarTipoRemuneracionLN.cs" />
     <Compile Include="Tipo_Remuneracion\EditarTipoRemuneracionLN.cs" />
     <Compile Include="Tipo_Remuneracion\EliminarTipoRemuneracionLN.cs" />
@@ -80,6 +95,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

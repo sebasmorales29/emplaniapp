@@ -1,0 +1,195 @@
+﻿@using Emplaniapp.Abstracciones.ModelosParaUI;
+@model Tuple<EmpleadoDto, List<RemuneracionDto>>
+
+@{
+    ViewBag.Title = $"{Model.Item1.nombre} {Model.Item1.primerApellido} {Model.Item1.segundoApellido}";
+    var seccionActiva = ViewBag.SeccionRemu ?? "Remuneraciones";
+}
+
+<!-- Estilos -->
+<link type="text/css" href="@Href("~/Content/EstilosDatos.css")" rel="Stylesheet" />
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+
+<div class="container">
+
+    @Html.ActionLink("< Volver a Hoja Resumen", "listarHojaResumen", "HojaResumen", null, new { @class = "btn btn-outline-secondary mb-3" })
+
+    <!-- Mensaje de éxito -->
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Mensaje"]
+        </div>
+    }
+
+    <!-- Título del empleado -->
+    <div class="row">
+        <div class="col-md-12">
+            <h2>@Model.Item1.nombre @Model.Item1.primerApellido @Model.Item1.segundoApellido</h2>
+        </div>
+    </div>
+
+
+    <!-- Enlaces de navegación -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="nav-enlaces">
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Datos personales" })" class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Historial" })" class="@(seccionActiva == "Historial" ? "active" : "")">Historial</a>
+                <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
+                <a href="@Url.Action("Detalles", "Retenciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
+                <a href="@Url.Action("LiquidarEmpleado", "Liquidacion", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Liquidación" ? "active" : "")">Liquidación</a>
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Observaciones" })" class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
+            </div>
+            <hr />
+        </div>
+    </div>
+
+
+    <!-- Contenido -->
+    <div class="row">
+        <div class="col-md-12">
+            @if (seccionActiva == "Remuneraciones")
+            {
+
+                <h2>Remuneraciones</h2>
+
+                <p>
+                    <button type="button" class="btn btn-primary"
+                            onclick="cargarModalRemuneracion(@Model.Item1.idEmpleado)">
+                        Crear Remuneración
+                    </button>
+                </p>
+
+                <!-- Modal para crear remuneración -->
+                <div class="modal fade" id="crearRemuneracionModal" tabindex="-1" role="dialog"
+                     aria-labelledby="crearRemuneracionModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="crearRemuneracionModalLabel">Agregar Remuneración Manual</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" id="modal-body-remuneracion">
+                                <!-- El contenido se cargará dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                //Tabla
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("Remuneración")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Fecha Actualización")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Horas Trabajadas")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Horas Extra")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Comisión")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Pago Quincenal")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Horas Feriado")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Horas Vacaciones")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Horas Licencia")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Estado")
+                            </th>
+                            <th></th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Item2)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.nombreTipoRemuneracion)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.fechaRemuneracion)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.horasTrabajadas)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.horasExtras)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.comision)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.pagoQuincenal)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.horasFeriados)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.horasVacaciones)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.horasLicencias)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.nombreEstado)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.idEmpleado }) |
+                                    @Html.ActionLink("Details", "Details", new { id = item.idEmpleado }) |
+                                    @using (Html.BeginForm("EliminarRemuneracion", "Remuneraciones", FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.idRemuneracion" />
+                                        <input type="hidden" name="idEmpleado" value="@item.idEmpleado" />
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('¿Estás seguro?');">
+                                            <i class="fa fa-trash"></i> Eliminar
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Asegurar que el modal se limpia al cerrarse
+            $('#crearRemuneracionModal').on('hidden.bs.modal', function () {
+                $(this).find('form')[0].reset();
+                $('.panel-remuneracion').hide();
+            });
+        });
+        function cargarModalRemuneracion(idEmpleado) {
+            $('#modal-body-remuneracion').load('/Remuneraciones/_CrearRemuneracionManual?idEmpleado=' + idEmpleado);
+            $('#crearRemuneracionModal').modal('show');
+        }
+    </script>
+}

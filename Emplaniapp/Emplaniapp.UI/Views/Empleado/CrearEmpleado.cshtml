@@ -1,0 +1,225 @@
+﻿@model Emplaniapp.Abstracciones.ModelosParaUI.EmpleadoDto
+
+@{
+    ViewBag.Title = "Agregar Empleado";
+}
+
+<style>
+    /* Estilos para que los paneles y el formulario se vean bien */
+    .panel {
+        margin-bottom: 25px;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .panel-heading {
+        padding: 12px 15px;
+        border-bottom: 1px solid transparent;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+    }
+
+    .panel-title {
+        margin-top: 0;
+        margin-bottom: 0;
+        font-size: 18px;
+        color: #fff;
+    }
+
+    .panel-body {
+        padding: 20px;
+    }
+
+    .password-wrapper {
+        position: relative;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+    /* Colores de los paneles */
+    .panel-primary > .panel-heading {
+        background-color: #337ab7;
+        border-color: #337ab7;
+    }
+
+    .panel-info > .panel-heading {
+        background-color: #5bc0de;
+        border-color: #5bc0de;
+    }
+
+    .panel-success > .panel-heading {
+        background-color: #5cb85c;
+        border-color: #5cb85c;
+    }
+
+    .panel-danger > .panel-heading {
+        background-color: #d9534f;
+        border-color: #d9534f;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12" style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Agregar Nuevo Empleado</h2>
+                @Html.ActionLink("Volver a empleados", "listarEmpleados", null, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("CrearEmpleado", "Empleado", FormMethod.Post, new { @class = "form-horizontal", id = "createEmployeeForm" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <!-- SECCIÓN 1: DATOS PERSONALES -->
+        <div class="panel panel-primary">
+            <div class="panel-heading"><h3 class="panel-title">Datos Personales</h3></div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.nombre) @Html.EditorFor(m => m.nombre, new { htmlAttributes = new { @class = "form-control", placeholder = "Nombre" } }) @Html.ValidationMessageFor(m => m.nombre, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.segundoNombre) @Html.EditorFor(m => m.segundoNombre, new { htmlAttributes = new { @class = "form-control", placeholder = "Segundo Nombre (Opcional)" } })</div></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.primerApellido) @Html.EditorFor(m => m.primerApellido, new { htmlAttributes = new { @class = "form-control", placeholder = "Primer Apellido" } }) @Html.ValidationMessageFor(m => m.primerApellido, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.segundoApellido) @Html.EditorFor(m => m.segundoApellido, new { htmlAttributes = new { @class = "form-control", placeholder = "Segundo Apellido" } }) @Html.ValidationMessageFor(m => m.segundoApellido, "", new { @class = "text-danger" })</div></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><div class="form-group">@Html.LabelFor(m => m.cedula) @Html.EditorFor(m => m.cedula, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.cedula, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-4"><div class="form-group">@Html.LabelFor(m => m.fechaNacimiento) @Html.EditorFor(m => m.fechaNacimiento, new { htmlAttributes = new { @class = "form-control", type = "date" } }) @Html.ValidationMessageFor(m => m.fechaNacimiento, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-4"><div class="form-group">@Html.LabelFor(m => m.numeroTelefonico) @Html.EditorFor(m => m.numeroTelefonico, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.numeroTelefonico, "", new { @class = "text-danger" })</div></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><div class="form-group">@Html.LabelFor(m => m.correoInstitucional) @Html.EditorFor(m => m.correoInstitucional, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.correoInstitucional, "", new { @class = "text-danger" })</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: DATOS LABORALES -->
+        <div class="panel panel-info">
+            <div class="panel-heading"><h3 class="panel-title">Datos Laborales</h3></div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-4"><div class="form-group">@Html.LabelFor(m => m.idCargo, "Cargo") @Html.DropDownListFor(m => m.idCargo, (SelectList)ViewBag.Cargos, "Seleccione cargo", new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.idCargo, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-4"><div class="form-group">@Html.LabelFor(m => m.fechaContratacion) @Html.EditorFor(m => m.fechaContratacion, new { htmlAttributes = new { @class = "form-control", type = "date" } }) @Html.ValidationMessageFor(m => m.fechaContratacion, "", new { @class = "text-danger" })</div></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.periocidadPago, "Periodicidad") @Html.DropDownListFor(m => m.periocidadPago, (SelectList)ViewBag.PeriocidadesPago, "Seleccione", new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.periocidadPago, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.salarioAprobado) @Html.EditorFor(m => m.salarioAprobado, new { htmlAttributes = new { @class = "form-control", type = "number", step = "0.01", min = "0", max = "100000" } })</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: DATOS BANCARIOS -->
+        <div class="panel panel-success">
+            <div class="panel-heading"><h3 class="panel-title">Datos Bancarios</h3></div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-4"><div class="form-group">@Html.DropDownListFor(m => m.idMoneda, (SelectList)ViewBag.TiposMoneda, "-- Seleccione moneda --", new { @class = "form-control", required = "required" })</div></div>
+                    <div class="col-md-4"><div class="form-group">@Html.DropDownListFor(m => m.idBanco, (SelectList)ViewBag.Bancos, "-- Seleccione banco --", new { @class = "form-control", required = "required" })</div></div>
+                    <div class="col-md-4"><div class="form-group">@Html.LabelFor(m => m.cuentaIBAN) @Html.EditorFor(m => m.cuentaIBAN, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.cuentaIBAN, "", new { @class = "text-danger" })</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4: CREDENCIALES DE ACCESO -->
+        <div class="panel panel-danger">
+            <div class="panel-heading"><h3 class="panel-title">Credenciales de Acceso</h3></div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-3"><div class="form-group">@Html.LabelFor(m => m.UserName) @Html.EditorFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-3"><div class="form-group"><div class="password-wrapper">@Html.LabelFor(m => m.Password) @Html.PasswordFor(m => m.Password, new { @class = "form-control" }) <i class="fa fa-eye toggle-password"></i></div>@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-3"><div class="form-group"><div class="password-wrapper">@Html.LabelFor(m => m.ConfirmPassword) @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" }) <i class="fa fa-eye toggle-password"></i></div>@Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-3"><div class="form-group">@Html.LabelFor(m => m.Role, "Rol de Usuario") @Html.DropDownListFor(m => m.Role, (IEnumerable<SelectListItem>)ViewBag.RolesList, "Seleccione rol", new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.Role, "", new { @class = "text-danger" })</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTÓN DE ENVÍO -->
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-md-12 text-right">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-user-plus"></i> Agregar Empleado
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            // Lógica para mostrar/ocultar contraseña (mejorada y robusta)
+            $('.toggle-password').click(function () {
+                $(this).toggleClass('fa-eye fa-eye-slash');
+                var input = $(this).closest('.password-wrapper').find('input');
+                input.attr('type', input.attr('type') === 'password' ? 'text' : 'password');
+            });
+
+            // --- Lógica para el modal de confirmación ---
+
+            // 1. Determinar de forma segura si el usuario es Admin
+            var isAdmin = false;
+            @if (User != null && User.IsInRole("Administrador"))
+            {
+                // Esta sintaxis <text> es la forma más segura de asignar el valor
+                <text>isAdmin = true;</text>
+            }
+
+            // 2. Configurar el formulario
+            var form = $('#createEmployeeForm');
+
+            form.submit(function (e) {
+                // Si NO es admin, no hacer nada y dejar que el formulario se envíe.
+                if (!isAdmin) {
+                    return;
+                }
+
+                // Si ES admin, detener el envío y mostrar el modal.
+                e.preventDefault();
+                $('#adminPasswordInput').val('');
+                $('#adminPasswordError').hide();
+                $('#adminPasswordModal').modal('show');
+            });
+
+            // 3. Configurar el botón de confirmación del modal
+            $('#confirmAdminPasswordBtn').click(function () {
+                var password = $('#adminPasswordInput').val();
+                if (!password) {
+                    $('#adminPasswordError').text('La contraseña no puede estar vacía.').show();
+                    return;
+                }
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                $.ajax({
+                    url: '@Url.Action("ValidateAdminPassword", "Empleado")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        __RequestVerificationToken: token,
+                        password: password
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#adminPasswordModal').modal('hide');
+                            form.off('submit').submit(); // Desactivar nuestro manejador y enviar
+                        } else {
+                            $('#adminPasswordError').text('Contraseña incorrecta.').show();
+                        }
+                    },
+                    error: function () {
+                        alert('Ocurrió un error al validar la contraseña.');
+                        $('#adminPasswordModal').modal('hide');
+                    }
+                });
+            });
+        });
+    </script>
+}

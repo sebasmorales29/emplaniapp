@@ -42,20 +42,7 @@ namespace Emplaniapp.UI.Controllers
             private set => _userManager = value;
         }
 
-        // Hacer un layout parcial según figma (propuesta 2)
 
-        // 1. Datos Personales
-        // Cambiar datos
-        // Verificar Contraseña
-        // agregar datos -> admin 
-        // activar/desactivar - admin
-
-
-        // GET: DatosPersonales
-        public ActionResult Index()
-        {
-            return View();
-        }
 
         // ACCIÓN UNIFICADA PARA MOSTRAR EL PERFIL DEL EMPLEADO Y SUS SECCIONES
         public ActionResult Detalles(int? id, string seccion = "Datos personales")
@@ -90,68 +77,8 @@ namespace Emplaniapp.UI.Controllers
             return View(empleado);
         }
 
-        // GET: DatosPersonales/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+        
 
-        // POST: DatosPersonales/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: DatosPersonales/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: DatosPersonales/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: DatosPersonales/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: DatosPersonales/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
         // GET: DatosPersonales/EditarDatosPersonales/5
         public ActionResult EditarDatosPersonales(int id)
@@ -185,6 +112,8 @@ namespace Emplaniapp.UI.Controllers
             return View("EditarDatosPersonales", model);
         }
 
+
+
         // GET: DatosPersonales/EditarDatosLaborales/5
         public ActionResult EditarDatosLaborales(int id)
         {
@@ -211,6 +140,7 @@ namespace Emplaniapp.UI.Controllers
             return View(datosLaborales);
         }
 
+
         // POST: DatosPersonales/EditarDatosLaborales/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -220,7 +150,7 @@ namespace Emplaniapp.UI.Controllers
             {
                 bool resultado = _datosPersonalesLN.ActualizarDatosLaborales(
                     model.IdEmpleado, 
-                    model.IdCargo, 
+                    (int)model.IdCargo, 
                     model.FechaIngreso, 
                     model.FechaSalida);
 
@@ -270,6 +200,7 @@ namespace Emplaniapp.UI.Controllers
             return View(datosFinancieros);
         }
 
+
         // POST: DatosPersonales/EditarDatosFinancieros/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -282,9 +213,9 @@ namespace Emplaniapp.UI.Controllers
                     model.SalarioAprobado,
                     model.SalarioDiario,
                     model.PeriocidadPago,
-                    model.IdTipoMoneda,
+                    (int)model.IdTipoMoneda,
                     model.CuentaIBAN,
-                    model.IdBanco);
+                    (int)model.IdBanco);
 
                 if (resultado)
                 {
@@ -303,6 +234,8 @@ namespace Emplaniapp.UI.Controllers
             ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList(model.PeriocidadPago);
             return View(model);
         }
+
+
 
         #region Métodos Auxiliares
         
@@ -353,6 +286,8 @@ namespace Emplaniapp.UI.Controllers
         }
 
         #endregion
+
+
 
         #region Observaciones
 
@@ -450,6 +385,7 @@ namespace Emplaniapp.UI.Controllers
             string partialViewHtml = RenderRazorViewToString("_ObservacionesList", observacionesFiltradas);
             return Json(new { success = true, html = partialViewHtml }, JsonRequestBehavior.AllowGet);
         }
+
 
         // GET: DatosPersonales/AgregarObservacion
         [HttpGet]

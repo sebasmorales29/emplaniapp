@@ -6,18 +6,18 @@
 -- =====================================================================================
 
 -- Crear la base de datos si no existe
-IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'EmplaniappBDPrueba')
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'EmplaniappBD')
 BEGIN
-    CREATE DATABASE EmplaniappBDPrueba;
-    PRINT 'Base de datos EmplaniappBDPrueba creada exitosamente';
+    CREATE DATABASE EmplaniappBD;
+    PRINT 'Base de datos EmplaniappBD creada exitosamente';
 END
 ELSE
 BEGIN
-    PRINT 'La base de datos EmplaniappBDPrueba ya existe';
+    PRINT 'La base de datos EmplaniappBD ya existe';
 END
 GO
 
-USE EmplaniappBDPrueba;
+USE EmplaniappBD;
 GO
 
 PRINT '=== INICIANDO CREACIÓN DE TABLAS ===';
@@ -220,15 +220,15 @@ PRINT 'Tabla Observaciones creada con la estructura CORRECTA para la funcionalid
 GO
 
 -- =====================================================================================
--- OTRAS TABLAS DEL SISTEMA (SE MANTIENEN DEL SCRIPT ORIGINAL)
+-- OTRAS TABLAS DEL SISTEMA (SE REALIZA CORRECCIONES)
 -- =====================================================================================
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TipoRemuneracion]') AND type in (N'U'))
 BEGIN
     CREATE TABLE TipoRemuneracion (
-        idTipoRemuneracion INT PRIMARY KEY NOT NULL,
+        idTipoRemuneracion INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
         nombreTipoRemuneracion VARCHAR(100) NOT NULL,
-        porcentajeRemuneracion INT NOT NULL,
+        porcentajeRemuneracion FLOAT NOT NULL,
         idEstado INT NOT NULL FOREIGN KEY REFERENCES Estado(idEstado)
     );
     PRINT 'Tabla TipoRemuneracion creada';
@@ -237,7 +237,7 @@ END
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Remuneracion]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Remuneracion (
-        idRemuneracion INT PRIMARY KEY NOT NULL,
+        idRemuneracion INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
         idEmpleado INT NOT NULL FOREIGN KEY REFERENCES Empleado(idEmpleado),
         idTipoRemuneracion INT NOT NULL FOREIGN KEY REFERENCES TipoRemuneracion(idTipoRemuneracion),
         fechaRemuneracion DATE NOT NULL,
@@ -256,9 +256,9 @@ END
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TipoRetenciones]') AND type in (N'U'))
 BEGIN
     CREATE TABLE TipoRetenciones (
-        idTipoRetencion INT PRIMARY KEY NOT NULL,
+        idTipoRetencion INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
         nombreTipoRetencio VARCHAR(100) NOT NULL,
-        porcentajeRetencion INT NOT NULL,
+        porcentajeRetencion FLOAT NOT NULL,
         idEstado INT NOT NULL FOREIGN KEY REFERENCES Estado(idEstado)
     );
     PRINT 'Tabla TipoRetenciones creada';
@@ -267,7 +267,7 @@ END
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Retenciones]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Retenciones (
-        idRetencion INT PRIMARY KEY NOT NULL,
+        idRetencion INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
         idEmpleado INT NOT NULL FOREIGN KEY REFERENCES Empleado(idEmpleado),
         idTipoRetencion INT NOT NULL FOREIGN KEY REFERENCES TipoRetenciones(idTipoRetencion),
         rebajo DECIMAL(12,2) NOT NULL,
@@ -280,7 +280,7 @@ END
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Liquidaciones]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Liquidaciones (
-        idLiquidacion INT PRIMARY KEY NOT NULL,
+        idLiquidacion INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
         idEmpleado INT NOT NULL FOREIGN KEY REFERENCES Empleado(idEmpleado),
         costoLiquidacion DECIMAL(12,2) NULL,
         motivoLiquidacion VARCHAR(255) NULL,
@@ -294,7 +294,7 @@ END
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PeriodoPago]') AND type in (N'U'))
 BEGIN
     CREATE TABLE PeriodoPago (
-        idPeriodoPago INT PRIMARY KEY NOT NULL,
+        idPeriodoPago INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
         PeriodoPago VARCHAR(255) NOT NULL,
         aprobacion BIT NOT NULL,
         fechaAprobado DATE NULL,
@@ -307,7 +307,7 @@ END
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PagoQuincenal]') AND type in (N'U'))
 BEGIN
     CREATE TABLE PagoQuincenal (
-        idPagoQuincenal INT PRIMARY KEY NOT NULL,
+        idPagoQuincenal INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
         fechaInicio DATE NOT NULL,
         fechaFin DATE NOT NULL,
         idPeriodoPago INT NOT NULL FOREIGN KEY REFERENCES PeriodoPago(idPeriodoPago),
@@ -555,3 +555,182 @@ BEGIN
     PRINT 'El rol "Empleado" ya existe.';
 END
 GO
+
+
+
+-- Script para agregar los valores de Tipos de Remuneraciones y Retenciones
+
+-- Tipos de remuneraciones
+INSERT INTO [dbo].[TipoRemuneracion] ([nombreTipoRemuneracion], [porcentajeRemuneracion],[idEstado])
+     VALUES('Horas Extra',50.0,1)
+GO
+
+INSERT INTO [dbo].[TipoRemuneracion] ([nombreTipoRemuneracion], [porcentajeRemuneracion],[idEstado])
+     VALUES('Día Feriado',100.0,1)
+GO
+
+INSERT INTO [dbo].[TipoRemuneracion] ([nombreTipoRemuneracion], [porcentajeRemuneracion],[idEstado])
+     VALUES('Incapacidad por Enfermedad',50.0,1)
+GO
+
+INSERT INTO [dbo].[TipoRemuneracion] ([nombreTipoRemuneracion], [porcentajeRemuneracion],[idEstado])
+     VALUES('Incapacidad por Maternidad',50.0,1)
+GO
+
+INSERT INTO [dbo].[TipoRemuneracion] ([nombreTipoRemuneracion], [porcentajeRemuneracion],[idEstado])
+     VALUES('Vacaciones',100.0,1)
+GO
+
+
+-- Tipos de retenciones
+
+INSERT INTO [dbo].[TipoRetenciones] ([nombreTipoRetencio], [porcentajeRetencion], [idEstado])
+     VALUES ('C.C.S.S.', 10.67, 1)
+GO
+
+INSERT INTO [dbo].[TipoRetenciones] ([nombreTipoRetencio], [porcentajeRetencion], [idEstado])
+     VALUES ('Pensión C.C.S.S.',7, 1)
+GO
+
+INSERT INTO [dbo].[TipoRetenciones] ([nombreTipoRetencio], [porcentajeRetencion], [idEstado])
+     VALUES ('Tardía', 100.0, 1)
+GO
+
+INSERT INTO [dbo].[TipoRetenciones] ([nombreTipoRetencio], [porcentajeRetencion], [idEstado])
+     VALUES ('Compras Internas', 100.0, 1)
+GO
+
+INSERT INTO [dbo].[TipoRetenciones] ([nombreTipoRetencio], [porcentajeRetencion], [idEstado])
+     VALUES ('Permiso Sin Goce de Salario', 100.0, 1)
+GO
+
+INSERT INTO [dbo].[TipoRetenciones] ([nombreTipoRetencio], [porcentajeRetencion], [idEstado])
+     VALUES ('Ministerio de Trabajo', 5.5, 1)
+GO
+INSERT INTO [dbo].[Cargos]
+           ([idCargo]
+           ,[nombreCargo]
+           ,[idNumeroOcupacion])
+     VALUES
+           (9
+           ,'Vendedor'
+           ,1)
+GO
+INSERT INTO TipoRemuneracion (nombreTipoRemuneracion, porcentajeRemuneracion, idEstado)
+VALUES ('Pago Quincenal',0, 1);
+GO
+CREATE OR ALTER PROCEDURE sp_GenerarRemuneracionesQuincenales
+    @FechaProceso DATE = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Si no se proporciona fecha, usar la actual
+    IF @FechaProceso IS NULL
+        SET @FechaProceso = GETDATE();
+    
+    DECLARE @DiaDelMes INT = DAY(@FechaProceso);
+    DECLARE @EsPrimeraQuincena BIT;
+    DECLARE @Mes INT = MONTH(@FechaProceso);
+    DECLARE @Anio INT = YEAR(@FechaProceso);
+    DECLARE @idTipoRemuneracionQuincenal INT;
+    
+    -- Determinar si es primera o segunda quincena
+    IF @DiaDelMes BETWEEN 1 AND 15
+        SET @EsPrimeraQuincena = 1;
+    ELSE
+        SET @EsPrimeraQuincena = 0;
+    
+    -- Obtener el ID del tipo de remuneración quincenal
+    SELECT @idTipoRemuneracionQuincenal = idTipoRemuneracion 
+    FROM TipoRemuneracion 
+    WHERE nombreTipoRemuneracion = 'Pago Quincenal' AND idEstado = 1;
+    
+    IF @idTipoRemuneracionQuincenal IS NULL
+    BEGIN
+        RAISERROR('No se encontró el tipo de remuneración "Pago Quincenal" activo', 16, 1);
+        RETURN;
+    END
+    
+    -- Insertar remuneraciones para empleados activos con periodicidad quincenal
+    INSERT INTO Remuneracion (
+        idEmpleado,
+        idTipoRemuneracion,
+        fechaRemuneracion,
+        pagoQuincenal,
+        idEstado
+    )
+    SELECT 
+        e.idEmpleado,
+        @idTipoRemuneracionQuincenal,
+        @FechaProceso,
+        CASE 
+            -- Si es vendedor (verifica si el cargo contiene "vendedor")
+            WHEN EXISTS (SELECT 1 FROM Cargos c WHERE c.idCargo = e.idCargo 
+                         AND (c.nombreCargo LIKE '%vendedor%' OR c.nombreCargo LIKE '%Vendedor%')) THEN 
+                CASE 
+                    WHEN @EsPrimeraQuincena = 1 THEN 350000 -- Primera quincena fija para vendedores
+                    ELSE 
+                        -- Segunda quincena para vendedores: salario aprobado - 350000
+                        CASE 
+                            WHEN e.salarioAprobado > 350000 THEN e.salarioAprobado - 350000
+                            ELSE 0 -- En caso de que el salario sea menor
+                        END
+                END
+            -- Para no vendedores: 15 días * salario diario
+            ELSE 15 * e.salarioDiario
+        END,
+        1 -- Estado activo
+    FROM 
+        Empleado e
+    WHERE 
+        e.idEstado = 1 -- Empleados activos
+        AND e.periocidadPago = 'Quincenal'
+        AND NOT EXISTS (
+            -- Verificar que no exista ya una remuneración para este empleado en esta quincena
+            SELECT 1 FROM Remuneracion r
+            WHERE r.idEmpleado = e.idEmpleado
+              AND r.idTipoRemuneracion = @idTipoRemuneracionQuincenal
+              AND YEAR(r.fechaRemuneracion) = @Anio
+              AND MONTH(r.fechaRemuneracion) = @Mes
+              AND (
+                  (@EsPrimeraQuincena = 1 AND DAY(r.fechaRemuneracion) BETWEEN 1 AND 15)
+                  OR 
+                  (@EsPrimeraQuincena = 0 AND DAY(r.fechaRemuneracion) BETWEEN 16 AND 31)
+              )
+        );
+    
+    -- Retornar las remuneraciones generadas con todos los campos necesarios
+    SELECT 
+        r.idRemuneracion,
+        r.idEmpleado,
+        e.nombre + ' ' + e.primerApellido AS nombreEmpleado,
+        r.idTipoRemuneracion,
+        tr.nombreTipoRemuneracion,
+        r.fechaRemuneracion,
+        r.horasTrabajadas,
+        r.horasExtras,
+        r.comision,
+        r.pagoQuincenal,
+        r.horasFeriados,
+        r.horasVacaciones,
+        r.horasLicencias,
+        r.idEstado,
+        est.nombreEstado,
+        CASE WHEN @EsPrimeraQuincena = 1 THEN 'Primera Quincena' ELSE 'Segunda Quincena' END AS quincena
+    FROM 
+        Remuneracion r
+        INNER JOIN Empleado e ON r.idEmpleado = e.idEmpleado
+        INNER JOIN TipoRemuneracion tr ON r.idTipoRemuneracion = tr.idTipoRemuneracion
+        INNER JOIN Estado est ON r.idEstado = est.idEstado
+    WHERE 
+        r.idTipoRemuneracion = @idTipoRemuneracionQuincenal
+        AND YEAR(r.fechaRemuneracion) = @Anio
+        AND MONTH(r.fechaRemuneracion) = @Mes
+        AND (
+            (@EsPrimeraQuincena = 1 AND DAY(r.fechaRemuneracion) BETWEEN 1 AND 15)
+            OR 
+            (@EsPrimeraQuincena = 0 AND DAY(r.fechaRemuneracion) BETWEEN 16 AND 31)
+        );
+END
+
