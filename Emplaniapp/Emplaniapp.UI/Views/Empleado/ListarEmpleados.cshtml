@@ -158,7 +158,7 @@
                 <td>@Html.DisplayFor(modelItem => item.nombreEstado)</td>
                 <td>falta</td>
                 <td class="acciones">
-                    <a href="@Url.Action("Details", "Empleado", new { id = item.cedula })" class="btn-celeste-claro">Ver detalles</a>
+                    <a href="@Url.Action("Detalles", "DatosPersonales", new { id = item.idEmpleado })" class="btn-celeste-claro">Ver detalles</a>
                     <a href="@Url.Action("_CambiarEstado", "Empleado", new { id = item.idEmpleado })"
                        class="btn-celeste-claro"
                        data-toggle="modal"

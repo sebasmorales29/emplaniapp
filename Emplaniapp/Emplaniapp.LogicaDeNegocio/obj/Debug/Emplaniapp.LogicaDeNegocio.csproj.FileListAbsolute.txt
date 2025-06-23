@@ -21,3 +21,26 @@ C:\Users\Yazmin\source\repos\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\ob
 C:\Users\Yazmin\source\repos\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplania.A24F63F7.Up2Date
 C:\Users\Yazmin\source\repos\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplaniapp.LogicaDeNegocio.dll
 C:\Users\Yazmin\source\repos\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplaniapp.LogicaDeNegocio.pdb
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplaniapp.LogicaDeNegocio.csproj.AssemblyReference.cache
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplaniapp.LogicaDeNegocio.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Emplaniapp.LogicaDeNegocio.dll.config
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Emplaniapp.LogicaDeNegocio.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Emplaniapp.LogicaDeNegocio.pdb
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Emplaniapp.Abstracciones.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Emplaniapp.AccesoADatos.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\EntityFramework.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Microsoft.AspNet.Identity.Core.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Emplaniapp.Abstracciones.pdb
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Emplaniapp.AccesoADatos.pdb
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Emplaniapp.AccesoADatos.dll.config
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\EntityFramework.xml
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\Microsoft.AspNet.Identity.Core.xml
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\es\Microsoft.AspNet.Identity.EntityFramework.resources.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\bin\Debug\es\Microsoft.AspNet.Identity.Core.resources.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplania.A24F63F7.Up2Date
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplaniapp.LogicaDeNegocio.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.LogicaDeNegocio\obj\Debug\Emplaniapp.LogicaDeNegocio.pdb
