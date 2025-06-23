@@ -8,6 +8,9 @@
 
 <!-- Estilos -->
 <link type="text/css" href="@Href("~/Content/EstilosDatos.css")" rel="Stylesheet" />
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
 
 <div class="container">
 
@@ -51,11 +54,34 @@
             @if (seccionActiva == "Remuneraciones")
             {
 
-                <h2>ListarRemuneraciones</h2>
+                <h2>Remuneraciones</h2>
 
                 <p>
-                    @Html.ActionLink("Create New", "Create")
+                    <!-- Cambia el ActionLink por un botón normal con los atributos data-* -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#crearRemuneracionModal">
+                        Crear Remuneración
+                    </button>
+
                 </p>
+
+                <!-- Modal para crear remuneración -->
+                <div class="modal fade" id="crearRemuneracionModal" tabindex="-1" role="dialog" aria-labelledby="crearRemuneracionModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="crearRemuneracionModalLabel">Agregar Remuneración Manual</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                @Html.Partial("_CrearRemuneracionManual", new Emplaniapp.Abstracciones.ModelosParaUI.RemuneracionDto { idEmpleado = Model.Item1.idEmpleado })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                //Tabla
                 <table class="table">
                     <thead>
                         <tr>
@@ -128,7 +154,7 @@
                                     @Html.DisplayFor(modelItem => item.nombreEstado)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Edit", "Edit", new { id=item.idEmpleado }) |
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.idEmpleado }) |
                                     @Html.ActionLink("Details", "Details", new { id = item.idEmpleado }) |
                                     @Html.ActionLink("Delete", "Delete", new { id = item.idEmpleado })
                                 </td>
@@ -143,12 +169,14 @@
     </div>
 </div>
 
-
-
-
-
-
-
-
-
-
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Asegurar que el modal se limpia al cerrarse
+            $('#crearRemuneracionModal').on('hidden.bs.modal', function () {
+                $(this).find('form')[0].reset();
+                $('.panel-remuneracion').hide();
+            });
+        });
+    </script>
+}

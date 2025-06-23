@@ -12,6 +12,29 @@
         </div>
     </div>
 
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @* BOTÓN GENERAR REMUNERACIONES *@
+    @using (Html.BeginForm("Generar", "HojaResumen", FormMethod.Post, new { @class = "mb-3" }))
+    {
+        <button type="submit" class="btn btn-celeste">
+            <i class="fas fa-cogs"></i> Generar Remuneraciones
+        </button>
+    }
+
     @using (Html.BeginForm("Filtrar", "HojaResumen", FormMethod.Post))
     {
         <div class="row mb-3 align-items-end">
@@ -80,8 +103,9 @@
                     <td>@Html.DisplayFor(modelItem => item.SalarioNeto)</td>
                     <td>
                         @Html.ActionLink("Detalles", "VerDetalles", new { id = item.IdEmpleado }, new { @class = "btn btn-info btn-sm" })
-                        @if (!item.Aprobado){
-                         <button type="button" class="btn btn-success btn-sm btn-aprobar" data-id="@item.IdEmpleado">Aprobar</button>
+                        @if (!item.Aprobado)
+                        {
+                            <button type="button" class="btn btn-success btn-sm btn-aprobar" data-id="@item.IdEmpleado">Aprobar</button>
                         }
                     </td>
                 </tr>

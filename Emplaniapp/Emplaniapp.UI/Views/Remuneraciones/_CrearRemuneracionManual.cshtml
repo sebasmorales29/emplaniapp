@@ -1,0 +1,235 @@
+﻿@model Emplaniapp.Abstracciones.ModelosParaUI.RemuneracionDto
+
+@using (Ajax.BeginForm("_CrearRemuneracionManual", "Remuneraciones",
+    new AjaxOptions
+    {
+        HttpMethod = "POST",
+        InsertionMode = InsertionMode.Replace,
+        UpdateTargetId = "crearRemuneracionModalBody",
+        OnSuccess = "onSuccessRemuneracion"
+    },
+    new { @id = "formRemu" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.idEmpleado)
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <!-- Panel de Datos Básicos -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Datos Básicos</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row mb-3">
+                            <label class="col-md-4 col-form-label">Tipo de Remuneración</label>
+                            <div class="col-md-8">
+                                @if (ViewBag.TiposRemuneracion != null && ((IEnumerable<SelectListItem>)ViewBag.TiposRemuneracion).Any())
+                                {
+                                    @Html.DropDownListFor(m => m.idTipoRemuneracion,
+                                        (IEnumerable<SelectListItem>)ViewBag.TiposRemuneracion,
+                                        "Seleccione un tipo...",
+                                        new { @class = "form-control", required = "required" })
+                                }
+                                else
+                                {
+                                    <select class="form-control" disabled>
+                                        <option>No hay tipos de remuneración disponibles</option>
+                                    </select>
+                                    <small class="text-danger">No se pudieron cargar los tipos de remuneración</small>
+                                }
+                                @Html.ValidationMessageFor(m => m.idTipoRemuneracion, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-md-4 col-form-label">Fecha</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.fechaRemuneracion,
+                                    "{0:yyyy-MM-dd}",
+                                    new { @class = "form-control", @type = "date", required = "required" })
+                                @Html.ValidationMessageFor(m => m.fechaRemuneracion, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Horas Regulares -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Horas Regulares</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row mb-3">
+                            <label class="col-md-4 col-form-label">Total Horas Trabajadas</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.horasTrabajadas,
+                                    new
+                                         {
+                                        @class = "form-control",
+                                        type = "number",
+                                        min = "0",
+                                        placeholder = "Horas normales trabajadas"
+                                    })
+                                @Html.ValidationMessageFor(m => m.horasTrabajadas, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-md-4 col-form-label">Pago Quincenal ($)</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.pagoQuincenal,
+                                    new
+                                         {
+                                        @class = "form-control",
+                                        type = "number",
+                                        step = "0.01",
+                                        min = "0",
+                                        placeholder = "0.00"
+                                    })
+                                @Html.ValidationMessageFor(m => m.pagoQuincenal, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Horas Extras y Especiales -->
+                <div class="card mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">Horas Extras y Especiales</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row mb-3">
+                            <label class="col-md-4 col-form-label">Horas Extras</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.horasExtras,
+                                    new
+                                         {
+                                        @class = "form-control",
+                                        type = "number",
+                                        min = "0",
+                                        placeholder = "Horas extras trabajadas"
+                                    })
+                                @Html.ValidationMessageFor(m => m.horasExtras, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-md-4 col-form-label">Horas Feriados</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.horasFeriados,
+                                    new
+                                         {
+                                        @class = "form-control",
+                                        type = "number",
+                                        step = "0.5",
+                                        min = "0",
+                                        placeholder = "Horas trabajadas en feriados"
+                                    })
+                                @Html.ValidationMessageFor(m => m.horasFeriados, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Ausencias y Comisiones -->
+                <div class="card mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">Ausencias y Comisiones</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row mb-3">
+                            <label class="col-md-4 col-form-label">Horas Vacaciones</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.horasVacaciones,
+                                    new
+                                         {
+                                        @class = "form-control",
+                                        type = "number",
+                                        step = "0.5",
+                                        min = "0",
+                                        placeholder = "Horas tomadas como vacaciones"
+                                    })
+                                @Html.ValidationMessageFor(m => m.horasVacaciones, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-md-4 col-form-label">Horas Licencias</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.horasLicencias,
+                                    new
+                                         {
+                                        @class = "form-control",
+                                        type = "number",
+                                        step = "0.5",
+                                        min = "0",
+                                        placeholder = "Horas tomadas como licencias"
+                                    })
+                                @Html.ValidationMessageFor(m => m.horasLicencias, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-md-4 col-form-label">Comisiones ($)</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.comision,
+                                    new
+                                         {
+                                        @class = "form-control",
+                                        type = "number",
+                                        step = "0.01",
+                                        min = "0",
+                                        placeholder = "0.00"
+                                    })
+                                @Html.ValidationMessageFor(m => m.comision, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="form-group row">
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="btn btn-primary mr-3 px-4">
+                            <i class="fa fa-save mr-2"></i>Guardar Remuneración
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary px-4" data-dismiss="modal">
+                            <i class="fa fa-times mr-2"></i>Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(function () {
+            // Captura el submit del formulario
+            $('form').submit(function (e) {
+                e.preventDefault();
+
+                var form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function (result) {
+                        $('#crearRemuneracionModal .modal-body').html(result);
+                        if ($(result).find('.alert-success').length > 0 || result.trim() === '') {
+                            $('#crearRemuneracionModal').modal('hide');
+                            //    $('#tablaRemuneraciones').load('/Remuneraciones/Listar');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

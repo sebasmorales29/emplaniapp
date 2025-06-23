@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Emplaniapp.Abstracciones.InterfacesParaUI;
@@ -7,6 +8,8 @@ using Emplaniapp.Abstracciones.InterfacesParaUI.Estados.ListarEstados;
 using Emplaniapp.Abstracciones.InterfacesParaUI.General.FiltrarEmpleados;
 using Emplaniapp.Abstracciones.InterfacesParaUI.General.ObtenerTotalEmpleados;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Hoja_Resumen.ListarHojaResumen;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.CrearRemuneraciones;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Remuneracion;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.LogicaDeNegocio;
 using Emplaniapp.LogicaDeNegocio.Cargos.ListarCargos;
@@ -14,6 +17,8 @@ using Emplaniapp.LogicaDeNegocio.Estados.ListarEstados;
 using Emplaniapp.LogicaDeNegocio.General.FiltrarEmpleados;
 using Emplaniapp.LogicaDeNegocio.General.ObtenerTotalEmpleados;
 using Emplaniapp.LogicaDeNegocio.Hoja_Resumen.ListarHojaResumen;
+using Emplaniapp.LogicaDeNegocio.Remuneraciones.CrearRemuneraciones;
+using Emplaniapp.LogicaDeNegocio.Tipo_Remuneracion;
 
 namespace Emplaniapp.UI.Controllers
 {
@@ -26,6 +31,7 @@ namespace Emplaniapp.UI.Controllers
         private IListarEstadosLN _listarEstadosLN;
         private IFiltrarEmpleadosLN _filtrarEmpleadosLN;
         private IObtenerTotalEmpleadosLN _obtenerTotalEmpleadosLN;
+        private ICrearRemuneracionesLN _crearRemuneracionesLN;
 
         public HojaResumenController()
         {
@@ -35,6 +41,7 @@ namespace Emplaniapp.UI.Controllers
             _listarEstadosLN = new listarEstadosLN();
             _filtrarEmpleadosLN = new filtrarEmpleadosLN();
             _obtenerTotalEmpleadosLN = new obtenerTotalEmpleadosLN();
+            _crearRemuneracionesLN = new CrearRemuneracionesLN();
         }
         private List<SelectListItem> ObtenerCargos()
         {
@@ -72,6 +79,40 @@ namespace Emplaniapp.UI.Controllers
             // Redirige al controlador de DatosPersonales para ver los detalles del empleado
             return RedirectToAction("Detalles", "DatosPersonales", new { id = id });
         }
+
+        // GET: HojaResumen/GenerarRemurenacionesATodosLosEmpleados
+        [HttpPost]
+        public ActionResult Generar()
+        {
+            DateTime fechaProceso = DateTime.Today;
+            //DateTime fechaProceso = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 10);
+
+            int dia = fechaProceso.Day;
+
+            if (dia <= 15)
+            {
+                fechaProceso = new DateTime(fechaProceso.Year, fechaProceso.Month, 15);
+            }
+            else
+            {
+                fechaProceso = new DateTime(fechaProceso.Year, fechaProceso.Month,
+                                          DateTime.DaysInMonth(fechaProceso.Year, fechaProceso.Month));
+            }
+
+            try
+            {
+                var remuneraciones = _crearRemuneracionesLN.GenerarRemuneracionesQuincenales(fechaProceso);
+
+                TempData["SuccessMessage"] = $"Remuneraciones generadas exitosamente para la fecha {fechaProceso:dd/MM/yyyy}.";
+                return RedirectToAction("listarHojaResumen");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al generar remuneraciones: " + ex.Message;
+                return RedirectToAction("listarHojaResumen");
+            }
+        }
+
     }
 }
 

@@ -72,6 +72,7 @@
     <Compile Include="Monedas\ListarMonedas\listarMonedasAD.cs" />
     <Compile Include="Observaciones\ObservacionAD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Remuneraciones\CrearRemuneracionesAD.cs" />
     <Compile Include="Remuneraciones\ListarRemuneracionesAD.cs" />
     <Compile Include="Retenciones\ListarRetencionesAD.cs" />
     <Compile Include="Tipo_Remuneracion\AgregarTipoRemuneracionAD.cs" />
