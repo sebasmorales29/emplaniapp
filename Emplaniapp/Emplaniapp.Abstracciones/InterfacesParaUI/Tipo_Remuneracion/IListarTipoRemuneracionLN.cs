@@ -12,5 +12,6 @@ namespace Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Remuneracion
     {
         List<TipoRemuneracion> ListarTipoRemuneracion();
         List<TipoRemuneracionDto> Listar();
+        List<TipoRemuneracionDto> ObtenerTipoRemuneracion();
     }
 }

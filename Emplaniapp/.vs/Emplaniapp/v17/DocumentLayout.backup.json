@@ -9,10 +9,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\remuneraciones\\detallesremu.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\remuneraciones\\detallesremu.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\remuneraciones\\_crearremuneracionmanual.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\remuneraciones\\_crearremuneracionmanual.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 199,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -54,28 +50,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "_CrearRemuneracionManual.cshtml",
-              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Remuneraciones\\_CrearRemuneracionManual.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Remuneraciones\\_CrearRemuneracionManual.cshtml",
-              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Remuneraciones\\_CrearRemuneracionManual.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\Remuneraciones\\_CrearRemuneracionManual.cshtml",
-              "ViewState": "AgIAAAEAAAAAAAAAAAAnwC0AAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-23T08:02:28.894Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
               "Title": "DetallesRemu.cshtml",
               "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Remuneraciones\\DetallesRemu.cshtml",
               "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Remuneraciones\\DetallesRemu.cshtml",
               "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Remuneraciones\\DetallesRemu.cshtml",
               "RelativeToolTip": "Emplaniapp.UI\\Views\\Remuneraciones\\DetallesRemu.cshtml",
-              "ViewState": "AgIAACEAAAAAAAAAAAAIwFEAAAAWAAAAAAAAAA==",
+              "ViewState": "AgIAAJMAAAAAAAAAAAAAAKcAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-23T07:54:50.415Z",
+              "WhenOpened": "2025-06-23T19:29:26.161Z",
               "EditorCaption": ""
             },
             {
@@ -86,9 +69,9 @@
               "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
               "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
               "RelativeToolTip": "Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
-              "ViewState": "AgIAAEIAAAAAAAAAAAAmwFYAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAL8AAAAAAAAAAAAuwNQAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-23T07:40:42.454Z",
+              "WhenOpened": "2025-06-23T19:23:16.744Z",
               "EditorCaption": ""
             }
           ]

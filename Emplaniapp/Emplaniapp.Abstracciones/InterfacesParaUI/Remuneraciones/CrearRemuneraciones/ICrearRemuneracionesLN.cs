@@ -10,6 +10,6 @@ namespace Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.CrearRemunera
     public interface ICrearRemuneracionesLN
     {
         List<RemuneracionDto> GenerarRemuneracionesQuincenales(DateTime? fechaProceso = null);
-        void AgregarRemuneracionManual(RemuneracionDto remuneracionDto, int idEmpleado);
+        Task<int> AgregarRemuneracionManual(RemuneracionDto remuneracionDto);
     }
 }

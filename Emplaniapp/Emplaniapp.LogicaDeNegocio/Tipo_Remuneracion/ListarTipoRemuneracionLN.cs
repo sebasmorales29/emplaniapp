@@ -1,7 +1,9 @@
-﻿using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Remuneracion;
+﻿using Emplaniapp.Abstracciones.InterfacesAD.Tipo_Remuneracion;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Remuneracion;
 using Emplaniapp.Abstracciones.ModelosAD;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.AccesoADatos;
+using Emplaniapp.AccesoADatos.Tipo_Remuneracion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +15,12 @@ namespace Emplaniapp.LogicaDeNegocio.Tipo_Remuneracion
     public class ListarTipoRemuneracionLN : IListarTipoRemuneracionLN
     {
         Contexto contexto;
+        private IListarTipoRemuneracionAD _listarTipoRemuneracionAD;
 
         public ListarTipoRemuneracionLN() 
         {
             contexto = new Contexto();
+            _listarTipoRemuneracionAD = new ListarTipoRemuneracionAD();
         }
 
 
@@ -42,6 +46,11 @@ namespace Emplaniapp.LogicaDeNegocio.Tipo_Remuneracion
                  }
                  ).ToList();
             return TRemuneraciones;
+        }
+
+        public List<TipoRemuneracionDto> ObtenerTipoRemuneracion()
+        {
+            return _listarTipoRemuneracionAD.ObtenerTipoRemuneracion();
         }
 
 

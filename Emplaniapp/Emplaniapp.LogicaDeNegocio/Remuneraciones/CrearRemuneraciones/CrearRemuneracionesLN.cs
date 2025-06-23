@@ -4,6 +4,7 @@ using Emplaniapp.Abstracciones.InterfacesAD.Remuneraciones.CrearRemuneracion;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.CrearRemuneraciones;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.AccesoADatos.Remuneraciones;
+using System.Threading.Tasks;
 
 namespace Emplaniapp.LogicaDeNegocio.Remuneraciones.CrearRemuneraciones
 {
@@ -28,16 +29,11 @@ namespace Emplaniapp.LogicaDeNegocio.Remuneraciones.CrearRemuneraciones
             }
         }
 
-        public void AgregarRemuneracionManual(RemuneracionDto remuneracionDto, int idEmpleado)
-        {
-            try
-            {
-                _crearRemuneracionesAD.AgregarRemuneracionManual(remuneracionDto, idEmpleado);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al agregar remuneración manual: " + ex.Message);
-            }
+        public async Task<int> AgregarRemuneracionManual(RemuneracionDto remuneracionDto){
+            remuneracionDto.fechaRemuneracion = DateTime.Now;
+            remuneracionDto.idEstado = 1;
+            int cantidadDeResultados = await _crearRemuneracionesAD.AgregarRemuneracionManual(remuneracionDto);
+            return cantidadDeResultados;
         }
     }
 }
