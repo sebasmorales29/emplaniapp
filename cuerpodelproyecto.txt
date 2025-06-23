@@ -1,0 +1,334 @@
+Emplaniapp.UI
+│
+├─ App_Data
+│
+├─ App_Start
+│   ├ BundleConfig.cs
+│   ├ FilterConfig.cs
+│   ├ IdentityConfig.cs
+│   ├ RouteConfig.cs
+│   └ Startup.Auth.cs
+│
+├─ Content
+│   └ (estilos, imágenes, etc.)
+│
+├─ Controllers
+│   ├ AccountController.cs
+│   ├ DatosPersonalesController.cs
+│   ├ EmpleadoController.cs
+│   ├ HojaResumenController.cs
+│   ├ HomeController.cs
+│   ├ ManageController.cs
+│   └ VariablesFinancierasController.cs
+│
+├─ Models
+│   ├ AccountViewModels.cs
+│   ├ DatosFinancierosViewModel.cs
+│   ├ DatosLaboralesViewModel.cs
+│   ├ IdentityModels.cs
+│   └ ManageViewModels.cs
+│
+├─ Scripts
+│   └ (archivos JS)
+│
+└─ Views
+    └ (carpetas por controlador, con .cshtml)
+
+
+Views
+├─ Account
+│   ├ ExternalLoginsListPartial.cshtml
+│   ├ ConfirmEmail.cshtml
+│   ├ ExternalLoginConfirmation.cshtml
+│   ├ ExternalLoginFailure.cshtml
+│   ├ ForgotPassword.cshtml
+│   ├ ForgotPasswordConfirmation.cshtml
+│   ├ SendCode.cshtml
+│   ├ VerifyCode.cshtml
+│   ├ Login.cshtml
+│   ├ Register.cshtml
+│   ├ ResetPassword.cshtml
+│   └ ResetPasswordConfirmation.cshtml
+│
+├─ DatosPersonales
+│   ├ Detalles.cshtml
+│   ├ EditarDatosFinancieros.cshtml
+│   └ EditarDatosLaborales.cshtml
+│
+├─ Empleado
+│   ├ ListarEmpleados.cshtml
+│   ├ CrearEmpleado.cshtml
+│   └ _CambiarEstado.cshtml
+│
+├─ HojaResumen
+│   └ ListarHojaResumen.cshtml
+│
+├─ Home
+│   ├ Index.cshtml
+│   ├ About.cshtml
+│   └ Contact.cshtml
+│
+├─ Manage
+│   ├ Index.cshtml
+│   ├ ChangePassword.cshtml
+│   ├ SetPassword.cshtml
+│   ├ ManageLogins.cshtml
+│   ├ AddPhoneNumber.cshtml
+│   └ VerifyPhoneNumber.cshtml
+│
+├─ Shared
+│   ├ _Layout.cshtml
+│   ├ _LoginPartial.cshtml
+│   ├ Error.cshtml
+│   └ Lockout.cshtml
+│
+├─ VariablesFinancieras
+│   ├ Index.cshtml
+│   ├ CreateRemu.cshtml
+│   ├ EditRemu.cshtml
+│   ├ DeleteRemu.cshtml
+│   ├ CreateReten.cshtml
+│   ├ EditReten.cshtml
+│   └ DeleteReten.cshtml
+│
+└─ (raíz de Views)
+    ├ _ViewStart.cshtml
+    └ Web.config
+
+
+Emplaniapp.LogicaDeNegocio
+├─ Properties
+│
+├─ Referencias
+│
+├─ Bancos
+│   └─ ListarBancos
+│       └ listarBancosLN.cs
+│
+├─ Cargos
+│   └─ ListarCargos
+│       └ listarCargosLN.cs
+│
+├─ DatosPersonales
+│   └ DatosPersonalesLN.cs
+│
+├─ Empleado
+│   ├─ AgregarEmpleado
+│   │   └ agregarEmpleadoLN.cs
+│   ├─ ListarEmpleado
+│   │   └ listarEmpleadoLN.cs
+│   ├─ ModificarEstado
+│   │   └ modificarEstadoLN.cs
+│   └─ ObtenerEmpleadoPorId
+│       └ ObtenerEmpleadoPorIdLN.cs
+│
+├─ Estados
+│   └─ ListarEstados
+│       └ listarEstadosLN.cs
+│
+├─ General
+│   ├─ FiltrarEmpleados
+│   │   └ filtrarEmpleadosLN.cs
+│   └─ ObtenerTotalEmpleados
+│       └ obtenerTotalEmpleadosLN.cs
+│
+├─ Hoja_Resumen
+│   └─ ListarHojaResumen
+│       └ listarHojaResumenLN.cs
+│
+├─ Monedas
+│   └─ ListarMonedas
+│       └ listarMonedasLN.cs
+│
+├─ Observaciones
+│   └ ObservacionLN.cs
+│
+├─ Tipo_Remuneracion
+│   ├ AgregarTipoRemuneracionLN.cs
+│   ├ EditarTipoRemuneracionLN.cs
+│   ├ EliminarTipoRemuneracionLN.cs
+│   ├ ListarTipoRemuneracionLN.cs
+│   └ ObtenerIdTipoRemuneracionLN.cs
+│
+└─ Tipo_Retencion
+    ├ AgregarTipoRetencionLN.cs
+    ├ EditarTipoRetencionLN.cs
+    ├ EliminarTipoRetencionLN.cs
+    ├ ListarTipoRetencionLN.cs
+    └ ObtenerIdTipoRetencionLN.cs
+
+
+Emplaniapp.AccesoADatos
+├─ Properties
+│
+├─ Referencias
+│
+├─ Bancos
+│   └─ ListarBancos
+│       └ listarBancosAD.cs
+│
+├─ Cargos
+│   └─ ListarCargos
+│       └ listarCargosAD.cs
+│
+├─ DatosPersonales
+│   └ DatosPersonalesAD.cs
+│       └ class DatosPersonalesAD
+│
+├─ Empleado
+│   ├─ AgregarEmpleado
+│   │   └ agregarEmpleadoAD.cs
+│   ├─ ListarEmpleado
+│   │   └ listarEmpleadoAD.cs
+│   ├─ ModificarEstado
+│   │   └ modificarEstadoAD.cs
+│   └─ ObtenerEmpleadoPorId
+│       └ ObtenerEmpleadoPorIdAD.cs
+│
+├─ Estados
+│   └ ListarEstados
+│       └ listarEstadosAD.cs
+│
+├─ General
+│   ├─ FiltrarEmpleados
+│   │   └ filtrarEmpleadosAD.cs
+│   └─ ObtenerTotalEmpleados
+│       └ obtenerTotalEmpleadosAD.cs
+│
+├─ Hoja_Resumen
+│   └ ListarHojaResumen
+│       └ listarHojaResumenAD.cs
+│
+├─ Monedas
+│   └ ListarMonedas
+│       └ listarMonedasAD.cs
+│
+├─ Observaciones
+│   └ ObservacionAD.cs
+│       └ class ObservacionAD
+│
+├─ Tipo_Remuneracion
+│   ├ AgregarTipoRemuneracionAD.cs
+│   ├ EditarTipoRemuneracionAD.cs
+│   ├ EliminarTipoRemuneracionAD.cs
+│   ├ ListarTipoRemuneracionAD.cs
+│   └ ObtenerIdTipoRemuneracionAD.cs
+│
+├─ Tipo_Retencion
+│   ├ AgregarTipoRetencionAD.cs
+│   ├ EditarTipoRetencionAD.cs
+│   ├ EliminarTipoRetencionAD.cs
+│   ├ ListarTipoRetencionAD.cs
+│   └ ObtenerIdTipoRetencionAD.cs
+│
+├─ Contexto.cs
+└─ App.config
+
+
+
+Emplaniapp.Abstracciones
+│
+├─ Properties
+│
+├─ References
+│
+├─ Entidades
+│   └ ApplicationUser.cs
+│
+├─ InterfacesAD
+│   ├ Bancos
+│   │   └ IListarBancosAD.cs
+│   ├ Cargos
+│   │   └ IListarCargosAD.cs
+│   ├ DatosPersonales
+│   │   └ IDatosPersonalesAD.cs
+│   ├ Empleado
+│   │   ├ IAgregarEmpleadoAD.cs
+│   │   ├ IListarEmpleadoAD.cs
+│   │   ├ IModificarEstadoAD.cs
+│   │   └ IObtenerEmpleadoPorIdAD.cs
+│   ├ Estados
+│   │   └ IListarEstadosAD.cs
+│   ├ General
+│   │   ├ IFiltrarEmpleadosAD.cs
+│   │   └ IObtenerTotalEmpleadosAD.cs
+│   ├ HojaResumen
+│   │   └ IListarHojaResumenAD.cs
+│   ├ Monedas
+│   │   └ IListarMonedasAD.cs
+│   ├ Observaciones
+│   │   └ IObservacionAD.cs
+│   ├ Tipo_Remuneracion
+│   │   ├ IAgregarTipoRemuneracionAD.cs
+│   │   ├ IEditarTipoRemuneracionAD.cs
+│   │   ├ IEliminarTipoRemuneracionAD.cs
+│   │   ├ IListarTipoRemuneracionAD.cs
+│   │   └ IObtenerIdTipoRemuneracionAD.cs
+│   └ Tipo_Retencion
+│       ├ IAgregarTipoRetencionAD.cs
+│       ├ IEditarTipoRetencionAD.cs
+│       ├ IEliminarTipoRetencionAD.cs
+│       ├ IListarTipoRetencionAD.cs
+│       └ IObtenerIdTipoRetencionAD.cs
+│
+├─ InterfacesParaUI
+│   ├ Bancos
+│   │   └ IListarBancosLN.cs
+│   ├ Cargos
+│   │   └ IListarCargosLN.cs
+│   ├ DatosPersonales
+│   │   └ IDatosPersonalesLN.cs
+│   ├ Empleado
+│   │   ├ IAgregarEmpleadoLN.cs
+│   │   ├ IListarEmpleadoLN.cs
+│   │   ├ IModificarEstadoLN.cs
+│   │   └ IObtenerEmpleadoPorIdLN.cs
+│   ├ Estados
+│   │   └ IListarEstadosLN.cs
+│   ├ General
+│   │   ├ IFiltrarEmpleadosLN.cs
+│   │   └ IObtenerTotalEmpleadosLN.cs
+│   └ HojaResumen
+│       └ IListarHojaResumenLN.cs
+│
+├─ ModelosAD
+│   ├ Banco.cs
+│   ├ Calle.cs
+│   ├ Canton.cs
+│   ├ Cargo.cs
+│   ├ Direccion.cs
+│   ├ Distrito.cs
+│   ├ Empleados.cs
+│   ├ Estado.cs
+│   ├ Liquidaciones.cs
+│   ├ NumeroOcupacion.cs
+│   ├ Observacion.cs
+│   ├ PagoQuincenal.cs
+│   ├ PeriodoPago.cs
+│   ├ Provincia.cs
+│   ├ Remuneracion.cs
+│   ├ Retencion.cs
+│   ├ TipoMoneda.cs
+│   ├ TipoRemuneracion.cs
+│   └ TipoRetencion.cs
+│
+├─ ModelosParaUI
+│   ├ BancoDto.cs
+│   ├ CalleDto.cs
+│   ├ CantonDto.cs
+│   ├ CargoDto.cs
+│   ├ DireccionDto.cs
+│   ├ DistritoDto.cs
+│   ├ EmpleadoDto.cs
+│   ├ EstadoDto.cs
+│   ├ HojaResumenDto.cs
+│   ├ MonedaDto.cs
+│   ├ NumeroOcupacioDto.cs
+│   ├ ObservacionDto.cs
+│   ├ ProvinciaDto.cs
+│   ├ RemuneracionDto.cs
+│   ├ RetencionDto.cs
+│   ├ TipoRemuneracionDto.cs
+│   └ TipoRetencionDto.cs
+│
+└─ packages.config

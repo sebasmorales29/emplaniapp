@@ -11,14 +11,14 @@ namespace Emplaniapp.Abstracciones.ModelosAD
     [Table("Retencion")]
     public class Retencion
     {
-        [Column("idRetenciones")]
+      
         [Key]
         public int idRetencion { get; set; }
         public int idEmpleado { get; set; }
-        public int idTipoRetencio { get; set; }
-        public string nombreTipoRetencio { get; set; }
+        public int idTipoRetencion { get; set; }
+       
         public decimal? rebajo { get; set; }
-        public DateTime fechaRetencio { get; set; }
+        public DateTime fechaRetencion { get; set; }
         public int idEstado { get; set; }
     }
 }

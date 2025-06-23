@@ -5,71 +5,7 @@
 }
 
 <style>
-    /* Contenedor del Logo */
-    .login-logo {
-        text-align: center;
-        margin-bottom: 2rem;
-        color: #4a87c7;
-    }
-    .login-logo .glyphicon {
-        font-size: 50px;
-    }
-    .login-logo h1 {
-        font-size: 28px;
-        font-weight: 600;
-        margin-top: 10px;
-    }
-    
-    /* Título del Formulario */
-    .login-form-title {
-        text-align: left;
-        font-size: 24px;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-    }
-
-    /* Campos y Botones */
-    .form-group { margin-bottom: 1.5rem; }
-    .form-control {
-        border-radius: 8px;
-        padding: 10px;
-        height: auto;
-    }
-
-    /* Contenedor para la Contraseña y el Ojo */
-    .password-wrapper {
-        position: relative;
-    }
-    .password-wrapper .form-control {
-        padding-right: 40px; 
-    }
-    .toggle-password {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        transform: translateY(-50%);
-        cursor: pointer;
-        color: #777;
-    }
-
-    /* Enlace de Olvidó Contraseña */
-    .forgot-password-link {
-        display: block;
-        text-align: left;
-        margin-top: -1rem;
-        margin-bottom: 1.5rem;
-        font-size: 14px;
-    }
-
-    /* Botón Principal */
-    .btn-primary {
-        background-color: #4a87c7;
-        border-color: #4a87c7;
-        border-radius: 8px;
-        padding: 10px;
-        font-size: 16px;
-        font-weight: 600;
-    }
+   
 </style>
 
 <div class="login-logo">
@@ -93,14 +29,18 @@
     <div class="form-group">
         @Html.LabelFor(m => m.Password)
         <div class="password-wrapper">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", id = "Password" })
             <span class="glyphicon glyphicon-eye-open toggle-password"></span>
         </div>
         @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
     </div>
 
     <div class="forgot-password-link">
-        @Html.ActionLink("¿No recuerda su contraseña? Ingrese aquí", "ForgotPassword")
+        @Html.ActionLink(
+            "¿No recuerda su contraseña? Ingrese aquí",
+            "ForgotPassword",
+            "Account"
+        )
     </div>
 
     <div class="form-group">
@@ -115,11 +55,7 @@
             $('.toggle-password').click(function () {
                 $(this).toggleClass('glyphicon-eye-open glyphicon-eye-close');
                 var input = $("#Password");
-                if (input.attr('type') === 'password') {
-                    input.attr('type', 'text');
-                } else {
-                    input.attr('type', 'password');
-                }
+                input.attr('type', input.attr('type') === 'password' ? 'text' : 'password');
             });
         });
     </script>
