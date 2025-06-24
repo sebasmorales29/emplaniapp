@@ -38,7 +38,7 @@
             <div class="nav-enlaces">
                 <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Datos personales" })" class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
                 <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Historial" })" class="@(seccionActiva == "Historial" ? "active" : "")">Historial</a>
-                <a href="@Url.Action("DetallesRemun", "Remuneraciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
+                <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
                 <a href="@Url.Action("Detalles", "Retenciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
                 <a href="@Url.Action("LiquidarEmpleado", "Liquidacion", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Liquidación" ? "active" : "")">Liquidación</a>
                 <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Observaciones" })" class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
@@ -46,8 +46,54 @@
             <hr />
         </div>
     </div>
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayName("Retención")
+                </th>
+                <th>
+                    @Html.DisplayName("Rebajo")
+                </th>
+                <th>
+                    @Html.DisplayName("Fecha")
+                </th>
+                <th>
+                    @Html.DisplayName("Estado")
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Item2)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.nombreTipoRetencio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.rebajo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.fechaRetencio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.nombreEstado)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.idRetencion }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.idRetencion }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.idRetencion })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
 
-    </div>
+</div>
 
 
