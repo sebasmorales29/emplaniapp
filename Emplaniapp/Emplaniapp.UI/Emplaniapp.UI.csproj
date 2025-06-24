@@ -317,6 +317,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DatosFinancierosViewModel.cs" />
     <Compile Include="Models\DatosLaboralesViewModel.cs" />
+    <Compile Include="Models\ForgotPasswordViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -412,7 +413,6 @@
     <Content Include="Views\Remuneraciones\DetallesRemu.cshtml" />
     <Content Include="Views\Shared\_.cshtml" />
     <Content Include="Views\Retenciones\Detalles.cshtml" />
-    <Content Include="Views\Retenciones\Lista.cshtml" />
     <Content Include="Views\Remuneraciones\_CrearRemuneracionManual.cshtml" />
   </ItemGroup>
   <ItemGroup>

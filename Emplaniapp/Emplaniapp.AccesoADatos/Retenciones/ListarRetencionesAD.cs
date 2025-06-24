@@ -21,16 +21,16 @@ namespace Emplaniapp.AccesoADatos.Retenciones
         {
             List<RetencionDto> ListaReten =
                 (from reten in contexto.Retenciones
-                 join t_reten in contexto.TipoReten on reten.idTipoRetencio equals t_reten.Id
+                 join t_reten in contexto.TipoReten on reten.idTipoRetencion equals t_reten.Id
                  join estado in contexto.Estado on reten.idEstado equals estado.idEstado
                  select new RetencionDto
                  {
                      idRetencion = reten.idRetencion,
                      idEmpleado = reten.idEmpleado,
-                     idTipoRetencio = reten.idTipoRetencio,
+                     idTipoRetencio = reten.idTipoRetencion,
                      nombreTipoRetencio = t_reten.nombreTipoRetencion,
                      rebajo = reten.rebajo,
-                     fechaRetencio = reten.fechaRetencio,
+                     fechaRetencio = reten.fechaRetencion,
                      idEstado = reten.idEstado,
                      nombreEstado = estado.nombreEstado
                  })

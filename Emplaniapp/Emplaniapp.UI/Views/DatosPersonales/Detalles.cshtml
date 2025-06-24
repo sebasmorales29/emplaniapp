@@ -52,7 +52,7 @@
                 @if (User.IsInRole("Contador"))
                 {
                     <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = Model.idEmpleado})" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
-                    <a href="@Url.Action("ListarRetenciones", "Retenciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
+                    <a href="@Url.Action("Detalles", "Retenciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
                     <a href="@Url.Action("LiquidarEmpleado", "Liquidacion", new { id = Model.idEmpleado })" class="@(seccionActiva == "Liquidación" ? "active" : "")">Liquidación</a>
                 }
                 <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Observaciones" })" class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
