@@ -105,32 +105,33 @@
 
 @using (Html.BeginForm("Filtrar", "Empleado", FormMethod.Post))
 {
-    <div class="row mb-3 align-items-end">
-        <div class="col-md-3">
-            <input type="text" name="filtro" value="@ViewBag.Filtro" class="form-control" placeholder="Buscar por nombre o cédula" />
-        </div>
-        <div class="col-md-3">
-            @Html.DropDownList("idCargo", new SelectList(ViewBag.Cargos, "Value", "Text", ViewBag.idCargo), "Todos los cargos", new { @class = "form-control" })
-        </div>
-        <div class="col-md-3">
-            @Html.DropDownList("idEstado", new SelectList(ViewBag.Estados, "Value", "Text", ViewBag.idEstado), "Todos los estados", new { @class = "form-control" })
-        </div>
-        <div class="col-md-1">
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="fas fa-search"></i> Filtrar
-            </button>
-        </div>
-        @if (!string.IsNullOrEmpty(ViewBag.Filtro as string) || (ViewBag.idCargo != null && ViewBag.idCargo != 0) || (ViewBag.idEstado != null && ViewBag.idEstado != 0))
-        {
-            <div class="col-md-1">
-                <a href="@Url.Action("ListarEmpleados", "Empleado")" class="btn btn-secondary w-100">
-                    <i class="fas fa-times"></i> Quitar
-                </a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        
+        <div class="d-flex align-items-center">
+            <div class="me-2">
+                <input type="text" name="filtro" value="@ViewBag.Filtro" class="form-control" placeholder="Buscar por nombre o cédula" />
             </div>
-        }
-    </div>
-
-    <div class="total-empleados-container">
+            <div class="me-2">
+                @Html.DropDownList("idCargo", new SelectList(ViewBag.Cargos, "Value", "Text", ViewBag.idCargo), "Todos los cargos", new { @class = "form-control" })
+            </div>
+            <div class="me-2">
+                @Html.DropDownList("idEstado", new SelectList(ViewBag.Estados, "Value", "Text", ViewBag.idEstado), "Todos los estados", new { @class = "form-control" })
+            </div>
+            <div class="me-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Filtrar
+                </button>
+            </div>
+            @if (!string.IsNullOrEmpty(ViewBag.Filtro as string) || (ViewBag.idCargo != null && ViewBag.idCargo != 0) || (ViewBag.idEstado != null && ViewBag.idEstado != 0))
+            {
+                <div class="me-2">
+                    <a href="@Url.Action("ListarEmpleados", "Empleado")" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Quitar
+                    </a>
+                </div>
+            }
+        </div>
+        
         <div class="total-empleados-box">
             <span>Total: @ViewBag.TotalEmpleados</span>
         </div>
@@ -156,7 +157,7 @@
                 <td>@($"{item.nombre} {item.segundoNombre} {item.primerApellido} {item.segundoApellido}")</td>
                 <td>@Html.DisplayFor(modelItem => item.nombreCargo)</td>
                 <td>@Html.DisplayFor(modelItem => item.nombreEstado)</td>
-                <td>falta</td>
+                <td>@Html.DisplayFor(modelItem => item.Role)</td>
                 <td class="acciones">
                     <a href="@Url.Action("Detalles", "DatosPersonales", new { id = item.idEmpleado })" class="btn-celeste-claro">Ver detalles</a>
                     <a href="@Url.Action("_CambiarEstado", "Empleado", new { id = item.idEmpleado })"

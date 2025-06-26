@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using System.Security.Claims;
+using Emplaniapp.AccesoADatos;
 
 namespace Emplaniapp.UI.Controllers
 {
@@ -64,7 +65,26 @@ namespace Emplaniapp.UI.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    // … tu lógica de roles y claims …
+                    var user = await UserManager.FindByNameAsync(model.UserName);
+                    if (user != null)
+                    {
+                        // Obtener la identidad original creada por SignInManager
+                        var originalIdentity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+
+                        using (var contexto = new Contexto())
+                        {
+                            var empleado = contexto.Empleados.FirstOrDefault(e => e.IdNetUser == user.Id);
+                            if (empleado != null)
+                            {
+                                // Añadir el claim a la identidad
+                                originalIdentity.AddClaim(new Claim("idEmpleado", empleado.idEmpleado.ToString()));
+                                
+                                // Re-autenticar al usuario con la nueva identidad que incluye el claim
+                                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                                AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = model.RememberMe }, originalIdentity);
+                            }
+                        }
+                    }
                     return RedirectToLocal(returnUrl);
 
                 case SignInStatus.LockedOut:

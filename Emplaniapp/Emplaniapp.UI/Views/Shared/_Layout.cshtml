@@ -85,7 +85,7 @@
                     @if (User.IsInRole("Empleado"))
                     {
                         <!-- Menú para Empleado -->
-                        <li class="nav-item">@Html.ActionLink("Perfil", "Detalles", "DatosPersonales", new { id = idEmpleado }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Perfil", "Detalles", "DatosPersonales", null, new { @class = "nav-link" })</li>
                         <li class="nav-item">@Html.ActionLink("Reporte de Pagos", "HistorialPagos", "PagoQuincenal", new { idEmpleado = idEmpleado }, new { @class = "nav-link" })</li>
                     }
                 </ul>

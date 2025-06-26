@@ -1,50 +1,50 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\",
+  "WorkspaceRootPath": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\sebas\\onedrive\\escritorio\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\account\\forgotpasswordconfirmation.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\account\\forgotpasswordconfirmation.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\account\\forgotpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\account\\forgotpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.ui\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.ui\\models\\forgotpasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\models\\forgotpasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\AccountController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Controllers\\AccountController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\retenciones\\detalles.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\retenciones\\detalles.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\modelosparaui\\retenciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\modelosparaui\\retenciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.accesoadatos\\retenciones\\listarretencionesad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|solutionrelative:emplaniapp.accesoadatos\\retenciones\\listarretencionesad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|solutionrelative:Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\modelosad\\retencion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\modelosad\\retencion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\lenovo\\documents\\indy\\github desktop\\emplaniapp\\emplaniapp\\emplaniapp.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\emplaniapp.ui\\controllers\\remuneracionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\controllers\\remuneracionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Controllers\\RemuneracionesController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -54,8 +54,20 @@
       "DocumentGroups": [
         {
           "DockedWidth": 199,
-          "SelectedChildIndex": 15,
+          "SelectedChildIndex": 14,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
@@ -70,127 +82,87 @@
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
               "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ForgotPassword.cshtml",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml",
-              "ViewState": "AgIAAIUAAAAAAAAAAAAcwJEAAAAOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-24T00:22:16.13Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ForgotPasswordConfirmation.cshtml",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-24T00:20:22.967Z",
-              "EditorCaption": ""
+              "DocumentIndex": 3,
+              "Title": "ForgotPasswordViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs",
+              "RelativeToolTip": "Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-24T00:18:16.879Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "ForgotPasswordViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs",
-              "RelativeToolTip": "Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-24T00:18:16.879Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "AccountController.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\AccountController.cs",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\AccountController.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\AccountController.cs",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\AccountController.cs",
               "RelativeToolTip": "Emplaniapp.UI\\Controllers\\AccountController.cs",
               "ViewState": "AgIAAIAAAAAAAAAAAAAIwIcAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-24T00:14:31.057Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-24T00:14:31.057Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
               "Title": "Detalles.cshtml",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml",
               "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml",
               "RelativeToolTip": "Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAFsAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-24T00:03:23.316Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-24T00:03:23.316Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
               "Title": "RetencionDto.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs",
               "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs",
               "RelativeToolTip": "Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-24T00:02:18.168Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-24T00:02:18.168Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 7,
               "Title": "ListarRetencionesAD.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs",
               "RelativeDocumentMoniker": "Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs",
               "RelativeToolTip": "Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-24T00:01:35.412Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-24T00:01:35.412Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
               "Title": "Retencion.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs",
               "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs",
               "RelativeToolTip": "Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABEAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-24T00:00:54.687Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-24T00:00:54.687Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 9,
               "Title": "Web.config",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Web.config",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Web.config",
               "RelativeDocumentMoniker": "Emplaniapp.UI\\Web.config",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Web.config",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Web.config",
               "RelativeToolTip": "Emplaniapp.UI\\Web.config",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
@@ -201,9 +173,9 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Home\\Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Home\\Index.cshtml",
               "RelativeToolTip": "Emplaniapp.UI\\Views\\Home\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -212,11 +184,35 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ForgotPasswordConfirmation.cshtml",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml",
+              "RelativeToolTip": "Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-24T00:20:22.967Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ForgotPassword.cshtml",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml",
+              "RelativeToolTip": "Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml",
+              "ViewState": "AgIAAIUAAAAAAAAAAAAcwJEAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-24T00:22:16.13Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 10,
               "Title": "RemuneracionesController.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
               "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\Documents\\Indy\\GitHub Desktop\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
               "RelativeToolTip": "Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0AAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
