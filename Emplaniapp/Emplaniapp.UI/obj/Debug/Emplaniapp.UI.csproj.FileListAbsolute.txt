@@ -209,8 +209,6 @@ C:\Users\Yazmin\source\repos\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Empla
 C:\Users\Yazmin\source\repos\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Emplania.23589104.Up2Date
 C:\Users\Yazmin\source\repos\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Emplaniapp.UI.dll
 C:\Users\Yazmin\source\repos\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Emplaniapp.UI.pdb
-C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Emplaniapp.UI.csproj.AssemblyReference.cache
-C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Emplaniapp.UI.csproj.CoreCompileInputs.cache
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\Emplaniapp.UI.dll.config
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\Emplaniapp.UI.dll
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\Emplaniapp.UI.pdb
@@ -417,6 +415,8 @@ C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.U
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\es\Microsoft.AspNet.Identity.Core.resources.dll
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\es\Microsoft.AspNet.Identity.Owin.resources.dll
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\es\Microsoft.AspNet.Identity.EntityFramework.resources.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Emplaniapp.UI.csproj.AssemblyReference.cache
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Emplaniapp.UI.csproj.CoreCompileInputs.cache
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Emplania.23589104.Up2Date
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Emplaniapp.UI.dll
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Emplaniapp.UI.pdb
