@@ -1,5 +1,4 @@
-﻿
-@using Emplaniapp.Abstracciones.ModelosParaUI;
+﻿@using Emplaniapp.Abstracciones.ModelosParaUI;
 @model Tuple<EmpleadoDto, List<RetencionDto>>
 
 
@@ -46,54 +45,45 @@
             <hr />
         </div>
     </div>
-    <p>
-        @Html.ActionLink("Create New", "Create")
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayName("Retención")
-                </th>
-                <th>
-                    @Html.DisplayName("Rebajo")
-                </th>
-                <th>
-                    @Html.DisplayName("Fecha")
-                </th>
-                <th>
-                    @Html.DisplayName("Estado")
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Item2)
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Retenciones</h2>
+        <a href="@Url.Action("Create", new { idEmpleado = Model.Item1.idEmpleado })" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Agregar Retención
+        </a>
+    </div>
+
+    <div class="row">
+        @if (Model.Item2.Any())
+        {
+            foreach (var item in Model.Item2)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.nombreTipoRetencio)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.rebajo)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.fechaRetencio)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.nombreEstado)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.idRetencion }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.idRetencion }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.idRetencion })
-                    </td>
-                </tr>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.nombreTipoRetencio)</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@item.fechaRetencio.ToString("dd/MM/yyyy")</h6>
+                            <hr />
+                            <p class="card-text"><strong>Rebajo:</strong> @String.Format("{0:C}", item.rebajo)</p>
+                            <p><strong>Estado:</strong> <span class="badge @(item.nombreEstado == "Activo" ? "badge-success" : "badge-secondary")">@item.nombreEstado</span></p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <a href="@Url.Action("Edit", new { id = item.idRetencion })" class="btn btn-primary btn-sm">Editar</a>
+                            <a href="@Url.Action("Delete", new { id = item.idRetencion })" class="btn btn-danger btn-sm">Eliminar</a>
+                        </div>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-
-
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    No hay retenciones registradas para este empleado.
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
 

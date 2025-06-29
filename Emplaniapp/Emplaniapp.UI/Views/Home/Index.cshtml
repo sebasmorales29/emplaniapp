@@ -4,69 +4,41 @@
 }
 
 <style>
-    /* Evita barras de scroll solo en el contenedor de bienvenida */
-    html, body {
-        margin: 0;
-        padding: 0;
+    /* Estilos definitivos para garantizar la visibilidad de los cuadros */
+    body {
+        background-color: #f8f9fa !important; /* Fondo gris claro para la página */
     }
-
-    .welcome-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: calc(100vh - 64px - 40px); /* navbar (64px) + footer (40px aprox.) */
-        background: #f7f9fb;
-        padding: 1rem;
-        overflow: hidden;
+    .content-box {
+        background-color: #ffffff; /* Fondo blanco sólido */
+        border: 1px solid #dee2e6; /* Borde claro pero visible */
+        border-radius: 16px;       /* Bordes redondeados */
+        padding: 40px;
+        margin-bottom: 30px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.07); /* Sombra para dar profundidad */
     }
-
-    .welcome-text {
-        flex: 1;
-        max-width: 650px;
-        padding: 2rem;
-    }
-
-        .welcome-text h1 {
-            font-size: 2.55rem;
-            margin-bottom: 1rem;
-            color: #333;
-        }
-
-        .welcome-text p {
-            font-size: 1.25rem;
-            line-height: 1.6;
-            color: #555;
-        }
-
-    .welcome-image {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-    }
-
-        .welcome-image img {
-            max-width: 100%;
-            max-height: 80vh;
-            object-fit: contain;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
 </style>
 
-<main>
-    <div class="welcome-container">
-        <div class="welcome-text">
-            <h1>Bienvenidos a Suplidora Royal</h1>
-            <p>
-                Somos una empresa líder, especializada en el mercado de las mascotas domésticas,
-                con más de 35 años de experiencia.
-            </p>
-        </div>
-        <div class="welcome-image">
-            <img src="https://medismart.net/wp-content/uploads/2023/06/suplidora-royal.jpg"
-                 alt="Logo de Suplidora Royal Ltda.">
-        </div>
+<div class="container" style="padding-top: 40px; padding-bottom: 40px;">
+
+    <!-- Primer recuadro de contenido -->
+    <div class="content-box">
+        <h2 class="text-center" style="font-weight: bold; margin-bottom: 20px;">Suplidora Internacional Royal Ltda</h2>
+        <p class="text-center">
+            Empresa costarricense con más de 35 años en la importación y distribución de productos para mascotas. Ofrecemos más de 9 000 productos de marcas reconocidas, con presencia en Costa Rica, Nicaragua y Panamá. Nuestro compromiso es brindar calidad, confianza y atención personalizada.
+        </p>
     </div>
-</main>
+
+    <!-- Segundo recuadro de contenido -->
+    <div class="content-box">
+        <h2 class="text-center" style="font-weight: bold; margin-bottom: 20px;">¿A qué nos dedicamos?</h2>
+        <p class="text-center">
+            Distribuimos alimentos, cosméticos, accesorios y equipos profesionales para mascotas. Ofrecemos venta en línea, tiendas físicas, envío gratis, mantenimiento de equipos y atención por WhatsApp. Somos representantes oficiales de marcas como Andis, Oster, Applaws y más.
+        </p>
+    </div>
+
+</div>
+
+<!-- Referencia a Font Awesome para los íconos (si se necesitan en el futuro) -->
+@section scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+}

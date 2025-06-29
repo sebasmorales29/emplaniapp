@@ -22,6 +22,7 @@ namespace Emplaniapp.AccesoADatos.Tipo_Retencion
 
         public async Task<int> Agregar(TipoRetencion TReten) 
         {
+            TReten.idEstado = 1; // Se establece el estado como "Activo" por defecto
             contexto.TipoReten.Add(TReten); 
             EntityState estado = contexto.Entry(TReten).State = System.Data.Entity.EntityState.Added;
             int tipoRetenGuardado = await contexto.SaveChangesAsync();

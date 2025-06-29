@@ -10,5 +10,6 @@ namespace Emplaniapp.Abstracciones.InterfacesAD.Remuneraciones
     public interface IListarRemuneracionesAD
     {
         List<RemuneracionDto> Listar(int id);
+        RemuneracionDto ObtenerPorId(int id);
     }
 }

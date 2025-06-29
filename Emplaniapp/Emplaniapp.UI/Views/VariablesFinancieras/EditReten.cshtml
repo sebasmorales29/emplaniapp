@@ -11,22 +11,12 @@
     @Html.AntiForgeryToken()
 
 <div class="form-horizontal">
-    <h4>TipoRetencionDto</h4>
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(model => model.Id)
 
-    <!--Pendiente-->
     <div class="form-group">
-        @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.nombreTipoRetencion, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.nombreTipoRetencion, "Nombre", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.EditorFor(model => model.nombreTipoRetencion, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.nombreTipoRetencion, "", new { @class = "text-danger" })
@@ -34,7 +24,7 @@
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.porcentajeRetencion, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.porcentajeRetencion, "Porcentaje", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.EditorFor(model => model.porcentajeRetencion, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.porcentajeRetencion, "", new { @class = "text-danger" })
@@ -42,9 +32,13 @@
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.idEstado, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.idEstado, "Estado", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(model => model.idEstado, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.DropDownListFor(model => model.idEstado, new SelectList(new[]
+            {
+                new { Value = "1", Text = "Activo" },
+                new { Value = "2", Text = "Inactivo" }
+            }, "Value", "Text"), new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.idEstado, "", new { @class = "text-danger" })
         </div>
     </div>

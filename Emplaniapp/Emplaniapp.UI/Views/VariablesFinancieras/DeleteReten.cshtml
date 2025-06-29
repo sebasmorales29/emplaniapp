@@ -1,53 +1,55 @@
 ﻿@model Emplaniapp.Abstracciones.ModelosParaUI.TipoRetencionDto
 
 @{
-    ViewBag.Title = "Eliminar Reteneción";
+    ViewBag.Title = "Eliminar Retención";
 }
 
-<h2>Eliminar Reteneción</h2>
-
+<h2>Eliminar Retención</h2>
 <h3>¿Desea eliminar la siguiente información?</h3>
-<div>
-   
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.nombreTipoRetencion)
-        </dt>
+<hr />
 
-        <dd>
+<div class="form-horizontal">
+    <div class="form-group" style="margin-bottom: 20px;">
+        <strong class="control-label col-md-2">@Html.DisplayName("Nombre")</strong>
+        <div class="col-md-10" style="padding-top: 7px;">
             @Html.DisplayFor(model => model.nombreTipoRetencion)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.porcentajeRetencion)
-        </dt>
-
-        <dd>
+    <div class="form-group" style="margin-bottom: 20px;">
+        <strong class="control-label col-md-2">@Html.DisplayName("Porcentaje %")</strong>
+        <div class="col-md-10" style="padding-top: 7px;">
             @Html.DisplayFor(model => model.porcentajeRetencion)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.idEstado)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.idEstado)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-
-<div class="form-actions no-color">
-    <br />
-    <input type="submit" value="Eliminar" class="btn btn-outline-danger" /> 
-
-    <br />
-    <br />
-    @Html.ActionLink("Volver a Variables Financieras", "Index")
+    <div class="form-group" style="margin-bottom: 20px;">
+        <strong class="control-label col-md-2">@Html.DisplayName("Estado")</strong>
+        <div class="col-md-10" style="padding-top: 7px;">
+            @if (Model.idEstado == 1)
+            {
+                <span>Activo</span>
+            }
+            else
+            {
+                <span>Inactivo</span>
+            }
+        </div>
+    </div>
 </div>
-    }
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-actions no-color col-md-offset-2">
+        <br />
+        <input type="submit" value="Eliminar" class="btn btn-danger" />
+        <br />
+        <br />
+    </div>
+}
+<br />
+<div>
+    @Html.ActionLink("Volver a Variables Financieras", "Index")
 </div>

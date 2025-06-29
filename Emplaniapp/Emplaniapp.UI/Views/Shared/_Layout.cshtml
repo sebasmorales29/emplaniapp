@@ -22,39 +22,10 @@
     <title>@ViewBag.Title - Suplidora Royal Ltda.</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-    <style>
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-        }
-
-            .navbar-brand img {
-                margin-right: 10px;
-            }
-
-        .navbar {
-            background-color: #4a87c7 !important;
-        }
-
-        .navbar-nav .nav-link {
-            color: white !important;
-        }
-        /* Estilos para el nombre de usuario */
-        .navbar-user {
-            color: white;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-            .navbar-user i {
-                margin-right: 5px;
-            }
-    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark">
-        <div class="container">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark" id="main-navbar">
+        <div class="container" style="background-color: #4682A9; border-radius: 50px; padding: 10px 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
             <a href="@Url.Action("Index", "Home")" class="navbar-brand">
                 <div>
                     <div>Suplidora</div>
@@ -70,23 +41,23 @@
                     @if (User.IsInRole("Administrador"))
                     {
                         <!-- Menú para Administrador -->
-                        <li class="nav-item">@Html.ActionLink("Empleados", "ListarEmpleados", "Empleado", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Empleados", "ListarEmpleados", "Empleado", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
+                        <li class="nav-item">@Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
                     }
 
                     @if (User.IsInRole("Contador"))
                     {
                         <!-- Menú para Contador -->
-                        <li class="nav-item">@Html.ActionLink("Tablero de Control", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("Hoja Resumen", "listarHojaResumen", "HojaResumen", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Tablero de Control", "Index", "Home", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
+                        <li class="nav-item">@Html.ActionLink("Hoja Resumen", "listarHojaResumen", "HojaResumen", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
+                        <li class="nav-item">@Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
                     }
 
                     @if (User.IsInRole("Empleado"))
                     {
                         <!-- Menú para Empleado -->
-                        <li class="nav-item">@Html.ActionLink("Perfil", "Detalles", "DatosPersonales", new { id = idEmpleado }, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("Reporte de Pagos", "HistorialPagos", "PagoQuincenal", new { idEmpleado = idEmpleado }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Perfil", "Detalles", "DatosPersonales", null, new { @class = "nav-link", style = "color: white;" })</li>
+                        <li class="nav-item">@Html.ActionLink("Reporte de Pagos", "HistorialPagos", "PagoQuincenal", new { idEmpleado = idEmpleado }, new { @class = "nav-link", style = "color: white;" })</li>
                     }
                 </ul>
 
@@ -94,7 +65,7 @@
                     @if (Request.IsAuthenticated)
                     {
                         <!-- Si el usuario está autenticado, mostrar nombre de usuario y botón de Salir -->
-                        <li class="nav-item navbar-user">
+                        <li class="nav-item navbar-user" style="margin-right: 20px; color: white;">
                             <i class="glyphicon glyphicon-user"></i>
                             @userRole
                         </li>
@@ -102,7 +73,7 @@
                             @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "form-inline" }))
                             {
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-link nav-link" style="padding: 0;">
+                                <button type="submit" class="btn btn-link nav-link" style="padding: 0; color: white; text-decoration: none;">
                                     <i class="glyphicon glyphicon-log-out"></i> Salir
                                 </button>
                             }
@@ -112,10 +83,10 @@
                     {
                         <!-- Si NO está autenticado, mostrar enlaces a Login y Register -->
                         <li class="nav-item">
-                            @Html.ActionLink("Registrar", "Register", "Account", new { area = "" }, new { @class = "nav-link" })
+                            @Html.ActionLink("Registrar", "Register", "Account", new { area = "" }, new { @class = "nav-link", style = "color: white;" })
                         </li>
                         <li class="nav-item">
-                            @Html.ActionLink("Iniciar sesión", "Login", "Account", new { area = "" }, new { @class = "nav-link" })
+                            @Html.ActionLink("Iniciar sesión", "Login", "Account", new { area = "" }, new { @class = "nav-link", style = "color: white;" })
                         </li>
                     }
                 </ul>
@@ -142,9 +113,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="adminPasswordModalLabel">Confirmación de Administrador</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body">
                     <p>Para completar esta acción, por favor ingrese su contraseña de administrador.</p>
@@ -155,7 +123,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" id="cancelAdminPasswordBtn">Cancelar</button>
                     <button type="button" class="btn btn-primary" id="confirmAdminPasswordBtn">Confirmar</button>
                 </div>
             </div>

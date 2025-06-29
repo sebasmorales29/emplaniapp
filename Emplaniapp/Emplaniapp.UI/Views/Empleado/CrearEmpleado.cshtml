@@ -91,12 +91,12 @@
                     <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.segundoApellido) @Html.EditorFor(m => m.segundoApellido, new { htmlAttributes = new { @class = "form-control", placeholder = "Segundo Apellido" } }) @Html.ValidationMessageFor(m => m.segundoApellido, "", new { @class = "text-danger" })</div></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4"><div class="form-group">@Html.LabelFor(m => m.cedula) @Html.EditorFor(m => m.cedula, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.cedula, "", new { @class = "text-danger" })</div></div>
-                    <div class="col-md-4"><div class="form-group">@Html.LabelFor(m => m.fechaNacimiento) @Html.EditorFor(m => m.fechaNacimiento, new { htmlAttributes = new { @class = "form-control", type = "date" } }) @Html.ValidationMessageFor(m => m.fechaNacimiento, "", new { @class = "text-danger" })</div></div>
-                    <div class="col-md-4"><div class="form-group">@Html.LabelFor(m => m.numeroTelefonico) @Html.EditorFor(m => m.numeroTelefonico, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.numeroTelefonico, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.cedula) @Html.EditorFor(m => m.cedula, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.cedula, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.fechaNacimiento) @Html.EditorFor(m => m.fechaNacimiento, new { htmlAttributes = new { @class = "form-control", type = "date" } }) @Html.ValidationMessageFor(m => m.fechaNacimiento, "", new { @class = "text-danger" })</div></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12"><div class="form-group">@Html.LabelFor(m => m.correoInstitucional) @Html.EditorFor(m => m.correoInstitucional, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.correoInstitucional, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.numeroTelefonico) @Html.EditorFor(m => m.numeroTelefonico, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.numeroTelefonico, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.correoInstitucional) @Html.EditorFor(m => m.correoInstitucional, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.correoInstitucional, "", new { @class = "text-danger" })</div></div>
                 </div>
             </div>
         </div>
@@ -106,8 +106,8 @@
             <div class="panel-heading"><h3 class="panel-title">Datos Laborales</h3></div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-4"><div class="form-group">@Html.LabelFor(m => m.idCargo, "Cargo") @Html.DropDownListFor(m => m.idCargo, (SelectList)ViewBag.Cargos, "Seleccione cargo", new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.idCargo, "", new { @class = "text-danger" })</div></div>
-                    <div class="col-md-4"><div class="form-group">@Html.LabelFor(m => m.fechaContratacion) @Html.EditorFor(m => m.fechaContratacion, new { htmlAttributes = new { @class = "form-control", type = "date" } }) @Html.ValidationMessageFor(m => m.fechaContratacion, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.idCargo, "Cargo") @Html.DropDownListFor(m => m.idCargo, (SelectList)ViewBag.Cargos, "Seleccione cargo", new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.idCargo, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.fechaContratacion) @Html.EditorFor(m => m.fechaContratacion, new { htmlAttributes = new { @class = "form-control", type = "date" } }) @Html.ValidationMessageFor(m => m.fechaContratacion, "", new { @class = "text-danger" })</div></div>
                 </div>
                 <div class="row">
                     <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.periocidadPago, "Periodicidad") @Html.DropDownListFor(m => m.periocidadPago, (SelectList)ViewBag.PeriocidadesPago, "Seleccione", new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.periocidadPago, "", new { @class = "text-danger" })</div></div>
@@ -121,9 +121,11 @@
             <div class="panel-heading"><h3 class="panel-title">Datos Bancarios</h3></div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-4"><div class="form-group">@Html.DropDownListFor(m => m.idMoneda, (SelectList)ViewBag.TiposMoneda, "-- Seleccione moneda --", new { @class = "form-control", required = "required" })</div></div>
-                    <div class="col-md-4"><div class="form-group">@Html.DropDownListFor(m => m.idBanco, (SelectList)ViewBag.Bancos, "-- Seleccione banco --", new { @class = "form-control", required = "required" })</div></div>
-                    <div class="col-md-4"><div class="form-group">@Html.LabelFor(m => m.cuentaIBAN) @Html.EditorFor(m => m.cuentaIBAN, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.cuentaIBAN, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6"><div class="form-group">@Html.DropDownListFor(m => m.idMoneda, (SelectList)ViewBag.TiposMoneda, "-- Seleccione moneda --", new { @class = "form-control", required = "required" })</div></div>
+                    <div class="col-md-6"><div class="form-group">@Html.DropDownListFor(m => m.idBanco, (SelectList)ViewBag.Bancos, "-- Seleccione banco --", new { @class = "form-control", required = "required" })</div></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><div class="form-group">@Html.LabelFor(m => m.cuentaIBAN) @Html.EditorFor(m => m.cuentaIBAN, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.cuentaIBAN, "", new { @class = "text-danger" })</div></div>
                 </div>
             </div>
         </div>
@@ -133,10 +135,12 @@
             <div class="panel-heading"><h3 class="panel-title">Credenciales de Acceso</h3></div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-3"><div class="form-group">@Html.LabelFor(m => m.UserName) @Html.EditorFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })</div></div>
-                    <div class="col-md-3"><div class="form-group"><div class="password-wrapper">@Html.LabelFor(m => m.Password) @Html.PasswordFor(m => m.Password, new { @class = "form-control" }) <i class="fa fa-eye toggle-password"></i></div>@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })</div></div>
-                    <div class="col-md-3"><div class="form-group"><div class="password-wrapper">@Html.LabelFor(m => m.ConfirmPassword) @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" }) <i class="fa fa-eye toggle-password"></i></div>@Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })</div></div>
-                    <div class="col-md-3"><div class="form-group">@Html.LabelFor(m => m.Role, "Rol de Usuario") @Html.DropDownListFor(m => m.Role, (IEnumerable<SelectListItem>)ViewBag.RolesList, "Seleccione rol", new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.Role, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.UserName) @Html.EditorFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.Role, "Rol de Usuario") @Html.DropDownListFor(m => m.Role, (IEnumerable<SelectListItem>)ViewBag.RolesList, "Seleccione rol", new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.Role, "", new { @class = "text-danger" })</div></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6"><div class="form-group"><div class="password-wrapper">@Html.LabelFor(m => m.Password) @Html.PasswordFor(m => m.Password, new { @class = "form-control" }) <i class="fa fa-eye toggle-password"></i></div>@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6"><div class="form-group"><div class="password-wrapper">@Html.LabelFor(m => m.ConfirmPassword) @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" }) <i class="fa fa-eye toggle-password"></i></div>@Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })</div></div>
                 </div>
             </div>
         </div>
@@ -144,7 +148,7 @@
         <!-- BOTÓN DE ENVÍO -->
         <div class="row" style="margin-top: 20px;">
             <div class="col-md-12 text-right">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary" id="submitEmployeeBtn">
                     <i class="fa fa-user-plus"></i> Agregar Empleado
                 </button>
             </div>
@@ -156,40 +160,41 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script>
         $(document).ready(function () {
-            // Lógica para mostrar/ocultar contraseña (mejorada y robusta)
+            // Lógica para mostrar/ocultar contraseña
             $('.toggle-password').click(function () {
                 $(this).toggleClass('fa-eye fa-eye-slash');
                 var input = $(this).closest('.password-wrapper').find('input');
                 input.attr('type', input.attr('type') === 'password' ? 'text' : 'password');
             });
 
-            // --- Lógica para el modal de confirmación ---
-
-            // 1. Determinar de forma segura si el usuario es Admin
+            var form = $('#createEmployeeForm');
             var isAdmin = false;
             @if (User != null && User.IsInRole("Administrador"))
             {
-                // Esta sintaxis <text> es la forma más segura de asignar el valor
                 <text>isAdmin = true;</text>
             }
 
-            // 2. Configurar el formulario
-            var form = $('#createEmployeeForm');
+            // --- Lógica de Envío Definitiva ---
+            form.on('submit', function(e) {
+                // jQuery Unobtrusive Validation ya validó el formulario. 
+                // Si no era válido, habría detenido el envío y nuestro código no se ejecutaría.
+                // Por lo tanto, si llegamos a este punto, el formulario es VÁLIDO.
 
-            form.submit(function (e) {
-                // Si NO es admin, no hacer nada y dejar que el formulario se envíe.
-                if (!isAdmin) {
-                    return;
+                // Solo necesitamos intervenir si el usuario es un administrador.
+                if (isAdmin) {
+                    // Detenemos el envío normal para mostrar el modal de confirmación.
+                    e.preventDefault();
+                    
+                    $('#adminPasswordInput').val('');
+                    $('#adminPasswordError').hide();
+                    $('#adminPasswordModal').modal('show');
                 }
-
-                // Si ES admin, detener el envío y mostrar el modal.
-                e.preventDefault();
-                $('#adminPasswordInput').val('');
-                $('#adminPasswordError').hide();
-                $('#adminPasswordModal').modal('show');
+                
+                // Si no es admin, no hacemos nada aquí, y el formulario se envía normalmente.
             });
 
-            // 3. Configurar el botón de confirmación del modal
+
+            // --- Lógica del Modal ---
             $('#confirmAdminPasswordBtn').click(function () {
                 var password = $('#adminPasswordInput').val();
                 if (!password) {
@@ -208,8 +213,10 @@
                     },
                     success: function (response) {
                         if (response.success) {
-                            $('#adminPasswordModal').modal('hide');
-                            form.off('submit').submit(); // Desactivar nuestro manejador y enviar
+                            // Si la contraseña es correcta, enviamos el formulario.
+                            // Para evitar que nuestro 'submit' handler se ejecute otra vez en un bucle,
+                            // lo desvinculamos antes de enviar.
+                            form.off('submit').submit();
                         } else {
                             $('#adminPasswordError').text('Contraseña incorrecta.').show();
                         }
@@ -219,6 +226,10 @@
                         $('#adminPasswordModal').modal('hide');
                     }
                 });
+            });
+
+            $('#cancelAdminPasswordBtn').click(function () {
+                $('#adminPasswordModal').modal('hide');
             });
         });
     </script>
