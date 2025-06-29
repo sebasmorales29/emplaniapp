@@ -22,6 +22,7 @@ namespace Emplaniapp.AccesoADatos.Tipo_Remuneracion
 
         public async Task<int> Agregar(TipoRemuneracion TRemu) 
         {
+            TRemu.idEstado = 1; // Se establece el estado como "Activo" por defecto
             contexto.TipoRemu.Add(TRemu); 
             EntityState estado = contexto.Entry(TRemu).State = System.Data.Entity.EntityState.Added;
             int tipoRemuGuardado = await contexto.SaveChangesAsync();

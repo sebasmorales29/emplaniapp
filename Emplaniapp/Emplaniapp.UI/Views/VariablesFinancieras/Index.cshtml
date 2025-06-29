@@ -61,7 +61,16 @@
                             <tr>
                                 <td>@Html.DisplayFor(modelItem => item.nombreTipoRemuneracion)</td>
                                 <td>@Html.DisplayFor(modelItem => item.porcentajeRemuneracion)</td>
-                                <td>@Html.DisplayFor(modelItem => item.idEstado)</td>
+                                <td>
+                                    @if (item.idEstado == 1)
+                                    {
+                                        <span>Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Inactivo</span>
+                                    }
+                                </td>
                                 <td>
                                     @Html.ActionLink("Editar", "EditRemu", new { id = item.Id }, new { @class = "btn btn-sm btn-primary btn-block" })
                                     @Html.ActionLink("Eliminar", "DeleteRemu", new { id = item.Id }, new { @class = "btn btn-sm btn-danger btn-block" })
@@ -97,7 +106,16 @@
                             <tr>
                                 <td>@Html.DisplayFor(modelItem => item.nombreTipoRetencion)</td>
                                 <td>@Html.DisplayFor(modelItem => item.porcentajeRetencion)</td>
-                                <td>@Html.DisplayFor(modelItem => item.idEstado)</td>
+                                <td>
+                                    @if (item.idEstado == 1)
+                                    {
+                                        <span>Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Inactivo</span>
+                                    }
+                                </td>
                                 <td>
                                     @Html.ActionLink("Editar", "EditReten", new { id = item.Id }, new { @class = "btn btn-sm btn-primary btn-block" })
                                     @Html.ActionLink("Eliminar", "DeleteReten", new { id = item.Id }, new { @class = "btn btn-sm btn-danger btn-block" })
