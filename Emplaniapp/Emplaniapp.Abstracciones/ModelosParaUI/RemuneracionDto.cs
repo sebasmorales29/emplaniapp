@@ -22,5 +22,6 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public decimal? horasLicencias { get; set; }
         public int idEstado { get; set; }
         public string nombreEstado { get; set; }
+        public double? porcentajeRemuneracion { get; set; }
     }
 }

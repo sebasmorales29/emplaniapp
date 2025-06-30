@@ -94,11 +94,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Emplaniapp.Abstracciones\Emplaniapp.Abstracciones.csproj">
-      <Project>{678406EA-2967-405B-A033-164C72140787}</Project>
+      <Project>{678406ea-2967-405b-a033-164c72140787}</Project>
       <Name>Emplaniapp.Abstracciones</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
