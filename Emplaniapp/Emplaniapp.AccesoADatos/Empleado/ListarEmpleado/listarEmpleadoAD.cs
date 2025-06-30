@@ -25,6 +25,12 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                                 join cant in _contexto.Canton on dir.idCanton equals cant.idCanton
                                 join dist in _contexto.Distrito on dir.idDistrito equals dist.idDistrito
                                 join ca in _contexto.Calle on dir.idCalle equals ca.idCalle
+                                join user in _contexto.Users on emp.IdNetUser equals user.Id into userGroup
+                                from user in userGroup.DefaultIfEmpty() 
+                                join userRole in _contexto.Set<Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole>() on user.Id equals userRole.UserId into userRoleGroup
+                                from userRole in userRoleGroup.DefaultIfEmpty()
+                                join role in _contexto.Roles on userRole.RoleId equals role.Id into roleGroup
+                                from role in roleGroup.DefaultIfEmpty()
                                 orderby emp.primerApellido, emp.segundoApellido, emp.nombre
                                 select new
                                 {
@@ -56,7 +62,8 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                                         cant.nombreCanton,
                                         dist.nombreDistrito,
                                         ca.nombreCalle
-                                    }
+                                    },
+                                    Role = role.Name
                                 }).ToList(); // Aquí termina la ejecución en SQL
 
             // Ahora sí, puedes usar interpolación
@@ -88,7 +95,8 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                 direccionCompleta = $"{emp.direccion.nombreProvincia}, {emp.direccion.nombreCanton}, {emp.direccion.nombreDistrito}, {emp.direccion.nombreCalle}",
 
                 fechaContratacion = emp.fechaContratacion,
-                fechaSalida = emp.fechaSalida
+                fechaSalida = emp.fechaSalida,
+                Role = emp.Role ?? "Sin rol"
             }).ToList();
 
             return empleados;

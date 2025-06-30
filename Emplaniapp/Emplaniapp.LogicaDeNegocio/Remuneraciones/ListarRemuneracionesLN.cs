@@ -27,5 +27,9 @@ namespace Emplaniapp.LogicaDeNegocio.Remuneraciones
             return ListaRemuneraciones;
         }
 
+        public RemuneracionDto ObtenerPorId(int id)
+        {
+            return _listar.ObtenerPorId(id);
+        }
     }
 }

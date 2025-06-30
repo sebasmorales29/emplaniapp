@@ -1,34 +1,17 @@
-﻿using Emplaniapp.Abstracciones.InterfacesAD.Tipo_Retencion;
+﻿using System.Threading.Tasks;
+using Emplaniapp.Abstracciones.InterfacesAD.Tipo_Retencion;
 using Emplaniapp.Abstracciones.ModelosAD;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Emplaniapp.AccesoADatos.Tipo_Retencion
 {
     public class AgregarTipoRetencionAD : IAgregarTipoRetencionAD
     {
-
-        Contexto contexto;
-
-        public AgregarTipoRetencionAD()
+        private readonly Contexto _ctx = new Contexto();
+        public async Task<int> AgregarAsync(TipoRetencion entidad)
         {
-            contexto = new Contexto();
+            entidad.idEstado = 1;
+            _ctx.TipoReten.Add(entidad);
+            return await _ctx.SaveChangesAsync();
         }
-
-
-        public async Task<int> Agregar(TipoRetencion TReten) 
-        {
-            contexto.TipoReten.Add(TReten); 
-            EntityState estado = contexto.Entry(TReten).State = System.Data.Entity.EntityState.Added;
-            int tipoRetenGuardado = await contexto.SaveChangesAsync();
-            return tipoRetenGuardado;
-        }
-
-        
-         
     }
 }

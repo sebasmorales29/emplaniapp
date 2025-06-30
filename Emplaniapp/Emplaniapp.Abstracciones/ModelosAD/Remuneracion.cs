@@ -26,5 +26,13 @@ namespace Emplaniapp.Abstracciones.ModelosAD
         public decimal? horasLicencias { get; set; }
         public int idEstado { get; set; }
 
+        [ForeignKey("idTipoRemuneracion")]
+        public virtual TipoRemuneracion TipoRemuneracion { get; set; }
+
+        [ForeignKey("idEstado")]
+        public virtual Estado Estado { get; set; }
+
+        [ForeignKey("idEmpleado")]
+        public virtual Empleados Empleado { get; set; }
     }
 }

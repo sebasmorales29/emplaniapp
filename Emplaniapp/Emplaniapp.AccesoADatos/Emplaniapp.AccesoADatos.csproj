@@ -76,7 +76,11 @@
     <Compile Include="Remuneraciones\EditarRemuneracion\EditarRemuneracionAD.cs" />
     <Compile Include="Remuneraciones\EliminarRemuneracion\EliminarRemuneracionAD.cs" />
     <Compile Include="Remuneraciones\ListarRemuneracionesAD.cs" />
+    <Compile Include="Retenciones\AgregarRetenciones\AgregarRetencionAD.cs" />
+    <Compile Include="Retenciones\EditarRetencion\EditarRetencionAD.cs" />
+    <Compile Include="Retenciones\EliminarRetencion\EliminarRetencionAD.cs" />
     <Compile Include="Retenciones\ListarRetencionesAD.cs" />
+    <Compile Include="Retenciones\ObtenerRetencionPorId\ObtenerRetencionPorIdAD.cs" />
     <Compile Include="Tipo_Remuneracion\AgregarTipoRemuneracionAD.cs" />
     <Compile Include="Tipo_Remuneracion\EditarTipoRemuneracionAD.cs" />
     <Compile Include="Tipo_Remuneracion\EliminarTipoRemuneracionAD.cs" />
@@ -94,11 +98,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Emplaniapp.Abstracciones\Emplaniapp.Abstracciones.csproj">
-      <Project>{678406EA-2967-405B-A033-164C72140787}</Project>
+      <Project>{678406ea-2967-405b-a033-164c72140787}</Project>
       <Name>Emplaniapp.Abstracciones</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -9,7 +9,11 @@ namespace Emplaniapp.LogicaDeNegocio.Empleado.ObtenerEmpleadoPorId
     {
         private IObtenerEmpleadoPorIdAD _obtenerEmpleadoPorIdAD;
 
-        public ObtenerEmpleadoPorIdLN( )
+        public ObtenerEmpleadoPorIdLN()
+        {
+        }
+
+        public ObtenerEmpleadoPorIdLN(ObtenerEmpleadoPorIdAD obtenerEmpleadoPorIdAD)
         {
             _obtenerEmpleadoPorIdAD = new ObtenerEmpleadoPorIdAD();
         }

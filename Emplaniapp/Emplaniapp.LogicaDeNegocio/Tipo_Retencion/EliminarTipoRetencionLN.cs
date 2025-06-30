@@ -1,28 +1,20 @@
-﻿using Emplaniapp.Abstracciones.InterfacesAD.Tipo_Retencion;
-using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Retenciones;
+﻿// Emplaniapp.LogicaDeNegocio.Tipo_Retencion/EliminarTipoRetencionLN.cs
+using Emplaniapp.Abstracciones.InterfacesAD.Tipo_Retencion;
+using Emplaniapp.Abstracciones.InterfacesParaUI.TipoRetencion;
 using Emplaniapp.AccesoADatos.Tipo_Retencion;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Emplaniapp.LogicaDeNegocio.Tipo_Retencion
 {
     public class EliminarTipoRetencionLN : IEliminarTipoRetencionLN
     {
-        IEliminarTipoRetencionAD _eliminarTR;
+        private readonly IEliminarTipoRetencionAD _repo;
 
         public EliminarTipoRetencionLN()
-        {
-            _eliminarTR = new EliminarTipoRetencionAD();
-        }
+            : this(new EliminarTipoRetencionAD())
+        { }
 
-        public int Eliminar(int id)
-        {
-            int seEliminoTR = _eliminarTR.Eliminar(id);
-            return seEliminoTR;
-        }
+        public EliminarTipoRetencionLN(IEliminarTipoRetencionAD repo) => _repo = repo;
 
+        public int Eliminar(int idTipoRetencion) => _repo.Eliminar(idTipoRetencion);
     }
 }

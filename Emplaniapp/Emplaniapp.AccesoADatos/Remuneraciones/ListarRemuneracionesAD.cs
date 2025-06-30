@@ -47,7 +47,27 @@ namespace Emplaniapp.AccesoADatos.Remuneraciones
             return ListaRem;
         }
 
-       
-
+        public RemuneracionDto ObtenerPorId(int id)
+        {
+            var remuneracion = contexto.Remuneracion
+                                       .Where(r => r.idRemuneracion == id)
+                                       .Select(r => new RemuneracionDto
+                                       {
+                                           idRemuneracion = r.idRemuneracion,
+                                           idEmpleado = r.idEmpleado,
+                                           nombreTipoRemuneracion = r.TipoRemuneracion.nombreTipoRemuneracion,
+                                           porcentajeRemuneracion = r.TipoRemuneracion.porcentajeRemuneracion,
+                                           fechaRemuneracion = r.fechaRemuneracion,
+                                           horasTrabajadas = r.horasTrabajadas,
+                                           horasExtras = r.horasExtras,
+                                           comision = r.comision,
+                                           pagoQuincenal = r.pagoQuincenal,
+                                           horasFeriados = r.horasFeriados,
+                                           horasVacaciones = r.horasVacaciones,
+                                           horasLicencias = r.horasLicencias,
+                                           nombreEstado = r.Estado.nombreEstado
+                                       }).FirstOrDefault();
+            return remuneracion;
+        }
     }
 }

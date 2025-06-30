@@ -1,44 +1,31 @@
-﻿using Emplaniapp.Abstracciones.InterfacesAD.Retenciones;
-using Emplaniapp.Abstracciones.ModelosParaUI;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Emplaniapp.Abstracciones.InterfacesAD.Retenciones;
+using Emplaniapp.Abstracciones.ModelosParaUI;
+using Emplaniapp.Abstracciones.ModelosAD;
 
 namespace Emplaniapp.AccesoADatos.Retenciones
 {
     public class ListarRetencionesAD : IListarRetencionesAD
     {
-        Contexto contexto;
-
-        public ListarRetencionesAD()
+        private readonly Contexto _ctx = new Contexto();
+        public List<RetencionDto> Listar(int idEmpleado)
         {
-            contexto = new Contexto();
+            return (from r in _ctx.Retenciones
+                    join tr in _ctx.TipoReten on r.idTipoRetencion equals tr.Id
+                    join es in _ctx.Estado on r.idEstado equals es.idEstado
+                    where r.idEmpleado == idEmpleado
+                    select new RetencionDto
+                    {
+                        idRetencion = r.idRetencion,
+                        idEmpleado = r.idEmpleado,
+                        idTipoRetencio = r.idTipoRetencion,
+                        nombreTipoRetencio = tr.nombreTipoRetencion,
+                        rebajo = r.rebajo ?? 0m,
+                        fechaRetencio = r.fechaRetencion,
+                        idEstado = r.idEstado,
+                        nombreEstado = es.nombreEstado
+                    }).ToList();
         }
-
-        public List<RetencionDto> Listar(int id)
-        {
-            List<RetencionDto> ListaReten =
-                (from reten in contexto.Retenciones
-                 join t_reten in contexto.TipoReten on reten.idTipoRetencion equals t_reten.Id
-                 join estado in contexto.Estado on reten.idEstado equals estado.idEstado
-                 select new RetencionDto
-                 {
-                     idRetencion = reten.idRetencion,
-                     idEmpleado = reten.idEmpleado,
-                     idTipoRetencio = reten.idTipoRetencion,
-                     nombreTipoRetencio = t_reten.nombreTipoRetencion,
-                     rebajo = reten.rebajo,
-                     fechaRetencio = reten.fechaRetencion,
-                     idEstado = reten.idEstado,
-                     nombreEstado = estado.nombreEstado
-                 })
-                .Where(retencion => retencion.idEmpleado == id)
-                .ToList();
-            return ListaReten;
-        }
-
-
     }
 }

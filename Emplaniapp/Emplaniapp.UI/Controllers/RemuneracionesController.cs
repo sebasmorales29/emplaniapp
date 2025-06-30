@@ -223,5 +223,17 @@ namespace Emplaniapp.UI.Controllers
                 return RedirectToAction("DetallesRemu", new { id = idEmpleado });
             }
         }
+
+        // DETALLES DE REMUNERACIÓN ---------------------------------------
+        [HttpGet]
+        public ActionResult DetallesDeRemuneracion(int id)
+        {
+            var remuneracion = _listarRemu.ObtenerPorId(id);
+            if (remuneracion == null)
+            {
+                return HttpNotFound();
+            }
+            return View(remuneracion);
+        }
     }
 }

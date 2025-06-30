@@ -10,6 +10,8 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
 {
     public class EmpleadoDto
     {
+        public object primerPrimerApellido;
+
         [DisplayName("Id empleado")]
         public int idEmpleado { get; set; }
 

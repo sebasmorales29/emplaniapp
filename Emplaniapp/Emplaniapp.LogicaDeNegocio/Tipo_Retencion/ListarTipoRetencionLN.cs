@@ -1,48 +1,34 @@
-﻿using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Retenciones;
-using Emplaniapp.Abstracciones.ModelosAD;
-using Emplaniapp.Abstracciones.ModelosParaUI;
-using Emplaniapp.AccesoADatos;
-using System;
+﻿// Emplaniapp.LogicaDeNegocio.Tipo_Retencion/ListarTipoRetencionLN.cs
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Emplaniapp.Abstracciones.InterfacesAD.Tipo_Retencion;
+using Emplaniapp.Abstracciones.InterfacesParaUI.TipoRetencion;
+using Emplaniapp.Abstracciones.ModelosParaUI;
+using Emplaniapp.AccesoADatos.Tipo_Retencion;
 
 namespace Emplaniapp.LogicaDeNegocio.Tipo_Retencion
 {
-    public class ListarTipoRetencionLN : IListarTipoRetencionLN 
+    public class ListarTipoRetencionLN : IListarTipoRetencionLN
     {
-        Contexto contexto;
+        private readonly IListarTipoRetencionAD _repo;
 
         public ListarTipoRetencionLN()
-        {
-            contexto = new Contexto();
-        }
+            : this(new ListarTipoRetencionAD())
+        { }
 
-        // Base de Datos
-        public List<TipoRetencion> ListarTipoRetencion()
-        {
-            List<TipoRetencion> TRet = contexto.TipoReten.ToList();
-            return TRet;
-        }
+        public ListarTipoRetencionLN(IListarTipoRetencionAD repo) => _repo = repo;
 
-
-        // Para UI
         public List<TipoRetencionDto> Listar()
         {
-            List<TipoRetencionDto> TRetenciones =
-                (from reten in contexto.TipoReten
-                 select new TipoRetencionDto
-                 {
-                     Id = reten.Id,
-                     nombreTipoRetencion = reten.nombreTipoRetencion,
-                     porcentajeRetencion = reten.porcentajeRetencion,
-                     idEstado = reten.idEstado
-                 }
-                 ).ToList();
-            return TRetenciones;
+            return _repo.Listar()
+                        .Select(e => new TipoRetencionDto
+                        {
+                            Id = e.Id,
+                            nombreTipoRetencion = e.nombreTipoRetencion,
+                            porcentajeRetencion = e.porcentajeRetencion,
+                            idEstado = e.idEstado
+                        })
+                        .ToList();
         }
-
-
     }
 }
