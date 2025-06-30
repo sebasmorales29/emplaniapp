@@ -1,44 +1,32 @@
-﻿using Emplaniapp.Abstracciones.InterfacesAD.Tipo_Retencion;
-using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Retenciones;
-using Emplaniapp.Abstracciones.ModelosAD;
+﻿// Emplaniapp.LogicaDeNegocio.Tipo_Retencion/EditarTipoRetencionLN.cs
+using Emplaniapp.Abstracciones.InterfacesAD.Tipo_Retencion;
+using Emplaniapp.Abstracciones.InterfacesParaUI.TipoRetencion;
 using Emplaniapp.Abstracciones.ModelosParaUI;
+using Emplaniapp.Abstracciones.ModelosAD;
 using Emplaniapp.AccesoADatos.Tipo_Retencion;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Emplaniapp.LogicaDeNegocio.Tipo_Retencion
 {
     public class EditarTipoRetencionLN : IEditarTipoRetencionLN
     {
-        IEditarTipoRetencionAD _editarTR;
+        private readonly IEditarTipoRetencionAD _repo;
 
         public EditarTipoRetencionLN()
-        {
-            _editarTR = new EditarTipoRetencionAD();
-        }
+            : this(new EditarTipoRetencionAD())
+        { }
 
-       
-        public int Editar(TipoRetencionDto tipoReten)
-        {
-            int seActualizoTR = _editarTR.Editar(CambioABaseDatos(tipoReten));
-            return seActualizoTR;
-        }
+        public EditarTipoRetencionLN(IEditarTipoRetencionAD repo) => _repo = repo;
 
-        private TipoRetencion CambioABaseDatos(TipoRetencionDto tipoReten) // Esta acción separada mantiene el código limpio
+        public int Editar(TipoRetencionDto dto)
         {
-            return new TipoRetencion
+            var entidad = new TipoRetencion
             {
-                Id = tipoReten.Id,
-                nombreTipoRetencion = tipoReten.nombreTipoRetencion,
-                porcentajeRetencion = tipoReten.porcentajeRetencion,
-                idEstado = tipoReten.idEstado
+                Id = dto.Id,
+                nombreTipoRetencion = dto.nombreTipoRetencion,
+                porcentajeRetencion = dto.porcentajeRetencion,
+                idEstado = dto.idEstado
             };
+            return _repo.Editar(entidad);
         }
-         
-        
-
     }
 }
