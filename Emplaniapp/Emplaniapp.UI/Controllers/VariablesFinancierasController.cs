@@ -1,211 +1,87 @@
-﻿using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Remuneracion;
-using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Retenciones;
+﻿using System.Threading.Tasks;
+using System.Web.Mvc;
 using Emplaniapp.Abstracciones.ModelosParaUI;
+using Emplaniapp.Abstracciones.InterfacesParaUI.TipoRetencion;
 using Emplaniapp.LogicaDeNegocio.Tipo_Remuneracion;
 using Emplaniapp.LogicaDeNegocio.Tipo_Retencion;
-using System;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Remuneracion;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
+using System;
 
 namespace Emplaniapp.UI.Controllers
 {
     [Authorize(Roles = "Administrador, Contador")]
     public class VariablesFinancierasController : Controller
     {
+        readonly IListarTipoRemuneracionLN _listarRemuLN = new ListarTipoRemuneracionLN();
+        readonly IAgregarTipoRemuneracionLN _agregarRemuLN = new AgregarTipoRemuneracionLN();
+        readonly IEditarTipoRemuneracionLN _editarRemuLN = new EditarTipoRemuneracionLN();
+        readonly IObtenerIdTipoRemuneracionLN _obtenerRemuLN = new ObtenerIdTipoRemuneracionLN();
+        readonly IEliminarTipoRemuneracionLN _eliminarRemuLN = new EliminarTipoRemuneracionLN();
 
-        // Interfaces Remuneraciones ---------------------------------
-        IListarTipoRemuneracionLN _listarTRemuLN;
-        IAgregarTipoRemuneracionLN agregarTRemuLN;
-        IEditarTipoRemuneracionLN editarTRemuLN;
-        IObtenerIdTipoRemuneracionLN obtenerIdTRemuLN;
-        IEliminarTipoRemuneracionLN eliminarTRemuLN;
-
-        // Interfaces Retenciones ---------------------------------
-        IListarTipoRetencionLN _listarTRetenLN;
-        IAgregarTipoRetencionLN agregarTRetenLN;
-        IEditarTipoRetencionLN editarTRetenLN;
-        IObtenerIdTipoRetencionLN obtenerIdTRetenLN;
-        IEliminarTipoRetencionLN eliminarTRetenLN;
-
-
-        public VariablesFinancierasController()
-        {
-            _listarTRemuLN = new ListarTipoRemuneracionLN();
-            _listarTRetenLN = new ListarTipoRetencionLN();
-
-            agregarTRemuLN = new AgregarTipoRemuneracionLN();
-            editarTRemuLN = new EditarTipoRemuneracionLN();
-            obtenerIdTRemuLN = new ObtenerIdTipoRemuneracionLN();
-            eliminarTRemuLN = new EliminarTipoRemuneracionLN();
-
-            agregarTRetenLN = new AgregarTipoRetencionLN();
-            editarTRetenLN = new EditarTipoRetencionLN();
-            obtenerIdTRetenLN = new ObtenerIdTipoRetencionLN();
-            eliminarTRetenLN = new EliminarTipoRetencionLN();
-
-        }
-
-
+        readonly IListarTipoRetencionLN _listarRetenLN = new ListarTipoRetencionLN();
+        readonly IAgregarTipoRetencionLN _agregarRetenLN = new AgregarTipoRetencionLN();
+        readonly IEditarTipoRetencionLN _editarRetenLN = new EditarTipoRetencionLN();
+        readonly IObtenerIdTipoRetencionLN _obtenerRetenIdLN = new ObtenerIdTipoRetencionLN();
+        readonly IEliminarTipoRetencionLN _eliminarRetenLN = new EliminarTipoRetencionLN();
 
         // GET: VariablesFinancieras
         public ActionResult Index()
         {
-            var variables = new Tuple
-                < List<TipoRemuneracionDto>, List<TipoRetencionDto> >
-                (_listarTRemuLN.Listar(), _listarTRetenLN.Listar());
-            return View(variables);
+            var vars = new Tuple<
+                List<TipoRemuneracionDto>,
+                List<TipoRetencionDto>
+            >(
+                _listarRemuLN.Listar(),
+                _listarRetenLN.Listar()
+            );
+            return View(vars);
         }
 
-
-
-        // REMUNERACIONES  ---------------------------------------------
-
-
-        // GET: VariablesFinancieras/Create
-        public ActionResult CreateRemu()
-        {
-            return View();
-        }
-
-        // POST: VariablesFinancieras/Create
+        // Remuneraciones CRUD...
+        public ActionResult CreateRemu() => View();
         [HttpPost]
-        public async Task<ActionResult> CreateRemu(TipoRemuneracionDto tipoRemu)
+        public async Task<ActionResult> CreateRemu(TipoRemuneracionDto dto)
         {
-            try
-            {
-                // TODO: Add insert logic here
-                await agregarTRemuLN.Guardar(tipoRemu);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            await _agregarRemuLN.Guardar(dto);
+            return RedirectToAction("Index");
         }
-
-        // GET: VariablesFinancieras/Edit/5
-        public ActionResult EditRemu(int id)
-        {
-            TipoRemuneracionDto tipoRemu = obtenerIdTRemuLN.Obtener(id);
-            return View(tipoRemu);
-        }
-
-        // POST: VariablesFinancieras/Edit/5
+        public ActionResult EditRemu(int id) => View(_obtenerRemuLN.Obtener(id));
         [HttpPost]
-        public ActionResult EditRemu(TipoRemuneracionDto tipoRemu)
+        public ActionResult EditRemu(TipoRemuneracionDto dto)
         {
-            try
-            {
-                // TODO: Add update logic here
-                editarTRemuLN.Editar(tipoRemu);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            _editarRemuLN.Editar(dto);
+            return RedirectToAction("Index");
         }
-
-        // GET: VariablesFinancieras/Delete/5
-        public ActionResult DeleteRemu(int id)
-        {
-            TipoRemuneracionDto tipoRemu = obtenerIdTRemuLN.Obtener(id);
-            return View(tipoRemu);
-        }
-
-        // POST: VariablesFinancieras/Delete/5
+        public ActionResult DeleteRemu(int id) => View(_obtenerRemuLN.Obtener(id));
         [HttpPost]
-        public ActionResult DeleteRemu(TipoRemuneracionDto tipoRemu)
+        public ActionResult DeleteRemu(TipoRemuneracionDto dto)
         {
-            try
-            {
-                eliminarTRemuLN.Eliminar(tipoRemu.Id);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            _eliminarRemuLN.Eliminar(dto.Id);
+            return RedirectToAction("Index");
         }
 
-
-
-
-        // RETENCIONES  ---------------------------------------------
-
-
-        // GET: VariablesFinancieras/Create
-        public ActionResult CreateReten()
-        {
-            return View();
-        }
-
-        // POST: VariablesFinancieras/Create
+        // Retenciones CRUD...
+        public ActionResult CreateReten() => View();
         [HttpPost]
-        public async Task<ActionResult> CreateReten(TipoRetencionDto tipoRet)
+        public async Task<ActionResult> CreateReten(TipoRetencionDto dto)
         {
-            try
-            {
-                // TODO: Add insert logic here
-                await agregarTRetenLN.Guardar(tipoRet);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            await _agregarRetenLN.Guardar(dto);
+            return RedirectToAction("Index");
         }
-
-        // GET: VariablesFinancieras/Edit/5
-        public ActionResult EditReten(int id)
-        {
-            TipoRetencionDto tipoReten = obtenerIdTRetenLN.Obtener(id);
-            return View(tipoReten);
-        }
-
-        // POST: VariablesFinancieras/Edit/5
+        public ActionResult EditReten(int id) => View(_obtenerRetenIdLN.Obtener(id));
         [HttpPost]
-        public ActionResult EditReten(TipoRetencionDto tipoReten)
+        public ActionResult EditReten(TipoRetencionDto dto)
         {
-            try
-            {
-                // TODO: Add update logic here
-                editarTRetenLN.Editar(tipoReten);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            _editarRetenLN.Editar(dto);
+            return RedirectToAction("Index");
         }
-
-
-        // GET: VariablesFinancieras/Delete/5
-        public ActionResult DeleteReten(int id)
-        {
-            TipoRetencionDto tipoReten = obtenerIdTRetenLN.Obtener(id);
-            return View(tipoReten);
-        }
-
-        // POST: VariablesFinancieras/Delete/5
+        public ActionResult DeleteReten(int id) => View(_obtenerRetenIdLN.Obtener(id));
         [HttpPost]
-        public ActionResult DeleteReten(TipoRetencionDto tipoReten)
+        public ActionResult DeleteReten(TipoRetencionDto dto)
         {
-            try
-            {
-                eliminarTRetenLN.Eliminar(tipoReten.Id);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            _eliminarRetenLN.Eliminar(dto.Id);
+            return RedirectToAction("Index");
         }
-
-
-
     }
 }

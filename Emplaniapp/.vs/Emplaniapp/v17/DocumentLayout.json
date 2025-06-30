@@ -1,50 +1,30 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\",
+  "WorkspaceRootPath": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\sebas\\onedrive\\escritorio\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\henry\\onedrive\\escritorio\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\interfacesparaui\\tiporetencion\\iagregartiporetencionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\interfacesparaui\\tiporetencion\\iagregartiporetencionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\henry\\onedrive\\escritorio\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\interfacesparaui\\retenciones\\crearretenciones\\iagregarretencionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\interfacesparaui\\retenciones\\crearretenciones\\iagregarretencionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\AccountController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Controllers\\AccountController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\henry\\onedrive\\escritorio\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\interfacesparaui\\retenciones\\eliminarretenciones\\ieliminarretencionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\interfacesparaui\\retenciones\\eliminarretenciones\\ieliminarretencionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\henry\\onedrive\\escritorio\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\interfacesparaui\\tiporetencion\\ieliminartiporetencionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\interfacesparaui\\tiporetencion\\ieliminartiporetencionln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\henry\\onedrive\\escritorio\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\interfacesad\\tipo_retenciones\\iagregartiporetencionad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\interfacesad\\tipo_retenciones\\iagregartiporetencionad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|solutionrelative:Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:Emplaniapp.UI\\Controllers\\RemuneracionesController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\henry\\onedrive\\escritorio\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\interfacesad\\retenciones\\crearretenciones\\iagregarretencionad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\interfacesad\\retenciones\\crearretenciones\\iagregarretencionad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -54,12 +34,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 199,
-          "SelectedChildIndex": 14,
+          "SelectedChildIndex": 6,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
@@ -86,137 +62,81 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ForgotPasswordViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs",
-              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs",
-              "RelativeToolTip": "Emplaniapp.UI\\Models\\ForgotPasswordViewModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "IAgregarTipoRetencionLN.cs",
+              "DocumentMoniker": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesParaUI\\TipoRetencion\\IAgregarTipoRetencionLN.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\InterfacesParaUI\\TipoRetencion\\IAgregarTipoRetencionLN.cs",
+              "ToolTip": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesParaUI\\TipoRetencion\\IAgregarTipoRetencionLN.cs",
+              "RelativeToolTip": "Emplaniapp.Abstracciones\\InterfacesParaUI\\TipoRetencion\\IAgregarTipoRetencionLN.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-24T00:18:16.879Z"
+              "WhenOpened": "2025-06-30T04:35:50.976Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AccountController.cs",
-              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\AccountController.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\AccountController.cs",
-              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\AccountController.cs",
-              "RelativeToolTip": "Emplaniapp.UI\\Controllers\\AccountController.cs",
-              "ViewState": "AgIAAIAAAAAAAAAAAAAIwIcAAAAqAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "IAgregarRetencionLN.cs",
+              "DocumentMoniker": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesParaUI\\Retenciones\\CrearRetenciones\\IAgregarRetencionLN.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\InterfacesParaUI\\Retenciones\\CrearRetenciones\\IAgregarRetencionLN.cs",
+              "ToolTip": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesParaUI\\Retenciones\\CrearRetenciones\\IAgregarRetencionLN.cs",
+              "RelativeToolTip": "Emplaniapp.Abstracciones\\InterfacesParaUI\\Retenciones\\CrearRetenciones\\IAgregarRetencionLN.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-24T00:14:31.057Z"
+              "WhenOpened": "2025-06-30T04:34:45.841Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Detalles.cshtml",
-              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml",
-              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\Retenciones\\Detalles.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFsAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-24T00:03:23.316Z"
+              "Title": "IEliminarTipoRetencionLN.cs",
+              "DocumentMoniker": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesParaUI\\TipoRetencion\\IEliminarTipoRetencionLN.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\InterfacesParaUI\\TipoRetencion\\IEliminarTipoRetencionLN.cs",
+              "ToolTip": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesParaUI\\TipoRetencion\\IEliminarTipoRetencionLN.cs",
+              "RelativeToolTip": "Emplaniapp.Abstracciones\\InterfacesParaUI\\TipoRetencion\\IEliminarTipoRetencionLN.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-30T04:34:30.2Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IEliminarRetencionLN.cs",
+              "DocumentMoniker": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesParaUI\\Retenciones\\EliminarRetenciones\\IEliminarRetencionLN.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\InterfacesParaUI\\Retenciones\\EliminarRetenciones\\IEliminarRetencionLN.cs",
+              "ToolTip": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesParaUI\\Retenciones\\EliminarRetenciones\\IEliminarRetencionLN.cs",
+              "RelativeToolTip": "Emplaniapp.Abstracciones\\InterfacesParaUI\\Retenciones\\EliminarRetenciones\\IEliminarRetencionLN.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-30T04:34:28.825Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "RetencionDto.cs",
-              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs",
-              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs",
-              "RelativeToolTip": "Emplaniapp.Abstracciones\\ModelosParaUI\\RetencionDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAwAAAAAAAAAA==",
+              "Title": "IAgregarTipoRetencionAD.cs",
+              "DocumentMoniker": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesAD\\Tipo_Retenciones\\IAgregarTipoRetencionAD.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\InterfacesAD\\Tipo_Retenciones\\IAgregarTipoRetencionAD.cs",
+              "ToolTip": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesAD\\Tipo_Retenciones\\IAgregarTipoRetencionAD.cs",
+              "RelativeToolTip": "Emplaniapp.Abstracciones\\InterfacesAD\\Tipo_Retenciones\\IAgregarTipoRetencionAD.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-24T00:02:18.168Z"
+              "WhenOpened": "2025-06-30T04:28:24.767Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "ListarRetencionesAD.cs",
-              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs",
-              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs",
-              "RelativeToolTip": "Emplaniapp.AccesoADatos\\Retenciones\\ListarRetencionesAD.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAJAAAAAAAAAA==",
+              "Title": "IAgregarRetencionAD.cs",
+              "DocumentMoniker": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesAD\\Retenciones\\CrearRetenciones\\IAgregarRetencionAD.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\InterfacesAD\\Retenciones\\CrearRetenciones\\IAgregarRetencionAD.cs",
+              "ToolTip": "C:\\Users\\Henry\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\InterfacesAD\\Retenciones\\CrearRetenciones\\IAgregarRetencionAD.cs",
+              "RelativeToolTip": "Emplaniapp.Abstracciones\\InterfacesAD\\Retenciones\\CrearRetenciones\\IAgregarRetencionAD.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-24T00:01:35.412Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Retencion.cs",
-              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs",
-              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs",
-              "RelativeToolTip": "Emplaniapp.Abstracciones\\ModelosAD\\Retencion.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABEAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-24T00:00:54.687Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Web.config",
-              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Web.config",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Web.config",
-              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Web.config",
-              "RelativeToolTip": "Emplaniapp.UI\\Web.config",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2025-06-23T23:56:37.164Z",
+              "WhenOpened": "2025-06-30T04:28:23.217Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Home\\Index.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Home\\Index.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAACAAAABlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-23T23:12:30.89Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "ForgotPasswordConfirmation.cshtml",
-              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml",
-              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\Account\\ForgotPasswordConfirmation.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-24T00:20:22.967Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ForgotPassword.cshtml",
-              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml",
-              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml",
-              "RelativeToolTip": "Emplaniapp.UI\\Views\\Account\\ForgotPassword.cshtml",
-              "ViewState": "AgIAAIUAAAAAAAAAAAAcwJEAAAAOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-24T00:22:16.13Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "RemuneracionesController.cs",
-              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
-              "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
-              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
-              "RelativeToolTip": "Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0AAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-23T21:16:12.691Z"
             }
           ]
         },

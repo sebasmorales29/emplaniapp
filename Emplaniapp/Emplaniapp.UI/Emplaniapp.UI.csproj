@@ -315,8 +315,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AgregarRetencionViewModel.cs" />
     <Compile Include="Models\DatosFinancierosViewModel.cs" />
     <Compile Include="Models\DatosLaboralesViewModel.cs" />
+    <Compile Include="Models\EditarRetencionViewModel.cs" />
     <Compile Include="Models\ForgotPasswordViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -414,6 +416,9 @@
     <Content Include="Views\Shared\_.cshtml" />
     <Content Include="Views\Retenciones\Detalles.cshtml" />
     <Content Include="Views\Remuneraciones\_CrearRemuneracionManual.cshtml" />
+    <Content Include="Views\Retenciones\AgregarRetencion.cshtml" />
+    <Content Include="Views\Retenciones\EditarRetencion.cshtml" />
+    <Content Include="Views\Retenciones\EliminarRetencion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

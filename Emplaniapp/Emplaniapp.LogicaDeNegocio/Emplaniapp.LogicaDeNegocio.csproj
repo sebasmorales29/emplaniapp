@@ -58,6 +58,7 @@
     <Compile Include="Empleado\ListarEmpleado\listarEmpleadoLN.cs" />
     <Compile Include="Empleado\ModificarEstado\modificarEstadoLN.cs" />
     <Compile Include="Empleado\ObtenerEmpleadoPorId\ObtenerEmpleadoPorIdLN.cs" />
+    <Compile Include="EntidadesAD\TipoRetencion.cs" />
     <Compile Include="Estados\ListarEstados\listarEstadosLN.cs" />
     <Compile Include="General\FiltrarEmpleados\filtrarEmpleadosLN.cs" />
     <Compile Include="General\ObtenerTotalEmpleados\obtenerTotalEmpleadosLN.cs" />
@@ -69,7 +70,11 @@
     <Compile Include="Remuneraciones\EditarRemuneracion\EditarRemuneracionLN.cs" />
     <Compile Include="Remuneraciones\EliminarRemuneracion\EliminarRemuneracionLN.cs" />
     <Compile Include="Remuneraciones\ListarRemuneracionesLN.cs" />
+    <Compile Include="Retenciones\AgregarRetencion\AgregarRetencionLN.cs" />
+    <Compile Include="Retenciones\EditarRetencion\EditarRetencionLN.cs" />
+    <Compile Include="Retenciones\EliminarRetencion\EliminarRetencionLN.cs" />
     <Compile Include="Retenciones\ListarRetencionesLN.cs" />
+    <Compile Include="Retenciones\ObtenerRetencionPorId\ObtenerRetencionPorIdLN.cs" />
     <Compile Include="Tipo_Remuneracion\AgregarTipoRemuneracionLN.cs" />
     <Compile Include="Tipo_Remuneracion\EditarTipoRemuneracionLN.cs" />
     <Compile Include="Tipo_Remuneracion\EliminarTipoRemuneracionLN.cs" />
