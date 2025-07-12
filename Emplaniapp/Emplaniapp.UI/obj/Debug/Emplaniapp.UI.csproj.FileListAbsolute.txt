@@ -842,3 +842,14 @@ C:\Users\Henry\OneDrive\Escritorio\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug
 C:\Users\Henry\OneDrive\Escritorio\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Emplania.23589104.Up2Date
 C:\Users\Henry\OneDrive\Escritorio\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Emplaniapp.UI.dll
 C:\Users\Henry\OneDrive\Escritorio\emplaniapp\Emplaniapp\Emplaniapp.UI\obj\Debug\Emplaniapp.UI.pdb
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\BouncyCastle.Cryptography.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MailKit.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MimeKit.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\System.Formats.Asn1.dll
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\BouncyCastle.Cryptography.xml
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MailKit.pdb
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MailKit.xml
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MailKit.dll.config
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MimeKit.pdb
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MimeKit.xml
+C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\System.Formats.Asn1.xml

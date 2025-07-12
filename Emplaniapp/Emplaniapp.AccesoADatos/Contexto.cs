@@ -32,7 +32,7 @@ namespace Emplaniapp.AccesoADatos
             modelBuilder.Entity<Retencion>().ToTable("Retenciones");
             modelBuilder.Entity<PeriodoPago>().ToTable("PeriodoPago");
             modelBuilder.Entity<PagoQuincenal>().ToTable("PagoQuincenal");
-            modelBuilder.Entity<Liquidaciones>().ToTable("Liquidaciones");
+            modelBuilder.Entity<Liquidacion>().ToTable("Liquidaciones");
             modelBuilder.Entity<Cargo>().ToTable("Cargos");
             modelBuilder.Entity<Empleados>()
                 .Property(e => e.IdNetUser)
@@ -60,7 +60,7 @@ namespace Emplaniapp.AccesoADatos
         public DbSet<Retencion> Retenciones { get; set; }
         public DbSet<PeriodoPago> PeriodoPago { get; set; }
         public DbSet<PagoQuincenal> PagoQuincenal { get; set; }
-        public DbSet<Liquidaciones> Liquidaciones { get; set; }
+        public DbSet<Liquidacion> Liquidaciones { get; set; }
         public DbSet<Cargo> Cargos { get; set; }
         public DbSet<Observacion> Observaciones { get; set; }
         public DbSet<Provincia> Provincia { get; set; }
