@@ -58,7 +58,6 @@
     <Compile Include="Empleado\ListarEmpleado\listarEmpleadoLN.cs" />
     <Compile Include="Empleado\ModificarEstado\modificarEstadoLN.cs" />
     <Compile Include="Empleado\ObtenerEmpleadoPorId\ObtenerEmpleadoPorIdLN.cs" />
-    <Compile Include="EntidadesAD\TipoRetencion.cs" />
     <Compile Include="Estados\ListarEstados\listarEstadosLN.cs" />
     <Compile Include="General\FiltrarEmpleados\filtrarEmpleadosLN.cs" />
     <Compile Include="General\ObtenerTotalEmpleados\obtenerTotalEmpleadosLN.cs" />

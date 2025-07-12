@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Emplaniapp.Abstracciones.InterfacesAD.Retenciones;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Retenciones;
 using Emplaniapp.Abstracciones.ModelosParaUI;
@@ -10,12 +11,14 @@ namespace Emplaniapp.LogicaDeNegocio.Retenciones
     {
         private readonly IListarRetencionesAD _repo;
 
+        public ListarRetencionesLN(IListarRetencionesAD repo)
+            => _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+
         public ListarRetencionesLN()
             : this(new ListarRetencionesAD())
         { }
 
-        public ListarRetencionesLN(IListarRetencionesAD repo) => _repo = repo;
-
-        public List<RetencionDto> Listar(int idEmpleado) => _repo.Listar(idEmpleado);
+        public List<RetencionDto> Listar(int idEmpleado)
+            => _repo.Listar(idEmpleado);
     }
 }

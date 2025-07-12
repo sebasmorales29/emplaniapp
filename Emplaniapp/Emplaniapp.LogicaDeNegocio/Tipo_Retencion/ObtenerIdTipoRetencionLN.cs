@@ -1,4 +1,4 @@
-﻿// Emplaniapp.LogicaDeNegocio.Tipo_Retencion/ObtenerIdTipoRetencionLN.cs
+﻿using System;
 using Emplaniapp.Abstracciones.InterfacesAD.Tipo_Retencion;
 using Emplaniapp.Abstracciones.InterfacesParaUI.TipoRetencion;
 using Emplaniapp.Abstracciones.ModelosParaUI;
@@ -10,11 +10,12 @@ namespace Emplaniapp.LogicaDeNegocio.Tipo_Retencion
     {
         private readonly IObtenerIdTipoRetencionAD _repo;
 
+        public ObtenerIdTipoRetencionLN(IObtenerIdTipoRetencionAD repo)
+            => _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+
         public ObtenerIdTipoRetencionLN()
             : this(new ObtenerIdTipoRetencionAD())
         { }
-
-        public ObtenerIdTipoRetencionLN(IObtenerIdTipoRetencionAD repo) => _repo = repo;
 
         public TipoRetencionDto Obtener(int idTipoRetencion)
         {

@@ -1,4 +1,4 @@
-﻿// Emplaniapp.LogicaDeNegocio.Tipo_Retencion/ListarTipoRetencionLN.cs
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Emplaniapp.Abstracciones.InterfacesAD.Tipo_Retencion;
@@ -12,23 +12,22 @@ namespace Emplaniapp.LogicaDeNegocio.Tipo_Retencion
     {
         private readonly IListarTipoRetencionAD _repo;
 
+        public ListarTipoRetencionLN(IListarTipoRetencionAD repo)
+            => _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+
         public ListarTipoRetencionLN()
             : this(new ListarTipoRetencionAD())
         { }
 
-        public ListarTipoRetencionLN(IListarTipoRetencionAD repo) => _repo = repo;
-
         public List<TipoRetencionDto> Listar()
-        {
-            return _repo.Listar()
-                        .Select(e => new TipoRetencionDto
-                        {
-                            Id = e.Id,
-                            nombreTipoRetencion = e.nombreTipoRetencion,
-                            porcentajeRetencion = e.porcentajeRetencion,
-                            idEstado = e.idEstado
-                        })
-                        .ToList();
-        }
+            => _repo.Listar()
+                    .Select(e => new TipoRetencionDto
+                    {
+                        Id = e.Id,
+                        nombreTipoRetencion = e.nombreTipoRetencion,
+                        porcentajeRetencion = e.porcentajeRetencion,
+                        idEstado = e.idEstado
+                    })
+                    .ToList();
     }
 }

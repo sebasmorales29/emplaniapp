@@ -11,13 +11,12 @@ namespace Emplaniapp.LogicaDeNegocio.Retenciones
     {
         private readonly IAgregarRetencionAD _repo;
 
-        // ctor por defecto para new AgregarRetencionLN()
+        public AgregarRetencionLN(IAgregarRetencionAD repo)
+            => _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+
         public AgregarRetencionLN()
             : this(new AgregarRetencionAD())
         { }
-
-        // ctor inyectable
-        public AgregarRetencionLN(IAgregarRetencionAD repo) => _repo = repo;
 
         public void AgregarRetencion(RetencionCrearDto dto)
         {
