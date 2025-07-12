@@ -319,6 +319,7 @@
     <Compile Include="Controllers\EmpleadoController.cs" />
     <Compile Include="Controllers\HojaResumenController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LiquidacionesController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\RemuneracionesController.cs" />
     <Compile Include="Controllers\RetencionesController.cs" />
@@ -430,6 +431,7 @@
     <Content Include="Views\Retenciones\Create.cshtml" />
     <Content Include="Views\Retenciones\Edit.cshtml" />
     <Content Include="Views\Retenciones\Delete.cshtml" />
+    <Content Include="Views\Liquidaciones\Detalles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

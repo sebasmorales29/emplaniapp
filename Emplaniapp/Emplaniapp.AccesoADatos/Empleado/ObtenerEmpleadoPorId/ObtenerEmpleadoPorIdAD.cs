@@ -21,19 +21,40 @@ namespace Emplaniapp.AccesoADatos.Empleado.ObtenerEmpleadoPorId
                     where emp.idEmpleado == idEmpleado
                     select new EmpleadoDto
                     {
+                        // Identificador
                         idEmpleado = emp.idEmpleado,
+                        idEstado = emp.idEstado,
+                        nombreEstado = estado.nombreEstado,
+
+                        //Datos personales
                         nombre = emp.nombre,
                         segundoNombre = emp.segundoNombre,
                         primerApellido = emp.primerApellido,
                         segundoApellido = emp.segundoApellido,
+                        fechaNacimiento = emp.fechaNacimiento,
                         cedula = emp.cedula,
-                        idEstado = emp.idEstado,
-                        nombreEstado = estado.nombreEstado,
+                        numeroTelefonico = emp.numeroTelefonico,
+                        correoInstitucional= emp.correoInstitucional,
+                        //idDireccion = emp.idDireccion,
+
+                        // Datos Laborales
                         idCargo = emp.idCargo,
                         nombreCargo = cargo.nombreCargo,
+                        fechaContratacion = emp.fechaContratacion,
+                        fechaSalida = emp.fechaSalida,
+                        
+                        // Salario
+                        salarioAprobado = emp.salarioAprobado,
+                        salarioDiario = emp.salarioDiario,
+                        salarioPoHora = emp.salarioPoHora,
+                        salarioPorMinuto = emp.salarioPorMinuto,
+                        salarioPorHoraExtra = emp.salarioPorHoraExtra,
+                        periocidadPago = emp.periocidadPago,
+                        idMoneda = emp.idTipoMoneda,
+                        cuentaIBAN = emp.cuentaIBAN,
+                        idBanco = emp.idBanco
+                        
 
-                        // Se añade el salario aprobado
-                        salarioAprobado = emp.salarioAprobado
                     }).FirstOrDefault();
         }
     }
