@@ -1,21 +1,26 @@
-﻿@using Emplaniapp.Abstracciones.ModelosParaUI;
+﻿@* Views/Retenciones/Detalles.cshtml *@
+@using Emplaniapp.Abstracciones.ModelosParaUI
 @model Tuple<EmpleadoDto, List<RetencionDto>>
 
-
 @{
-    ViewBag.Title = $"{Model.Item1.nombre} {Model.Item1.primerApellido} {Model.Item1.segundoApellido}";
+    var emp = Model.Item1;
+    var retenciones = Model.Item2;
+    ViewBag.Title = $"{emp.nombre} {emp.primerApellido} {emp.segundoApellido}";
     var seccionActiva = ViewBag.Seccion ?? "Retenciones";
-    <!--Layout = "~/Views/Shared/_Layout.cshtml";-->
 }
 
-<!-- Estilos -->
-<link type="text/css" href="@Href("~/Content/EstilosDatos.css")" rel="Stylesheet" />
+<link rel="stylesheet" href="~/Content/EstilosDatos.css" />
 
 <div class="container">
 
-    @Html.ActionLink("< Volver a Hoja Resumen", "listarHojaResumen", "HojaResumen", null, new { @class = "btn btn-outline-secondary mb-3" })
+    @Html.ActionLink(
+        "< Volver a Hoja Resumen",
+        "listarHojaResumen",
+        "HojaResumen",
+        new { id = emp.idEmpleado },
+        new { @class = "btn btn-outline-secondary mb-3" }
+    )
 
-    <!-- Mensaje de éxito -->
     @if (TempData["Mensaje"] != null)
     {
         <div class="alert alert-success">
@@ -23,53 +28,61 @@
         </div>
     }
 
-    <!-- Título del empleado -->
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-md-12">
-            <h2>@Model.Item1.nombre @Model.Item1.primerApellido @Model.Item1.segundoApellido</h2>
+            <h2>@emp.nombre @emp.primerApellido @emp.segundoApellido</h2>
         </div>
     </div>
 
-
-    <!-- Enlaces de navegación -->
-    <div class="row">
+    <div class="row mb-4">
         <div class="col-md-12">
             <div class="nav-enlaces">
-                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Datos personales" })" class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
-                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Historial" })" class="@(seccionActiva == "Historial" ? "active" : "")">Historial</a>
-                <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
-                <a href="@Url.Action("Detalles", "Retenciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
-                <a href="@Url.Action("LiquidarEmpleado", "Liquidacion", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Liquidación" ? "active" : "")">Liquidación</a>
-                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Observaciones" })" class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = emp.idEmpleado, seccion = "Datos personales" })"
+                   class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = emp.idEmpleado, seccion = "Historial" })"
+                   class="@(seccionActiva == "Historial" ? "active" : "")">Historial</a>
+                <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = emp.idEmpleado })"
+                   class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
+                <a href="@Url.Action("Detalles", "Retenciones", new { id = emp.idEmpleado })"
+                   class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
+                <a href="@Url.Action("LiquidarEmpleado", "Liquidacion", new { id = emp.idEmpleado })"
+                   class="@(seccionActiva == "Liquidación" ? "active" : "")">Liquidación</a>
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = emp.idEmpleado, seccion = "Observaciones" })"
+                   class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
             </div>
             <hr />
         </div>
     </div>
-    
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Retenciones</h2>
-        <a href="@Url.Action("Create", new { idEmpleado = Model.Item1.idEmpleado })" class="btn btn-primary">
+        <a href="@Url.Action("Create", "Retenciones", new { idEmpleado = emp.idEmpleado })" class="btn btn-primary">
             <i class="fa fa-plus"></i> Agregar Retención
         </a>
     </div>
 
     <div class="row">
-        @if (Model.Item2.Any())
+        @if (retenciones.Any())
         {
-            foreach (var item in Model.Item2)
+            foreach (var item in retenciones)
             {
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100">
                         <div class="card-body">
-                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.nombreTipoRetencio)</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">@item.fechaRetencio.ToString("dd/MM/yyyy")</h6>
+                            <h5 class="card-title">@item.nombreTipoRetencio</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@item.fechaRetencio:dd/MM/yyyy</h6>
                             <hr />
-                            <p class="card-text"><strong>Rebajo:</strong> @String.Format("{0:C}", item.rebajo)</p>
-                            <p><strong>Estado:</strong> <span class="badge @(item.nombreEstado == "Activo" ? "badge-success" : "badge-secondary")">@item.nombreEstado</span></p>
+                            <p class="card-text"><strong>Rebajo:</strong> @item.rebajo.ToString("C2")</p>
+                            <p>
+                                <strong>Estado:</strong>
+                                <span class="badge @(item.nombreEstado == "Activo" ? "badge-success" : "badge-secondary")">
+                                    @item.nombreEstado
+                                </span>
+                            </p>
                         </div>
                         <div class="card-footer bg-transparent border-top-0">
-                            <a href="@Url.Action("Edit", new { id = item.idRetencion })" class="btn btn-primary btn-sm">Editar</a>
-                            <a href="@Url.Action("Delete", new { id = item.idRetencion })" class="btn btn-danger btn-sm">Eliminar</a>
+                            <a href="@Url.Action("Edit", "Retenciones", new { id = item.idRetencion })" class="btn btn-primary btn-sm">Editar</a>
+                            <a href="@Url.Action("Delete", "Retenciones", new { id = item.idRetencion })" class="btn btn-danger btn-sm">Eliminar</a>
                         </div>
                     </div>
                 </div>
@@ -78,12 +91,11 @@
         else
         {
             <div class="col-12">
-                <div class="alert alert-info" role="alert">
+                <div class="alert alert-info">
                     No hay retenciones registradas para este empleado.
                 </div>
             </div>
         }
     </div>
+
 </div>
-
-

@@ -1,4 +1,4 @@
-﻿// Emplaniapp.LogicaDeNegocio.Tipo_Retencion/EditarTipoRetencionLN.cs
+﻿using System;
 using Emplaniapp.Abstracciones.InterfacesAD.Tipo_Retencion;
 using Emplaniapp.Abstracciones.InterfacesParaUI.TipoRetencion;
 using Emplaniapp.Abstracciones.ModelosParaUI;
@@ -11,11 +11,12 @@ namespace Emplaniapp.LogicaDeNegocio.Tipo_Retencion
     {
         private readonly IEditarTipoRetencionAD _repo;
 
+        public EditarTipoRetencionLN(IEditarTipoRetencionAD repo)
+            => _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+
         public EditarTipoRetencionLN()
             : this(new EditarTipoRetencionAD())
         { }
-
-        public EditarTipoRetencionLN(IEditarTipoRetencionAD repo) => _repo = repo;
 
         public int Editar(TipoRetencionDto dto)
         {

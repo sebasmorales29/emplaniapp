@@ -1,4 +1,5 @@
-﻿using Emplaniapp.Abstracciones.InterfacesAD.Retenciones;
+﻿using System;
+using Emplaniapp.Abstracciones.InterfacesAD.Retenciones;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Retenciones;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.Abstracciones.ModelosAD;
@@ -10,11 +11,12 @@ namespace Emplaniapp.LogicaDeNegocio.Retenciones
     {
         private readonly IEditarRetencionAD _repo;
 
+        public EditarRetencionLN(IEditarRetencionAD repo)
+            => _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+
         public EditarRetencionLN()
             : this(new EditarRetencionAD())
         { }
-
-        public EditarRetencionLN(IEditarRetencionAD repo) => _repo = repo;
 
         public void EditarRetencion(RetencionEditarDto dto)
         {
