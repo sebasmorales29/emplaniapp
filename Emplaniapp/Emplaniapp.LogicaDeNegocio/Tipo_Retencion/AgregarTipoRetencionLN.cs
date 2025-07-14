@@ -1,4 +1,4 @@
-﻿// Emplaniapp.LogicaDeNegocio.Tipo_Retencion/AgregarTipoRetencionLN.cs
+﻿using System;
 using System.Threading.Tasks;
 using Emplaniapp.Abstracciones.InterfacesAD.Tipo_Retencion;
 using Emplaniapp.Abstracciones.InterfacesParaUI.TipoRetencion;
@@ -12,13 +12,12 @@ namespace Emplaniapp.LogicaDeNegocio.Tipo_Retencion
     {
         private readonly IAgregarTipoRetencionAD _repo;
 
-        // ctor por defecto
+        public AgregarTipoRetencionLN(IAgregarTipoRetencionAD repo)
+            => _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+
         public AgregarTipoRetencionLN()
             : this(new AgregarTipoRetencionAD())
         { }
-
-        // ctor inyectable
-        public AgregarTipoRetencionLN(IAgregarTipoRetencionAD repo) => _repo = repo;
 
         public async Task<int> Guardar(TipoRetencionDto dto)
         {
