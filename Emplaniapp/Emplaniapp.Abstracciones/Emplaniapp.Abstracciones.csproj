@@ -98,6 +98,7 @@
     <Compile Include="InterfacesParaUI\General\FiltrarEmpleados\IFiltrarEmpleadosLN.cs" />
     <Compile Include="InterfacesParaUI\General\ObtenerTotalEmpleados\IObtenerTotalEmpleadosLN.cs" />
     <Compile Include="InterfacesParaUI\Hoja_Resumen\ListarHojaResumen\IlistarHojaResumenLN.cs" />
+    <Compile Include="InterfacesParaUI\Liquidaciones\IMostrarCalculosPreviosLiqLN.cs" />
     <Compile Include="InterfacesParaUI\Monedas\ListarMonedas\IlistarMonedasLN.cs" />
     <Compile Include="InterfacesParaUI\Observacion\IObservacionLN.cs" />
     <Compile Include="InterfacesParaUI\Remuneraciones\CrearRemuneraciones\ICrearRemuneracionesLN.cs" />
@@ -127,7 +128,7 @@
     <Compile Include="ModelosAD\Distrito.cs" />
     <Compile Include="ModelosAD\Empleados.cs" />
     <Compile Include="ModelosAD\Estado.cs" />
-    <Compile Include="ModelosAD\Liquidaciones.cs" />
+    <Compile Include="ModelosAD\Liquidacion.cs" />
     <Compile Include="ModelosAD\NumeroOcupacion.cs" />
     <Compile Include="ModelosAD\Observacion.cs" />
     <Compile Include="ModelosAD\PagoQuincenal.cs" />
@@ -147,6 +148,7 @@
     <Compile Include="ModelosParaUI\EmpleadoDto.cs" />
     <Compile Include="ModelosParaUI\EstadoDto.cs" />
     <Compile Include="ModelosParaUI\HojaResumenDto.cs" />
+    <Compile Include="ModelosParaUI\LiquidacionDto.cs" />
     <Compile Include="ModelosParaUI\MonedaDto.cs" />
     <Compile Include="ModelosParaUI\NumeroOcupacioDto.cs" />
     <Compile Include="ModelosParaUI\ObservacionDto.cs" />
