@@ -76,6 +76,7 @@
     <Compile Include="Remuneraciones\EditarRemuneracion\EditarRemuneracionAD.cs" />
     <Compile Include="Remuneraciones\EliminarRemuneracion\EliminarRemuneracionAD.cs" />
     <Compile Include="Remuneraciones\ListarRemuneracionesAD.cs" />
+    <Compile Include="Remuneraciones\ObtenerRemuneracionPorId\ObtenerRemuneracionPorIdAD.cs" />
     <Compile Include="Retenciones\AgregarRetenciones\AgregarRetencionAD.cs" />
     <Compile Include="Retenciones\EditarRetencion\EditarRetencionAD.cs" />
     <Compile Include="Retenciones\EliminarRetencion\EliminarRetencionAD.cs" />

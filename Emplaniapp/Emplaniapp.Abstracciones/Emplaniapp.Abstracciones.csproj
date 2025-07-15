@@ -72,6 +72,7 @@
     <Compile Include="InterfacesAD\Remuneraciones\EditarRemuneracion\IEditarRemuneracionAD.cs" />
     <Compile Include="InterfacesAD\Remuneraciones\EliminarRemuneracion\IEliminarRemuneracionAD.cs" />
     <Compile Include="InterfacesAD\Remuneraciones\IListarRemuneracionesAD.cs" />
+    <Compile Include="InterfacesAD\Remuneraciones\ObtenerRemuneracionPorId\IObtenerRemuneracionPorIdAD.cs" />
     <Compile Include="InterfacesAD\Retenciones\CrearRetenciones\IAgregarRetencionAD.cs" />
     <Compile Include="InterfacesAD\Retenciones\EditarRetenciones\IEditarRetencionAD.cs" />
     <Compile Include="InterfacesAD\Retenciones\EliminarRetenciones\IEliminarRetencionAD.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="InterfacesParaUI\Remuneraciones\EditarRemuneracion\IEditarRemuneracionLN.cs" />
     <Compile Include="InterfacesParaUI\Remuneraciones\EliminarRemuneracion\IEliminarRemuneracionLN.cs" />
     <Compile Include="InterfacesParaUI\Remuneraciones\IListarRemuneracionesLN.cs" />
+    <Compile Include="InterfacesParaUI\Remuneraciones\ObtenerRemuneracionPorId\IObtenerRemuneracionPorIdLN.cs" />
     <Compile Include="InterfacesParaUI\Retenciones\CrearRetenciones\IAgregarRetencionLN.cs" />
     <Compile Include="InterfacesParaUI\Retenciones\EditarRetenciones\IEditarRetencionLN.cs" />
     <Compile Include="InterfacesParaUI\Retenciones\EliminarRetenciones\IEliminarRetencionLN.cs" />
