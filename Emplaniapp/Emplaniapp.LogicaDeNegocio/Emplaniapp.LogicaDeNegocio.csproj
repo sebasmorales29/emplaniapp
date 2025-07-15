@@ -70,6 +70,7 @@
     <Compile Include="Remuneraciones\EditarRemuneracion\EditarRemuneracionLN.cs" />
     <Compile Include="Remuneraciones\EliminarRemuneracion\EliminarRemuneracionLN.cs" />
     <Compile Include="Remuneraciones\ListarRemuneracionesLN.cs" />
+    <Compile Include="Remuneraciones\ObtenerRemuneracionPorId\ObtenerRemuneracionPorIdLN.cs" />
     <Compile Include="Retenciones\AgregarRetencion\AgregarRetencionLN.cs" />
     <Compile Include="Retenciones\EditarRetencion\EditarRetencionLN.cs" />
     <Compile Include="Retenciones\EliminarRetencion\EliminarRetencionLN.cs" />

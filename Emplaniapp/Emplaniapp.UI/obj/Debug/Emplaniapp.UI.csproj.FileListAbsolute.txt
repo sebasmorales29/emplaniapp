@@ -853,3 +853,14 @@ C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.U
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MimeKit.pdb
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MimeKit.xml
 C:\Users\Lenovo\Documents\Indy\GitHub Desktop\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\System.Formats.Asn1.xml
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\BouncyCastle.Cryptography.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MailKit.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MimeKit.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\System.Formats.Asn1.dll
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\BouncyCastle.Cryptography.xml
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MailKit.pdb
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MailKit.xml
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MailKit.dll.config
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MimeKit.pdb
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\MimeKit.xml
+C:\Users\Yazmin\Source\Repos\emplaniapp\Emplaniapp\Emplaniapp.UI\bin\System.Formats.Asn1.xml
