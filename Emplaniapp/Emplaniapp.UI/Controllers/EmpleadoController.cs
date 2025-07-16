@@ -173,7 +173,7 @@ namespace Emplaniapp.UI.Controllers
             ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList();
             ViewBag.RolesList = RoleManager.Roles.ToList().Select(r => new SelectListItem { Value = r.Name, Text = r.Name }).ToList();
             return View(model);
-        }        
+        }
 
         // POST: Empleado/Create
         [HttpPost]

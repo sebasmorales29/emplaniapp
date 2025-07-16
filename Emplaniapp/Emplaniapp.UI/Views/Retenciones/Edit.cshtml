@@ -1,0 +1,110 @@
+﻿@* Views/Retenciones/Edit.cshtml *@
+@model Emplaniapp.UI.Models.RetencionViewModel
+
+@{
+    ViewBag.Title = "Editar Retención";
+}
+
+<h2>Editar Retención #@Model.IdRetencion</h2>
+
+@using (Html.BeginForm("Edit", "Retenciones", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.IdRetencion)
+    @Html.HiddenFor(m => m.IdEmpleado)
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.SalarioBase, "Salario Base")
+        @Html.TextBoxFor(
+            m => m.SalarioBase,
+            "{0:N2}",
+            new
+                 {
+                @class = "form-control",
+                @readonly = "readonly",
+                id = "SalarioBase",
+                type = "text"
+            }
+        )
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Empleado")
+        <input class="form-control" value="@Model.NombreEmpleado" readonly />
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.IdTipoRetencion, "Tipo de Retención")
+        @Html.DropDownListFor(
+            m => m.IdTipoRetencion,
+            Model.TiposRetencion,
+            "-- Seleccione --",
+            new { @class = "form-control", id = "ddlTipo" }
+        )
+        @Html.ValidationMessageFor(m => m.IdTipoRetencion, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            @Html.LabelFor(m => m.Porcentaje, "Porcentaje (%)")
+            @Html.TextBoxFor(
+                m => m.Porcentaje,
+                new
+                     {
+                    @class = "form-control",
+                    type = "number",
+                    step = "0.01",
+                    @readonly = "readonly",
+                    id = "txtPorcentaje"
+                }
+            )
+        </div>
+        <div class="form-group col-md-6">
+            @Html.LabelFor(m => m.MontoRetencion, "Monto a Retener")
+            @Html.TextBoxFor(
+                m => m.MontoRetencion,
+                new
+                     {
+                    @class = "form-control",
+                    type = "number",
+                    step = "0.01",
+                    @readonly = "readonly",
+                    id = "txtMonto"
+                }
+            )
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.FechaRetencion, "Fecha")
+        @Html.TextBoxFor(
+            m => m.FechaRetencion,
+            "{0:yyyy-MM-dd}",
+            new { @class = "form-control", type = "date" }
+        )
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    @Html.ActionLink("Cancelar", "Detalles",
+        new { id = Model.IdEmpleado },
+        new { @class = "btn btn-secondary ml-2" })
+}
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('#ddlTipo').change(function () {
+                var text = $('#ddlTipo option:selected').text();
+                var m = text.match(/\((\d+([.,]\d+)?)%\)/);
+                var p = m ? parseFloat(m[1].replace(',', '.')) : 0;
+                $('#txtPorcentaje').val(p.toFixed(2));
+
+                var baseStr = $('#SalarioBase').val() || "0";
+                var normalized = baseStr.replace(/[\s\.]/g, '').replace(',', '.');
+                var base = parseFloat(normalized) || 0;
+
+                $('#txtMonto').val((base * p / 100).toFixed(2));
+            });
+        });
+    </script>
+}

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Emplaniapp.Abstracciones.InterfacesAD.Remuneraciones.CrearRemuneracion;
-using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.CrearRemuneraciones;
+
 using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.AccesoADatos.Remuneraciones;
 using System.Threading.Tasks;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.CrearRemuneraciones;
 
 namespace Emplaniapp.LogicaDeNegocio.Remuneraciones.CrearRemuneraciones
 {

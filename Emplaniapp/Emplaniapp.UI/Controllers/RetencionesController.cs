@@ -1,168 +1,193 @@
-﻿using Emplaniapp.Abstracciones.InterfacesParaUI;
-using Emplaniapp.Abstracciones.InterfacesParaUI.Retenciones;
-using Emplaniapp.Abstracciones.ModelosAD;
-using Emplaniapp.Abstracciones.ModelosParaUI;
-using Emplaniapp.LogicaDeNegocio;
-using Emplaniapp.LogicaDeNegocio.Retenciones;
-using Microsoft.AspNet.Identity.Owin;
+﻿// Controllers/RetencionesController.cs
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Empleado.ObtenerEmpleadoPorId;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Retenciones;
+using Emplaniapp.Abstracciones.InterfacesParaUI.TipoRetencion;
+using Emplaniapp.Abstracciones.ModelosParaUI;
+using Emplaniapp.LogicaDeNegocio.Empleado.ObtenerEmpleadoPorId;
+using Emplaniapp.LogicaDeNegocio.Retenciones;
+using Emplaniapp.LogicaDeNegocio.Tipo_Retencion;
+using Emplaniapp.UI.Models;
 
 namespace Emplaniapp.UI.Controllers
 {
     [Authorize]
     public class RetencionesController : Controller
     {
-        private IListarRetencionesLN _listarReten;
-        private IDatosPersonalesLN _datosPersonalesLN;
-        private ApplicationUserManager _userManager;
+        private readonly IObtenerEmpleadoPorIdLN _datosPersonalesLN;
+        private readonly IListarTipoRetencionLN _listarTipoRetencionLN;
+        private readonly IObtenerIdTipoRetencionLN _obtenerIdTipoRetencionLN;
+        private readonly IListarRetencionesLN _listarRetencionesLN;
+        private readonly IAgregarRetencionLN _agregarRetencionLN;
+        private readonly IEditarRetencionLN _editarRetencionLN;
+        private readonly IObtenerRetencionPorIdLN _obtenerRetencionLN;
+        private readonly IEliminarRetencionLN _eliminarRetencionLN;
 
-        // Constructores --------------------------------------------------------------
         public RetencionesController()
         {
-            _listarReten = new ListarRetencionesLN();
-            _datosPersonalesLN = new DatosPersonalesLN();
+            _datosPersonalesLN = new ObtenerEmpleadoPorIdLN();
+            _listarTipoRetencionLN = new ListarTipoRetencionLN();
+            _obtenerIdTipoRetencionLN = new ObtenerIdTipoRetencionLN();
+            _listarRetencionesLN = new ListarRetencionesLN();
+            _agregarRetencionLN = new AgregarRetencionLN();
+            _editarRetencionLN = new EditarRetencionLN();
+            _obtenerRetencionLN = new ObtenerRetencionPorIdLN();
+            _eliminarRetencionLN = new EliminarRetencionLN();
         }
 
-        // Constructor dependencias (Identity/OWIN) 
-         public RetencionesController(ApplicationUserManager userManager)
-        {
-            _listarReten = new ListarRetencionesLN();
-            _datosPersonalesLN = new DatosPersonalesLN();
-            UserManager = userManager;
-        }
-        public ApplicationUserManager UserManager
-        {
-            get => _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            private set => _userManager = value;
-        }
-
-
-
-        // Listar Retenciones -------------------------------------------------------
-
+        // Listado/Detalles
         public ActionResult Detalles(int? id, string seccion = "Retenciones")
         {
-            int idEmpleado;
+            int idEmpleado = id ?? int.Parse(
+                (User.Identity as ClaimsIdentity)?.FindFirst("idEmpleado")?.Value ?? "0"
+            );
 
-            if (id.HasValue)
-            {
-                // Si se provee un ID en la URL (ej: admin viendo un perfil)
-                idEmpleado = id.Value;
-            }
-            else
-            {
-                // Si no hay ID, buscarlo en las claims del usuario (ej: empleado viendo su propio perfil)
-                var claimsIdentity = User.Identity as ClaimsIdentity;
-                var idEmpleadoClaim = claimsIdentity?.FindFirst("idEmpleado");
+            var emp = _datosPersonalesLN.ObtenerEmpleadoPorId(idEmpleado);
+            if (emp == null) return HttpNotFound();
 
-                if (idEmpleadoClaim == null || !int.TryParse(idEmpleadoClaim.Value, out idEmpleado))
-                {
-                    return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "No se pudo identificar al empleado.");
-                }
-            }
-
-            var empleado = _datosPersonalesLN.ObtenerEmpleadoPorId(idEmpleado);
-
-            if (empleado == null)
-            {
-                return HttpNotFound();
-            }
-
-            var variables = new Tuple
-                <EmpleadoDto, List<RetencionDto>>
-                (empleado, _listarReten.Listar(idEmpleado));
-
+            var ret = _listarRetencionesLN.Listar(idEmpleado);
             ViewBag.Seccion = seccion;
-            return View(variables);
-
+            return View(Tuple.Create(emp, ret));
         }
 
-
-
-
-
-        // GET: Retenciones
-        public ActionResult Lista(int idEmpleado)
+        // GET: Create
+        public ActionResult Create(int idEmpleado)
         {
-            List<RetencionDto> lista = _listarReten.Listar(idEmpleado);
-            return View(lista);
-        }
+            var emp = _datosPersonalesLN.ObtenerEmpleadoPorId(idEmpleado);
+            if (emp == null) return HttpNotFound();
 
-        // GET: Retenciones/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Retenciones/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Retenciones/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
+            var tipos = _listarTipoRetencionLN.Listar();
+            var vm = new RetencionViewModel
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+                IdRetencion = 0,
+                IdEmpleado = idEmpleado,
+                NombreEmpleado = $"{emp.nombre} {emp.primerApellido}",
+                SalarioBase = emp.salarioAprobado,
+                FechaRetencion = DateTime.Today,
+                TiposRetencion = tipos.Select(t => new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = $"{t.nombreTipoRetencion} ({t.porcentajeRetencion}%)"
+                })
+            };
+            return View(vm);
         }
 
-        // GET: Retenciones/Edit/5
+        // POST: Create
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult Create(RetencionViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                vm.TiposRetencion = _listarTipoRetencionLN.Listar()
+                    .Select(t => new SelectListItem
+                    {
+                        Value = t.Id.ToString(),
+                        Text = $"{t.nombreTipoRetencion} ({t.porcentajeRetencion}%)"
+                    });
+                return View(vm);
+            }
+
+            // Recalcular porcentaje y monto
+            var tipoDto = _obtenerIdTipoRetencionLN.Obtener(vm.IdTipoRetencion);
+            vm.Porcentaje = tipoDto != null
+                                ? (decimal)tipoDto.porcentajeRetencion
+                                : 0m;
+            vm.MontoRetencion = vm.SalarioBase * (vm.Porcentaje / 100m);
+
+            var dto = new RetencionCrearDto
+            {
+                idEmpleado = vm.IdEmpleado,
+                idTipoRetencio = vm.IdTipoRetencion,
+                rebajo = vm.MontoRetencion,
+                fechaRetencio = vm.FechaRetencion
+            };
+            _agregarRetencionLN.AgregarRetencion(dto);
+
+            return RedirectToAction("Detalles", new { id = vm.IdEmpleado });
+        }
+
+        // GET: Edit
         public ActionResult Edit(int id)
         {
-            return View();
+            var ent = _obtenerRetencionLN.Obtener(id);
+            var emp = _datosPersonalesLN.ObtenerEmpleadoPorId(ent.idEmpleado);
+            var tipos = _listarTipoRetencionLN.Listar();
+
+            var pct = (decimal)tipos.First(t => t.Id == ent.idTipoRetencio)
+                                     .porcentajeRetencion;
+
+            var vm = new RetencionViewModel
+            {
+                IdRetencion = ent.idRetencion,
+                IdEmpleado = ent.idEmpleado,
+                NombreEmpleado = $"{emp.nombre} {emp.primerApellido}",
+                SalarioBase = emp.salarioAprobado,
+                IdTipoRetencion = ent.idTipoRetencio,
+                Porcentaje = pct,
+                MontoRetencion = ent.rebajo,
+                FechaRetencion = ent.fechaRetencio,
+                TiposRetencion = tipos.Select(t => new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = $"{t.nombreTipoRetencion} ({t.porcentajeRetencion}%)"
+                })
+            };
+            return View(vm);
         }
 
-        // POST: Retenciones/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        // POST: Edit
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult Edit(RetencionViewModel vm)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                // TODO: Add update logic here
+                vm.TiposRetencion = _listarTipoRetencionLN.Listar()
+                    .Select(t => new SelectListItem
+                    {
+                        Value = t.Id.ToString(),
+                        Text = $"{t.nombreTipoRetencion} ({t.porcentajeRetencion}%)"
+                    });
+                return View(vm);
+            }
 
-                return RedirectToAction("Index");
-            }
-            catch
+            var tipoDto = _obtenerIdTipoRetencionLN.Obtener(vm.IdTipoRetencion);
+            vm.Porcentaje = tipoDto != null
+                                ? (decimal)tipoDto.porcentajeRetencion
+                                : 0m;
+            vm.MontoRetencion = vm.SalarioBase * (vm.Porcentaje / 100m);
+
+            var dto = new RetencionEditarDto
             {
-                return View();
-            }
+                idRetencion = vm.IdRetencion,
+                idTipoRetencio = vm.IdTipoRetencion,
+                rebajo = vm.MontoRetencion,
+                fechaRetencio = vm.FechaRetencion
+            };
+            _editarRetencionLN.EditarRetencion(dto);
+
+            return RedirectToAction("Detalles", new { id = vm.IdEmpleado });
         }
 
-        // GET: Retenciones/Delete/5
+        // GET: Delete
         public ActionResult Delete(int id)
         {
-            return View();
+            var ent = _obtenerRetencionLN.Obtener(id);
+            if (ent == null) return HttpNotFound();
+            return View(ent);
         }
 
-        // POST: Retenciones/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        // POST: Delete
+        [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
         {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            var ent = _obtenerRetencionLN.Obtener(id);
+            _eliminarRetencionLN.EliminarRetencion(ent.idRetencion);
+            return RedirectToAction("Detalles", new { id = ent.idEmpleado });
         }
     }
 }

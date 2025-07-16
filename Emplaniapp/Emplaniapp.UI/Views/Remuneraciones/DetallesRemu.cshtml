@@ -40,7 +40,7 @@
                 <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Historial" })" class="@(seccionActiva == "Historial" ? "active" : "")">Historial</a>
                 <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
                 <a href="@Url.Action("Detalles", "Retenciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
-                <a href="@Url.Action("LiquidarEmpleado", "Liquidacion", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Liquidación" ? "active" : "")">Liquidación</a>
+                <a href="@Url.Action("Detalles", "Liquidaciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Liquidacion" ? "active" : "")">Liquidación</a>
                 <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Observaciones" })" class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
             </div>
             <hr />
@@ -55,9 +55,10 @@
             {
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2>Remuneraciones</h2>
-                    <button type="button" class="btn btn-primary" onclick="cargarModalRemuneracion(@Model.Item1.idEmpleado)">
+                    <a href="@Url.Action("CrearRemuneracionManual", "Remuneraciones", new { idEmpleado = Model.Item1.idEmpleado })"
+                       class="btn btn-primary">
                         <i class="fa fa-plus"></i> Agregar Remuneración
-                    </button>
+                    </a>
                 </div>
 
                 <!-- Modal para crear remuneración -->
@@ -72,7 +73,6 @@
                                 </button>
                             </div>
                             <div class="modal-body" id="modal-body-remuneracion">
-                                <!-- El contenido se cargará dinámicamente -->
                             </div>
                         </div>
                     </div>
@@ -102,11 +102,26 @@
                                             <p>
                                                 <strong>Horas:</strong>
                                                 <ul class="list-unstyled ml-3">
-                                                    @if (item.horasTrabajadas > 0) { <li>Trabajadas: @item.horasTrabajadas</li> }
-                                                    @if (item.horasExtras > 0) { <li>Extras: @item.horasExtras</li> }
-                                                    @if (item.horasFeriados > 0) { <li>Feriados: @item.horasFeriados</li> }
-                                                    @if (item.horasVacaciones > 0) { <li>Vacaciones: @item.horasVacaciones</li> }
-                                                    @if (item.horasLicencias > 0) { <li>Licencia: @item.horasLicencias</li> }
+                                                    @if (item.horasTrabajadas > 0)
+                                                    {
+                                                        <li>Trabajadas: @item.horasTrabajadas</li>
+                                                    }
+                                                    @if (item.horasExtras > 0)
+                                                    {
+                                                        <li>Extras: @item.horasExtras</li>
+                                                    }
+                                                    @if (item.horasFeriados > 0)
+                                                    {
+                                                        <li>Feriados: @item.horasFeriados</li>
+                                                    }
+                                                    @if (item.horasVacaciones > 0)
+                                                    {
+                                                        <li>Vacaciones: @item.horasVacaciones</li>
+                                                    }
+                                                    @if (item.horasLicencias > 0)
+                                                    {
+                                                        <li>Licencia: @item.horasLicencias</li>
+                                                    }
                                                 </ul>
                                             </p>
                                         }
@@ -116,6 +131,11 @@
                                         <a href="@Url.Action("DetallesDeRemuneracion", "Remuneraciones", new { id = item.idRemuneracion })" class="btn btn-info btn-sm" style="margin-right: 10px;">
                                             <i class="fa fa-eye"></i> Detalles
                                         </a>
+
+                                        <a href="@Url.Action("EditarRemuneracion", "Remuneraciones", new { id = item.idRemuneracion, idEmpleado = item.idEmpleado })" class="btn btn-warning btn-sm" style="margin-right: 10px;">
+                                            <i class="fa fa-edit"></i> Editar
+                                        </a>
+
                                         @using (Html.BeginForm("EliminarRemuneracion", "Remuneraciones", FormMethod.Post, new { @class = "d-inline" }))
                                         {
                                             @Html.AntiForgeryToken()

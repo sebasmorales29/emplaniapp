@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Retenciones
+namespace Emplaniapp.Abstracciones.InterfacesParaUI.Liquidaciones
 {
-    public interface IObtenerIdTipoRetencionLN
+    public interface IMostrarCalculosPreviosLiqLN
     {
-        TipoRetencionDto Obtener(int id);
+        LiquidacionDto MostrarLiquidacion(int id);
     }
 }

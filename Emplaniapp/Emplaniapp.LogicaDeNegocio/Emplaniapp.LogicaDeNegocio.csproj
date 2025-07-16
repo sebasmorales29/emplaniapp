@@ -62,6 +62,7 @@
     <Compile Include="General\FiltrarEmpleados\filtrarEmpleadosLN.cs" />
     <Compile Include="General\ObtenerTotalEmpleados\obtenerTotalEmpleadosLN.cs" />
     <Compile Include="Hoja_Resumen\ListarHojaResumen\listarHojaResumenLN.cs" />
+    <Compile Include="Liquidaciones\MostrarCalculosPreviosLiqLN.cs" />
     <Compile Include="Monedas\ListarMonedas\listarMonedasLN.cs" />
     <Compile Include="Observaciones\ObservacionLN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -69,7 +70,12 @@
     <Compile Include="Remuneraciones\EditarRemuneracion\EditarRemuneracionLN.cs" />
     <Compile Include="Remuneraciones\EliminarRemuneracion\EliminarRemuneracionLN.cs" />
     <Compile Include="Remuneraciones\ListarRemuneracionesLN.cs" />
+    <Compile Include="Remuneraciones\ObtenerRemuneracionPorId\ObtenerRemuneracionPorIdLN.cs" />
+    <Compile Include="Retenciones\AgregarRetencion\AgregarRetencionLN.cs" />
+    <Compile Include="Retenciones\EditarRetencion\EditarRetencionLN.cs" />
+    <Compile Include="Retenciones\EliminarRetencion\EliminarRetencionLN.cs" />
     <Compile Include="Retenciones\ListarRetencionesLN.cs" />
+    <Compile Include="Retenciones\ObtenerRetencionPorId\ObtenerRetencionPorIdLN.cs" />
     <Compile Include="Tipo_Remuneracion\AgregarTipoRemuneracionLN.cs" />
     <Compile Include="Tipo_Remuneracion\EditarTipoRemuneracionLN.cs" />
     <Compile Include="Tipo_Remuneracion\EliminarTipoRemuneracionLN.cs" />
@@ -95,9 +101,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Liquidacion\NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
