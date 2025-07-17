@@ -1,0 +1,174 @@
+@model Emplaniapp.UI.Models.RolesYPermisosViewModel
+
+@{
+    ViewBag.Title = "Roles y Permisos";
+    // Definimos la sección activa para que la pestaña correcta se resalte.
+    var seccionActiva = "Roles y Permisos";
+}
+
+<!-- Reutilizamos los estilos de la vista de Detalles para consistencia -->
+<link type="text/css" href="@Href("~/Content/EstilosDatos.css")" rel="Stylesheet" />
+
+<div class="container">
+
+    <!-- Título del empleado -->
+    <div class="row">
+        <div class="col-md-12">
+            <h2>@Model.NombreCompleto</h2>
+        </div>
+    </div>
+
+    <!-- Enlaces de navegación (pestañas) -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="nav-enlaces">
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.IdEmpleado, seccion = "Datos personales" })" class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.IdEmpleado, seccion = "Historial" })" class="@(seccionActiva == "Historial" ? "active" : "")">Historial</a>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a href="@Url.Action("RolesYPermisos", "Usuario", new { id = Model.IdEmpleado })" class="@(seccionActiva == "Roles y Permisos" ? "active" : "")">Roles y Permisos</a>
+                }
+                @if (User.IsInRole("Contador"))
+                {
+                    <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = Model.IdEmpleado})" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
+                    <a href="@Url.Action("Detalles", "Retenciones", new { id = Model.IdEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
+                    <a href="@Url.Action("Detalles", "Liquidaciones", new { id = Model.IdEmpleado })" class="@(seccionActiva == "Liquidacion" ? "active" : "")">Liquidación</a>
+                }
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.IdEmpleado, seccion = "Observaciones" })" class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
+            </div>
+            <hr />
+        </div>
+    </div>
+
+    <!-- Contenido específico de Roles y Permisos -->
+    <div class="row">
+        <div class="col-md-12">
+            @using (Html.BeginForm("RolesYPermisos", "Usuario", FormMethod.Post, new { @class = "roles-form" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.IdEmpleado)
+                @Html.HiddenFor(model => model.UserName)
+
+                <div class="seccion-box" style="max-width: 800px; margin: 1rem auto;">
+                    <div class="seccion-header">
+                        <h3>Asignar Roles para @Model.NombreCompleto</h3>
+                    </div>
+                    <div class="seccion-body">
+                        <ul class="role-list list-unstyled">
+                            @for (int i = 0; i < Model.Roles.Count; i++)
+                            {
+                                <li class="role-item">
+                                    @Html.CheckBoxFor(m => m.Roles[i].Selected, new { @class = "form-check-input" })
+                                    <label for="Roles_@(i)__Selected" class="form-check-label">@Model.Roles[i].Text</label>
+                                    @Html.HiddenFor(m => m.Roles[i].Value)
+                                    @Html.HiddenFor(m => m.Roles[i].Text)
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="seccion-footer" style="text-align: right; padding: 1rem;">
+                        <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.IdEmpleado })" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .role-list {
+        padding: 1rem;
+    }
+
+    .role-item {
+        display: flex;
+        align-items: center;
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.2s;
+    }
+
+        .role-item:last-child {
+            border-bottom: none;
+        }
+
+        .role-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .role-item .form-check-input {
+            margin-right: 12px;
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+
+        .role-item .form-check-label {
+            margin-bottom: 0;
+            font-weight: 500;
+            color: #444;
+            flex-grow: 1;
+            cursor: pointer;
+        }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var rolesForm = $('form.roles-form');
+            var modal = $('#adminPasswordModal');
+            var passwordInput = $('#adminPasswordInput');
+            var confirmBtn = $('#confirmAdminPasswordBtn');
+            var cancelBtn = $('#cancelAdminPasswordBtn');
+            var errorSpan = $('#adminPasswordError');
+
+            rolesForm.on('submit', function (e) {
+                // 1. Prevenir el envío automático del formulario
+                e.preventDefault();
+
+                // 2. Limpiar y mostrar el modal de confirmación
+                passwordInput.val('');
+                errorSpan.hide();
+                modal.modal('show');
+            });
+
+            confirmBtn.on('click', function () {
+                var password = passwordInput.val();
+                if (!password) {
+                    errorSpan.text('La contraseña no puede estar vacía.').show();
+                    return;
+                }
+
+                // 3. Validar la contraseña del admin vía AJAX
+                $.ajax({
+                    url: '@Url.Action("ValidateAdminPassword", "Empleado")',
+                    type: 'POST',
+                    data: {
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                        password: password
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // 4. Si la contraseña es correcta, se oculta el modal y se envía el formulario original
+                            modal.modal('hide');
+                            rolesForm.off('submit').submit(); // Quitar el listener para evitar bucles y enviar
+                        } else {
+                            // 5. Si es incorrecta, mostrar error
+                            errorSpan.text('Contraseña incorrecta.').show();
+                            passwordInput.val('').focus();
+                        }
+                    },
+                    error: function () {
+                        alert('Ocurrió un error de comunicación al validar la contraseña.');
+                        modal.modal('hide');
+                    }
+                });
+            });
+
+            cancelBtn.on('click', function() {
+                modal.modal('hide');
+            });
+        });
+    </script>
+} 

@@ -321,8 +321,10 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LiquidacionesController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\PagoQuincenalController.cs" />
     <Compile Include="Controllers\RemuneracionesController.cs" />
     <Compile Include="Controllers\RetencionesController.cs" />
+    <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\VariablesFinancierasController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -334,6 +336,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\RetencionViewModel.cs" />
+    <Compile Include="Models\RolesYPermisosViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -435,6 +438,8 @@
     <Content Include="Views\Remuneraciones\_EditarRemuneracion.cshtml" />
     <Content Include="Views\Remuneraciones\EditarRemuneracion.cshtml" />
     <Content Include="Views\Remuneraciones\CrearRemuneracionManual.cshtml" />
+    <Content Include="Views\PagoQuincenal\HistorialPagos.cshtml" />
+    <Content Include="Views\Usuario\RolesYPermisos.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

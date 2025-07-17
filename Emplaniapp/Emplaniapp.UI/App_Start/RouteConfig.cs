@@ -14,6 +14,12 @@ namespace Emplaniapp.UI
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "UsuarioRoles",
+                url: "Usuario/RolesYPermisos/{id}",
+                defaults: new { controller = "Usuario", action = "RolesYPermisos" }
+            );
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Account", action = "Login", id = UrlParameter.Optional }

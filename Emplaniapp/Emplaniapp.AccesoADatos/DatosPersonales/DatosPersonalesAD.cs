@@ -33,6 +33,7 @@ namespace Emplaniapp.AccesoADatos
                     cedula = empleado.cedula,
                     numeroTelefonico = empleado.numeroTelefonico,
                     correoInstitucional = empleado.correoInstitucional,
+                    direccionFisica = empleado.direccionFisica,
                     idDireccion = empleado.idDireccion,
                     idCargo = empleado.idCargo,
                     nombreCargo = cargo?.nombreCargo ?? "Sin cargo",
@@ -176,6 +177,7 @@ namespace Emplaniapp.AccesoADatos
                     empleado.cedula = empleadoDto.cedula;
                     empleado.numeroTelefonico = empleadoDto.numeroTelefonico;
                     empleado.correoInstitucional = empleadoDto.correoInstitucional;
+                    empleado.direccionFisica = empleadoDto.direccionFisica;
 
                     contexto.SaveChanges();
                     return true;
@@ -210,7 +212,7 @@ namespace Emplaniapp.AccesoADatos
             }
         }
 
-        public bool ActualizarDatosFinancieros(int idEmpleado, decimal salarioAprobado, decimal salarioDiario, 
+        public bool ActualizarDatosFinancieros(int idEmpleado, decimal salarioAprobado,
             string periocidadPago, int idTipoMoneda, string cuentaIBAN, int idBanco)
         {
             try
@@ -220,24 +222,26 @@ namespace Emplaniapp.AccesoADatos
                     var empleado = contexto.Empleados.FirstOrDefault(e => e.idEmpleado == idEmpleado);
                     if (empleado == null) return false;
 
+                    // Asignar los valores que vienen del formulario
                     empleado.salarioAprobado = salarioAprobado;
-                    empleado.salarioDiario = salarioDiario;
                     empleado.periocidadPago = periocidadPago;
                     empleado.idTipoMoneda = idTipoMoneda;
                     empleado.cuentaIBAN = cuentaIBAN;
                     empleado.idBanco = idBanco;
 
-                    // Recalcular salarios basados en el salario aprobado
+                    // Recalcular todos los salarios derivados
+                    decimal salarioDiarioCalculado = 0;
                     if (periocidadPago == "Quincenal")
                     {
-                        empleado.salarioDiario = salarioAprobado / 15;
+                        salarioDiarioCalculado = salarioAprobado / 15;
                     }
                     else if (periocidadPago == "Mensual")
                     {
-                        empleado.salarioDiario = salarioAprobado / 30;
+                        salarioDiarioCalculado = salarioAprobado / 30;
                     }
 
-                    empleado.salarioPoHora = empleado.salarioDiario / 8;
+                    empleado.salarioDiario = salarioDiarioCalculado;
+                    empleado.salarioPoHora = salarioDiarioCalculado / 8;
                     empleado.salarioPorMinuto = empleado.salarioPoHora / 60;
                     empleado.salarioPorHoraExtra = empleado.salarioPoHora * 1.5m;
 

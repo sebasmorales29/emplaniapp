@@ -25,6 +25,7 @@ namespace Emplaniapp.AccesoADatos.Empleado.ObtenerEmpleadoPorId
                         idEmpleado = emp.idEmpleado,
                         idEstado = emp.idEstado,
                         nombreEstado = estado.nombreEstado,
+                        IdNetUser = emp.IdNetUser,
 
                         //Datos personales
                         nombre = emp.nombre,

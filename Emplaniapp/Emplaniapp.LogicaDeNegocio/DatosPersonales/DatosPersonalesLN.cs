@@ -166,7 +166,7 @@ namespace Emplaniapp.LogicaDeNegocio
             return _datosPersonalesAD.ActualizarDatosLaborales(idEmpleado, idCargo, fechaContratacion, fechaSalida);
         }
 
-        public bool ActualizarDatosFinancieros(int idEmpleado, decimal salarioAprobado, decimal salarioDiario, 
+        public bool ActualizarDatosFinancieros(int idEmpleado, decimal salarioAprobado,
             string periocidadPago, int idTipoMoneda, string cuentaIBAN, int idBanco)
         {
             // Validaciones de negocio
@@ -175,7 +175,7 @@ namespace Emplaniapp.LogicaDeNegocio
                 return false;
             }
 
-            return _datosPersonalesAD.ActualizarDatosFinancieros(idEmpleado, salarioAprobado, salarioDiario, 
+            return _datosPersonalesAD.ActualizarDatosFinancieros(idEmpleado, salarioAprobado,
                 periocidadPago, idTipoMoneda, cuentaIBAN, idBanco);
         }
 

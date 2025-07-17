@@ -98,6 +98,13 @@
                     <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.numeroTelefonico) @Html.EditorFor(m => m.numeroTelefonico, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.numeroTelefonico, "", new { @class = "text-danger" })</div></div>
                     <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.correoInstitucional) @Html.EditorFor(m => m.correoInstitucional, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.correoInstitucional, "", new { @class = "text-danger" })</div></div>
                 </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.direccionFisica, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.direccionFisica, new { @class = "form-control", @rows = 3 })
+                        @Html.ValidationMessageFor(model => model.direccionFisica, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
         </div>
 

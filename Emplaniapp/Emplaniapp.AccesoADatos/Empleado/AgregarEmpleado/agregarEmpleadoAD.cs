@@ -56,6 +56,7 @@ namespace Emplaniapp.AccesoADatos.Empleado.agregarEmpleado
                         numeroTelefonico = empleadoDto.numeroTelefonico,
                         correoInstitucional = empleadoDto.correoInstitucional,
                         idDireccion = empleadoDto.idDireccion,
+                        direccionFisica = empleadoDto.direccionFisica,
                         idCargo = empleadoDto.idCargo,
                         fechaContratacion = empleadoDto.fechaContratacion,
                         fechaSalida = empleadoDto.fechaSalida,

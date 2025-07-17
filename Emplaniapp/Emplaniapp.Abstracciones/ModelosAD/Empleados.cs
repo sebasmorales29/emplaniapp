@@ -41,6 +41,6 @@ namespace Emplaniapp.Abstracciones.ModelosAD
         public int idEstado { get; set; }
         [Column("IdNetUser")]
         public string IdNetUser { get; set; }
-
+        public string direccionFisica { get; set; }
     }
 }

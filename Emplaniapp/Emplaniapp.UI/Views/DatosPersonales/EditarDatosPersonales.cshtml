@@ -79,11 +79,18 @@
             </div>
         </div>
 
-
         <div class="form-group">
+            @Html.LabelFor(model => model.direccionFisica, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.direccionFisica, new { @class = "form-control", @rows = 3 })
+                @Html.ValidationMessageFor(model => model.direccionFisica, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 25px;">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Guardar Cambios" class="btn btn-success" />
-                @Html.ActionLink("Cancelar", "Detalles", new { id = Model.idEmpleado }, new { @class = "btn btn-default" })
+                <a href="@Url.Action("Detalles", new { id = Model.idEmpleado })" class="btn btn-secondary">Cancelar</a>
             </div>
         </div>
     </div>
@@ -96,52 +103,54 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script>
         $(document).ready(function () {
-            var mainForm = $('#editForm');
+            var formToSubmit; // Variable para guardar la referencia al formulario
 
-            mainForm.on('submit', function (e) {
-                // Prevenir el envío automático del formulario
+            $('form').on('submit', function (e) {
+                // 1. Prevenir el envío y guardar la referencia
                 e.preventDefault();
+                formToSubmit = this; // 'this' es el formulario DOM que disparó el evento
                 
-                // Limpiar errores previos y mostrar el modal
+                // 2. Limpiar y mostrar el modal
                 $('#adminPasswordInput').val('');
-                $('#adminPasswordError').hide().text('');
+                $('#adminPasswordError').hide();
                 $('#adminPasswordModal').modal('show');
             });
 
             $('#confirmAdminPasswordBtn').on('click', function () {
                 var password = $('#adminPasswordInput').val();
-                var errorDiv = $('#adminPasswordError');
-                // Obtener el token del formulario principal
-                var token = mainForm.find('input[name="__RequestVerificationToken"]').val();
-
                 if (!password) {
-                    errorDiv.text('La contraseña no puede estar vacía.').show();
+                    $('#adminPasswordError').text('La contraseña no puede estar vacía.').show();
                     return;
                 }
 
-                // Llamada AJAX para validar la contraseña
+                // 3. Validar la contraseña
                 $.ajax({
-                    url: '@Url.Action("ValidateAdminPassword", "HojaResumen")',
-                    method: 'POST',
+                    url: '@Url.Action("ValidateAdminPassword", "DatosPersonales")',
+                    type: 'POST',
                     data: {
-                        __RequestVerificationToken: token,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
                         password: password
                     },
                     success: function (response) {
                         if (response.success) {
-                            // Si la contraseña es correcta, oculta el modal y envía el formulario principal
+                            // 4. Si es correcta, enviar el formulario guardado
                             $('#adminPasswordModal').modal('hide');
-                            mainForm.off('submit').submit(); // Desactiva el interceptor y envía
+                            if (formToSubmit) {
+                                formToSubmit.submit();
+                            }
                         } else {
-                            // Si es incorrecta, muestra el error
-                            errorDiv.text(response.message).show();
+                            $('#adminPasswordError').text(response.message || 'Contraseña incorrecta.').show();
                         }
                     },
                     error: function () {
-                        // Error de comunicación
-                        errorDiv.text('Error de comunicación con el servidor.').show();
+                        alert('Error de comunicación con el servidor.');
+                        $('#adminPasswordModal').modal('hide');
                     }
                 });
+            });
+
+            $('#cancelAdminPasswordBtn').on('click', function() {
+                $('#adminPasswordModal').modal('hide');
             });
         });
     </script>

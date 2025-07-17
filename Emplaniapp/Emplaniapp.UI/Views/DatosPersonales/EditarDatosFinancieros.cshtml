@@ -28,21 +28,13 @@
         <div class="form-group">
             @Html.LabelFor(model => model.SalarioAprobado, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.SalarioAprobado, new { htmlAttributes = new { @class = "form-control", @type = "number", @step = "0.01" } })
+                @Html.EditorFor(model => model.SalarioAprobado, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                 @Html.ValidationMessageFor(model => model.SalarioAprobado, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.SalarioDiario, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.SalarioDiario, new { htmlAttributes = new { @class = "form-control", @type = "number", @step = "0.01" } })
-                @Html.ValidationMessageFor(model => model.SalarioDiario, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdTipoMoneda, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.IdTipoMoneda, "Tipo de Moneda", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.IdTipoMoneda, (SelectList)ViewBag.TiposMoneda, "Seleccione una moneda", new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.IdTipoMoneda, "", new { @class = "text-danger" })
@@ -65,10 +57,10 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 25px;">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Guardar" class="btn btn-primary" />
-                @Html.ActionLink("Cancelar", "Detalles", new { id = Model.IdEmpleado }, new { @class = "btn btn-default" })
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.IdEmpleado })" class="btn btn-secondary">Cancelar</a>
             </div>
         </div>
     }
@@ -88,44 +80,54 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script>
         $(document).ready(function () {
-            var mainForm = $('#editForm');
+            var formToSubmit; // Variable para guardar la referencia al formulario
 
-            mainForm.on('submit', function (e) {
+            $('form').on('submit', function (e) {
+                // 1. Prevenir el envío y guardar la referencia
                 e.preventDefault();
+                formToSubmit = this; // 'this' es el formulario DOM que disparó el evento
+                
+                // 2. Limpiar y mostrar el modal
                 $('#adminPasswordInput').val('');
-                $('#adminPasswordError').hide().text('');
+                $('#adminPasswordError').hide();
                 $('#adminPasswordModal').modal('show');
             });
 
             $('#confirmAdminPasswordBtn').on('click', function () {
                 var password = $('#adminPasswordInput').val();
-                var errorDiv = $('#adminPasswordError');
-                var token = mainForm.find('input[name="__RequestVerificationToken"]').val();
-
                 if (!password) {
-                    errorDiv.text('La contraseña no puede estar vacía.').show();
+                    $('#adminPasswordError').text('La contraseña no puede estar vacía.').show();
                     return;
                 }
 
+                // 3. Validar la contraseña
                 $.ajax({
-                    url: '@Url.Action("ValidateAdminPassword", "HojaResumen")',
-                    method: 'POST',
+                    url: '@Url.Action("ValidateAdminPassword", "DatosPersonales")',
+                    type: 'POST',
                     data: {
-                        __RequestVerificationToken: token,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
                         password: password
                     },
                     success: function (response) {
                         if (response.success) {
+                            // 4. Si es correcta, enviar el formulario guardado
                             $('#adminPasswordModal').modal('hide');
-                            mainForm.off('submit').submit();
+                            if (formToSubmit) {
+                                formToSubmit.submit();
+                            }
                         } else {
-                            errorDiv.text(response.message).show();
+                            $('#adminPasswordError').text(response.message || 'Contraseña incorrecta.').show();
                         }
                     },
                     error: function () {
-                        errorDiv.text('Error de comunicación con el servidor.').show();
+                        alert('Error de comunicación con el servidor.');
+                        $('#adminPasswordModal').modal('hide');
                     }
                 });
+            });
+
+            $('#cancelAdminPasswordBtn').on('click', function() {
+                $('#adminPasswordModal').modal('hide');
             });
         });
     </script>

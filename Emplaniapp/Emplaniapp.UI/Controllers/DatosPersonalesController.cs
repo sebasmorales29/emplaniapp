@@ -11,6 +11,7 @@ using Emplaniapp.UI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Emplaniapp.UI.Controllers
 {
@@ -102,6 +103,7 @@ namespace Emplaniapp.UI.Controllers
                 if (resultado)
                 {
                     TempData["Mensaje"] = "Datos personales actualizados con éxito.";
+                    TempData["TipoMensaje"] = "success";
                     return RedirectToAction("Detalles", new { id = model.idEmpleado });
                 }
                 else
@@ -185,7 +187,6 @@ namespace Emplaniapp.UI.Controllers
                 IdEmpleado = empleado.idEmpleado,
                 PeriocidadPago = empleado.periocidadPago,
                 SalarioAprobado = empleado.salarioAprobado,
-                SalarioDiario = empleado.salarioDiario,
                 IdTipoMoneda = empleado.idMoneda,
                 TipoMoneda = empleado.nombreMoneda,
                 CuentaIBAN = empleado.cuentaIBAN,
@@ -211,7 +212,6 @@ namespace Emplaniapp.UI.Controllers
                 bool resultado = _datosPersonalesLN.ActualizarDatosFinancieros(
                     model.IdEmpleado,
                     model.SalarioAprobado,
-                    model.SalarioDiario,
                     model.PeriocidadPago,
                     (int)model.IdTipoMoneda,
                     model.CuentaIBAN,
@@ -235,7 +235,24 @@ namespace Emplaniapp.UI.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> ValidateAdminPassword(string password)
+        {
+            if (string.IsNullOrEmpty(password))
+            {
+                return Json(new { success = false });
+            }
 
+            var adminUser = await UserManager.FindByNameAsync(User.Identity.Name);
+            if (adminUser == null)
+            {
+                return Json(new { success = false });
+            }
+
+            var result = await UserManager.CheckPasswordAsync(adminUser, password);
+            return Json(new { success = result });
+        }
 
         #region Métodos Auxiliares
         

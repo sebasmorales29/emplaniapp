@@ -43,6 +43,7 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                                     emp.fechaNacimiento,
                                     emp.numeroTelefonico,
                                     emp.correoInstitucional,
+                                    emp.direccionFisica,
                                     emp.fechaContratacion,
                                     emp.fechaSalida,
                                     emp.periocidadPago,
@@ -66,38 +67,46 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                                     Role = role.Name
                                 }).ToList(); // Aquí termina la ejecución en SQL
 
-            // Ahora sí, puedes usar interpolación
-            var empleados = empleadosRaw.Select(emp => new EmpleadoDto
-            {
-                idEmpleado = emp.idEmpleado,
-                nombre = emp.nombre,
-                segundoNombre = emp.segundoNombre ?? string.Empty,
-                primerApellido = emp.primerApellido,
-                segundoApellido = emp.segundoApellido,
-                cedula = emp.cedula,
-                fechaNacimiento = emp.fechaNacimiento,
-                numeroTelefonico = emp.numeroTelefonico,
-                correoInstitucional = emp.correoInstitucional,
+            // Agrupar en memoria para consolidar empleados con múltiples roles
+            var empleados = empleadosRaw
+                .GroupBy(emp => emp.idEmpleado)
+                .Select(g =>
+                {
+                    var first = g.First();
+                    var roles = g.Select(emp => emp.Role).Where(r => r != null).Distinct();
+                    return new EmpleadoDto
+                    {
+                        idEmpleado = first.idEmpleado,
+                        nombre = first.nombre,
+                        segundoNombre = first.segundoNombre ?? string.Empty,
+                        primerApellido = first.primerApellido,
+                        segundoApellido = first.segundoApellido,
+                        cedula = first.cedula,
+                        fechaNacimiento = first.fechaNacimiento,
+                        numeroTelefonico = first.numeroTelefonico,
+                        correoInstitucional = first.correoInstitucional,
+                        direccionFisica = first.direccionFisica,
 
-                idEstado = emp.idEstado,
-                nombreEstado = emp.nombreEstado,
+                        idEstado = first.idEstado,
+                        nombreEstado = first.nombreEstado,
 
-                idCargo = emp.idCargo,
-                nombreCargo = emp.nombreCargo,
+                        idCargo = first.idCargo,
+                        nombreCargo = first.nombreCargo,
 
-                salarioAprobado = emp.salarioAprobado,
-                periocidadPago = emp.periocidadPago,
-                nombreMoneda = emp.nombreMoneda,
-                cuentaIBAN = emp.cuentaIBAN,
-                idBanco = emp.idBanco,
-                nombreBanco = emp.nombreBanco,
+                        salarioAprobado = first.salarioAprobado,
+                        periocidadPago = first.periocidadPago,
+                        nombreMoneda = first.nombreMoneda,
+                        cuentaIBAN = first.cuentaIBAN,
+                        idBanco = first.idBanco,
+                        nombreBanco = first.nombreBanco,
 
-                direccionCompleta = $"{emp.direccion.nombreProvincia}, {emp.direccion.nombreCanton}, {emp.direccion.nombreDistrito}, {emp.direccion.nombreCalle}",
+                        direccionCompleta = $"{first.direccion.nombreProvincia}, {first.direccion.nombreCanton}, {first.direccion.nombreDistrito}, {first.direccion.nombreCalle}",
 
-                fechaContratacion = emp.fechaContratacion,
-                fechaSalida = emp.fechaSalida,
-                Role = emp.Role ?? "Sin rol"
-            }).ToList();
+                        fechaContratacion = first.fechaContratacion,
+                        fechaSalida = first.fechaSalida,
+                        Role = roles.Any() ? string.Join(", ", roles) : "Sin rol"
+                    };
+                }).ToList();
 
             return empleados;
         }

@@ -281,33 +281,6 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<JsonResult> ValidateAdminPassword(string password)
-        {
-            if (string.IsNullOrEmpty(password))
-            {
-                return Json(new { success = false, message = "La contraseña no puede estar vacía." });
-            }
-
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-            if (user == null)
-            {
-                return Json(new { success = false, message = "No se pudo identificar al usuario." });
-            }
-
-            var correctPassword = await UserManager.CheckPasswordAsync(user, password);
-
-            if (correctPassword)
-            {
-                return Json(new { success = true });
-            }
-            else
-            {
-                return Json(new { success = false, message = "Contraseña incorrecta." });
-            }
-        }
-
         [HttpGet]
         public ActionResult _CambiarEstado(int id)
         {

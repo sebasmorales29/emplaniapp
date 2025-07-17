@@ -33,13 +33,15 @@
     <br />
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Agregar" class="btn btn-outline-primary" />
+            <input type="submit" value="Agregar" class="btn btn-primary" />
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Cancelar</a>
         </div>
     </div>
 </div>
 }
 
-<div>
-    <br />
-    @Html.ActionLink("Volver a Variables Financieras", "Index")
-</div>
+<style>
+    .btn-secondary {
+        margin-left: 10px;
+    }
+</style>

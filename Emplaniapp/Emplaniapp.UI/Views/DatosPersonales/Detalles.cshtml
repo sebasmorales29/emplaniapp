@@ -11,21 +11,16 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 <div class="container">
 
-    <!-- Botón regresar -->
-    @if (User.IsInRole("Administrador"))
-    {
-        @Html.ActionLink("< Volver a Lista de Empleados", "ListarEmpleados", "Empleado", null, new { @class = "btn btn-outline-secondary mb-3" })
-    }
-    else if (User.IsInRole("Contador"))
-    {
-        @Html.ActionLink("< Volver a Hoja Resumen", "listarHojaResumen", "HojaResumen", null, new { @class = "btn btn-outline-secondary mb-3" })
-    }
-
-
     <!-- Mensaje de éxito -->
     @if (TempData["Mensaje"] != null)
     {
-        <div class="alert alert-success">
+        var tipoMensaje = TempData["TipoMensaje"] as string ?? "success";
+        var alertClass = "alert-success";
+        if (tipoMensaje.Equals("error", StringComparison.OrdinalIgnoreCase))
+        {
+            alertClass = "alert-danger";
+        }
+        <div class="alert @alertClass">
             @TempData["Mensaje"]
         </div>
     }
@@ -73,7 +68,7 @@
                         <div class="col-md-6">
                             <div class="seccion-box">
                                 <div class="seccion-header">
-                                    <h3>Información personal</h3>
+                                    <h3>Información Personal</h3>
                                     @if (User.IsInRole("Administrador") || User.IsInRole("Empleado"))
                                     {
                                         <a href="@Url.Action("EditarDatosPersonales", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
@@ -81,35 +76,35 @@
                                 </div>
                                 <div class="seccion-body">
                                     <div class="datos-row">
-                                        <div class="datos-label">Nombre:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.nombre)</div>
                                         <div class="datos-value">@Model.nombre</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Primera Apellido:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.primerApellido)</div>
                                         <div class="datos-value">@Model.primerApellido</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Segundo apellido:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.segundoApellido)</div>
                                         <div class="datos-value">@Model.segundoApellido</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Nacimiento:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.fechaNacimiento)</div>
                                         <div class="datos-value">@Model.fechaNacimiento.ToString("dd/MM/yyyy")</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Cédula:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.cedula)</div>
                                         <div class="datos-value">@Model.cedula</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Dirección Física:</div>
-                                        <div class="datos-value">800 mts Este de la Farmacia La Arboleda, en San Miguel de Desamparados, San José</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.direccionFisica)</div>
+                                        <div class="datos-value">@Model.direccionFisica</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Correo electrónico:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.correoInstitucional)</div>
                                         <div class="datos-value">@Model.correoInstitucional</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Teléfono:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.numeroTelefonico)</div>
                                         <div class="datos-value">@Model.numeroTelefonico</div>
                                     </div>
                                 </div>
@@ -128,19 +123,19 @@
                                 </div>
                                 <div class="seccion-body">
                                     <div class="datos-row">
-                                        <div class="datos-label">Nº Ocupación:</div>
+                                        <div class="datos-label">N° Ocupación:</div>
                                         <div class="datos-value">9832</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Cargo:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.nombreCargo)</div>
                                         <div class="datos-value">@Model.nombreCargo</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Fecha de Ingreso:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.fechaContratacion)</div>
                                         <div class="datos-value">@Model.fechaContratacion.ToString("dd/MM/yyyy")</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Fecha de Salida:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.fechaSalida)</div>
                                         <div class="datos-value">@(Model.fechaSalida.HasValue ? Model.fechaSalida.Value.ToString("dd/MM/yyyy") : "--/--/----")</div>
                                     </div>
                                     <div class="datos-row">
@@ -161,27 +156,27 @@
                                 </div>
                                 <div class="seccion-body">
                                     <div class="datos-row">
-                                        <div class="datos-label">Periodicidad de pago:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.periocidadPago)</div>
                                         <div class="datos-value">@Model.periocidadPago</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Salario Aprobado:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.salarioAprobado)</div>
                                         <div class="datos-value">@Model.salarioAprobado.ToString("C")</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Salario Diario:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.salarioDiario)</div>
                                         <div class="datos-value">@Model.salarioDiario.ToString("C")</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Tipo de Moneda:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.nombreMoneda)</div>
                                         <div class="datos-value">@Model.nombreMoneda</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Cuenta IBAN:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.cuentaIBAN)</div>
                                         <div class="datos-value">@Model.cuentaIBAN</div>
                                     </div>
                                     <div class="datos-row">
-                                        <div class="datos-label">Banco:</div>
+                                        <div class="datos-label">@Html.DisplayNameFor(model => model.nombreBanco)</div>
                                         <div class="datos-value">@Model.nombreBanco</div>
                                     </div>
                                 </div>

@@ -43,16 +43,17 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" style="margin-top: 25px;">
         <div class="col-md-offset-2 col-md-10">
-            <br />
-            <input type="submit" value="Guardar Cambios" class="btn btn-outline-primary" />
+            <input type="submit" value="Guardar" class="btn btn-primary" />
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Cancelar</a>
         </div>
     </div>
 </div>
 }
 
-<div>
-    <br />
-    @Html.ActionLink("Volver a Variables Financieras", "Index")
-</div>
+<style>
+    .btn-secondary {
+        margin-left: 10px;
+    }
+</style>
