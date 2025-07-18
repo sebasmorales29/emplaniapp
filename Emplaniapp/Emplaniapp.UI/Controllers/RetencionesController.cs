@@ -1,8 +1,7 @@
-﻿// Controllers/RetencionesController.cs
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Web;
 using System.Web.Mvc;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Empleado.ObtenerEmpleadoPorId;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Retenciones;
@@ -23,8 +22,8 @@ namespace Emplaniapp.UI.Controllers
         private readonly IObtenerIdTipoRetencionLN _obtenerIdTipoRetencionLN;
         private readonly IListarRetencionesLN _listarRetencionesLN;
         private readonly IAgregarRetencionLN _agregarRetencionLN;
-        private readonly IEditarRetencionLN _editarRetencionLN;
         private readonly IObtenerRetencionPorIdLN _obtenerRetencionLN;
+        private readonly IEditarRetencionLN _editarRetencionLN;
         private readonly IEliminarRetencionLN _eliminarRetencionLN;
 
         public RetencionesController()
@@ -34,37 +33,49 @@ namespace Emplaniapp.UI.Controllers
             _obtenerIdTipoRetencionLN = new ObtenerIdTipoRetencionLN();
             _listarRetencionesLN = new ListarRetencionesLN();
             _agregarRetencionLN = new AgregarRetencionLN();
-            _editarRetencionLN = new EditarRetencionLN();
             _obtenerRetencionLN = new ObtenerRetencionPorIdLN();
+            _editarRetencionLN = new EditarRetencionLN();
             _eliminarRetencionLN = new EliminarRetencionLN();
         }
 
-        // Listado/Detalles
-        public ActionResult Detalles(int? id, string seccion = "Retenciones")
+        // --- 1) Detalles: página principal ---
+        public ActionResult Detalles(int? id)
         {
-            int idEmpleado = id ?? int.Parse(
-                (User.Identity as ClaimsIdentity)?.FindFirst("idEmpleado")?.Value ?? "0"
-            );
+            var idEmpleado = id
+                ?? int.Parse((User.Identity as ClaimsIdentity)?
+                                 .FindFirst("idEmpleado")?.Value
+                             ?? "0");
 
             var emp = _datosPersonalesLN.ObtenerEmpleadoPorId(idEmpleado);
             if (emp == null) return HttpNotFound();
 
-            var ret = _listarRetencionesLN.Listar(idEmpleado);
-            ViewBag.Seccion = seccion;
-            return View(Tuple.Create(emp, ret));
+            var lista = _listarRetencionesLN.Listar(idEmpleado).ToList();
+            return View(Tuple.Create(emp, lista));
         }
 
-        // GET: Create
-        public ActionResult Create(int idEmpleado)
+        // --- 2) Lista parcial ---
+        public ActionResult Lista(int idEmpleado)
         {
-            var emp = _datosPersonalesLN.ObtenerEmpleadoPorId(idEmpleado);
+            var lista = idEmpleado > 0
+                ? _listarRetencionesLN.Listar(idEmpleado).ToList()
+                : new List<RetencionDto>();
+            return PartialView("_ListaRetenciones", lista);
+        }
+
+        // --- 3) Create GET ---
+        public ActionResult Create(int? idEmpleado)
+        {
+            if (!idEmpleado.HasValue || idEmpleado <= 0)
+                return new HttpStatusCodeResult(400, "Falta idEmpleado");
+
+            var emp = _datosPersonalesLN.ObtenerEmpleadoPorId(idEmpleado.Value);
             if (emp == null) return HttpNotFound();
 
             var tipos = _listarTipoRetencionLN.Listar();
             var vm = new RetencionViewModel
             {
                 IdRetencion = 0,
-                IdEmpleado = idEmpleado,
+                IdEmpleado = idEmpleado.Value,
                 NombreEmpleado = $"{emp.nombre} {emp.primerApellido}",
                 SalarioBase = emp.salarioAprobado,
                 FechaRetencion = DateTime.Today,
@@ -74,30 +85,28 @@ namespace Emplaniapp.UI.Controllers
                     Text = $"{t.nombreTipoRetencion} ({t.porcentajeRetencion}%)"
                 })
             };
-            return View(vm);
+            return PartialView("_CrearRetencionModal", vm);
         }
 
-        // POST: Create
+        // --- 4) Create POST (AJAX JSON) ---
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Create(RetencionViewModel vm)
         {
             if (!ModelState.IsValid)
             {
-                vm.TiposRetencion = _listarTipoRetencionLN.Listar()
-                    .Select(t => new SelectListItem
-                    {
-                        Value = t.Id.ToString(),
-                        Text = $"{t.nombreTipoRetencion} ({t.porcentajeRetencion}%)"
-                    });
-                return View(vm);
+                var errores = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+                return Json(new { success = false, errors = errores });
             }
 
-            // Recalcular porcentaje y monto
-            var tipoDto = _obtenerIdTipoRetencionLN.Obtener(vm.IdTipoRetencion);
-            vm.Porcentaje = tipoDto != null
-                                ? (decimal)tipoDto.porcentajeRetencion
-                                : 0m;
-            vm.MontoRetencion = vm.SalarioBase * (vm.Porcentaje / 100m);
+            var pct = Convert.ToDecimal(
+                _obtenerIdTipoRetencionLN.Obtener(vm.IdTipoRetencion)
+                    .porcentajeRetencion
+            );
+            vm.Porcentaje = pct;
+            vm.MontoRetencion = vm.SalarioBase * pct / 100m;
 
             var dto = new RetencionCrearDto
             {
@@ -108,18 +117,21 @@ namespace Emplaniapp.UI.Controllers
             };
             _agregarRetencionLN.AgregarRetencion(dto);
 
-            return RedirectToAction("Detalles", new { id = vm.IdEmpleado });
+            return Json(new { success = true });
         }
 
-        // GET: Edit
+        // --- 5) Edit GET ---
         public ActionResult Edit(int id)
         {
             var ent = _obtenerRetencionLN.Obtener(id);
+            if (ent == null) return HttpNotFound();
+
             var emp = _datosPersonalesLN.ObtenerEmpleadoPorId(ent.idEmpleado);
             var tipos = _listarTipoRetencionLN.Listar();
-
-            var pct = (decimal)tipos.First(t => t.Id == ent.idTipoRetencio)
-                                     .porcentajeRetencion;
+            var pct = Convert.ToDecimal(
+                tipos.First(t => t.Id == ent.idTipoRetencio)
+                     .porcentajeRetencion
+            );
 
             var vm = new RetencionViewModel
             {
@@ -137,29 +149,28 @@ namespace Emplaniapp.UI.Controllers
                     Text = $"{t.nombreTipoRetencion} ({t.porcentajeRetencion}%)"
                 })
             };
-            return View(vm);
+            return PartialView("_EditarRetencionModal", vm);
         }
 
-        // POST: Edit
+        // --- 6) Edit POST (AJAX JSON) ---
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Edit(RetencionViewModel vm)
         {
             if (!ModelState.IsValid)
             {
-                vm.TiposRetencion = _listarTipoRetencionLN.Listar()
-                    .Select(t => new SelectListItem
-                    {
-                        Value = t.Id.ToString(),
-                        Text = $"{t.nombreTipoRetencion} ({t.porcentajeRetencion}%)"
-                    });
-                return View(vm);
+                var errores = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+                return Json(new { success = false, errors = errores });
             }
 
-            var tipoDto = _obtenerIdTipoRetencionLN.Obtener(vm.IdTipoRetencion);
-            vm.Porcentaje = tipoDto != null
-                                ? (decimal)tipoDto.porcentajeRetencion
-                                : 0m;
-            vm.MontoRetencion = vm.SalarioBase * (vm.Porcentaje / 100m);
+            var pct = Convert.ToDecimal(
+                _obtenerIdTipoRetencionLN.Obtener(vm.IdTipoRetencion)
+                    .porcentajeRetencion
+            );
+            vm.Porcentaje = pct;
+            vm.MontoRetencion = vm.SalarioBase * pct / 100m;
 
             var dto = new RetencionEditarDto
             {
@@ -170,24 +181,32 @@ namespace Emplaniapp.UI.Controllers
             };
             _editarRetencionLN.EditarRetencion(dto);
 
-            return RedirectToAction("Detalles", new { id = vm.IdEmpleado });
+            return Json(new { success = true });
         }
 
-        // GET: Delete
+        // --- 7) Delete GET ---
         public ActionResult Delete(int id)
         {
             var ent = _obtenerRetencionLN.Obtener(id);
             if (ent == null) return HttpNotFound();
-            return View(ent);
+
+            var emp = _datosPersonalesLN.ObtenerEmpleadoPorId(ent.idEmpleado);
+            var vm = new RetencionViewModel
+            {
+                IdRetencion = ent.idRetencion,
+                IdEmpleado = ent.idEmpleado,
+                NombreEmpleado = $"{emp.nombre} {emp.primerApellido}",
+                FechaRetencion = ent.fechaRetencio
+            };
+            return PartialView("_EliminarRetencionModal", vm);
         }
 
-        // POST: Delete
-        [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        // --- 8) Delete POST (AJAX JSON) ---
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult Delete(RetencionViewModel vm)
         {
-            var ent = _obtenerRetencionLN.Obtener(id);
-            _eliminarRetencionLN.EliminarRetencion(ent.idRetencion);
-            return RedirectToAction("Detalles", new { id = ent.idEmpleado });
+            _eliminarRetencionLN.EliminarRetencion(vm.IdRetencion);
+            return Json(new { success = true });
         }
     }
 }
