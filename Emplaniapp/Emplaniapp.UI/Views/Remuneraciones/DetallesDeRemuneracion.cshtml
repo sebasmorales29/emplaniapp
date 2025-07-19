@@ -54,25 +54,16 @@
                 }
 
                 <!-- Horas -->
-                @if (Model.horasTrabajadas > 0 || Model.horasExtras > 0 || Model.horasFeriados > 0 || Model.horasVacaciones > 0 || Model.horasLicencias > 0)
+                @if (Model.diasTrabajados > 0 || Model.horas > 0)
                 {
                     <div class="col-md-6">
                         <h6>Detalle de Horas</h6>
                         <ul class="list-group">
                             @if (Model.horasTrabajadas > 0) {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Horas Trabajadas<span class="badge badge-secondary badge-pill">@Model.horasTrabajadas</span></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Dias Trabajados<span class="badge badge-secondary badge-pill">@Model.diasTrabajados</span></li>
                             }
-                            @if (Model.horasExtras > 0) {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Horas Extras<span class="badge badge-secondary badge-pill">@Model.horasExtras</span></li>
-                            }
-                            @if (Model.horasFeriados > 0) {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Horas Feriados<span class="badge badge-secondary badge-pill">@Model.horasFeriados</span></li>
-                            }
-                            @if (Model.horasVacaciones > 0) {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Horas Vacaciones<span class="badge badge-secondary badge-pill">@Model.horasVacaciones</span></li>
-                            }
-                            @if (Model.horasLicencias > 0) {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Horas Licencia<span class="badge badge-secondary badge-pill">@Model.horasLicencias</span></li>
+                            @if (Model.horas > 0) {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Horas<span class="badge badge-secondary badge-pill">@Model.horas</span></li>
                             }
                         </ul>
                     </div>

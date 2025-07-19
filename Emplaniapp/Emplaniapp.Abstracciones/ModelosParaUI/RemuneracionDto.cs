@@ -20,5 +20,7 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public int idEstado { get; set; }
         public string nombreEstado { get; set; }
         public double? porcentajeRemuneracion { get; set; }
+
+        public bool TrabajoEnDia { get; set; }
     }
 }

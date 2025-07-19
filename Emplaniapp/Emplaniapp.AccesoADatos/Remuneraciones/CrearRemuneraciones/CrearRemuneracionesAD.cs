@@ -40,26 +40,67 @@ namespace Emplaniapp.AccesoADatos.Remuneraciones
 
         public async Task<int> AgregarRemuneracionManual(RemuneracionDto remuneracionDto)
         {
-            if (remuneracionDto.idTipoRemuneracion == 1)
+            try
             {
                 var empleado = await _contexto.Empleados
                     .Where(e => e.idEmpleado == remuneracionDto.idEmpleado)
-                    .Select(e => new { e.salarioPorHoraExtra })
+                    .Select(e => new { e.salarioPorHoraExtra, e.salarioDiario })
                     .FirstOrDefaultAsync();
 
-                if (empleado != null)
+                if (empleado == null)
+                    throw new Exception("Empleado no encontrado.");
+
+                decimal salarioDiario = empleado.salarioDiario;
+
+                switch (remuneracionDto.idTipoRemuneracion)
                 {
-                    remuneracionDto.pagoQuincenal = remuneracionDto.horas * empleado.salarioPorHoraExtra;
+                    case 1: // Horas Extra
+                        remuneracionDto.pagoQuincenal = remuneracionDto.horas.HasValue
+                            ? remuneracionDto.horas.Value * empleado.salarioPorHoraExtra
+                            : 0;
+                        break;
+
+                    case 2: // Día Feriado
+                        remuneracionDto.pagoQuincenal = remuneracionDto.TrabajoEnDia
+                            ? salarioDiario * 2
+                            : salarioDiario;
+                        break;
+
+                    case 3: // Incapacidad (primeros 3 días solamente, mitad de salario)
+                        remuneracionDto.pagoQuincenal = (salarioDiario / 2) * 3;
+                        break;
+
+                    case 4: // Maternidad (mitad de salario por quincena)
+                        remuneracionDto.pagoQuincenal = salarioDiario * 15 / 2;
+                        break;
+
+                    case 5: // Vacaciones
+                        remuneracionDto.pagoQuincenal = remuneracionDto.TrabajoEnDia
+                            ? salarioDiario
+                            : 0;
+                        break;
+
+                    case 6: // Pago Quincenal
+                        remuneracionDto.pagoQuincenal = remuneracionDto.diasTrabajados.HasValue
+                            ? remuneracionDto.diasTrabajados.Value * salarioDiario
+                            : 0;
+                        break;
+
+                    default:
+                        remuneracionDto.pagoQuincenal = 0;
+                        break;
                 }
-                else
-                {
-                    throw new Exception("No se encontró el empleado para calcular el pago por horas extra.");
-                }
+
+
+                Remuneracion laRemuneracionAGuardar = ConvertirDtoAEntidad(remuneracionDto);
+                _contexto.Remuneracion.Add(laRemuneracionAGuardar);
+                int cantidadDatosAgregados = await _contexto.SaveChangesAsync();
+                return cantidadDatosAgregados;
             }
-            Remuneracion laRemuneracionAGuardar = ConvertirDtoAEntidad(remuneracionDto);
-            _contexto.Remuneracion.Add(laRemuneracionAGuardar);
-            int cantidadDatosAgregados = await _contexto.SaveChangesAsync();
-            return cantidadDatosAgregados;
+            catch (Exception ex)
+            {
+                throw new Exception("Error al guardar la remuneración manual: " + ex.Message);
+            }
         }
 
         private Remuneracion ConvertirDtoAEntidad(RemuneracionDto dto)

@@ -166,7 +166,7 @@ namespace Emplaniapp.UI.Controllers
             }
 
             ViewBag.TiposRemuneracion = ObtenerTipoRemuneracionSelectList(remuneracionDto.idTipoRemuneracion);
-            return RedirectToAction("DetallesRemu", new { id = idEmpleado });
+            return View("CrearRemuneracionManual", remuneracionDto);
         }
 
 

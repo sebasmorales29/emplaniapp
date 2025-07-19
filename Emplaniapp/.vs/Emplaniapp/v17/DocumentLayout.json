@@ -1,7 +1,24 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.ui\\views\\remuneraciones\\crearremuneracionmanual.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\views\\remuneraciones\\crearremuneracionmanual.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.abstracciones\\modelosparaui\\remuneraciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678406EA-2967-405B-A033-164C72140787}|Emplaniapp.Abstracciones\\Emplaniapp.Abstracciones.csproj|solutionrelative:emplaniapp.abstracciones\\modelosparaui\\remuneraciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.ui\\controllers\\remuneracionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\controllers\\remuneracionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|c:\\users\\yazmin\\source\\repos\\emplaniapp\\emplaniapp\\emplaniapp.accesoadatos\\remuneraciones\\crearremuneraciones\\crearremuneracionesad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D7D935E-57B1-468A-938D-9F359CD6BA87}|Emplaniapp.AccesoADatos\\Emplaniapp.AccesoADatos.csproj|solutionrelative:emplaniapp.accesoadatos\\remuneraciones\\crearremuneraciones\\crearremuneracionesad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 225,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,6 +59,58 @@
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CrearRemuneracionManual.cshtml",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Remuneraciones\\CrearRemuneracionManual.cshtml",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Remuneraciones\\CrearRemuneracionManual.cshtml",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Remuneraciones\\CrearRemuneracionManual.cshtml",
+              "RelativeToolTip": "Emplaniapp.UI\\Views\\Remuneraciones\\CrearRemuneracionManual.cshtml",
+              "ViewState": "AgIAADkAAAAAAAAAAAAwwEQAAABRAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-19T07:06:35.054Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CrearRemuneracionesAD.cs",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Remuneraciones\\CrearRemuneraciones\\CrearRemuneracionesAD.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.AccesoADatos\\Remuneraciones\\CrearRemuneraciones\\CrearRemuneracionesAD.cs",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Remuneraciones\\CrearRemuneraciones\\CrearRemuneracionesAD.cs",
+              "RelativeToolTip": "Emplaniapp.AccesoADatos\\Remuneraciones\\CrearRemuneraciones\\CrearRemuneracionesAD.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAQwEgAAABJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-19T07:01:48.633Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RemuneracionesController.cs",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
+              "RelativeToolTip": "Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
+              "ViewState": "AgIAAJIAAAAAAAAAAAAAwKkAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-19T07:32:41.45Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RemuneracionDto.cs",
+              "DocumentMoniker": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\RemuneracionDto.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.Abstracciones\\ModelosParaUI\\RemuneracionDto.cs",
+              "ToolTip": "C:\\Users\\Yazmin\\source\\repos\\emplaniapp\\Emplaniapp\\Emplaniapp.Abstracciones\\ModelosParaUI\\RemuneracionDto.cs",
+              "RelativeToolTip": "Emplaniapp.Abstracciones\\ModelosParaUI\\RemuneracionDto.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAowBgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-19T07:43:52.812Z",
+              "EditorCaption": ""
             }
           ]
         },

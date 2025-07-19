@@ -45,23 +45,28 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row mb-3">
-                            <label class="col-md-4 col-form-label">Horas Trabajadas</label>
+                            <label class="col-md-4 col-form-label">Días Trabajados</label>
                             <div class="col-md-8">
-                                @Html.TextBoxFor(m => m.diasTrabajados, new { @class = "form-control", type = "number", min = "0", placeholder = "Ingrese horas" })
+                                @Html.TextBoxFor(m => m.diasTrabajados, new { @class = "form-control", type = "number", min = "0", placeholder = "Ingrese los dias trabajados" })
                                 @Html.ValidationMessageFor(m => m.diasTrabajados, "", new { @class = "text-danger" })
                             </div>
                         </div>
 
                         <div class="form-group row mb-3">
-                            <label class="col-md-4 col-form-label">Horas Extras</label>
+                            <label class="col-md-4 col-form-label">Horas Trabajadas</label>
                             <div class="col-md-8">
-                                @Html.TextBoxFor(m => m.horas, new { @class = "form-control", type = "number", min = "0", placeholder = "Ingrese horas extras" })
+                                @Html.TextBoxFor(m => m.horas, new { @class = "form-control", type = "number", min = "0", placeholder = "Ingrese horas trabajadas" })
                                 @Html.ValidationMessageFor(m => m.horas, "", new { @class = "text-danger" })
                             </div>
                         </div>
 
+                        <div class="form-check" id="trabajoEnDiaGroup">
+                            @Html.CheckBoxFor(m => m.TrabajoEnDia, new { @class = "form-check-input" })
+                            @Html.LabelFor(m => m.TrabajoEnDia, "¿Trabajó ese día? (Feriado/Vacaciones)")
+                        </div>
+
                         <div class="form-group row mb-3">
-                            <label class="col-md-4 col-form-label">Pago Quincenal ($)</label>
+                            <label class="col-md-4 col-form-label">Pago Quincenal</label>
                             <div class="col-md-8">
                                 @Html.TextBoxFor(m => m.pagoQuincenal, new { @class = "form-control", type = "number", step = "0.01", min = "0", placeholder = "0.00" })
                                 @Html.ValidationMessageFor(m => m.pagoQuincenal, "", new { @class = "text-danger" })
@@ -91,3 +96,5 @@
         </div>
     </div>
 }
+
+
