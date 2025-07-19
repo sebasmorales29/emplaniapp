@@ -55,9 +55,10 @@
             {
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2>Remuneraciones</h2>
-                    <button type="button" class="btn btn-primary" onclick="cargarModalRemuneracion(@Model.Item1.idEmpleado)">
+                    <a href="@Url.Action("CrearRemuneracionManual", "Remuneraciones", new { idEmpleado = Model.Item1.idEmpleado })"
+                       class="btn btn-primary">
                         <i class="fa fa-plus"></i> Agregar Remuneración
-                    </button>
+                    </a>
                 </div>
 
                 <!-- Modal para crear remuneración -->
@@ -72,7 +73,6 @@
                                 </button>
                             </div>
                             <div class="modal-body" id="modal-body-remuneracion">
-                                <!-- El contenido se cargará dinámicamente -->
                             </div>
                         </div>
                     </div>
@@ -97,16 +97,19 @@
                                         {
                                             <p class="card-text"><strong>Comisión:</strong> @String.Format("{0:C}", item.comision)</p>
                                         }
-                                        @if (item.horasTrabajadas > 0 || item.horasExtras > 0 || item.horasFeriados > 0 || item.horasVacaciones > 0 || item.horasLicencias > 0)
+                                        @if (item.diasTrabajados > 0 || item.horas > 0 )
                                         {
                                             <p>
                                                 <strong>Horas:</strong>
                                                 <ul class="list-unstyled ml-3">
-                                                    @if (item.horasTrabajadas > 0) { <li>Trabajadas: @item.horasTrabajadas</li> }
-                                                    @if (item.horasExtras > 0) { <li>Extras: @item.horasExtras</li> }
-                                                    @if (item.horasFeriados > 0) { <li>Feriados: @item.horasFeriados</li> }
-                                                    @if (item.horasVacaciones > 0) { <li>Vacaciones: @item.horasVacaciones</li> }
-                                                    @if (item.horasLicencias > 0) { <li>Licencia: @item.horasLicencias</li> }
+                                                    @if (item.diasTrabajados > 0)
+                                                    {
+                                                        <li>Trabajadas: @item.diasTrabajados</li>
+                                                    }
+                                                    @if (item.horas > 0)
+                                                    {
+                                                        <li>Extras: @item.horas</li>
+                                                    }
                                                 </ul>
                                             </p>
                                         }
@@ -116,6 +119,11 @@
                                         <a href="@Url.Action("DetallesDeRemuneracion", "Remuneraciones", new { id = item.idRemuneracion })" class="btn btn-info btn-sm" style="margin-right: 10px;">
                                             <i class="fa fa-eye"></i> Detalles
                                         </a>
+
+                                        <a href="@Url.Action("EditarRemuneracion", "Remuneraciones", new { id = item.idRemuneracion, idEmpleado = item.idEmpleado })" class="btn btn-warning btn-sm" style="margin-right: 10px;">
+                                            <i class="fa fa-edit"></i> Editar
+                                        </a>
+
                                         @using (Html.BeginForm("EliminarRemuneracion", "Remuneraciones", FormMethod.Post, new { @class = "d-inline" }))
                                         {
                                             @Html.AntiForgeryToken()

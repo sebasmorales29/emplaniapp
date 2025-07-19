@@ -163,7 +163,11 @@ namespace Emplaniapp.UI.Controllers
             {
                 fechaNacimiento = DateTime.Now.AddYears(-25), // Valor por defecto
                 fechaContratacion = DateTime.Now,
-                idDireccion = 1, // Dirección por defecto
+                idProvincia = 1, 
+                idDistrito = 1, // Valores por defecto
+                idCanton = 1, // Valores por defecto
+                idCalle = 1, // Valores por defecto
+                direccionDetallada = "Dirección por defecto", // Valor por defecto
                 idEstado = 1     // Estado Activo por defecto
             };
 
@@ -216,7 +220,11 @@ namespace Emplaniapp.UI.Controllers
                             cedula = model.cedula,
                             numeroTelefonico = model.numeroTelefonico,
                             correoInstitucional = model.correoInstitucional,
-                            idDireccion = 1,
+                            idProvincia = 1,
+                            idCanton = 1, // Valores por defecto
+                            idDistrito = 1, // Valores por defecto
+                            idCalle = 1, // Valores por defecto
+                            direccionDetallada = "por defecto",
                             idCargo = model.idCargo,
                             fechaContratacion = model.fechaContratacion,
                             periocidadPago = model.periocidadPago,

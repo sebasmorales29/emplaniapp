@@ -52,7 +52,21 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public string nombreCompleto { get; set; }
 
         // Dirección
-        public int? idDireccion { get; set; }
+        public int? idProvincia { get; set; }
+        [DisplayName("Provincia")]
+        public string nombreProvincia { get; set; }
+        public int? idCanton { get; set; }
+        [DisplayName("Cantón")]
+        public string nombreCanton { get; set; }
+        public int? idDistrito { get; set; }
+        [DisplayName("Distrito")]
+        public string nombreDistrito { get; set; }
+        public int? idCalle { get; set; }
+        [DisplayName("Calle")]
+        public string nombreCalle { get; set; }
+        [DisplayName("Dirección Detallada")]
+        //[Required(ErrorMessage = "La dirección detallada del empleado es obligatorio.")]
+        public string direccionDetallada { get; set; }
 
         [DisplayName("Dirección")]
         public string direccionCompleta { get; set; }
