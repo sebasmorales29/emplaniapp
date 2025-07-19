@@ -22,5 +22,7 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public double? porcentajeRemuneracion { get; set; }
 
         public bool TrabajoEnDia { get; set; }
+        public decimal SalarioPorHoraExtra { get; set; }
+        public decimal SalarioDiario { get; set; }
     }
 }

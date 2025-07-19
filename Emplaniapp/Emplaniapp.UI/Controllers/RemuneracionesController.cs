@@ -194,30 +194,17 @@ namespace Emplaniapp.UI.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                            {
-                                return View("EditarRemuneracion", remuneracion);
-                            }
+             int resultado = _editarRemuneracionLN.Actualizar(remuneracion);
+            if (resultado > 0)
+            {
+                TempData["mensaje"] = "Remuneración actualizada correctamente.";
+            }
+            else
+            {
+                TempData["mensaje"] = "No se pudo actualizar la remuneración.";
+            }
 
-                            // Cálculo automático si es Horas Extras
-                            if (remuneracion.nombreTipoRemuneracion != null &&
-                                remuneracion.nombreTipoRemuneracion.Equals("Horas Extra", System.StringComparison.OrdinalIgnoreCase))
-                            {
-                                remuneracion.pagoQuincenal = remuneracion.horas * 1.5m; // Ajusta el multiplicador si es necesario
-                            }
-
-                            int resultado = _editarRemuneracionLN.Actualizar(remuneracion);
-
-                            if (resultado > 0)
-                            {
-                                TempData["mensaje"] = "Remuneración actualizada correctamente.";
-                            }
-                            else
-                            {
-                                TempData["mensaje"] = "No se pudo actualizar la remuneración.";
-                            }
-
-                            return RedirectToAction("DetallesRemu", new { id = idEmpleado });
+                return RedirectToAction("DetallesRemu", new { id = idEmpleado });
             }
             
              catch (Exception ex)
