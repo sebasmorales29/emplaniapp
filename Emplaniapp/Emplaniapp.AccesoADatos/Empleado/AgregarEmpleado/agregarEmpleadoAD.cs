@@ -55,7 +55,11 @@ namespace Emplaniapp.AccesoADatos.Empleado.agregarEmpleado
                         cedula = empleadoDto.cedula,
                         numeroTelefonico = empleadoDto.numeroTelefonico,
                         correoInstitucional = empleadoDto.correoInstitucional,
-                        idDireccion = empleadoDto.idDireccion,
+                        idProvincia = empleadoDto.idProvincia,
+                        idDistrito = empleadoDto.idDistrito,
+                        idCanton = empleadoDto.idCanton,
+                        idCalle = empleadoDto.idCalle,
+                        direccionDetallada = empleadoDto.direccionDetallada,
                         idCargo = empleadoDto.idCargo,
                         fechaContratacion = empleadoDto.fechaContratacion,
                         fechaSalida = empleadoDto.fechaSalida,
@@ -73,7 +77,6 @@ namespace Emplaniapp.AccesoADatos.Empleado.agregarEmpleado
 
                     System.Diagnostics.Debug.WriteLine("=== VALORES DEL NUEVO EMPLEADO ===");
                     System.Diagnostics.Debug.WriteLine("nombre: " + nuevoEmpleado.nombre);
-                    System.Diagnostics.Debug.WriteLine("idDireccion: " + nuevoEmpleado.idDireccion);
                     System.Diagnostics.Debug.WriteLine("idCargo: " + nuevoEmpleado.idCargo);
                     System.Diagnostics.Debug.WriteLine("idTipoMoneda: " + nuevoEmpleado.idTipoMoneda);
                     System.Diagnostics.Debug.WriteLine("idBanco: " + nuevoEmpleado.idBanco);

@@ -104,11 +104,10 @@ namespace Emplaniapp.AccesoADatos.General.Filtrar
                                           join cargo in _contexto.Cargos on emp.idCargo equals cargo.idCargo
                                           join banco in _contexto.Bancos on emp.idBanco equals banco.idBanco
                                           join moneda in _contexto.TipoMoneda on emp.idTipoMoneda equals moneda.idTipoMoneda
-                                          join dir in _contexto.Direccion on emp.idDireccion equals dir.idDireccion
-                                          join prov in _contexto.Provincia on dir.idProvincia equals prov.idProvincia
-                                          join cant in _contexto.Canton on dir.idCanton equals cant.idCanton
-                                          join dist in _contexto.Distrito on dir.idDistrito equals dist.idDistrito
-                                          join ca in _contexto.Calle on dir.idCalle equals ca.idCalle
+                                          join prov in _contexto.Provincia on emp.idProvincia equals prov.idProvincia
+                                          join cant in _contexto.Canton on emp.idCanton equals cant.idCanton
+                                          join dist in _contexto.Distrito on emp.idDistrito equals dist.idDistrito
+                                          join ca in _contexto.Calle on emp.idCalle equals ca.idCalle
                                           where idsFiltrados.Contains(emp.idEmpleado)
                                           orderby emp.primerApellido, emp.segundoApellido, emp.nombre
                                           select new
@@ -145,7 +144,7 @@ namespace Emplaniapp.AccesoADatos.General.Filtrar
                     cuentaIBAN = emp.emp.cuentaIBAN,
                     idBanco = emp.emp.idBanco,
                     nombreBanco = emp.banco.nombreBanco,
-                    direccionCompleta = $"{emp.prov.nombreProvincia}, {emp.cant.nombreCanton}, {emp.dist.nombreDistrito}, {emp.ca.nombreCalle}",
+                    direccionCompleta = $"{emp.prov.nombreProvincia}, {emp.cant.nombreCanton}, {emp.dist.nombreDistrito}, {emp.ca.nombreCalle},{emp.emp.direccionDetallada} ",
                     fechaContratacion = emp.emp.fechaContratacion,
                     fechaSalida = emp.emp.fechaSalida
                 } as T).ToList();

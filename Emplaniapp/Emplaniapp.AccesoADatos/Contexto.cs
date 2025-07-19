@@ -43,7 +43,6 @@ namespace Emplaniapp.AccesoADatos
             modelBuilder.Entity<Canton>().ToTable("Canton");
             modelBuilder.Entity<Distrito>().ToTable("Distrito");
             modelBuilder.Entity<Calle>().ToTable("Calle");
-            modelBuilder.Entity<Direccion>().ToTable("Direccion");
             modelBuilder.Entity<NumeroOcupacion>().ToTable("NumeroOcupacion");
             modelBuilder.Entity<TipoMoneda>().ToTable("TipoMoneda");
             modelBuilder.Entity<Banco>().ToTable("Bancos");
@@ -67,7 +66,6 @@ namespace Emplaniapp.AccesoADatos
         public DbSet<Canton> Canton { get; set; }
         public DbSet<Distrito> Distrito { get; set; }
         public DbSet<Calle> Calle { get; set; }
-        public DbSet<Direccion> Direccion { get; set; }
         public DbSet<NumeroOcupacion> NumeroOcupacion { get; set; }
         public DbSet<TipoMoneda> TipoMoneda { get; set; }
         public DbSet<Banco> Bancos { get; set; }
