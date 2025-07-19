@@ -73,18 +73,6 @@ BEGIN
     PRINT 'Tabla Calle creada';
 END
 
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Direccion]') AND type in (N'U'))
-BEGIN
-    CREATE TABLE Direccion (
-        idDireccion INT PRIMARY KEY NOT NULL,
-        idProvincia INT NOT NULL FOREIGN KEY REFERENCES Provincia(idProvincia),
-        idCanton INT NOT NULL FOREIGN KEY REFERENCES Canton(idCanton),
-        idDistrito INT NOT NULL FOREIGN KEY REFERENCES Distrito(idDistrito),
-        idCalle INT NOT NULL FOREIGN KEY REFERENCES Calle(idCalle)
-    );
-    PRINT 'Tabla Direccion creada';
-END
-
 -- =====================================================================================
 -- TABLAS DE EMPLEADOS Y CARGOS
 -- =====================================================================================
@@ -173,7 +161,11 @@ BEGIN
         cedula INT NOT NULL UNIQUE CHECK (cedula BETWEEN 100000000 AND 999999999),
         numeroTelefonico VARCHAR(50) NOT NULL,
         correoInstitucional VARCHAR(100) NOT NULL,
-        idDireccion INT NOT NULL FOREIGN KEY REFERENCES Direccion(idDireccion),
+        idProvincia INT NOT NULL FOREIGN KEY REFERENCES Provincia(idProvincia),
+		idCanton INT NOT NULL FOREIGN KEY REFERENCES Canton(idCanton),
+		idDistrito INT NOT NULL FOREIGN KEY REFERENCES Distrito (idDistrito),
+		idCalle INT NOT NULL FOREIGN KEY REFERENCES Calle(idCalle),
+		direccionDetallada VARCHAR(500) NOT NULL,
         idCargo INT NOT NULL FOREIGN KEY REFERENCES Cargos(idCargo),
         fechaContratacion DATE NOT NULL,
         fechaSalida DATE NULL,
@@ -241,13 +233,10 @@ BEGIN
         idEmpleado INT NOT NULL FOREIGN KEY REFERENCES Empleado(idEmpleado),
         idTipoRemuneracion INT NOT NULL FOREIGN KEY REFERENCES TipoRemuneracion(idTipoRemuneracion),
         fechaRemuneracion DATE NOT NULL,
-        horasTrabajadas INT NULL,
-        horasExtras INT NULL,
+        diasTrabajados INT NULL,
+        horas INT NULL,
         comision DECIMAL(12,2) NULL,
         pagoQuincenal DECIMAL(12,2) NULL,
-        horasFeriados DECIMAL(12,2) NULL,
-        horasVacaciones DECIMAL(12,2) NULL,
-        horasLicencias DECIMAL(12,2) NULL,
         idEstado INT NOT NULL FOREIGN KEY REFERENCES Estado(idEstado)
     );
     PRINT 'Tabla Remuneracion creada';
@@ -397,7 +386,6 @@ IF NOT EXISTS (SELECT 1 FROM Provincia WHERE idProvincia = 1) INSERT INTO Provin
 IF NOT EXISTS (SELECT 1 FROM Canton WHERE idCanton = 1) INSERT INTO Canton VALUES (1, 'San José', 1);
 IF NOT EXISTS (SELECT 1 FROM Distrito WHERE idDistrito = 1) INSERT INTO Distrito VALUES (1, 'Carmen', 1);
 IF NOT EXISTS (SELECT 1 FROM Calle WHERE idCalle = 1) INSERT INTO Calle VALUES (1, 'Avenida Central', 1);
-IF NOT EXISTS (SELECT 1 FROM Direccion WHERE idDireccion = 1) INSERT INTO Direccion VALUES (1, 1, 1, 1, 1);
 PRINT 'Datos geográficos básicos insertados';
 
 -- Insertar tipos de moneda
@@ -470,7 +458,7 @@ BEGIN
     PRINT 'Usuario "admin" ya existe.';
 END
 
--- 3. Vincular usuario 'admin' con rol 'Administrador'
+-- 3. Vincular usuario 'admin' con rol 'Administradoraaaaaaaaaaaaaaaaaaaaaaaaaa'
 IF NOT EXISTS (SELECT 1 FROM [dbo].[AspNetUserRoles] WHERE [UserId] = @AdminUserId AND [RoleId] = @AdminRoleId)
 BEGIN
     INSERT INTO [dbo].[AspNetUserRoles] ([UserId], [RoleId])
@@ -489,13 +477,15 @@ BEGIN
     -- Se usan valores por defecto para rellenar los campos obligatorios.
     INSERT INTO [dbo].[Empleado] (
         [nombre], [primerApellido], [segundoApellido], [fechaNacimiento], [cedula], 
-        [numeroTelefonico], [correoInstitucional], [idDireccion], [idCargo], [fechaContratacion], 
+        [numeroTelefonico], [correoInstitucional], [idProvincia], [idCanton], [idDistrito],
+		[idCalle],[direccionDetallada], [idCargo], [fechaContratacion], 
         [fechaSalida], [periocidadPago], [salarioDiario], [salarioAprobado], [salarioPorMinuto], 
         [salarioPoHora], [salarioPorHoraExtra], [idTipoMoneda], [cuentaIBAN], [idBanco], 
         [idEstado], [IdNetUser])
     VALUES (
         'Admin', 'User', '', '1990-01-01', 999999999,
-        '00000000', 'admin@emplaniapp.com', 1, 1, GETDATE(),
+        '00000000', 'admin@emplaniapp.com', 1,1,1,1, 'Direccion del admin',
+		1, GETDATE(),
         NULL, 'Quincenal', 0, 0, 0,
         0, 0, 1, 'CR00000000000000000000', 1,
         1, @AdminUserId
@@ -624,39 +614,40 @@ CREATE OR ALTER PROCEDURE sp_GenerarRemuneracionesQuincenales
 AS
 BEGIN
     SET NOCOUNT ON;
-    
+
     -- Si no se proporciona fecha, usar la actual
     IF @FechaProceso IS NULL
         SET @FechaProceso = GETDATE();
-    
+
     DECLARE @DiaDelMes INT = DAY(@FechaProceso);
     DECLARE @EsPrimeraQuincena BIT;
     DECLARE @Mes INT = MONTH(@FechaProceso);
     DECLARE @Anio INT = YEAR(@FechaProceso);
     DECLARE @idTipoRemuneracionQuincenal INT;
-    
+
     -- Determinar si es primera o segunda quincena
     IF @DiaDelMes BETWEEN 1 AND 15
         SET @EsPrimeraQuincena = 1;
     ELSE
         SET @EsPrimeraQuincena = 0;
-    
+
     -- Obtener el ID del tipo de remuneración quincenal
     SELECT @idTipoRemuneracionQuincenal = idTipoRemuneracion 
     FROM TipoRemuneracion 
     WHERE nombreTipoRemuneracion = 'Pago Quincenal' AND idEstado = 1;
-    
+
     IF @idTipoRemuneracionQuincenal IS NULL
     BEGIN
         RAISERROR('No se encontró el tipo de remuneración "Pago Quincenal" activo', 16, 1);
         RETURN;
     END
-    
+
     -- Insertar remuneraciones para empleados activos con periodicidad quincenal
     INSERT INTO Remuneracion (
         idEmpleado,
         idTipoRemuneracion,
         fechaRemuneracion,
+        diasTrabajados,
         pagoQuincenal,
         idEstado
     )
@@ -664,30 +655,30 @@ BEGIN
         e.idEmpleado,
         @idTipoRemuneracionQuincenal,
         @FechaProceso,
+        15, -- Días trabajados fijos
         CASE 
-            -- Si es vendedor (verifica si el cargo contiene "vendedor")
-            WHEN EXISTS (SELECT 1 FROM Cargos c WHERE c.idCargo = e.idCargo 
-                         AND (c.nombreCargo LIKE '%vendedor%' OR c.nombreCargo LIKE '%Vendedor%')) THEN 
+            WHEN EXISTS (
+                SELECT 1 
+                FROM Cargos c 
+                WHERE c.idCargo = e.idCargo 
+                  AND (c.nombreCargo LIKE '%vendedor%' OR c.nombreCargo LIKE '%Vendedor%')
+            ) THEN 
                 CASE 
-                    WHEN @EsPrimeraQuincena = 1 THEN 350000 -- Primera quincena fija para vendedores
+                    WHEN @EsPrimeraQuincena = 1 THEN 350000
                     ELSE 
-                        -- Segunda quincena para vendedores: salario aprobado - 350000
                         CASE 
                             WHEN e.salarioAprobado > 350000 THEN e.salarioAprobado - 350000
-                            ELSE 0 -- En caso de que el salario sea menor
+                            ELSE 0
                         END
                 END
-            -- Para no vendedores: 15 días * salario diario
             ELSE 15 * e.salarioDiario
         END,
         1 -- Estado activo
-    FROM 
-        Empleado e
+    FROM Empleado e
     WHERE 
-        e.idEstado = 1 -- Empleados activos
+        e.idEstado = 1
         AND e.periocidadPago = 'Quincenal'
         AND NOT EXISTS (
-            -- Verificar que no exista ya una remuneración para este empleado en esta quincena
             SELECT 1 FROM Remuneracion r
             WHERE r.idEmpleado = e.idEmpleado
               AND r.idTipoRemuneracion = @idTipoRemuneracionQuincenal
@@ -699,8 +690,8 @@ BEGIN
                   (@EsPrimeraQuincena = 0 AND DAY(r.fechaRemuneracion) BETWEEN 16 AND 31)
               )
         );
-    
-    -- Retornar las remuneraciones generadas con todos los campos necesarios
+
+    -- Retornar las remuneraciones generadas
     SELECT 
         r.idRemuneracion,
         r.idEmpleado,
@@ -708,13 +699,10 @@ BEGIN
         r.idTipoRemuneracion,
         tr.nombreTipoRemuneracion,
         r.fechaRemuneracion,
-        r.horasTrabajadas,
-        r.horasExtras,
+        r.diasTrabajados,
+        r.horas,
         r.comision,
         r.pagoQuincenal,
-        r.horasFeriados,
-        r.horasVacaciones,
-        r.horasLicencias,
         r.idEstado,
         est.nombreEstado,
         CASE WHEN @EsPrimeraQuincena = 1 THEN 'Primera Quincena' ELSE 'Segunda Quincena' END AS quincena
@@ -733,4 +721,3 @@ BEGIN
             (@EsPrimeraQuincena = 0 AND DAY(r.fechaRemuneracion) BETWEEN 16 AND 31)
         );
 END
-
