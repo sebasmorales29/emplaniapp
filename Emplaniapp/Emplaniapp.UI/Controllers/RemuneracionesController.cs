@@ -203,7 +203,7 @@ namespace Emplaniapp.UI.Controllers
                             if (remuneracion.nombreTipoRemuneracion != null &&
                                 remuneracion.nombreTipoRemuneracion.Equals("Horas Extra", System.StringComparison.OrdinalIgnoreCase))
                             {
-                                remuneracion.pagoQuincenal = remuneracion.horasExtras * 1.5m; // Ajusta el multiplicador si es necesario
+                                remuneracion.pagoQuincenal = remuneracion.horas * 1.5m; // Ajusta el multiplicador si es necesario
                             }
 
                             int resultado = _editarRemuneracionLN.Actualizar(remuneracion);

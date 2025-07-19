@@ -20,11 +20,10 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                                 join cargo in _contexto.Cargos on emp.idCargo equals cargo.idCargo
                                 join banco in _contexto.Bancos on emp.idBanco equals banco.idBanco
                                 join moneda in _contexto.TipoMoneda on emp.idTipoMoneda equals moneda.idTipoMoneda
-                                join dir in _contexto.Direccion on emp.idDireccion equals dir.idDireccion
-                                join prov in _contexto.Provincia on dir.idProvincia equals prov.idProvincia
-                                join cant in _contexto.Canton on dir.idCanton equals cant.idCanton
-                                join dist in _contexto.Distrito on dir.idDistrito equals dist.idDistrito
-                                join ca in _contexto.Calle on dir.idCalle equals ca.idCalle
+                                join prov in _contexto.Provincia on emp.idProvincia equals prov.idProvincia
+                                join cant in _contexto.Canton on emp.idCanton equals cant.idCanton
+                                join dist in _contexto.Distrito on emp.idDistrito equals dist.idDistrito
+                                join ca in _contexto.Calle on emp.idCalle equals ca.idCalle
                                 join user in _contexto.Users on emp.IdNetUser equals user.Id into userGroup
                                 from user in userGroup.DefaultIfEmpty() 
                                 join userRole in _contexto.Set<Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole>() on user.Id equals userRole.UserId into userRoleGroup
@@ -56,48 +55,46 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                                     emp.idTipoMoneda,
                                     moneda.nombreMoneda,
                                     emp.cuentaIBAN,
-                                    direccion = new
-                                    {
-                                        prov.nombreProvincia,
-                                        cant.nombreCanton,
-                                        dist.nombreDistrito,
-                                        ca.nombreCalle
-                                    },
+                                    nombreProvincia = prov.nombreProvincia,
+                                    nombreCanton = cant.nombreCanton,
+                                    nombreDistrito = dist.nombreDistrito,
+                                    nombreCalle = ca.nombreCalle,
+
                                     Role = role.Name
-                                }).ToList(); // Aquí termina la ejecución en SQL
+                                }).ToList(); 
 
-            // Ahora sí, puedes usar interpolación
-            var empleados = empleadosRaw.Select(emp => new EmpleadoDto
-            {
-                idEmpleado = emp.idEmpleado,
-                nombre = emp.nombre,
-                segundoNombre = emp.segundoNombre ?? string.Empty,
-                primerApellido = emp.primerApellido,
-                segundoApellido = emp.segundoApellido,
-                cedula = emp.cedula,
-                fechaNacimiento = emp.fechaNacimiento,
-                numeroTelefonico = emp.numeroTelefonico,
-                correoInstitucional = emp.correoInstitucional,
+        // Ahora sí, puedes usar interpolación
+        var empleados = empleadosRaw.Select(emp => new EmpleadoDto
+        {
+            idEmpleado = emp.idEmpleado,
+            nombre = emp.nombre,
+            segundoNombre = emp.segundoNombre ?? string.Empty,
+            primerApellido = emp.primerApellido,
+            segundoApellido = emp.segundoApellido,
+            cedula = emp.cedula,
+            fechaNacimiento = emp.fechaNacimiento,
+            numeroTelefonico = emp.numeroTelefonico,
+            correoInstitucional = emp.correoInstitucional,
 
-                idEstado = emp.idEstado,
-                nombreEstado = emp.nombreEstado,
+            idEstado = emp.idEstado,
+            nombreEstado = emp.nombreEstado,
 
-                idCargo = emp.idCargo,
-                nombreCargo = emp.nombreCargo,
+            idCargo = emp.idCargo,
+            nombreCargo = emp.nombreCargo,
 
-                salarioAprobado = emp.salarioAprobado,
-                periocidadPago = emp.periocidadPago,
-                nombreMoneda = emp.nombreMoneda,
-                cuentaIBAN = emp.cuentaIBAN,
-                idBanco = emp.idBanco,
-                nombreBanco = emp.nombreBanco,
+            salarioAprobado = emp.salarioAprobado,
+            periocidadPago = emp.periocidadPago,
+            nombreMoneda = emp.nombreMoneda,
+            cuentaIBAN = emp.cuentaIBAN,
+            idBanco = emp.idBanco,
+            nombreBanco = emp.nombreBanco,
 
-                direccionCompleta = $"{emp.direccion.nombreProvincia}, {emp.direccion.nombreCanton}, {emp.direccion.nombreDistrito}, {emp.direccion.nombreCalle}",
+            direccionCompleta = $"{emp.nombreProvincia}, {emp.nombreCanton}, {emp.nombreDistrito}, {emp.nombreCalle}",
 
-                fechaContratacion = emp.fechaContratacion,
-                fechaSalida = emp.fechaSalida,
-                Role = emp.Role ?? "Sin rol"
-            }).ToList();
+            fechaContratacion = emp.fechaContratacion,
+            fechaSalida = emp.fechaSalida,
+            Role = emp.Role ?? "Sin rol"
+        }).ToList();
 
             return empleados;
         }

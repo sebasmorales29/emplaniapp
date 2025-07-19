@@ -28,8 +28,7 @@ namespace Emplaniapp.AccesoADatos.Remuneraciones
                     : new System.Data.SqlClient.SqlParameter("@FechaProceso", DBNull.Value);
 
                 var resultado = _contexto.Database.SqlQuery<RemuneracionDto>(
-                    "EXEC sp_GenerarRemuneracionesQuincenales @FechaProceso",
-                    fechaParam).ToList();
+                    "EXEC sp_GenerarRemuneracionesQuincenales @FechaProceso", fechaParam).ToList();
 
                 return resultado;
             }
@@ -41,6 +40,22 @@ namespace Emplaniapp.AccesoADatos.Remuneraciones
 
         public async Task<int> AgregarRemuneracionManual(RemuneracionDto remuneracionDto)
         {
+            if (remuneracionDto.idTipoRemuneracion == 1)
+            {
+                var empleado = await _contexto.Empleados
+                    .Where(e => e.idEmpleado == remuneracionDto.idEmpleado)
+                    .Select(e => new { e.salarioPorHoraExtra })
+                    .FirstOrDefaultAsync();
+
+                if (empleado != null)
+                {
+                    remuneracionDto.pagoQuincenal = remuneracionDto.horas * empleado.salarioPorHoraExtra;
+                }
+                else
+                {
+                    throw new Exception("No se encontró el empleado para calcular el pago por horas extra.");
+                }
+            }
             Remuneracion laRemuneracionAGuardar = ConvertirDtoAEntidad(remuneracionDto);
             _contexto.Remuneracion.Add(laRemuneracionAGuardar);
             int cantidadDatosAgregados = await _contexto.SaveChangesAsync();
@@ -55,12 +70,9 @@ namespace Emplaniapp.AccesoADatos.Remuneraciones
                 idTipoRemuneracion = dto.idTipoRemuneracion,
                 fechaRemuneracion = dto.fechaRemuneracion,
                 pagoQuincenal = dto.pagoQuincenal,
-                horasTrabajadas = dto.horasTrabajadas,
-                horasExtras = dto.horasExtras,
+                diasTrabajados = dto.diasTrabajados,
+                horas = dto.horas,
                 comision = dto.comision,
-                horasFeriados = dto.horasFeriados,
-                horasVacaciones = dto.horasVacaciones,
-                horasLicencias = dto.horasLicencias,
                 idEstado = dto.idEstado
             };
         }

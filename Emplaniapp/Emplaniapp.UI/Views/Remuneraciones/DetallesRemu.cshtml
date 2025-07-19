@@ -97,30 +97,18 @@
                                         {
                                             <p class="card-text"><strong>Comisión:</strong> @String.Format("{0:C}", item.comision)</p>
                                         }
-                                        @if (item.horasTrabajadas > 0 || item.horasExtras > 0 || item.horasFeriados > 0 || item.horasVacaciones > 0 || item.horasLicencias > 0)
+                                        @if (item.diasTrabajados > 0 || item.horas > 0 )
                                         {
                                             <p>
                                                 <strong>Horas:</strong>
                                                 <ul class="list-unstyled ml-3">
-                                                    @if (item.horasTrabajadas > 0)
+                                                    @if (item.diasTrabajados > 0)
                                                     {
-                                                        <li>Trabajadas: @item.horasTrabajadas</li>
+                                                        <li>Trabajadas: @item.diasTrabajados</li>
                                                     }
-                                                    @if (item.horasExtras > 0)
+                                                    @if (item.horas > 0)
                                                     {
-                                                        <li>Extras: @item.horasExtras</li>
-                                                    }
-                                                    @if (item.horasFeriados > 0)
-                                                    {
-                                                        <li>Feriados: @item.horasFeriados</li>
-                                                    }
-                                                    @if (item.horasVacaciones > 0)
-                                                    {
-                                                        <li>Vacaciones: @item.horasVacaciones</li>
-                                                    }
-                                                    @if (item.horasLicencias > 0)
-                                                    {
-                                                        <li>Licencia: @item.horasLicencias</li>
+                                                        <li>Extras: @item.horas</li>
                                                     }
                                                 </ul>
                                             </p>

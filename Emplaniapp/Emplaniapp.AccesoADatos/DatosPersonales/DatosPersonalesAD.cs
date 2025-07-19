@@ -33,7 +33,11 @@ namespace Emplaniapp.AccesoADatos
                     cedula = empleado.cedula,
                     numeroTelefonico = empleado.numeroTelefonico,
                     correoInstitucional = empleado.correoInstitucional,
-                    idDireccion = empleado.idDireccion,
+                    idProvincia = empleado.idProvincia,
+                    idCanton = empleado.idCanton,
+                    idDistrito = empleado.idDistrito,
+                    idCalle = empleado.idCalle,
+                    direccionDetallada = empleado.direccionDetallada,
                     idCargo = empleado.idCargo,
                     nombreCargo = cargo?.nombreCargo ?? "Sin cargo",
                     fechaContratacion = empleado.fechaContratacion,
@@ -99,7 +103,11 @@ namespace Emplaniapp.AccesoADatos
                         cedula = empleadoDto.cedula,
                         numeroTelefonico = empleadoDto.numeroTelefonico,
                         correoInstitucional = empleadoDto.correoInstitucional,
-                        idDireccion = empleadoDto.idDireccion,
+                        idProvincia = empleadoDto.idProvincia,
+                        idCanton = empleadoDto.idCanton,
+                        idDistrito = empleadoDto.idDistrito,
+                        idCalle = empleadoDto.idCalle,
+                        direccionDetallada = empleadoDto.direccionDetallada,
                         idCargo = empleadoDto.idCargo,
                         fechaContratacion = empleadoDto.fechaContratacion,
                         fechaSalida = empleadoDto.fechaSalida,
@@ -117,7 +125,6 @@ namespace Emplaniapp.AccesoADatos
 
                     System.Diagnostics.Debug.WriteLine("=== VALORES DEL NUEVO EMPLEADO ===");
                     System.Diagnostics.Debug.WriteLine("nombre: " + nuevoEmpleado.nombre);
-                    System.Diagnostics.Debug.WriteLine("idDireccion: " + nuevoEmpleado.idDireccion);
                     System.Diagnostics.Debug.WriteLine("idCargo: " + nuevoEmpleado.idCargo);
                     System.Diagnostics.Debug.WriteLine("idTipoMoneda: " + nuevoEmpleado.idTipoMoneda);
                     System.Diagnostics.Debug.WriteLine("idBanco: " + nuevoEmpleado.idBanco);

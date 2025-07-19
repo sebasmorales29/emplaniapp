@@ -23,13 +23,10 @@ namespace Emplaniapp.AccesoADatos.Remuneraciones.ObtenerRemuneracionPorId
                     idTipoRemuneracion = r.idTipoRemuneracion,
                     nombreTipoRemuneracion = r.TipoRemuneracion.nombreTipoRemuneracion,
                     fechaRemuneracion = r.fechaRemuneracion,
-                    horasTrabajadas = r.horasTrabajadas,
-                    horasExtras = r.horasExtras,
+                    diasTrabajados = r.diasTrabajados,
+                    horas = r.horas,
                     comision = r.comision,
                     pagoQuincenal = r.pagoQuincenal,
-                    horasFeriados = r.horasFeriados,
-                    horasVacaciones = r.horasVacaciones,
-                    horasLicencias = r.horasLicencias,
                     nombreEstado = r.Estado.nombreEstado 
                 })
                 .FirstOrDefault();

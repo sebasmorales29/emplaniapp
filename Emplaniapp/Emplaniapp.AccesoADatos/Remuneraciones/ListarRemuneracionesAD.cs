@@ -32,13 +32,10 @@ namespace Emplaniapp.AccesoADatos.Remuneraciones
                     idTipoRemuneracion = remu.idTipoRemuneracion,
                     nombreTipoRemuneracion = t_remu.nombreTipoRemuneracion,
                     fechaRemuneracion = remu.fechaRemuneracion,
-                    horasTrabajadas = remu.horasTrabajadas,
-                    horasExtras = remu.horasExtras,
+                    diasTrabajados = remu.diasTrabajados,
+                    horas = remu.horas,
                     comision = remu.comision,
                     pagoQuincenal = remu.pagoQuincenal,
-                    horasFeriados = remu.horasFeriados,
-                    horasVacaciones = remu.horasVacaciones,
-                    horasLicencias = remu.horasLicencias,
                     idEstado = remu.idEstado,
                     nombreEstado = estado.nombreEstado
                 })
@@ -58,13 +55,9 @@ namespace Emplaniapp.AccesoADatos.Remuneraciones
                                            nombreTipoRemuneracion = r.TipoRemuneracion.nombreTipoRemuneracion,
                                            porcentajeRemuneracion = r.TipoRemuneracion.porcentajeRemuneracion,
                                            fechaRemuneracion = r.fechaRemuneracion,
-                                           horasTrabajadas = r.horasTrabajadas,
-                                           horasExtras = r.horasExtras,
+                                           diasTrabajados = r.diasTrabajados,
+                                           horas = r.horas,
                                            comision = r.comision,
-                                           pagoQuincenal = r.pagoQuincenal,
-                                           horasFeriados = r.horasFeriados,
-                                           horasVacaciones = r.horasVacaciones,
-                                           horasLicencias = r.horasLicencias,
                                            nombreEstado = r.Estado.nombreEstado
                                        }).FirstOrDefault();
             return remuneracion;
