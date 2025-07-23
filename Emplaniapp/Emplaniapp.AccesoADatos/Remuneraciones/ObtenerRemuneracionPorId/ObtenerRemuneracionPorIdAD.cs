@@ -16,6 +16,7 @@ namespace Emplaniapp.AccesoADatos.Remuneraciones.ObtenerRemuneracionPorId
         public RemuneracionDto ObtenerPorId(int idRemuneracion)
         {
             var remuneracion = _contexto.Remuneracion
+
                 .Where(r => r.idRemuneracion == idRemuneracion)
                 .Select(r => new RemuneracionDto
                 {
@@ -27,7 +28,10 @@ namespace Emplaniapp.AccesoADatos.Remuneraciones.ObtenerRemuneracionPorId
                     horas = r.horas,
                     comision = r.comision,
                     pagoQuincenal = r.pagoQuincenal,
-                    nombreEstado = r.Estado.nombreEstado 
+                    nombreEstado = r.Estado.nombreEstado,
+
+                    SalarioDiario = r.Empleado.salarioDiario, 
+                    SalarioPorHoraExtra = r.Empleado.salarioPorHoraExtra
                 })
                 .FirstOrDefault();
 

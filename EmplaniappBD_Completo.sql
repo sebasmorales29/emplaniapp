@@ -609,115 +609,84 @@ GO
 INSERT INTO TipoRemuneracion (nombreTipoRemuneracion, porcentajeRemuneracion, idEstado)
 VALUES ('Pago Quincenal',0, 1);
 GO
-CREATE OR ALTER PROCEDURE sp_GenerarRemuneracionesQuincenales
-    @FechaProceso DATE = NULL
+CREATE PROCEDURE sp_GenerarRemuneracionesQuincenales
+    @fechaProceso DATE = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- Si no se proporciona fecha, usar la actual
-    IF @FechaProceso IS NULL
-        SET @FechaProceso = GETDATE();
+    IF @fechaProceso IS NULL
+        SET @fechaProceso = GETDATE();
 
-    DECLARE @DiaDelMes INT = DAY(@FechaProceso);
-    DECLARE @EsPrimeraQuincena BIT;
-    DECLARE @Mes INT = MONTH(@FechaProceso);
-    DECLARE @Anio INT = YEAR(@FechaProceso);
-    DECLARE @idTipoRemuneracionQuincenal INT;
+    DECLARE @inicioQuincena DATE, @finQuincena DATE, @idTipoRemuneracion INT;
 
-    -- Determinar si es primera o segunda quincena
-    IF @DiaDelMes BETWEEN 1 AND 15
-        SET @EsPrimeraQuincena = 1;
-    ELSE
-        SET @EsPrimeraQuincena = 0;
-
-    -- Obtener el ID del tipo de remuneración quincenal
-    SELECT @idTipoRemuneracionQuincenal = idTipoRemuneracion 
-    FROM TipoRemuneracion 
-    WHERE nombreTipoRemuneracion = 'Pago Quincenal' AND idEstado = 1;
-
-    IF @idTipoRemuneracionQuincenal IS NULL
+    -- Determinar el rango de la quincena
+    IF DAY(@fechaProceso) BETWEEN 1 AND 15
     BEGIN
-        RAISERROR('No se encontró el tipo de remuneración "Pago Quincenal" activo', 16, 1);
-        RETURN;
+        SET @inicioQuincena = DATEFROMPARTS(YEAR(@fechaProceso), MONTH(@fechaProceso), 1);
+        SET @finQuincena = DATEFROMPARTS(YEAR(@fechaProceso), MONTH(@fechaProceso), 15);
+    END
+    ELSE
+    BEGIN
+        SET @inicioQuincena = DATEFROMPARTS(YEAR(@fechaProceso), MONTH(@fechaProceso), 16);
+        SET @finQuincena = EOMONTH(@fechaProceso);
     END
 
-    -- Insertar remuneraciones para empleados activos con periodicidad quincenal
+    -- Obtener el idTipoRemuneracion correspondiente a 'Pago Quincenal'
+    SELECT TOP 1 @idTipoRemuneracion = idTipoRemuneracion
+    FROM TipoRemuneracion
+    WHERE nombreTipoRemuneracion = 'Pago Quincenal';
+
+    -- Insertar Remuneraciones redondeadas
     INSERT INTO Remuneracion (
         idEmpleado,
         idTipoRemuneracion,
         fechaRemuneracion,
         diasTrabajados,
+        horas,
+        comision,
         pagoQuincenal,
         idEstado
     )
     SELECT 
-        e.idEmpleado,
-        @idTipoRemuneracionQuincenal,
-        @FechaProceso,
-        15, -- Días trabajados fijos
-        CASE 
-            WHEN EXISTS (
-                SELECT 1 
-                FROM Cargos c 
-                WHERE c.idCargo = e.idCargo 
-                  AND (c.nombreCargo LIKE '%vendedor%' OR c.nombreCargo LIKE '%Vendedor%')
-            ) THEN 
-                CASE 
-                    WHEN @EsPrimeraQuincena = 1 THEN 350000
-                    ELSE 
-                        CASE 
-                            WHEN e.salarioAprobado > 350000 THEN e.salarioAprobado - 350000
-                            ELSE 0
-                        END
-                END
-            ELSE 15 * e.salarioDiario
-        END,
-        1 -- Estado activo
-    FROM Empleado e
-    WHERE 
-        e.idEstado = 1
-        AND e.periocidadPago = 'Quincenal'
-        AND NOT EXISTS (
-            SELECT 1 FROM Remuneracion r
-            WHERE r.idEmpleado = e.idEmpleado
-              AND r.idTipoRemuneracion = @idTipoRemuneracionQuincenal
-              AND YEAR(r.fechaRemuneracion) = @Anio
-              AND MONTH(r.fechaRemuneracion) = @Mes
-              AND (
-                  (@EsPrimeraQuincena = 1 AND DAY(r.fechaRemuneracion) BETWEEN 1 AND 15)
-                  OR 
-                  (@EsPrimeraQuincena = 0 AND DAY(r.fechaRemuneracion) BETWEEN 16 AND 31)
-              )
-        );
+        E.idEmpleado,
+        @idTipoRemuneracion,
+        @fechaProceso,
+        CASE WHEN C.nombreCargo = 'Vendedor' THEN NULL ELSE 15 END,
+        NULL,
+        NULL,
+        ROUND(
+            CASE 
+                WHEN C.nombreCargo = 'Vendedor' AND DAY(@fechaProceso) <= 15 THEN 350000
+                WHEN C.nombreCargo = 'Vendedor' AND DAY(@fechaProceso) > 15 THEN 0
+                ELSE E.salarioDiario * 15
+            END, 0
+        ),
+        1 -- Estado Activo
+    FROM Empleado E
+    INNER JOIN Cargos C ON E.idCargo = C.idCargo
+    WHERE E.idEstado = 1
+      AND NOT EXISTS (
+          SELECT 1
+          FROM Remuneracion R
+          WHERE R.idEmpleado = E.idEmpleado
+            AND R.fechaRemuneracion = @fechaProceso
+            AND R.idTipoRemuneracion = @idTipoRemuneracion
+      );
 
-    -- Retornar las remuneraciones generadas
-    SELECT 
-        r.idRemuneracion,
-        r.idEmpleado,
-        e.nombre + ' ' + e.primerApellido AS nombreEmpleado,
-        r.idTipoRemuneracion,
-        tr.nombreTipoRemuneracion,
-        r.fechaRemuneracion,
-        r.diasTrabajados,
-        r.horas,
-        r.comision,
-        r.pagoQuincenal,
-        r.idEstado,
-        est.nombreEstado,
-        CASE WHEN @EsPrimeraQuincena = 1 THEN 'Primera Quincena' ELSE 'Segunda Quincena' END AS quincena
-    FROM 
-        Remuneracion r
-        INNER JOIN Empleado e ON r.idEmpleado = e.idEmpleado
-        INNER JOIN TipoRemuneracion tr ON r.idTipoRemuneracion = tr.idTipoRemuneracion
-        INNER JOIN Estado est ON r.idEstado = est.idEstado
-    WHERE 
-        r.idTipoRemuneracion = @idTipoRemuneracionQuincenal
-        AND YEAR(r.fechaRemuneracion) = @Anio
-        AND MONTH(r.fechaRemuneracion) = @Mes
-        AND (
-            (@EsPrimeraQuincena = 1 AND DAY(r.fechaRemuneracion) BETWEEN 1 AND 15)
-            OR 
-            (@EsPrimeraQuincena = 0 AND DAY(r.fechaRemuneracion) BETWEEN 16 AND 31)
-        );
-END
+    PRINT 'Remuneraciones quincenales generadas correctamente (valores redondeados).';
+END;
+GO
+ALTER TABLE Liquidaciones
+ADD 
+	salarioPromedio decimal(18,2),
+	aniosAntiguedad int,
+	diasPreaviso int,
+	diasVacacionesPendientes int,
+	pagoPreaviso decimal(18,2),
+	pagoAguinaldoProp decimal(18,2),
+	pagoCesantia decimal(18,2),
+	remuPendientes decimal(18,2),
+	deducPendientes decimal(18,2);
+
+select * from Liquidaciones
