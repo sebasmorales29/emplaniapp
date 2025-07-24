@@ -28,16 +28,11 @@
         <div class="form-group">
             @Html.LabelFor(model => model.SalarioAprobado, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.SalarioAprobado, new { htmlAttributes = new { @class = "form-control", @type = "number", @step = "0.01" } })
+                @Html.TextBoxFor(model => model.SalarioAprobado, new { @class = "form-control", @type = "number", @step = "0.01" })
                 @Html.ValidationMessageFor(model => model.SalarioAprobado, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.SalarioDiario, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.SalarioDiario, new { htmlAttributes = new { @class = "form-control", @type = "number", @step = "0.01" } })
-                @Html.ValidationMessageFor(model => model.SalarioDiario, "", new { @class = "text-danger" })
+                <span class="help-block text-muted">
+                    <i class="fa fa-info-circle"></i> Puede modificar el salario según sea necesario.
+                </span>
             </div>
         </div>
 
@@ -65,7 +60,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 20px;">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Guardar" class="btn btn-primary" />
                 @Html.ActionLink("Cancelar", "Detalles", new { id = Model.IdEmpleado }, new { @class = "btn btn-default" })
@@ -108,7 +103,7 @@
                 }
 
                 $.ajax({
-                    url: '@Url.Action("ValidateAdminPassword", "HojaResumen")',
+                    url: '@Url.Action("ValidateAdminPassword", "DatosPersonales")',
                     method: 'POST',
                     data: {
                         __RequestVerificationToken: token,

@@ -10,6 +10,19 @@
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.idEmpleado)
+    
+    @* Campos laborales ocultos - no se editan aquí pero son requeridos para validación *@
+    @Html.HiddenFor(model => model.idCargo)
+    @Html.HiddenFor(model => model.fechaContratacion)
+    @Html.HiddenFor(model => model.fechaSalida)
+    
+    @* Campos financieros ocultos - no se editan aquí pero son requeridos para validación *@
+    @Html.HiddenFor(model => model.periocidadPago)
+    @Html.HiddenFor(model => model.idMoneda)
+    @Html.HiddenFor(model => model.cuentaIBAN)
+    @Html.HiddenFor(model => model.idBanco)
+    @Html.HiddenFor(model => model.salarioAprobado)
+    @Html.HiddenFor(model => model.salarioDiario)
 
     <div class="form-horizontal">
         <hr />
@@ -80,7 +93,7 @@
         </div>
 
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 20px;">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Guardar Cambios" class="btn btn-success" />
                 @Html.ActionLink("Cancelar", "Detalles", new { id = Model.idEmpleado }, new { @class = "btn btn-default" })
@@ -99,6 +112,7 @@
             var mainForm = $('#editForm');
 
             mainForm.on('submit', function (e) {
+                console.log('Formulario interceptado, mostrando modal de contraseña...');
                 // Prevenir el envío automático del formulario
                 e.preventDefault();
                 
@@ -120,24 +134,29 @@
                 }
 
                 // Llamada AJAX para validar la contraseña
+                console.log('Validando contraseña del administrador...');
                 $.ajax({
-                    url: '@Url.Action("ValidateAdminPassword", "HojaResumen")',
+                    url: '@Url.Action("ValidateAdminPassword", "DatosPersonales")',
                     method: 'POST',
                     data: {
                         __RequestVerificationToken: token,
                         password: password
                     },
                     success: function (response) {
+                        console.log('Respuesta del servidor:', response);
                         if (response.success) {
+                            console.log('Contraseña correcta, enviando formulario...');
                             // Si la contraseña es correcta, oculta el modal y envía el formulario principal
                             $('#adminPasswordModal').modal('hide');
                             mainForm.off('submit').submit(); // Desactiva el interceptor y envía
                         } else {
+                            console.log('Contraseña incorrecta:', response.message);
                             // Si es incorrecta, muestra el error
                             errorDiv.text(response.message).show();
                         }
                     },
-                    error: function () {
+                    error: function (xhr, status, error) {
+                        console.log('Error en AJAX:', status, error);
                         // Error de comunicación
                         errorDiv.text('Error de comunicación con el servidor.').show();
                     }

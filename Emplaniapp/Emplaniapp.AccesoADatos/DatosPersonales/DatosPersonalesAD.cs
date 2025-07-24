@@ -21,6 +21,14 @@ namespace Emplaniapp.AccesoADatos
                 // Obtener información relacionada
                 var cargo = contexto.Cargos.FirstOrDefault(c => c.idCargo == empleado.idCargo);
                 var estado = contexto.Estado.FirstOrDefault(e => e.idEstado == empleado.idEstado);
+                var tipoMoneda = contexto.TipoMoneda.FirstOrDefault(m => m.idTipoMoneda == empleado.idTipoMoneda);
+                var banco = contexto.Bancos.FirstOrDefault(b => b.idBanco == empleado.idBanco);
+
+                System.Diagnostics.Debug.WriteLine($"=== ObtenerEmpleadoPorId - Consultando datos relacionados ===");
+                System.Diagnostics.Debug.WriteLine($"Empleado idTipoMoneda: {empleado.idTipoMoneda}");
+                System.Diagnostics.Debug.WriteLine($"TipoMoneda encontrado: {tipoMoneda?.nombreMoneda ?? "NULL"}");
+                System.Diagnostics.Debug.WriteLine($"Empleado idBanco: {empleado.idBanco}");
+                System.Diagnostics.Debug.WriteLine($"Banco encontrado: {banco?.nombreBanco ?? "NULL"}");
 
                 return new EmpleadoDto
                 {
@@ -49,10 +57,10 @@ namespace Emplaniapp.AccesoADatos
                     salarioPoHora = empleado.salarioPoHora,
                     salarioPorHoraExtra = empleado.salarioPorHoraExtra,
                     idMoneda = empleado.idTipoMoneda,
-                    nombreMoneda = "Colones", // Por ahora hardcodeado, después implementar tabla TipoMoneda
+                    nombreMoneda = tipoMoneda?.nombreMoneda ?? "Sin moneda",
                     cuentaIBAN = empleado.cuentaIBAN,
                     idBanco = empleado.idBanco,
-                    nombreBanco = "BN", // Por ahora hardcodeado, después implementar tabla Bancos
+                    nombreBanco = banco?.nombreBanco ?? "Sin banco",
                     idEstado = empleado.idEstado,
                     nombreEstado = estado?.nombreEstado ?? "Sin estado"
                 };
@@ -170,11 +178,21 @@ namespace Emplaniapp.AccesoADatos
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"=== ACCESO A DATOS - ActualizarDatosPersonales ===");
+                System.Diagnostics.Debug.WriteLine($"Empleado ID: {empleadoDto.idEmpleado}");
+                
                 using (var contexto = new Contexto())
                 {
                     var empleado = contexto.Empleados.FirstOrDefault(e => e.idEmpleado == empleadoDto.idEmpleado);
-                    if (empleado == null) return false;
+                    if (empleado == null) 
+                    {
+                        System.Diagnostics.Debug.WriteLine("ERROR: Empleado no encontrado en la base de datos");
+                        return false;
+                    }
 
+                    System.Diagnostics.Debug.WriteLine($"Empleado encontrado. Actualizando datos...");
+                    System.Diagnostics.Debug.WriteLine($"Nombre anterior: {empleado.nombre} -> Nuevo: {empleadoDto.nombre}");
+                    
                     empleado.nombre = empleadoDto.nombre;
                     empleado.segundoNombre = empleadoDto.segundoNombre;
                     empleado.primerApellido = empleadoDto.primerApellido;
@@ -184,12 +202,14 @@ namespace Emplaniapp.AccesoADatos
                     empleado.numeroTelefonico = empleadoDto.numeroTelefonico;
                     empleado.correoInstitucional = empleadoDto.correoInstitucional;
 
-                    contexto.SaveChanges();
+                    int cambios = contexto.SaveChanges();
+                    System.Diagnostics.Debug.WriteLine($"Número de cambios guardados: {cambios}");
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"ERROR en ActualizarDatosPersonales: {ex.Message}");
                 return false;
             }
         }
@@ -222,10 +242,31 @@ namespace Emplaniapp.AccesoADatos
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"=== ACCESO A DATOS - ActualizarDatosFinancieros ===");
+                System.Diagnostics.Debug.WriteLine($"Parámetros recibidos:");
+                System.Diagnostics.Debug.WriteLine($"- idEmpleado: {idEmpleado}");
+                System.Diagnostics.Debug.WriteLine($"- salarioAprobado: {salarioAprobado}");
+                System.Diagnostics.Debug.WriteLine($"- salarioDiario: {salarioDiario}");
+                System.Diagnostics.Debug.WriteLine($"- periocidadPago: {periocidadPago}");
+                System.Diagnostics.Debug.WriteLine($"- idTipoMoneda: {idTipoMoneda}");
+                System.Diagnostics.Debug.WriteLine($"- cuentaIBAN: {cuentaIBAN}");
+                System.Diagnostics.Debug.WriteLine($"- idBanco: {idBanco}");
+
                 using (var contexto = new Contexto())
                 {
                     var empleado = contexto.Empleados.FirstOrDefault(e => e.idEmpleado == idEmpleado);
-                    if (empleado == null) return false;
+                    if (empleado == null) 
+                    {
+                        System.Diagnostics.Debug.WriteLine("ERROR: Empleado no encontrado en BD");
+                        return false;
+                    }
+
+                    System.Diagnostics.Debug.WriteLine($"Empleado encontrado - Valores ANTES de actualizar:");
+                    System.Diagnostics.Debug.WriteLine($"- salarioAprobado: {empleado.salarioAprobado}");
+                    System.Diagnostics.Debug.WriteLine($"- periocidadPago: {empleado.periocidadPago}");
+                    System.Diagnostics.Debug.WriteLine($"- idTipoMoneda: {empleado.idTipoMoneda}");
+                    System.Diagnostics.Debug.WriteLine($"- cuentaIBAN: {empleado.cuentaIBAN}");
+                    System.Diagnostics.Debug.WriteLine($"- idBanco: {empleado.idBanco}");
 
                     empleado.salarioAprobado = salarioAprobado;
                     empleado.salarioDiario = salarioDiario;
@@ -233,6 +274,13 @@ namespace Emplaniapp.AccesoADatos
                     empleado.idTipoMoneda = idTipoMoneda;
                     empleado.cuentaIBAN = cuentaIBAN;
                     empleado.idBanco = idBanco;
+
+                    System.Diagnostics.Debug.WriteLine($"Valores DESPUÉS de asignar:");
+                    System.Diagnostics.Debug.WriteLine($"- salarioAprobado: {empleado.salarioAprobado}");
+                    System.Diagnostics.Debug.WriteLine($"- periocidadPago: {empleado.periocidadPago}");
+                    System.Diagnostics.Debug.WriteLine($"- idTipoMoneda: {empleado.idTipoMoneda}");
+                    System.Diagnostics.Debug.WriteLine($"- cuentaIBAN: {empleado.cuentaIBAN}");
+                    System.Diagnostics.Debug.WriteLine($"- idBanco: {empleado.idBanco}");
 
                     // Recalcular salarios basados en el salario aprobado
                     if (periocidadPago == "Quincenal")
@@ -248,12 +296,17 @@ namespace Emplaniapp.AccesoADatos
                     empleado.salarioPorMinuto = empleado.salarioPoHora / 60;
                     empleado.salarioPorHoraExtra = empleado.salarioPoHora * 1.5m;
 
-                    contexto.SaveChanges();
+                    System.Diagnostics.Debug.WriteLine($"Guardando cambios en la base de datos...");
+                    int registrosAfectados = contexto.SaveChanges();
+                    System.Diagnostics.Debug.WriteLine($"Registros afectados: {registrosAfectados}");
+                    System.Diagnostics.Debug.WriteLine($"=== ACTUALIZACIÓN COMPLETADA EXITOSAMENTE ===");
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"EXCEPCIÓN en ActualizarDatosFinancieros (AccesoADatos): {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
                 return false;
             }
         }

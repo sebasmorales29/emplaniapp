@@ -15,7 +15,8 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
         }
         public List<EmpleadoDto> ObtenerEmpleados()
         {
-            var empleadosRaw = (from emp in _contexto.Empleados
+            // Primero obtenemos los datos básicos de empleados sin roles
+            var empleadosBase = (from emp in _contexto.Empleados
                                 join estado in _contexto.Estado on emp.idEstado equals estado.idEstado
                                 join cargo in _contexto.Cargos on emp.idCargo equals cargo.idCargo
                                 join banco in _contexto.Bancos on emp.idBanco equals banco.idBanco
@@ -26,10 +27,6 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                                 join ca in _contexto.Calle on emp.idCalle equals ca.idCalle
                                 join user in _contexto.Users on emp.IdNetUser equals user.Id into userGroup
                                 from user in userGroup.DefaultIfEmpty() 
-                                join userRole in _contexto.Set<Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole>() on user.Id equals userRole.UserId into userRoleGroup
-                                from userRole in userRoleGroup.DefaultIfEmpty()
-                                join role in _contexto.Roles on userRole.RoleId equals role.Id into roleGroup
-                                from role in roleGroup.DefaultIfEmpty()
                                 orderby emp.primerApellido, emp.segundoApellido, emp.nombre
                                 select new
                                 {
@@ -59,42 +56,59 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                                     nombreCanton = cant.nombreCanton,
                                     nombreDistrito = dist.nombreDistrito,
                                     nombreCalle = ca.nombreCalle,
+                                    emp.IdNetUser
+                                }).ToList();
 
-                                    Role = role.Name
-                                }).ToList(); 
+            // Ahora obtenemos los roles agrupados por usuario
+            var rolesRaw = (from userRole in _contexto.Set<Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole>()
+                           join role in _contexto.Roles on userRole.RoleId equals role.Id
+                           select new
+                           {
+                               UserId = userRole.UserId,
+                               RoleName = role.Name
+                           }).ToList(); // Ejecutamos la consulta primero
 
-        // Ahora sí, puedes usar interpolación
-        var empleados = empleadosRaw.Select(emp => new EmpleadoDto
-        {
-            idEmpleado = emp.idEmpleado,
-            nombre = emp.nombre,
-            segundoNombre = emp.segundoNombre ?? string.Empty,
-            primerApellido = emp.primerApellido,
-            segundoApellido = emp.segundoApellido,
-            cedula = emp.cedula,
-            fechaNacimiento = emp.fechaNacimiento,
-            numeroTelefonico = emp.numeroTelefonico,
-            correoInstitucional = emp.correoInstitucional,
+            // Agrupamos y concatenamos los roles en memoria
+            var rolesAgrupadosPorUsuario = rolesRaw
+                .GroupBy(x => x.UserId)
+                .ToDictionary(g => g.Key, g => string.Join(", ", g.Select(x => x.RoleName)));
 
-            idEstado = emp.idEstado,
-            nombreEstado = emp.nombreEstado,
+            // Combinamos la información
+            var empleados = empleadosBase.Select(emp => new EmpleadoDto
+            {
+                idEmpleado = emp.idEmpleado,
+                nombre = emp.nombre,
+                segundoNombre = emp.segundoNombre ?? string.Empty,
+                primerApellido = emp.primerApellido,
+                segundoApellido = emp.segundoApellido,
+                cedula = emp.cedula,
+                fechaNacimiento = emp.fechaNacimiento,
+                numeroTelefonico = emp.numeroTelefonico,
+                correoInstitucional = emp.correoInstitucional,
 
-            idCargo = emp.idCargo,
-            nombreCargo = emp.nombreCargo,
+                idEstado = emp.idEstado,
+                nombreEstado = emp.nombreEstado,
 
-            salarioAprobado = emp.salarioAprobado,
-            periocidadPago = emp.periocidadPago,
-            nombreMoneda = emp.nombreMoneda,
-            cuentaIBAN = emp.cuentaIBAN,
-            idBanco = emp.idBanco,
-            nombreBanco = emp.nombreBanco,
+                idCargo = emp.idCargo,
+                nombreCargo = emp.nombreCargo,
 
-            direccionCompleta = $"{emp.nombreProvincia}, {emp.nombreCanton}, {emp.nombreDistrito}, {emp.nombreCalle}",
+                salarioAprobado = emp.salarioAprobado,
+                periocidadPago = emp.periocidadPago,
+                nombreMoneda = emp.nombreMoneda,
+                cuentaIBAN = emp.cuentaIBAN,
+                idBanco = emp.idBanco,
+                nombreBanco = emp.nombreBanco,
 
-            fechaContratacion = emp.fechaContratacion,
-            fechaSalida = emp.fechaSalida,
-            Role = emp.Role ?? "Sin rol"
-        }).ToList();
+                direccionCompleta = $"{emp.nombreProvincia}, {emp.nombreCanton}, {emp.nombreDistrito}, {emp.nombreCalle}",
+
+                fechaContratacion = emp.fechaContratacion,
+                fechaSalida = emp.fechaSalida,
+                
+                // Obtener roles concatenados o "Sin rol" si no tiene
+                Role = !string.IsNullOrEmpty(emp.IdNetUser) && rolesAgrupadosPorUsuario.ContainsKey(emp.IdNetUser) 
+                      ? rolesAgrupadosPorUsuario[emp.IdNetUser] 
+                      : "Sin rol"
+            }).ToList();
 
             return empleados;
         }
