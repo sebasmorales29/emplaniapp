@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Emplaniapp.Abstracciones.Entidades;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Newtonsoft.Json;
+using Emplaniapp.AccesoADatos;
 
 namespace Emplaniapp.UI.Controllers
 {
@@ -100,6 +101,13 @@ namespace Emplaniapp.UI.Controllers
             {
                 return HttpNotFound();
             }
+
+            // 🔥 CARGAR DATOS GEOGRÁFICOS PARA DROPDOWNS
+            ViewBag.Provincias = ObtenerProvinciasSelectList(empleado.idProvincia);
+            ViewBag.Cantones = ObtenerCantonesSelectList(empleado.idProvincia, empleado.idCanton);
+            ViewBag.Distritos = ObtenerDistritosSelectList(empleado.idCanton, empleado.idDistrito);
+            ViewBag.Calles = ObtenerCallesSelectList(empleado.idDistrito, empleado.idCalle);
+
             return View(empleado);
         }
 
@@ -645,7 +653,10 @@ namespace Emplaniapp.UI.Controllers
                 var result = await UserManager.AddToRoleAsync(user.Id, nombreRol);
                 if (result.Succeeded)
                 {
-                    return Json(new { success = true, message = $"Rol '{nombreRol}' asignado correctamente a {empleado.nombre} {empleado.primerApellido}." });
+                    // Invalidar la sesión del usuario afectado para forzar actualización de roles
+                    await InvalidateUserSessions(user.Id);
+                    
+                    return Json(new { success = true, message = $"Rol '{nombreRol}' asignado correctamente a {empleado.nombre} {empleado.primerApellido}.", requiresRefresh = true });
                 }
                 else
                 {
@@ -697,7 +708,10 @@ namespace Emplaniapp.UI.Controllers
                 var result = await UserManager.RemoveFromRoleAsync(user.Id, nombreRol);
                 if (result.Succeeded)
                 {
-                    return Json(new { success = true, message = $"Rol '{nombreRol}' removido correctamente de {empleado.nombre} {empleado.primerApellido}." });
+                    // Invalidar la sesión del usuario afectado para forzar actualización de roles
+                    await InvalidateUserSessions(user.Id);
+                    
+                    return Json(new { success = true, message = $"Rol '{nombreRol}' removido correctamente de {empleado.nombre} {empleado.primerApellido}.", requiresRefresh = true });
                 }
                 else
                 {
@@ -739,6 +753,107 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtiene el rol de mayor prioridad de una lista de roles
+        /// </summary>
+        /// <param name="roles">Lista de roles del usuario</param>
+        /// <returns>Rol de mayor prioridad</returns>
+        private string GetHighestPriorityRole(List<string> roles)
+        {
+            // Jerarquía de roles: Administrador > Contador > Empleado
+            var rolesPriority = new List<string> { "Administrador", "Contador", "Empleado" };
+            
+            foreach (var priorityRole in rolesPriority)
+            {
+                if (roles.Contains(priorityRole))
+                {
+                    System.Diagnostics.Debug.WriteLine($"Rol de mayor prioridad seleccionado: {priorityRole}");
+                    return priorityRole;
+                }
+            }
+            
+            // Fallback por si no encuentra ningún rol conocido
+            var fallbackRole = roles.FirstOrDefault() ?? "Empleado";
+            System.Diagnostics.Debug.WriteLine($"Usando rol fallback: {fallbackRole}");
+            return fallbackRole;
+        }
+
+        /// <summary>
+        /// Invalida las sesiones activas de un usuario específico
+        /// </summary>
+        /// <param name="userId">ID del usuario</param>
+        private async Task InvalidateUserSessions(string userId)
+        {
+            try
+            {
+                // Actualizar el SecurityStamp del usuario para invalidar todas sus sesiones activas
+                var user = await UserManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    await UserManager.UpdateSecurityStampAsync(userId);
+                    System.Diagnostics.Debug.WriteLine($"SecurityStamp actualizado para usuario {userId}");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al invalidar sesiones del usuario {userId}: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Verifica si los roles del usuario actual han cambiado desde su última verificación
+        /// </summary>
+        /// <returns>JSON indicando si hay cambios en los roles</returns>
+        [HttpGet]
+        public async Task<JsonResult> VerificarCambiosRoles()
+        {
+            try
+            {
+                var userId = User.Identity.GetUserId();
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Json(new { success = false, message = "Usuario no encontrado." }, JsonRequestBehavior.AllowGet);
+                }
+
+                // Obtener roles actuales de la base de datos
+                var rolesActuales = await UserManager.GetRolesAsync(userId);
+                var rolesActualesList = rolesActuales.ToList();
+
+                // Obtener roles almacenados en la sesión (si existen)
+                var rolesEnSesion = Session["UserRoles"] as List<string> ?? new List<string>();
+
+                // Comparar roles
+                bool hayDiferencias = !rolesActualesList.OrderBy(r => r).SequenceEqual(rolesEnSesion.OrderBy(r => r));
+
+                if (hayDiferencias)
+                {
+                    // Actualizar roles en sesión
+                    Session["UserRoles"] = rolesActualesList;
+                    
+                    // Verificar si el rol activo sigue siendo válido
+                    var rolActivo = Session["ActiveRole"] as string;
+                    if (!string.IsNullOrEmpty(rolActivo) && !rolesActualesList.Contains(rolActivo))
+                    {
+                        // El rol activo ya no es válido, cambiar al rol de mayor prioridad disponible
+                        Session["ActiveRole"] = GetHighestPriorityRole(rolesActualesList);
+                    }
+
+                    return Json(new { 
+                        success = true, 
+                        hasChanges = true, 
+                        newRoles = rolesActualesList,
+                        activeRole = Session["ActiveRole"] as string
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { success = true, hasChanges = false }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al verificar cambios: " + ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #endregion
 
         #region Role Switcher Methods
@@ -760,13 +875,17 @@ namespace Emplaniapp.UI.Controllers
                 var userRoles = await UserManager.GetRolesAsync(userId);
                 var rolesList = userRoles.ToList();
                 
+                // Inicializar roles en sesión para comparación futura
+                Session["UserRoles"] = rolesList;
+                
                 System.Diagnostics.Debug.WriteLine($"User roles: {string.Join(", ", rolesList)}");
                 
                 // Obtener rol activo de la sesión
                 var activeRole = Session["ActiveRole"] as string;
                 if (string.IsNullOrEmpty(activeRole) || !rolesList.Contains(activeRole))
                 {
-                    activeRole = rolesList.FirstOrDefault() ?? "Empleado";
+                    // Establecer rol activo según prioridad: Administrador > Contador > Empleado
+                    activeRole = GetHighestPriorityRole(rolesList);
                     Session["ActiveRole"] = activeRole;
                 }
                 
@@ -774,15 +893,6 @@ namespace Emplaniapp.UI.Controllers
                 
                 var hasMultipleRoles = rolesList.Count > 1;
                 System.Diagnostics.Debug.WriteLine($"Has multiple roles: {hasMultipleRoles}");
-
-                // Para testing - forzar múltiples roles si es Administrador
-                if (rolesList.Contains("Administrador") && rolesList.Count == 1)
-                {
-                    System.Diagnostics.Debug.WriteLine("TESTING: Agregando roles adicionales para prueba");
-                    rolesList.Add("Contador");
-                    rolesList.Add("Empleado");
-                    hasMultipleRoles = true;
-                }
 
                 var result = new
                 {
@@ -837,12 +947,7 @@ namespace Emplaniapp.UI.Controllers
                 var userRoles = await UserManager.GetRolesAsync(userId);
                 var rolesList = userRoles.ToList();
 
-                // Para testing - agregar roles adicionales si es Administrador
-                if (rolesList.Contains("Administrador") && rolesList.Count == 1)
-                {
-                    rolesList.Add("Contador");
-                    rolesList.Add("Empleado");
-                }
+                System.Diagnostics.Debug.WriteLine($"User has roles: {string.Join(", ", rolesList)}");
                 
                 if (rolesList.Contains(role))
                 {
@@ -874,6 +979,45 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
+        /// <summary>
+        /// Fuerza la actualización del rol activo según la prioridad de roles
+        /// </summary>
+        /// <returns>JSON con el rol activo actualizado</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> RefreshActiveRole()
+        {
+            try
+            {
+                var userId = User.Identity.GetUserId();
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Json(new { success = false, message = "Usuario no encontrado." });
+                }
+
+                var userRoles = await UserManager.GetRolesAsync(userId);
+                var rolesList = userRoles.ToList();
+
+                // Establecer el rol de mayor prioridad
+                var newActiveRole = GetHighestPriorityRole(rolesList);
+                Session["ActiveRole"] = newActiveRole;
+                Session["UserRoles"] = rolesList;
+
+                System.Diagnostics.Debug.WriteLine($"🔄 Rol activo actualizado manualmente a: {newActiveRole}");
+
+                return Json(new { 
+                    success = true, 
+                    message = $"Rol activo actualizado a '{newActiveRole}'",
+                    activeRole = newActiveRole,
+                    availableRoles = rolesList
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al actualizar rol activo: " + ex.Message });
+            }
+        }
+
         #endregion
 
         protected string RenderRazorViewToString(string viewName, object model)
@@ -888,6 +1032,84 @@ namespace Emplaniapp.UI.Controllers
                 return sw.GetStringBuilder().ToString();
             }
         }
+
+        // ===============================================
+        // 🔥 MÉTODOS AUXILIARES PARA DATOS GEOGRÁFICOS
+        // ===============================================
+        
+        private SelectList ObtenerProvinciasSelectList(int? selectedValue = null)
+        {
+            using (var contexto = new Contexto())
+            {
+                var provincias = contexto.Provincia
+                    .Select(p => new { p.idProvincia, p.nombreProvincia })
+                    .OrderBy(p => p.nombreProvincia)
+                    .ToList();
+                
+                return new SelectList(provincias, "idProvincia", "nombreProvincia", selectedValue);
+            }
+        }
+
+        private SelectList ObtenerCantonesSelectList(int? idProvincia = null, int? selectedValue = null)
+        {
+            using (var contexto = new Contexto())
+            {
+                var query = contexto.Canton.AsQueryable();
+                
+                if (idProvincia.HasValue)
+                {
+                    query = query.Where(c => c.idProvincia == idProvincia.Value);
+                }
+                
+                var cantones = query
+                    .Select(c => new { c.idCanton, c.nombreCanton, c.idProvincia })
+                    .OrderBy(c => c.nombreCanton)
+                    .ToList();
+                
+                return new SelectList(cantones, "idCanton", "nombreCanton", selectedValue);
+            }
+        }
+
+        private SelectList ObtenerDistritosSelectList(int? idCanton = null, int? selectedValue = null)
+        {
+            using (var contexto = new Contexto())
+            {
+                var query = contexto.Distrito.AsQueryable();
+                
+                if (idCanton.HasValue)
+                {
+                    query = query.Where(d => d.idCanton == idCanton.Value);
+                }
+                
+                var distritos = query
+                    .Select(d => new { d.idDistrito, d.nombreDistrito, d.idCanton })
+                    .OrderBy(d => d.nombreDistrito)
+                    .ToList();
+                
+                return new SelectList(distritos, "idDistrito", "nombreDistrito", selectedValue);
+            }
+        }
+
+        private SelectList ObtenerCallesSelectList(int? idDistrito = null, int? selectedValue = null)
+        {
+            using (var contexto = new Contexto())
+            {
+                var query = contexto.Calle.AsQueryable();
+                
+                if (idDistrito.HasValue)
+                {
+                    query = query.Where(c => c.idDistrito == idDistrito.Value);
+                }
+                
+                var calles = query
+                    .Select(c => new { c.idCalle, c.nombreCalle, c.idDistrito })
+                    .OrderBy(c => c.nombreCalle)
+                    .ToList();
+                
+                return new SelectList(calles, "idCalle", "nombreCalle", selectedValue);
+            }
+        }
+
         #endregion
     }
 }

@@ -61,6 +61,11 @@
         background-color: #d9534f;
         border-color: #d9534f;
     }
+
+    .panel-warning > .panel-heading {
+        background-color: #f0ad4e;
+        border-color: #f0ad4e;
+    }
 </style>
 
 <div class="container">
@@ -116,7 +121,55 @@
             </div>
         </div>
 
-        <!-- SECCIÓN 3: DATOS BANCARIOS -->
+        <!-- SECCIÓN 3: DIRECCIÓN -->
+        <div class="panel panel-warning">
+            <div class="panel-heading"><h3 class="panel-title">Dirección</h3></div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.idProvincia, "Provincia")
+                            @Html.DropDownListFor(m => m.idProvincia, (SelectList)ViewBag.Provincias, "-- Seleccione provincia --", new { @class = "form-control", id = "ddlProvincia" })
+                            @Html.ValidationMessageFor(m => m.idProvincia, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.idCanton, "Cantón")
+                            @Html.DropDownListFor(m => m.idCanton, (SelectList)ViewBag.Cantones, "-- Seleccione cantón --", new { @class = "form-control", id = "ddlCanton", disabled = "disabled" })
+                            @Html.ValidationMessageFor(m => m.idCanton, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.idDistrito, "Distrito")
+                            @Html.DropDownListFor(m => m.idDistrito, (SelectList)ViewBag.Distritos, "-- Seleccione distrito --", new { @class = "form-control", id = "ddlDistrito", disabled = "disabled" })
+                            @Html.ValidationMessageFor(m => m.idDistrito, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.idCalle, "Calle")
+                            @Html.DropDownListFor(m => m.idCalle, (SelectList)ViewBag.Calles, "-- Seleccione calle --", new { @class = "form-control", id = "ddlCalle", disabled = "disabled" })
+                            @Html.ValidationMessageFor(m => m.idCalle, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.direccionDetallada, "Dirección Detallada")
+                            @Html.TextAreaFor(m => m.direccionDetallada, new { @class = "form-control", rows = "3", placeholder = "Detalle específico de la dirección (casa #, apartamento, referencias, etc.)" })
+                            @Html.ValidationMessageFor(m => m.direccionDetallada, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4: DATOS BANCARIOS -->
         <div class="panel panel-success">
             <div class="panel-heading"><h3 class="panel-title">Datos Bancarios</h3></div>
             <div class="panel-body">
@@ -130,7 +183,7 @@
             </div>
         </div>
 
-        <!-- SECCIÓN 4: CREDENCIALES DE ACCESO -->
+        <!-- SECCIÓN 5: CREDENCIALES DE ACCESO -->
         <div class="panel panel-danger">
             <div class="panel-heading"><h3 class="panel-title">Credenciales de Acceso</h3></div>
             <div class="panel-body">
@@ -185,9 +238,15 @@
                     // Detenemos el envío normal para mostrar el modal de confirmación.
                     e.preventDefault();
                     
-                    $('#adminPasswordInput').val('');
-                    $('#adminPasswordError').hide();
-                    $('#adminPasswordModal').modal('show');
+                    // Usar función centralizada para mostrar el modal
+                    if (window.AdminPasswordModal && window.AdminPasswordModal.show) {
+                        window.AdminPasswordModal.show();
+                    } else {
+                        // Fallback si el modal centralizado no está disponible
+                        $('#adminPasswordInput').val('');
+                        $('#adminPasswordError').hide();
+                        $('#adminPasswordModal').modal('show');
+                    }
                 }
                 
                 // Si no es admin, no hacemos nada aquí, y el formulario se envía normalmente.
@@ -231,6 +290,151 @@
             $('#cancelAdminPasswordBtn').click(function () {
                 $('#adminPasswordModal').modal('hide');
             });
+
+            // ===============================================
+            // LÓGICA PARA DROPDOWNS DE DIRECCIÓN EN CASCADA
+            // ===============================================
+            
+            // Al cargar la página, si hay provincia seleccionada, cargar cantones
+            var provinciaId = $('#ddlProvincia').val();
+            if (provinciaId) {
+                cargarCantones(provinciaId, '@Model.idCanton');
+            }
+
+            // Evento change para Provincia
+            $('#ddlProvincia').change(function () {
+                var provinciaId = $(this).val();
+                
+                // Resetear dropdowns dependientes
+                resetearDropdowns(['#ddlCanton', '#ddlDistrito', '#ddlCalle']);
+                
+                if (provinciaId) {
+                    cargarCantones(provinciaId);
+                }
+            });
+
+            // Evento change para Cantón
+            $('#ddlCanton').change(function () {
+                var cantonId = $(this).val();
+                
+                // Resetear dropdowns dependientes
+                resetearDropdowns(['#ddlDistrito', '#ddlCalle']);
+                
+                if (cantonId) {
+                    cargarDistritos(cantonId);
+                }
+            });
+
+            // Evento change para Distrito
+            $('#ddlDistrito').change(function () {
+                var distritoId = $(this).val();
+                
+                // Resetear dropdowns dependientes
+                resetearDropdowns(['#ddlCalle']);
+                
+                if (distritoId) {
+                    cargarCalles(distritoId);
+                }
+            });
+
+            // Función para cargar cantones
+            function cargarCantones(provinciaId, selectedCantonId) {
+                $.ajax({
+                    url: '@Url.Action("ObtenerCantonesPorProvincia", "Empleado")',
+                    type: 'GET',
+                    data: { idProvincia: provinciaId },
+                    success: function (data) {
+                        var $canton = $('#ddlCanton');
+                        $canton.empty().append('<option value="">-- Seleccione cantón --</option>');
+                        
+                        $.each(data, function (index, item) {
+                            var selected = selectedCantonId && item.value == selectedCantonId ? 'selected' : '';
+                            $canton.append('<option value="' + item.value + '" ' + selected + '>' + item.text + '</option>');
+                        });
+                        
+                        $canton.prop('disabled', false);
+                        
+                        // Si hay cantón preseleccionado, cargar sus distritos
+                        if (selectedCantonId) {
+                            cargarDistritos(selectedCantonId, '@Model.idDistrito');
+                        }
+                    },
+                    error: function () {
+                        console.error('Error cargando cantones');
+                        resetearDropdowns(['#ddlCanton', '#ddlDistrito', '#ddlCalle']);
+                    }
+                });
+            }
+
+            // Función para cargar distritos
+            function cargarDistritos(cantonId, selectedDistritoId) {
+                $.ajax({
+                    url: '@Url.Action("ObtenerDistritosPorCanton", "Empleado")',
+                    type: 'GET',
+                    data: { idCanton: cantonId },
+                    success: function (data) {
+                        var $distrito = $('#ddlDistrito');
+                        $distrito.empty().append('<option value="">-- Seleccione distrito --</option>');
+                        
+                        $.each(data, function (index, item) {
+                            var selected = selectedDistritoId && item.value == selectedDistritoId ? 'selected' : '';
+                            $distrito.append('<option value="' + item.value + '" ' + selected + '>' + item.text + '</option>');
+                        });
+                        
+                        $distrito.prop('disabled', false);
+                        
+                        // Si hay distrito preseleccionado, cargar sus calles
+                        if (selectedDistritoId) {
+                            cargarCalles(selectedDistritoId, '@Model.idCalle');
+                        }
+                    },
+                    error: function () {
+                        console.error('Error cargando distritos');
+                        resetearDropdowns(['#ddlDistrito', '#ddlCalle']);
+                    }
+                });
+            }
+
+            // Función para cargar calles
+            function cargarCalles(distritoId, selectedCalleId) {
+                $.ajax({
+                    url: '@Url.Action("ObtenerCallesPorDistrito", "Empleado")',
+                    type: 'GET',
+                    data: { idDistrito: distritoId },
+                    success: function (data) {
+                        var $calle = $('#ddlCalle');
+                        $calle.empty().append('<option value="">-- Seleccione calle --</option>');
+                        
+                        $.each(data, function (index, item) {
+                            var selected = selectedCalleId && item.value == selectedCalleId ? 'selected' : '';
+                            $calle.append('<option value="' + item.value + '" ' + selected + '>' + item.text + '</option>');
+                        });
+                        
+                        $calle.prop('disabled', false);
+                    },
+                    error: function () {
+                        console.error('Error cargando calles');
+                        resetearDropdowns(['#ddlCalle']);
+                    }
+                });
+            }
+
+            // Función para resetear dropdowns
+            function resetearDropdowns(selectors) {
+                $.each(selectors, function(index, selector) {
+                    var $dropdown = $(selector);
+                    $dropdown.empty().prop('disabled', true);
+                    
+                    // Agregar opción por defecto según el dropdown
+                    if (selector === '#ddlCanton') {
+                        $dropdown.append('<option value="">-- Seleccione cantón --</option>');
+                    } else if (selector === '#ddlDistrito') {
+                        $dropdown.append('<option value="">-- Seleccione distrito --</option>');
+                    } else if (selector === '#ddlCalle') {
+                        $dropdown.append('<option value="">-- Seleccione calle --</option>');
+                    }
+                });
+            }
         });
     </script>
 }

@@ -323,10 +323,15 @@ $(document).ready(function() {
     $('#btn-confirmar').click(function() {
         if (!cambiosPendientes) return;
         
-        // Mostrar modal de confirmación con contraseña
-        $('#adminPasswordInput').val('');
-        $('#adminPasswordError').hide().text('');
-        $('#adminPasswordModal').modal('show');
+        // Usar función centralizada para mostrar el modal
+        if (window.AdminPasswordModal && window.AdminPasswordModal.show) {
+            window.AdminPasswordModal.show();
+        } else {
+            // Fallback si el modal centralizado no está disponible
+            $('#adminPasswordInput').val('');
+            $('#adminPasswordError').hide().text('');
+            $('#adminPasswordModal').modal('show');
+        }
     });
     
     // Botón Cancelar
@@ -421,8 +426,8 @@ $(document).ready(function() {
             
             // Mensaje más descriptivo según la cantidad de cambios
             var mensaje = cambios.length === 1 
-                ? '¡Cambio aplicado exitosamente! El rol se actualizó correctamente.'
-                : '¡Éxito! Se aplicaron correctamente ' + cambios.length + ' cambios de roles.';
+                ? '¡Cambio aplicado exitosamente! El rol se actualizó correctamente.<br/><small class="text-muted">La sesión del empleado se actualizará automáticamente en unos segundos.</small>'
+                : '¡Éxito! Se aplicaron correctamente ' + cambios.length + ' cambios de roles.<br/><small class="text-muted">La sesión del empleado se actualizará automáticamente en unos segundos.</small>';
             
             mostrarMensaje('success', mensaje);
             cargarRoles(); // Recargar para actualizar estado
@@ -444,6 +449,11 @@ $(document).ready(function() {
             },
             success: function(response) {
                 if (response.success) {
+                    // Verificar si se requiere refresh de la sesión del usuario afectado
+                    if (response.requiresRefresh) {
+                        console.log('🔄 Rol modificado - sesión del usuario afectado invalidada');
+                    }
+                    
                     // Continuar con el siguiente cambio
                     procesarCambios(cambios, indice + 1);
                 } else {

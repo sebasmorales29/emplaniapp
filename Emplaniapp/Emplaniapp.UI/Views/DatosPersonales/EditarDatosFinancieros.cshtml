@@ -87,9 +87,16 @@
 
             mainForm.on('submit', function (e) {
                 e.preventDefault();
-                $('#adminPasswordInput').val('');
-                $('#adminPasswordError').hide().text('');
-                $('#adminPasswordModal').modal('show');
+                
+                // Usar función centralizada para mostrar el modal
+                if (window.AdminPasswordModal && window.AdminPasswordModal.show) {
+                    window.AdminPasswordModal.show();
+                } else {
+                    // Fallback si el modal centralizado no está disponible
+                    $('#adminPasswordInput').val('');
+                    $('#adminPasswordError').hide().text('');
+                    $('#adminPasswordModal').modal('show');
+                }
             });
 
             $('#confirmAdminPasswordBtn').on('click', function () {

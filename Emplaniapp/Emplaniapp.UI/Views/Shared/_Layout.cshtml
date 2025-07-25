@@ -132,27 +132,7 @@
     @RenderSection("scripts", required: false)
 
     <!-- Modal de Confirmación de Contraseña de Administrador -->
-    <div class="modal fade" id="adminPasswordModal" tabindex="-1" role="dialog" aria-labelledby="adminPasswordModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="adminPasswordModalLabel">Confirmación de Administrador</h5>
-                </div>
-                <div class="modal-body">
-                    <p>Para completar esta acción, por favor ingrese su contraseña de administrador.</p>
-                    <div class="form-group">
-                        <label for="adminPasswordInput">Contraseña</label>
-                        <input type="password" class="form-control" id="adminPasswordInput" placeholder="Contraseña">
-                        <span id="adminPasswordError" class="text-danger" style="display: none;">Contraseña incorrecta.</span>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="cancelAdminPasswordBtn">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="confirmAdminPasswordBtn">Confirmar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    @Html.Partial("_AdminPasswordModal")
 
     <!-- Estilos para Role Switcher -->
     <style>
@@ -303,6 +283,60 @@
                 }
             });
         };
+
+        // Función para verificar cambios de roles en tiempo real
+        function verificarCambiosRoles() {
+            // Solo verificar si el usuario está autenticado
+            if ($('#role-switcher-container').length > 0) {
+                $.ajax({
+                    url: '@Url.Action("VerificarCambiosRoles", "DatosPersonales")',
+                    type: 'GET',
+                    cache: false,
+                    success: function(data) {
+                        if (data.success && data.hasChanges) {
+                            console.log('🔄 Cambios detectados en roles del usuario');
+                            console.log('Nuevos roles:', data.newRoles);
+                            console.log('Rol activo actualizado:', data.activeRole);
+                            
+                            // Mostrar mensaje de actualización
+                            if (data.newRoles.length === 0) {
+                                // El usuario ya no tiene roles asignados
+                                alert('Sus permisos han sido modificados. Será redirigido al inicio de sesión.');
+                                window.location.href = '@Url.Action("Login", "Account")';
+                                return;
+                            }
+                            
+                            // Recargar la página para reflejar los nuevos roles en el navbar
+                            console.log('🔄 Recargando página para actualizar navbar con nuevos roles...');
+                            location.reload();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Error silencioso - solo logear en consola
+                        console.log('Error al verificar cambios de roles:', error);
+                    }
+                });
+            }
+        }
+
+        // Verificar cambios de roles cada 10 segundos (solo si está autenticado)
+        @if (Request.IsAuthenticated)
+        {
+            <text>
+            // Verificar inmediatamente cuando se carga la página
+            $(document).ready(function() {
+                console.log('🔄 Verificando roles al cargar la página...');
+                verificarCambiosRoles();
+            });
+
+            setInterval(verificarCambiosRoles, 10000); // 10 segundos
+
+            // También verificar cuando la página obtiene el foco (usuario regresa a la pestaña)
+            $(window).on('focus', function() {
+                verificarCambiosRoles();
+            });
+            </text>
+        }
     </script>
 </body>
 </html>
