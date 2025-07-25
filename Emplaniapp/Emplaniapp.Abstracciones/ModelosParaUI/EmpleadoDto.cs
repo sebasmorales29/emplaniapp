@@ -30,22 +30,22 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public string segundoApellido { get; set; }
 
         [DisplayName("Fecha de Nacimiento")]
-        [Required(ErrorMessage = "La fecha de nacimiento del empleado es obligatorio.")]
+        [Required(ErrorMessage = "La fecha de nacimiento del empleado es obligatoria.")]
         public DateTime fechaNacimiento { get; set; }
 
-        [DisplayName("Identificación")]
-        [Required(ErrorMessage = "La identificación del empleado es obligatorio.")]
+        [DisplayName("Cédula")]
+        [Required(ErrorMessage = "La cédula del empleado es obligatoria.")]
         [Range(100000000, 999999999, ErrorMessage = "La cédula debe tener 9 dígitos")]
         public int cedula { get; set; }
 
         [DisplayName("Teléfono")]
         [Required(ErrorMessage = "El teléfono del empleado es obligatorio.")]
-        [Phone(ErrorMessage = "No cumple con el formato del teléfono")]
+        [Phone(ErrorMessage = "El formato del teléfono no es válido")]
         public string numeroTelefonico { get; set; }
 
-        [DisplayName("Correo institucional")]
-        [Required(ErrorMessage = "El correo del empleado es obligatorio.")]
-        [EmailAddress(ErrorMessage = "No cumple con el formato del correo")]
+        [DisplayName("Correo Institucional")]
+        [Required(ErrorMessage = "El correo institucional del empleado es obligatorio.")]
+        [EmailAddress(ErrorMessage = "El formato del correo electrónico no es válido")]
         public string correoInstitucional { get; set; }
 
         [DisplayName("Nombre Completo")]
@@ -80,16 +80,16 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public string nombreCargo { get; set; }
 
         // Fechas laborales
-        [DisplayName("Fecha Contratación")]
-        [Required(ErrorMessage = "La fecha de contratación del empleado es obligatorio.")]
+        [DisplayName("Fecha de Contratación")]
+        [Required(ErrorMessage = "La fecha de contratación del empleado es obligatoria.")]
         public DateTime fechaContratacion { get; set; }
 
         [DisplayName("Fecha Salida")]
         public DateTime? fechaSalida { get; set; }
 
         // Datos salariales
-        [DisplayName("Periodicidad Pago")]
-        [Required(ErrorMessage = "La periodicidad de pago del empleado es obligatorio.")]
+        [DisplayName("Periodicidad de Pago")]
+        [Required(ErrorMessage = "La periodicidad de pago del empleado es obligatoria.")]
         public string periocidadPago { get; set; }
 
         [DisplayName("Salario Diario")]
@@ -97,7 +97,7 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
 
         [DisplayName("Salario Aprobado")]
         [Required(ErrorMessage = "El salario aprobado del empleado es obligatorio.")]
-        [Range(0, double.MaxValue, ErrorMessage = "El salario aprobado debe ser un valor positivo.")]
+        [Range(0, double.MaxValue, ErrorMessage = "El salario aprobado debe ser un valor positivo")]
         public decimal salarioAprobado { get; set; }
 
         [DisplayName("Salario Por Minuto")]
@@ -111,14 +111,14 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
 
         // Moneda y banco
         [DisplayName("Moneda")]
-        [Required(ErrorMessage = "La moneda del empleado es obligatorio.")]
+        [Required(ErrorMessage = "La moneda del empleado es obligatoria.")]
         public int? idMoneda { get; set; }
 
         [DisplayName("Moneda")]
         public string nombreMoneda { get; set; }
 
         [DisplayName("Cuenta IBAN")]
-        [Required(ErrorMessage = "La cuenta IBAN del empleado es obligatorio.")]
+        [Required(ErrorMessage = "La cuenta IBAN del empleado es obligatoria.")]
         public string cuentaIBAN { get; set; }
 
         [DisplayName("Banco")]

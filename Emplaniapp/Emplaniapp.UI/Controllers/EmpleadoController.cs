@@ -28,6 +28,7 @@ using Emplaniapp.LogicaDeNegocio.General.ObtenerTotalEmpleados;
 using Emplaniapp.LogicaDeNegocio.Monedas.ListarMonedas;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Emplaniapp.AccesoADatos;
 
 namespace Emplaniapp.UI.Controllers
 {
@@ -108,6 +109,83 @@ namespace Emplaniapp.UI.Controllers
 
             return new SelectList(periodicidades, "Value", "Text", selectedValue);
         }
+
+        // ===============================================
+        // MÉTODOS PARA DATOS GEOGRÁFICOS
+        // ===============================================
+        
+        private SelectList ObtenerProvinciasSelectList(int? selectedValue = null)
+        {
+            using (var contexto = new Contexto())
+            {
+                var provincias = contexto.Provincia
+                    .Select(p => new { p.idProvincia, p.nombreProvincia })
+                    .OrderBy(p => p.nombreProvincia)
+                    .ToList();
+                
+                return new SelectList(provincias, "idProvincia", "nombreProvincia", selectedValue);
+            }
+        }
+
+        private SelectList ObtenerCantonesSelectList(int? idProvincia = null, int? selectedValue = null)
+        {
+            using (var contexto = new Contexto())
+            {
+                var query = contexto.Canton.AsQueryable();
+                
+                if (idProvincia.HasValue)
+                {
+                    query = query.Where(c => c.idProvincia == idProvincia.Value);
+                }
+                
+                var cantones = query
+                    .Select(c => new { c.idCanton, c.nombreCanton, c.idProvincia })
+                    .OrderBy(c => c.nombreCanton)
+                    .ToList();
+                
+                return new SelectList(cantones, "idCanton", "nombreCanton", selectedValue);
+            }
+        }
+
+        private SelectList ObtenerDistritosSelectList(int? idCanton = null, int? selectedValue = null)
+        {
+            using (var contexto = new Contexto())
+            {
+                var query = contexto.Distrito.AsQueryable();
+                
+                if (idCanton.HasValue)
+                {
+                    query = query.Where(d => d.idCanton == idCanton.Value);
+                }
+                
+                var distritos = query
+                    .Select(d => new { d.idDistrito, d.nombreDistrito, d.idCanton })
+                    .OrderBy(d => d.nombreDistrito)
+                    .ToList();
+                
+                return new SelectList(distritos, "idDistrito", "nombreDistrito", selectedValue);
+            }
+        }
+
+        private SelectList ObtenerCallesSelectList(int? idDistrito = null, int? selectedValue = null)
+        {
+            using (var contexto = new Contexto())
+            {
+                var query = contexto.Calle.AsQueryable();
+                
+                if (idDistrito.HasValue)
+                {
+                    query = query.Where(c => c.idDistrito == idDistrito.Value);
+                }
+                
+                var calles = query
+                    .Select(c => new { c.idCalle, c.nombreCalle, c.idDistrito })
+                    .OrderBy(c => c.nombreCalle)
+                    .ToList();
+                
+                return new SelectList(calles, "idCalle", "nombreCalle", selectedValue);
+            }
+        }
         // GET: Empleado
         public ActionResult ListarEmpleados()
         {
@@ -175,6 +253,13 @@ namespace Emplaniapp.UI.Controllers
             ViewBag.TiposMoneda = ObtenerTiposMonedasSelectList();
             ViewBag.Bancos = ObtenerBancosSelectList();
             ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList();
+            
+            // Cargar datos geográficos para dropdowns en cascada
+            ViewBag.Provincias = ObtenerProvinciasSelectList(model.idProvincia);
+            ViewBag.Cantones = ObtenerCantonesSelectList(model.idProvincia, model.idCanton);
+            ViewBag.Distritos = ObtenerDistritosSelectList(model.idCanton, model.idDistrito);
+            ViewBag.Calles = ObtenerCallesSelectList(model.idDistrito, model.idCalle);
+            
             ViewBag.RolesList = RoleManager.Roles.ToList().Select(r => new SelectListItem { Value = r.Name, Text = r.Name }).ToList();
             return View(model);
         }
@@ -211,45 +296,82 @@ namespace Emplaniapp.UI.Controllers
                             // Enlazar el usuario de Identity con el empleado
                             IdNetUser = user.Id,
 
-                            // Datos del formulario
-                            nombre = model.nombre,
-                            segundoNombre = model.segundoNombre,
-                            primerApellido = model.primerApellido,
-                            segundoApellido = model.segundoApellido,
+                            // Datos personales del formulario
+                            nombre = model.nombre?.Trim(),
+                            segundoNombre = string.IsNullOrWhiteSpace(model.segundoNombre) ? null : model.segundoNombre.Trim(),
+                            primerApellido = model.primerApellido?.Trim(),
+                            segundoApellido = model.segundoApellido?.Trim(),
                             fechaNacimiento = model.fechaNacimiento,
                             cedula = model.cedula,
-                            numeroTelefonico = model.numeroTelefonico,
-                            correoInstitucional = model.correoInstitucional,
-                            idProvincia = 1,
-                            idCanton = 1, // Valores por defecto
-                            idDistrito = 1, // Valores por defecto
-                            idCalle = 1, // Valores por defecto
-                            direccionDetallada = "por defecto",
-                            idCargo = model.idCargo,
+                            numeroTelefonico = model.numeroTelefonico?.Trim(),
+                            correoInstitucional = model.correoInstitucional?.Trim(),
+                            
+                            // Datos de ubicación con valores por defecto seguros
+                            idProvincia = 1, // San José por defecto
+                            idCanton = 1,    // San José por defecto  
+                            idDistrito = 1,  // Carmen por defecto
+                            idCalle = 1,     // Calle por defecto
+                            direccionDetallada = string.IsNullOrWhiteSpace(model.direccionDetallada) ? "Dirección por definir" : model.direccionDetallada.Trim(),
+                            
+                            // Datos laborales
+                            idCargo = model.idCargo.HasValue ? model.idCargo.Value : 1, // Validar que idCargo no sea null
                             fechaContratacion = model.fechaContratacion,
                             periocidadPago = model.periocidadPago,
                             salarioAprobado = model.salarioAprobado,
-                            idMoneda = model.idMoneda,
-                            cuentaIBAN = model.cuentaIBAN,
-                            idBanco = model.idBanco,
-                            idEstado = 1
+                            
+                            // Datos bancarios
+                            idMoneda = model.idMoneda.HasValue ? model.idMoneda.Value : 1, // Colón por defecto
+                            cuentaIBAN = model.cuentaIBAN?.Trim(),
+                            idBanco = model.idBanco.HasValue ? model.idBanco.Value : 1, // Banco por defecto
+                            
+                            // Estado
+                            idEstado = 1 // Activo por defecto
                         };
 
-                        // 4. Guardar el empleado en la base de datos
-                        bool creacionEmpleadoExitosa = _agregarEmpleadoLN.CrearEmpleado(empleadoDto);
+                        System.Diagnostics.Debug.WriteLine("📋 DTO del empleado creado:");
+                        System.Diagnostics.Debug.WriteLine($"IdNetUser: {empleadoDto.IdNetUser}");
+                        System.Diagnostics.Debug.WriteLine($"nombre: {empleadoDto.nombre}");
+                        System.Diagnostics.Debug.WriteLine($"cedula: {empleadoDto.cedula}");
+                        System.Diagnostics.Debug.WriteLine($"correoInstitucional: {empleadoDto.correoInstitucional}");
+                        System.Diagnostics.Debug.WriteLine($"idProvincia: {empleadoDto.idProvincia}");
+                        System.Diagnostics.Debug.WriteLine($"idCanton: {empleadoDto.idCanton}");
+                        System.Diagnostics.Debug.WriteLine($"idDistrito: {empleadoDto.idDistrito}");
+                        System.Diagnostics.Debug.WriteLine($"idCalle: {empleadoDto.idCalle}");
+                        System.Diagnostics.Debug.WriteLine($"direccionDetallada: {empleadoDto.direccionDetallada}");
+                        System.Diagnostics.Debug.WriteLine($"idCargo: {empleadoDto.idCargo}");
+                        System.Diagnostics.Debug.WriteLine($"periocidadPago: {empleadoDto.periocidadPago}");
+                        System.Diagnostics.Debug.WriteLine($"salarioAprobado: {empleadoDto.salarioAprobado}");
+                        System.Diagnostics.Debug.WriteLine($"idMoneda: {empleadoDto.idMoneda}");
+                        System.Diagnostics.Debug.WriteLine($"idBanco: {empleadoDto.idBanco}");
 
-                        if (creacionEmpleadoExitosa)
+                        // 4. Verificar que existan los datos básicos necesarios
+                        string validationError = ValidarDatosBasicos(empleadoDto);
+                        if (!string.IsNullOrEmpty(validationError))
                         {
-                            TempData["Mensaje"] = "Empleado y usuario creados exitosamente.";
-                            TempData["TipoMensaje"] = "success";
-                            return RedirectToAction("listarEmpleados");
+                            await UserManager.DeleteAsync(user);
+                            ModelState.AddModelError("", $"Error de datos básicos: {validationError}");
+                            System.Diagnostics.Debug.WriteLine($"❌ ERROR DE VALIDACIÓN: {validationError}");
                         }
                         else
                         {
-                            // Si falla la creación del empleado, hay que borrar el usuario que ya creamos para no dejar datos huérfanos.
-                            await UserManager.DeleteAsync(user);
-                            ModelState.AddModelError("", "Hubo un error al guardar los datos del empleado.");
-                            System.Diagnostics.Debug.WriteLine("ERROR: Falló la creación del EMPLEADO en la BD, se ha borrado el usuario de Identity para evitar datos huérfanos.");
+                            // 5. Guardar el empleado en la base de datos
+                            System.Diagnostics.Debug.WriteLine("🚀 Llamando a CrearEmpleado...");
+                            bool creacionEmpleadoExitosa = _agregarEmpleadoLN.CrearEmpleado(empleadoDto);
+                            System.Diagnostics.Debug.WriteLine($"🎯 Resultado CrearEmpleado: {creacionEmpleadoExitosa}");
+
+                            if (creacionEmpleadoExitosa)
+                            {
+                                TempData["Mensaje"] = "Empleado y usuario creados exitosamente.";
+                                TempData["TipoMensaje"] = "success";
+                                return RedirectToAction("listarEmpleados");
+                            }
+                            else
+                            {
+                                // Si falla la creación del empleado, hay que borrar el usuario que ya creamos para no dejar datos huérfanos.
+                                await UserManager.DeleteAsync(user);
+                                ModelState.AddModelError("", "Hubo un error al guardar los datos del empleado.");
+                                System.Diagnostics.Debug.WriteLine("❌ ERROR: Falló la creación del EMPLEADO en la BD, se ha borrado el usuario de Identity para evitar datos huérfanos.");
+                            }
                         }
                     }
                     else
@@ -279,6 +401,13 @@ namespace Emplaniapp.UI.Controllers
                 ViewBag.TiposMoneda = ObtenerTiposMonedasSelectList(model.idMoneda);
                 ViewBag.Bancos = ObtenerBancosSelectList(model.idBanco);
                 ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList(model.periocidadPago);
+                
+                // Recargar datos geográficos
+                ViewBag.Provincias = ObtenerProvinciasSelectList(model.idProvincia);
+                ViewBag.Cantones = ObtenerCantonesSelectList(model.idProvincia, model.idCanton);
+                ViewBag.Distritos = ObtenerDistritosSelectList(model.idCanton, model.idDistrito);
+                ViewBag.Calles = ObtenerCallesSelectList(model.idDistrito, model.idCalle);
+                
                 ViewBag.RolesList = RoleManager.Roles.ToList().Select(r => new SelectListItem { Value = r.Name, Text = r.Name }).ToList();
 
                 return View(model);
@@ -347,6 +476,178 @@ namespace Emplaniapp.UI.Controllers
             }
 
             return RedirectToAction("ListarEmpleados");
+        }
+
+        // ===============================================
+        // MÉTODOS AJAX PARA DROPDOWNS EN CASCADA
+        // ===============================================
+
+        [HttpGet]
+        public JsonResult ObtenerCantonesPorProvincia(int idProvincia)
+        {
+            try
+            {
+                using (var contexto = new Contexto())
+                {
+                    var cantones = contexto.Canton
+                        .Where(c => c.idProvincia == idProvincia)
+                        .Select(c => new { value = c.idCanton, text = c.nombreCanton })
+                        .OrderBy(c => c.text)
+                        .ToList();
+
+                    return Json(cantones, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error obteniendo cantones: {ex.Message}");
+                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerDistritosPorCanton(int idCanton)
+        {
+            try
+            {
+                using (var contexto = new Contexto())
+                {
+                    var distritos = contexto.Distrito
+                        .Where(d => d.idCanton == idCanton)
+                        .Select(d => new { value = d.idDistrito, text = d.nombreDistrito })
+                        .OrderBy(d => d.text)
+                        .ToList();
+
+                    return Json(distritos, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error obteniendo distritos: {ex.Message}");
+                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerCallesPorDistrito(int idDistrito)
+        {
+            try
+            {
+                using (var contexto = new Contexto())
+                {
+                    var calles = contexto.Calle
+                        .Where(c => c.idDistrito == idDistrito)
+                        .Select(c => new { value = c.idCalle, text = c.nombreCalle })
+                        .OrderBy(c => c.text)
+                        .ToList();
+
+                    return Json(calles, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error obteniendo calles: {ex.Message}");
+                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        // ===============================================
+        // MÉTODOS DE VALIDACIÓN
+        // ===============================================
+
+        private string ValidarDatosBasicos(EmpleadoDto empleado)
+        {
+            try
+            {
+                using (var contexto = new Contexto())
+                {
+                    var errores = new List<string>();
+
+                    // Verificar Provincia
+                    if (empleado.idProvincia.HasValue)
+                    {
+                        var provinciaExiste = contexto.Provincia.Any(p => p.idProvincia == empleado.idProvincia.Value);
+                        if (!provinciaExiste)
+                            errores.Add($"Provincia con ID {empleado.idProvincia} no existe");
+                    }
+
+                    // Verificar Cantón
+                    if (empleado.idCanton.HasValue)
+                    {
+                        var cantonExiste = contexto.Canton.Any(c => c.idCanton == empleado.idCanton.Value);
+                        if (!cantonExiste)
+                            errores.Add($"Cantón con ID {empleado.idCanton} no existe");
+                    }
+
+                    // Verificar Distrito
+                    if (empleado.idDistrito.HasValue)
+                    {
+                        var distritoExiste = contexto.Distrito.Any(d => d.idDistrito == empleado.idDistrito.Value);
+                        if (!distritoExiste)
+                            errores.Add($"Distrito con ID {empleado.idDistrito} no existe");
+                    }
+
+                    // Verificar Calle
+                    if (empleado.idCalle.HasValue)
+                    {
+                        var calleExiste = contexto.Calle.Any(c => c.idCalle == empleado.idCalle.Value);
+                        if (!calleExiste)
+                            errores.Add($"Calle con ID {empleado.idCalle} no existe");
+                    }
+
+                    // Verificar Cargo
+                    if (empleado.idCargo.HasValue)
+                    {
+                        var cargoExiste = contexto.Cargos.Any(c => c.idCargo == empleado.idCargo.Value);
+                        if (!cargoExiste)
+                            errores.Add($"Cargo con ID {empleado.idCargo} no existe");
+                    }
+
+                    // Verificar Moneda
+                    if (empleado.idMoneda.HasValue)
+                    {
+                        var monedaExiste = contexto.TipoMoneda.Any(m => m.idTipoMoneda == empleado.idMoneda.Value);
+                        if (!monedaExiste)
+                            errores.Add($"Tipo de moneda con ID {empleado.idMoneda} no existe");
+                    }
+
+                    // Verificar Banco
+                    if (empleado.idBanco.HasValue)
+                    {
+                        var bancoExiste = contexto.Bancos.Any(b => b.idBanco == empleado.idBanco.Value);
+                        if (!bancoExiste)
+                            errores.Add($"Banco con ID {empleado.idBanco} no existe");
+                    }
+
+                    // Verificar Estado
+                    var estadoExiste = contexto.Estado.Any(e => e.idEstado == empleado.idEstado);
+                    if (!estadoExiste)
+                        errores.Add($"Estado con ID {empleado.idEstado} no existe");
+
+                    // Verificar que existe dirección por defecto (ID = 1)
+                    var direccionExiste = contexto.Direccion.Any(d => d.idDireccion == 1);
+                    if (!direccionExiste)
+                        errores.Add("Dirección por defecto (ID = 1) no existe en la BD");
+
+                    if (errores.Any())
+                    {
+                        System.Diagnostics.Debug.WriteLine("🔍 ERRORES DE VALIDACIÓN ENCONTRADOS:");
+                        foreach (var error in errores)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"  ❌ {error}");
+                        }
+                        return string.Join("; ", errores);
+                    }
+
+                    System.Diagnostics.Debug.WriteLine("✅ Validación de datos básicos EXITOSA");
+                    return null; // Sin errores
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR en ValidarDatosBasicos: {ex.Message}");
+                return $"Error de validación: {ex.Message}";
+            }
         }
     }
 }
