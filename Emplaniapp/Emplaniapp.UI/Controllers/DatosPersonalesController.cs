@@ -1110,6 +1110,82 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
+        // ===============================================
+        // MÉTODOS AJAX PARA DROPDOWNS EN CASCADA
+        // ===============================================
+        
+        [HttpGet]
+        public JsonResult ObtenerCantonesPorProvincia(int idProvincia)
+        {
+            try
+            {
+                using (var contexto = new Contexto())
+                {
+                    var cantones = contexto.Canton
+                        .Where(c => c.idProvincia == idProvincia)
+                        .Select(c => new { value = c.idCanton, text = c.nombreCanton })
+                        .OrderBy(c => c.text)
+                        .ToList();
+
+                    System.Diagnostics.Debug.WriteLine($"Cargando cantones para provincia {idProvincia}: {cantones.Count} cantones encontrados");
+                    return Json(cantones, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error obteniendo cantones: {ex.Message}");
+                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerDistritosPorCanton(int idCanton)
+        {
+            try
+            {
+                using (var contexto = new Contexto())
+                {
+                    var distritos = contexto.Distrito
+                        .Where(d => d.idCanton == idCanton)
+                        .Select(d => new { value = d.idDistrito, text = d.nombreDistrito })
+                        .OrderBy(d => d.text)
+                        .ToList();
+
+                    System.Diagnostics.Debug.WriteLine($"Cargando distritos para cantón {idCanton}: {distritos.Count} distritos encontrados");
+                    return Json(distritos, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error obteniendo distritos: {ex.Message}");
+                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerCallesPorDistrito(int idDistrito)
+        {
+            try
+            {
+                using (var contexto = new Contexto())
+                {
+                    var calles = contexto.Calle
+                        .Where(c => c.idDistrito == idDistrito)
+                        .Select(c => new { value = c.idCalle, text = c.nombreCalle })
+                        .OrderBy(c => c.text)
+                        .ToList();
+
+                    System.Diagnostics.Debug.WriteLine($"Cargando calles para distrito {idDistrito}: {calles.Count} calles encontradas");
+                    return Json(calles, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error obteniendo calles: {ex.Message}");
+                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #endregion
     }
 }
