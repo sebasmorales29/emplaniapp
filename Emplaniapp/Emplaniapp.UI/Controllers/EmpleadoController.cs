@@ -127,65 +127,11 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        private SelectList ObtenerCantonesSelectList(int? idProvincia = null, int? selectedValue = null)
-        {
-            using (var contexto = new Contexto())
-            {
-                var query = contexto.Canton.AsQueryable();
-                
-                if (idProvincia.HasValue)
-                {
-                    query = query.Where(c => c.idProvincia == idProvincia.Value);
-                }
-                
-                var cantones = query
-                    .Select(c => new { c.idCanton, c.nombreCanton, c.idProvincia })
-                    .OrderBy(c => c.nombreCanton)
-                    .ToList();
-                
-                return new SelectList(cantones, "idCanton", "nombreCanton", selectedValue);
-            }
-        }
 
-        private SelectList ObtenerDistritosSelectList(int? idCanton = null, int? selectedValue = null)
-        {
-            using (var contexto = new Contexto())
-            {
-                var query = contexto.Distrito.AsQueryable();
-                
-                if (idCanton.HasValue)
-                {
-                    query = query.Where(d => d.idCanton == idCanton.Value);
-                }
-                
-                var distritos = query
-                    .Select(d => new { d.idDistrito, d.nombreDistrito, d.idCanton })
-                    .OrderBy(d => d.nombreDistrito)
-                    .ToList();
-                
-                return new SelectList(distritos, "idDistrito", "nombreDistrito", selectedValue);
-            }
-        }
 
-        private SelectList ObtenerCallesSelectList(int? idDistrito = null, int? selectedValue = null)
-        {
-            using (var contexto = new Contexto())
-            {
-                var query = contexto.Calle.AsQueryable();
-                
-                if (idDistrito.HasValue)
-                {
-                    query = query.Where(c => c.idDistrito == idDistrito.Value);
-                }
-                
-                var calles = query
-                    .Select(c => new { c.idCalle, c.nombreCalle, c.idDistrito })
-                    .OrderBy(c => c.nombreCalle)
-                    .ToList();
-                
-                return new SelectList(calles, "idCalle", "nombreCalle", selectedValue);
-            }
-        }
+
+
+
         // GET: Empleado
         public ActionResult ListarEmpleados()
         {
@@ -241,12 +187,11 @@ namespace Emplaniapp.UI.Controllers
             {
                 fechaNacimiento = DateTime.Now.AddYears(-25), // Valor por defecto
                 fechaContratacion = DateTime.Now,
-                idProvincia = 1, 
-                idDistrito = 1, // Valores por defecto
-                idCanton = 1, // Valores por defecto
-                idCalle = 1, // Valores por defecto
+                idProvincia = 1,   // San José
+                nombreCanton = "San José",    // Cantón por defecto
+                nombreDistrito = "Carmen",    // Distrito por defecto
                 direccionDetallada = "Dirección por defecto", // Valor por defecto
-                idEstado = 1     // Estado Activo por defecto
+                idEstado = 1       // Estado Activo por defecto
             };
 
             ViewBag.Cargos = ObtenerCargosSelectList();
@@ -254,13 +199,9 @@ namespace Emplaniapp.UI.Controllers
             ViewBag.Bancos = ObtenerBancosSelectList();
             ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList();
             
-            // Cargar datos geográficos para dropdowns en cascada
+            // Cargar solo provincias para dropdown
             ViewBag.Provincias = ObtenerProvinciasSelectList(model.idProvincia);
-            ViewBag.Cantones = ObtenerCantonesSelectList(model.idProvincia, model.idCanton);
-            ViewBag.Distritos = ObtenerDistritosSelectList(model.idCanton, model.idDistrito);
-            ViewBag.Calles = ObtenerCallesSelectList(model.idDistrito, model.idCalle);
             
-            ViewBag.RolesList = RoleManager.Roles.ToList().Select(r => new SelectListItem { Value = r.Name, Text = r.Name }).ToList();
             return View(model);
         }
 
@@ -272,7 +213,7 @@ namespace Emplaniapp.UI.Controllers
             try
             {
                 // Añadimos un log para ver qué datos llegan al controlador
-                System.Diagnostics.Debug.WriteLine($"Intento de crear empleado. UserName: {model.UserName}, Rol: {model.Role}");
+                System.Diagnostics.Debug.WriteLine($"Intento de crear empleado. UserName: {model.UserName}, Rol por defecto: Empleado");
 
                 if (ModelState.IsValid)
                 {
@@ -286,9 +227,10 @@ namespace Emplaniapp.UI.Controllers
                         System.Diagnostics.Debug.WriteLine($"ÉXITO: Usuario de Identity '{user.UserName}' (ID: {user.Id}) creado correctamente.");
                         // --- FIN DE CÓDIGO DE DEPURACIÓN ---
 
-                        // 2. Asignar rol al usuario
-                        await UserManager.AddToRoleAsync(user.Id, model.Role);
-                        System.Diagnostics.Debug.WriteLine($"ÉXITO: Rol '{model.Role}' asignado al usuario '{user.UserName}'.");
+                        // 2. Asignar rol "Empleado" por defecto a todos los usuarios nuevos
+                        const string rolPorDefecto = "Empleado";
+                        await UserManager.AddToRoleAsync(user.Id, rolPorDefecto);
+                        System.Diagnostics.Debug.WriteLine($"ÉXITO: Rol por defecto '{rolPorDefecto}' asignado al usuario '{user.UserName}'.");
 
                         // 3. Crear el DTO del empleado para la lógica de negocio
                         var empleadoDto = new EmpleadoDto
@@ -306,11 +248,10 @@ namespace Emplaniapp.UI.Controllers
                             numeroTelefonico = model.numeroTelefonico?.Trim(),
                             correoInstitucional = model.correoInstitucional?.Trim(),
                             
-                            // Datos de ubicación con valores por defecto seguros
-                            idProvincia = 1, // San José por defecto
-                            idCanton = 1,    // San José por defecto  
-                            idDistrito = 1,  // Carmen por defecto
-                            idCalle = 1,     // Calle por defecto
+                            // Datos de ubicación
+                            idProvincia = model.idProvincia ?? 1,   // San José por defecto
+                            nombreCanton = string.IsNullOrWhiteSpace(model.nombreCanton) ? "San José" : model.nombreCanton.Trim(),
+                            nombreDistrito = string.IsNullOrWhiteSpace(model.nombreDistrito) ? "Carmen" : model.nombreDistrito.Trim(),
                             direccionDetallada = string.IsNullOrWhiteSpace(model.direccionDetallada) ? "Dirección por definir" : model.direccionDetallada.Trim(),
                             
                             // Datos laborales
@@ -334,9 +275,8 @@ namespace Emplaniapp.UI.Controllers
                         System.Diagnostics.Debug.WriteLine($"cedula: {empleadoDto.cedula}");
                         System.Diagnostics.Debug.WriteLine($"correoInstitucional: {empleadoDto.correoInstitucional}");
                         System.Diagnostics.Debug.WriteLine($"idProvincia: {empleadoDto.idProvincia}");
-                        System.Diagnostics.Debug.WriteLine($"idCanton: {empleadoDto.idCanton}");
-                        System.Diagnostics.Debug.WriteLine($"idDistrito: {empleadoDto.idDistrito}");
-                        System.Diagnostics.Debug.WriteLine($"idCalle: {empleadoDto.idCalle}");
+                        System.Diagnostics.Debug.WriteLine($"nombreCanton: {empleadoDto.nombreCanton}");
+                        System.Diagnostics.Debug.WriteLine($"nombreDistrito: {empleadoDto.nombreDistrito}");
                         System.Diagnostics.Debug.WriteLine($"direccionDetallada: {empleadoDto.direccionDetallada}");
                         System.Diagnostics.Debug.WriteLine($"idCargo: {empleadoDto.idCargo}");
                         System.Diagnostics.Debug.WriteLine($"periocidadPago: {empleadoDto.periocidadPago}");
@@ -404,12 +344,7 @@ namespace Emplaniapp.UI.Controllers
                 
                 // Recargar datos geográficos
                 ViewBag.Provincias = ObtenerProvinciasSelectList(model.idProvincia);
-                ViewBag.Cantones = ObtenerCantonesSelectList(model.idProvincia, model.idCanton);
-                ViewBag.Distritos = ObtenerDistritosSelectList(model.idCanton, model.idDistrito);
-                ViewBag.Calles = ObtenerCallesSelectList(model.idDistrito, model.idCalle);
                 
-                ViewBag.RolesList = RoleManager.Roles.ToList().Select(r => new SelectListItem { Value = r.Name, Text = r.Name }).ToList();
-
                 return View(model);
             }
             catch
@@ -478,78 +413,9 @@ namespace Emplaniapp.UI.Controllers
             return RedirectToAction("ListarEmpleados");
         }
 
-        // ===============================================
-        // MÉTODOS AJAX PARA DROPDOWNS EN CASCADA
-        // ===============================================
 
-        [HttpGet]
-        public JsonResult ObtenerCantonesPorProvincia(int idProvincia)
-        {
-            try
-            {
-                using (var contexto = new Contexto())
-                {
-                    var cantones = contexto.Canton
-                        .Where(c => c.idProvincia == idProvincia)
-                        .Select(c => new { value = c.idCanton, text = c.nombreCanton })
-                        .OrderBy(c => c.text)
-                        .ToList();
 
-                    return Json(cantones, JsonRequestBehavior.AllowGet);
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error obteniendo cantones: {ex.Message}");
-                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
-            }
-        }
 
-        [HttpGet]
-        public JsonResult ObtenerDistritosPorCanton(int idCanton)
-        {
-            try
-            {
-                using (var contexto = new Contexto())
-                {
-                    var distritos = contexto.Distrito
-                        .Where(d => d.idCanton == idCanton)
-                        .Select(d => new { value = d.idDistrito, text = d.nombreDistrito })
-                        .OrderBy(d => d.text)
-                        .ToList();
-
-                    return Json(distritos, JsonRequestBehavior.AllowGet);
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error obteniendo distritos: {ex.Message}");
-                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        public JsonResult ObtenerCallesPorDistrito(int idDistrito)
-        {
-            try
-            {
-                using (var contexto = new Contexto())
-                {
-                    var calles = contexto.Calle
-                        .Where(c => c.idDistrito == idDistrito)
-                        .Select(c => new { value = c.idCalle, text = c.nombreCalle })
-                        .OrderBy(c => c.text)
-                        .ToList();
-
-                    return Json(calles, JsonRequestBehavior.AllowGet);
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error obteniendo calles: {ex.Message}");
-                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
-            }
-        }
 
         // ===============================================
         // MÉTODOS DE VALIDACIÓN
@@ -571,29 +437,19 @@ namespace Emplaniapp.UI.Controllers
                             errores.Add($"Provincia con ID {empleado.idProvincia} no existe");
                     }
 
-                    // Verificar Cantón
-                    if (empleado.idCanton.HasValue)
+                    // Verificar Cantón (nombre requerido)
+                    if (string.IsNullOrWhiteSpace(empleado.nombreCanton))
                     {
-                        var cantonExiste = contexto.Canton.Any(c => c.idCanton == empleado.idCanton.Value);
-                        if (!cantonExiste)
-                            errores.Add($"Cantón con ID {empleado.idCanton} no existe");
+                        errores.Add("El nombre del cantón es obligatorio");
                     }
 
-                    // Verificar Distrito
-                    if (empleado.idDistrito.HasValue)
+                    // Verificar Distrito (nombre requerido)
+                    if (string.IsNullOrWhiteSpace(empleado.nombreDistrito))
                     {
-                        var distritoExiste = contexto.Distrito.Any(d => d.idDistrito == empleado.idDistrito.Value);
-                        if (!distritoExiste)
-                            errores.Add($"Distrito con ID {empleado.idDistrito} no existe");
+                        errores.Add("El nombre del distrito es obligatorio");
                     }
 
-                    // Verificar Calle
-                    if (empleado.idCalle.HasValue)
-                    {
-                        var calleExiste = contexto.Calle.Any(c => c.idCalle == empleado.idCalle.Value);
-                        if (!calleExiste)
-                            errores.Add($"Calle con ID {empleado.idCalle} no existe");
-                    }
+
 
                     // Verificar Cargo
                     if (empleado.idCargo.HasValue)

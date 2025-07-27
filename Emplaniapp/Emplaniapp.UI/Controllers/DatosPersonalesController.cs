@@ -102,11 +102,9 @@ namespace Emplaniapp.UI.Controllers
                 return HttpNotFound();
             }
 
-            // 🔥 CARGAR DATOS GEOGRÁFICOS PARA DROPDOWNS
+            // 🔥 CARGAR DATOS GEOGRÁFICOS PARA DROPDOWN
             ViewBag.Provincias = ObtenerProvinciasSelectList(empleado.idProvincia);
-            ViewBag.Cantones = ObtenerCantonesSelectList(empleado.idProvincia, empleado.idCanton);
-            ViewBag.Distritos = ObtenerDistritosSelectList(empleado.idCanton, empleado.idDistrito);
-            ViewBag.Calles = ObtenerCallesSelectList(empleado.idDistrito, empleado.idCalle);
+
 
             return View(empleado);
         }
@@ -1050,141 +1048,13 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        private SelectList ObtenerCantonesSelectList(int? idProvincia = null, int? selectedValue = null)
-        {
-            using (var contexto = new Contexto())
-            {
-                var query = contexto.Canton.AsQueryable();
-                
-                if (idProvincia.HasValue)
-                {
-                    query = query.Where(c => c.idProvincia == idProvincia.Value);
-                }
-                
-                var cantones = query
-                    .Select(c => new { c.idCanton, c.nombreCanton, c.idProvincia })
-                    .OrderBy(c => c.nombreCanton)
-                    .ToList();
-                
-                return new SelectList(cantones, "idCanton", "nombreCanton", selectedValue);
-            }
-        }
 
-        private SelectList ObtenerDistritosSelectList(int? idCanton = null, int? selectedValue = null)
-        {
-            using (var contexto = new Contexto())
-            {
-                var query = contexto.Distrito.AsQueryable();
-                
-                if (idCanton.HasValue)
-                {
-                    query = query.Where(d => d.idCanton == idCanton.Value);
-                }
-                
-                var distritos = query
-                    .Select(d => new { d.idDistrito, d.nombreDistrito, d.idCanton })
-                    .OrderBy(d => d.nombreDistrito)
-                    .ToList();
-                
-                return new SelectList(distritos, "idDistrito", "nombreDistrito", selectedValue);
-            }
-        }
 
-        private SelectList ObtenerCallesSelectList(int? idDistrito = null, int? selectedValue = null)
-        {
-            using (var contexto = new Contexto())
-            {
-                var query = contexto.Calle.AsQueryable();
-                
-                if (idDistrito.HasValue)
-                {
-                    query = query.Where(c => c.idDistrito == idDistrito.Value);
-                }
-                
-                var calles = query
-                    .Select(c => new { c.idCalle, c.nombreCalle, c.idDistrito })
-                    .OrderBy(c => c.nombreCalle)
-                    .ToList();
-                
-                return new SelectList(calles, "idCalle", "nombreCalle", selectedValue);
-            }
-        }
 
-        // ===============================================
-        // MÉTODOS AJAX PARA DROPDOWNS EN CASCADA
-        // ===============================================
-        
-        [HttpGet]
-        public JsonResult ObtenerCantonesPorProvincia(int idProvincia)
-        {
-            try
-            {
-                using (var contexto = new Contexto())
-                {
-                    var cantones = contexto.Canton
-                        .Where(c => c.idProvincia == idProvincia)
-                        .Select(c => new { value = c.idCanton, text = c.nombreCanton })
-                        .OrderBy(c => c.text)
-                        .ToList();
 
-                    System.Diagnostics.Debug.WriteLine($"Cargando cantones para provincia {idProvincia}: {cantones.Count} cantones encontrados");
-                    return Json(cantones, JsonRequestBehavior.AllowGet);
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error obteniendo cantones: {ex.Message}");
-                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
-            }
-        }
 
-        [HttpGet]
-        public JsonResult ObtenerDistritosPorCanton(int idCanton)
-        {
-            try
-            {
-                using (var contexto = new Contexto())
-                {
-                    var distritos = contexto.Distrito
-                        .Where(d => d.idCanton == idCanton)
-                        .Select(d => new { value = d.idDistrito, text = d.nombreDistrito })
-                        .OrderBy(d => d.text)
-                        .ToList();
 
-                    System.Diagnostics.Debug.WriteLine($"Cargando distritos para cantón {idCanton}: {distritos.Count} distritos encontrados");
-                    return Json(distritos, JsonRequestBehavior.AllowGet);
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error obteniendo distritos: {ex.Message}");
-                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
-            }
-        }
 
-        [HttpGet]
-        public JsonResult ObtenerCallesPorDistrito(int idDistrito)
-        {
-            try
-            {
-                using (var contexto = new Contexto())
-                {
-                    var calles = contexto.Calle
-                        .Where(c => c.idDistrito == idDistrito)
-                        .Select(c => new { value = c.idCalle, text = c.nombreCalle })
-                        .OrderBy(c => c.text)
-                        .ToList();
-
-                    System.Diagnostics.Debug.WriteLine($"Cargando calles para distrito {idDistrito}: {calles.Count} calles encontradas");
-                    return Json(calles, JsonRequestBehavior.AllowGet);
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error obteniendo calles: {ex.Message}");
-                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
-            }
-        }
 
         #endregion
     }

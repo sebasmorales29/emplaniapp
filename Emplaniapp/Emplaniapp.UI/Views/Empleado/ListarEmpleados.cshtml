@@ -136,7 +136,7 @@
             <th>@Html.DisplayNameFor(model => model.First().nombreCompleto)</th>
             <th>@Html.DisplayNameFor(model => model.First().nombreCargo)</th>
             <th>@Html.DisplayNameFor(model => model.First().nombreEstado)</th>
-            <th>Rol</th>
+            <th>@Html.DisplayNameFor(model => model.First().RolesUsuario)</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -148,7 +148,9 @@
                 <td>@($"{item.nombre} {item.segundoNombre} {item.primerApellido} {item.segundoApellido}")</td>
                 <td>@Html.DisplayFor(modelItem => item.nombreCargo)</td>
                 <td>@Html.DisplayFor(modelItem => item.nombreEstado)</td>
-                <td>@Html.DisplayFor(modelItem => item.Role)</td>
+                <td>
+                    <span class="badge badge-light" style="background-color: #e3f2fd; color: #000; border: 1px solid #90caf9;">@Html.DisplayFor(modelItem => item.RolesUsuario)</span>
+                </td>
                 <td class="acciones">
                     <a href="@Url.Action("Detalles", "DatosPersonales", new { id = item.idEmpleado })" class="btn-celeste-claro">Ver detalles</a>
                     <a href="@Url.Action("_CambiarEstado", "Empleado", new { id = item.idEmpleado })"

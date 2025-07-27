@@ -31,8 +31,6 @@ namespace Emplaniapp.AccesoADatos
                               from cantonData in cantonGroup.DefaultIfEmpty()
                               join distrito in contexto.Distrito on emp.idDistrito equals distrito.idDistrito into distritoGroup
                               from distritoData in distritoGroup.DefaultIfEmpty()
-                              join calle in contexto.Calle on emp.idCalle equals calle.idCalle into calleGroup
-                              from calleData in calleGroup.DefaultIfEmpty()
                               where emp.idEmpleado == idEmpleado
                               select new 
                               {
@@ -43,8 +41,7 @@ namespace Emplaniapp.AccesoADatos
                                   NombreBanco = bancoData.nombreBanco,
                                   NombreProvincia = provinciaData.nombreProvincia,
                                   NombreCanton = cantonData.nombreCanton,
-                                  NombreDistrito = distritoData.nombreDistrito,
-                                  NombreCalle = calleData.nombreCalle
+                                  NombreDistrito = distritoData.nombreDistrito
                               };
 
                 var resultado = consulta.FirstOrDefault();
@@ -57,7 +54,6 @@ namespace Emplaniapp.AccesoADatos
                 System.Diagnostics.Debug.WriteLine($"Provincia: {resultado.NombreProvincia ?? "No encontrada"}");
                 System.Diagnostics.Debug.WriteLine($"Cantón: {resultado.NombreCanton ?? "No encontrado"}");
                 System.Diagnostics.Debug.WriteLine($"Distrito: {resultado.NombreDistrito ?? "No encontrado"}");
-                System.Diagnostics.Debug.WriteLine($"Calle: {resultado.NombreCalle ?? "No encontrada"}");
                 System.Diagnostics.Debug.WriteLine($"Dirección detallada: {empleado.direccionDetallada ?? "No especificada"}");
 
                 return new EmpleadoDto
@@ -75,19 +71,14 @@ namespace Emplaniapp.AccesoADatos
                     // 🔥 CAMPOS GEOGRÁFICOS CON IDs Y NOMBRES
                     idProvincia = empleado.idProvincia,
                     nombreProvincia = resultado.NombreProvincia ?? "No especificada",
-                    idCanton = empleado.idCanton,
                     nombreCanton = resultado.NombreCanton ?? "No especificado",
-                    idDistrito = empleado.idDistrito,
                     nombreDistrito = resultado.NombreDistrito ?? "No especificado",
-                    idCalle = empleado.idCalle,
-                    nombreCalle = resultado.NombreCalle ?? "No especificada",
                     direccionDetallada = empleado.direccionDetallada ?? "No especificada",
                     
-                    // 🔥 DIRECCIÓN COMPLETA CONCATENADA
+                    // 🔥 DIRECCIÓN COMPLETA CONCATENADA (sin calle)
                     direccionCompleta = $"{resultado.NombreProvincia ?? "Provincia no especificada"}, " +
                                        $"{resultado.NombreCanton ?? "Cantón no especificado"}, " +
-                                       $"{resultado.NombreDistrito ?? "Distrito no especificado"}, " +
-                                       $"{resultado.NombreCalle ?? "Calle no especificada"}. " +
+                                       $"{resultado.NombreDistrito ?? "Distrito no especificado"}. " +
                                        $"{empleado.direccionDetallada ?? "Sin detalles adicionales"}",
                     
                     idCargo = empleado.idCargo,
@@ -156,9 +147,8 @@ namespace Emplaniapp.AccesoADatos
                         numeroTelefonico = empleadoDto.numeroTelefonico,
                         correoInstitucional = empleadoDto.correoInstitucional,
                         idProvincia = empleadoDto.idProvincia,
-                        idCanton = empleadoDto.idCanton,
-                        idDistrito = empleadoDto.idDistrito,
-                        idCalle = empleadoDto.idCalle,
+                        idCanton = ObtenerOCrearCantonPorNombre(empleadoDto.nombreCanton, empleadoDto.idProvincia ?? 1),
+                        idDistrito = ObtenerOCrearDistritoPorNombre(empleadoDto.nombreDistrito, empleadoDto.nombreCanton, empleadoDto.idProvincia ?? 1),
                         direccionDetallada = empleadoDto.direccionDetallada,
                         idCargo = empleadoDto.idCargo,
                         fechaContratacion = empleadoDto.fechaContratacion,
@@ -254,23 +244,19 @@ namespace Emplaniapp.AccesoADatos
                         System.Diagnostics.Debug.WriteLine($"Provincia actualizada: {empleadoDto.idProvincia.Value}");
                     }
                     
-                    if (empleadoDto.idCanton.HasValue)
+                    if (!string.IsNullOrWhiteSpace(empleadoDto.nombreCanton))
                     {
-                        empleado.idCanton = empleadoDto.idCanton.Value;
-                        System.Diagnostics.Debug.WriteLine($"Cantón actualizado: {empleadoDto.idCanton.Value}");
+                        empleado.idCanton = ObtenerOCrearCantonPorNombre(empleadoDto.nombreCanton, empleadoDto.idProvincia ?? 1);
+                        System.Diagnostics.Debug.WriteLine($"Cantón actualizado: {empleadoDto.nombreCanton} (ID: {empleado.idCanton})");
                     }
                     
-                    if (empleadoDto.idDistrito.HasValue)
+                    if (!string.IsNullOrWhiteSpace(empleadoDto.nombreDistrito))
                     {
-                        empleado.idDistrito = empleadoDto.idDistrito.Value;
-                        System.Diagnostics.Debug.WriteLine($"Distrito actualizado: {empleadoDto.idDistrito.Value}");
+                        empleado.idDistrito = ObtenerOCrearDistritoPorNombre(empleadoDto.nombreDistrito, empleadoDto.nombreCanton, empleadoDto.idProvincia ?? 1);
+                        System.Diagnostics.Debug.WriteLine($"Distrito actualizado: {empleadoDto.nombreDistrito} (ID: {empleado.idDistrito})");
                     }
                     
-                    if (empleadoDto.idCalle.HasValue)
-                    {
-                        empleado.idCalle = empleadoDto.idCalle.Value;
-                        System.Diagnostics.Debug.WriteLine($"Calle actualizada: {empleadoDto.idCalle.Value}");
-                    }
+
                     
                     if (!string.IsNullOrWhiteSpace(empleadoDto.direccionDetallada))
                     {
@@ -420,6 +406,99 @@ namespace Emplaniapp.AccesoADatos
                     new BancoDto { idBanco = 2, nombreBanco = "Banco de Costa Rica" },
                     new BancoDto { idBanco = 3, nombreBanco = "BAC San José" }
                 };
+            }
+        }
+
+        /// <summary>
+        /// Busca un cantón por nombre y provincia, si no existe lo crea
+        /// </summary>
+        private int ObtenerOCrearCantonPorNombre(string nombreCanton, int idProvincia)
+        {
+            try
+            {
+                using (var contexto = new Contexto())
+                {
+                    // Buscar cantón existente por nombre (insensible a mayúsculas/minúsculas)
+                    var canton = contexto.Canton
+                        .FirstOrDefault(c => c.nombreCanton.ToLower() == nombreCanton.ToLower() && c.idProvincia == idProvincia);
+
+                    if (canton != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"✅ Cantón encontrado: {canton.nombreCanton} (ID: {canton.idCanton})");
+                        return canton.idCanton;
+                    }
+
+                    // Si no existe, crear nuevo cantón con ID único
+                    var maxId = contexto.Canton.Max(c => (int?)c.idCanton) ?? 100;
+                    var nuevoId = maxId + 1;
+
+                    var nuevoCanton = new Emplaniapp.Abstracciones.ModelosAD.Canton
+                    {
+                        idCanton = nuevoId,
+                        nombreCanton = nombreCanton.Trim(),
+                        idProvincia = idProvincia
+                    };
+
+                    contexto.Canton.Add(nuevoCanton);
+                    contexto.SaveChanges();
+
+                    System.Diagnostics.Debug.WriteLine($"✅ Nuevo cantón creado: {nuevoCanton.nombreCanton} (ID: {nuevoCanton.idCanton})");
+                    return nuevoCanton.idCanton;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error en ObtenerOCrearCantonPorNombre: {ex.Message}");
+                // En caso de error, devolver San José como fallback
+                return 101;
+            }
+        }
+
+        /// <summary>
+        /// Busca un distrito por nombre, si no existe lo crea
+        /// </summary>
+        private int ObtenerOCrearDistritoPorNombre(string nombreDistrito, string nombreCanton, int idProvincia)
+        {
+            try
+            {
+                using (var contexto = new Contexto())
+                {
+                    // Primero obtener el ID del cantón
+                    var idCanton = ObtenerOCrearCantonPorNombre(nombreCanton, idProvincia);
+
+                    // Buscar distrito existente por nombre y cantón
+                    var distrito = contexto.Distrito
+                        .FirstOrDefault(d => d.nombreDistrito.ToLower() == nombreDistrito.ToLower() && d.idCanton == idCanton);
+
+                    if (distrito != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"✅ Distrito encontrado: {distrito.nombreDistrito} (ID: {distrito.idDistrito})");
+                        return distrito.idDistrito;
+                    }
+
+                    // Si no existe, crear nuevo distrito con ID único
+                    var maxId = contexto.Distrito.Max(d => (int?)d.idDistrito) ?? 100;
+                    var nuevoId = maxId + 1;
+
+                    var nuevoDistrito = new Emplaniapp.Abstracciones.ModelosAD.Distrito
+                    {
+                        idDistrito = nuevoId,
+                        nombreDistrito = nombreDistrito.Trim(),
+                        idCanton = idCanton
+                    };
+
+                    contexto.Distrito.Add(nuevoDistrito);
+                    contexto.SaveChanges();
+
+                    System.Diagnostics.Debug.WriteLine($"✅ Nuevo distrito creado: {nuevoDistrito.nombreDistrito} (ID: {nuevoDistrito.idDistrito})");
+                    return nuevoDistrito.idDistrito;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error en ObtenerOCrearDistritoPorNombre: {ex.Message}");
+                // En caso de error, devolver Carmen como fallback
+                return 1;
             }
         }
     }

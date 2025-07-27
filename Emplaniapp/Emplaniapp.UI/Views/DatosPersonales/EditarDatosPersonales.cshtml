@@ -94,29 +94,31 @@
                     <h3 class="panel-title">Dirección</h3>
                 </div>
                 <div class="panel-body">
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.idProvincia, "Provincia", htmlAttributes: new { @class = "control-label" })
-                        @Html.DropDownListFor(model => model.idProvincia, (SelectList)ViewBag.Provincias, "-- Seleccione provincia --", new { @class = "form-control", id = "ddlProvincia" })
-                        @Html.ValidationMessageFor(model => model.idProvincia, "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.idProvincia, "Provincia", htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.idProvincia, (SelectList)ViewBag.Provincias, "-- Seleccione provincia --", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.idProvincia, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.nombreCanton, "Cantón", htmlAttributes: new { @class = "control-label" })
+                                @Html.TextBoxFor(model => model.nombreCanton, new { @class = "form-control", placeholder = "Ej: San José, Escazú, Desamparados..." })
+                                @Html.ValidationMessageFor(model => model.nombreCanton, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.nombreDistrito, "Distrito", htmlAttributes: new { @class = "control-label" })
+                                @Html.TextBoxFor(model => model.nombreDistrito, new { @class = "form-control", placeholder = "Ej: Carmen, Centro, La Uruca..." })
+                                @Html.ValidationMessageFor(model => model.nombreDistrito, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.idCanton, "Cantón", htmlAttributes: new { @class = "control-label" })
-                        @Html.DropDownListFor(model => model.idCanton, (SelectList)ViewBag.Cantones, "-- Seleccione cantón --", new { @class = "form-control", id = "ddlCanton" })
-                        @Html.ValidationMessageFor(model => model.idCanton, "", new { @class = "text-danger" })
-                    </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.idDistrito, "Distrito", htmlAttributes: new { @class = "control-label" })
-                        @Html.DropDownListFor(model => model.idDistrito, (SelectList)ViewBag.Distritos, "-- Seleccione distrito --", new { @class = "form-control", id = "ddlDistrito" })
-                        @Html.ValidationMessageFor(model => model.idDistrito, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.idCalle, "Calle", htmlAttributes: new { @class = "control-label" })
-                        @Html.DropDownListFor(model => model.idCalle, (SelectList)ViewBag.Calles, "-- Seleccione calle --", new { @class = "form-control", id = "ddlCalle" })
-                        @Html.ValidationMessageFor(model => model.idCalle, "", new { @class = "text-danger" })
-                    </div>
 
                     <div class="form-group">
                         @Html.LabelFor(model => model.direccionDetallada, "Dirección Detallada", htmlAttributes: new { @class = "control-label" })
@@ -155,178 +157,32 @@
             var mainForm = $('#editForm');
 
             // ==============================================
-            // LÓGICA PARA DROPDOWNS DE DIRECCIÓN EN CASCADA
-            // ==============================================
-            
-            // Cargar cantones al cargar la página si hay provincia seleccionada
-            var provinciaId = $('#ddlProvincia').val();
-            if (provinciaId) {
-                cargarCantones(provinciaId, '@Model.idCanton');
-            }
-
-            // Cargar distritos si hay cantón seleccionado
-            var cantonId = $('#ddlCanton').val();
-            if (cantonId) {
-                cargarDistritos(cantonId, '@Model.idDistrito');
-            }
-
-            // Cargar calles si hay distrito seleccionado
-            var distritoId = $('#ddlDistrito').val();
-            if (distritoId) {
-                cargarCalles(distritoId, '@Model.idCalle');
-            }
-
             // Actualizar vista previa al cargar
             actualizarVistaPrevia();
 
-            // EVENTOS DE CAMBIO EN DROPDOWNS
-            $('#ddlProvincia').change(function () {
-                var provinciaId = $(this).val();
-                if (provinciaId) {
-                    cargarCantones(provinciaId);
-                } else {
-                    resetearDropdowns(['#ddlCanton', '#ddlDistrito', '#ddlCalle']);
-                }
+            // EVENTOS PARA ACTUALIZAR VISTA PREVIA
+            $('#ddlProvincia, input[name="nombreCanton"], input[name="nombreDistrito"], #direccionDetallada').on('change input', function () {
                 actualizarVistaPrevia();
             });
 
-            $('#ddlCanton').change(function () {
-                var cantonId = $(this).val();
-                if (cantonId) {
-                    cargarDistritos(cantonId);
-                } else {
-                    resetearDropdowns(['#ddlDistrito', '#ddlCalle']);
-                }
-                actualizarVistaPrevia();
-            });
 
-            $('#ddlDistrito').change(function () {
-                var distritoId = $(this).val();
-                if (distritoId) {
-                    cargarCalles(distritoId);
-                } else {
-                    resetearDropdowns(['#ddlCalle']);
-                }
-                actualizarVistaPrevia();
-            });
 
-            $('#ddlCalle').change(function () {
-                actualizarVistaPrevia();
-            });
 
-            // Actualizar vista previa cuando cambie dirección detallada
-            $('#direccionDetallada').on('input', function () {
-                actualizarVistaPrevia();
-            });
 
-            // FUNCIONES AUXILIARES PARA DROPDOWNS
-            function cargarCantones(provinciaId, selectedCantonId) {
-                $.ajax({
-                    url: '@Url.Action("ObtenerCantonesPorProvincia", "DatosPersonales")',
-                    type: 'GET',
-                    data: { idProvincia: provinciaId },
-                    success: function (data) {
-                        var cantonDropdown = $('#ddlCanton');
-                        cantonDropdown.empty().append('<option value="">-- Seleccione cantón --</option>');
-                        
-                        $.each(data, function (index, item) {
-                            var option = $('<option></option>').val(item.value).text(item.text);
-                            if (selectedCantonId && item.value == selectedCantonId) {
-                                option.prop('selected', true);
-                            }
-                            cantonDropdown.append(option);
-                        });
 
-                        // Si hay cantón seleccionado, cargar distritos
-                        if (selectedCantonId) {
-                            cargarDistritos(selectedCantonId, '@Model.idDistrito');
-                        } else {
-                            resetearDropdowns(['#ddlDistrito', '#ddlCalle']);
-                        }
-                    },
-                    error: function () {
-                        console.error('Error al cargar cantones');
-                        resetearDropdowns(['#ddlCanton', '#ddlDistrito', '#ddlCalle']);
-                    }
-                });
-            }
-
-            function cargarDistritos(cantonId, selectedDistritoId) {
-                $.ajax({
-                    url: '@Url.Action("ObtenerDistritosPorCanton", "DatosPersonales")',
-                    type: 'GET',
-                    data: { idCanton: cantonId },
-                    success: function (data) {
-                        var distritoDropdown = $('#ddlDistrito');
-                        distritoDropdown.empty().append('<option value="">-- Seleccione distrito --</option>');
-                        
-                        $.each(data, function (index, item) {
-                            var option = $('<option></option>').val(item.value).text(item.text);
-                            if (selectedDistritoId && item.value == selectedDistritoId) {
-                                option.prop('selected', true);
-                            }
-                            distritoDropdown.append(option);
-                        });
-
-                        // Si hay distrito seleccionado, cargar calles
-                        if (selectedDistritoId) {
-                            cargarCalles(selectedDistritoId, '@Model.idCalle');
-                        } else {
-                            resetearDropdowns(['#ddlCalle']);
-                        }
-                    },
-                    error: function () {
-                        console.error('Error al cargar distritos');
-                        resetearDropdowns(['#ddlDistrito', '#ddlCalle']);
-                    }
-                });
-            }
-
-            function cargarCalles(distritoId, selectedCalleId) {
-                $.ajax({
-                    url: '@Url.Action("ObtenerCallesPorDistrito", "DatosPersonales")',
-                    type: 'GET',
-                    data: { idDistrito: distritoId },
-                    success: function (data) {
-                        var calleDropdown = $('#ddlCalle');
-                        calleDropdown.empty().append('<option value="">-- Seleccione calle --</option>');
-                        
-                        $.each(data, function (index, item) {
-                            var option = $('<option></option>').val(item.value).text(item.text);
-                            if (selectedCalleId && item.value == selectedCalleId) {
-                                option.prop('selected', true);
-                            }
-                            calleDropdown.append(option);
-                        });
-                    },
-                    error: function () {
-                        console.error('Error al cargar calles');
-                        resetearDropdowns(['#ddlCalle']);
-                    }
-                });
-            }
-
-            function resetearDropdowns(selectors) {
-                $.each(selectors, function(index, selector) {
-                    $(selector).empty().append('<option value="">-- Seleccione ' + 
-                        selector.replace('#ddl', '').toLowerCase() + ' --</option>');
-                });
-            }
 
             // FUNCIÓN PARA ACTUALIZAR VISTA PREVIA
             function actualizarVistaPrevia() {
                 var provincia = $('#ddlProvincia option:selected').text();
-                var canton = $('#ddlCanton option:selected').text();
-                var distrito = $('#ddlDistrito option:selected').text();
-                var calle = $('#ddlCalle option:selected').text();
+                var canton = $('input[name="nombreCanton"]').val().trim();
+                var distrito = $('input[name="nombreDistrito"]').val().trim();
                 var detallada = $('#direccionDetallada').val().trim();
 
                 var partes = [];
                 
                 if (provincia && provincia !== '-- Seleccione provincia --') partes.push(provincia);
-                if (canton && canton !== '-- Seleccione cantón --') partes.push(canton);
-                if (distrito && distrito !== '-- Seleccione distrito --') partes.push(distrito);
-                if (calle && calle !== '-- Seleccione calle --') partes.push(calle);
+                if (canton) partes.push(canton);
+                if (distrito) partes.push(distrito);
 
                 var direccionCompleta = partes.join(', ');
                 if (detallada) {
@@ -337,7 +193,7 @@
                 if (direccionCompleta) {
                     preview.html('<strong>' + direccionCompleta + '</strong>');
                 } else {
-                    preview.html('<em>Seleccione la ubicación para ver la dirección completa</em>');
+                    preview.html('<em>Complete la ubicación para ver la dirección completa</em>');
                 }
             }
 

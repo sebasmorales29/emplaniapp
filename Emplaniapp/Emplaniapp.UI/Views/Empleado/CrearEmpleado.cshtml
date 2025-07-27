@@ -126,36 +126,28 @@
             <div class="panel-heading"><h3 class="panel-title">Dirección</h3></div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             @Html.LabelFor(m => m.idProvincia, "Provincia")
-                            @Html.DropDownListFor(m => m.idProvincia, (SelectList)ViewBag.Provincias, "-- Seleccione provincia --", new { @class = "form-control", id = "ddlProvincia" })
+                            @Html.DropDownListFor(m => m.idProvincia, (SelectList)ViewBag.Provincias, "-- Seleccione provincia --", new { @class = "form-control" })
                             @Html.ValidationMessageFor(m => m.idProvincia, "", new { @class = "text-danger" })
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            @Html.LabelFor(m => m.idCanton, "Cantón")
-                            @Html.DropDownListFor(m => m.idCanton, (SelectList)ViewBag.Cantones, "-- Seleccione cantón --", new { @class = "form-control", id = "ddlCanton", disabled = "disabled" })
-                            @Html.ValidationMessageFor(m => m.idCanton, "", new { @class = "text-danger" })
+                            @Html.LabelFor(m => m.nombreCanton, "Cantón")
+                            @Html.TextBoxFor(m => m.nombreCanton, new { @class = "form-control", placeholder = "Ej: San José, Escazú, Desamparados..." })
+                            @Html.ValidationMessageFor(m => m.nombreCanton, "", new { @class = "text-danger" })
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            @Html.LabelFor(m => m.idDistrito, "Distrito")
-                            @Html.DropDownListFor(m => m.idDistrito, (SelectList)ViewBag.Distritos, "-- Seleccione distrito --", new { @class = "form-control", id = "ddlDistrito", disabled = "disabled" })
-                            @Html.ValidationMessageFor(m => m.idDistrito, "", new { @class = "text-danger" })
+                            @Html.LabelFor(m => m.nombreDistrito, "Distrito")
+                            @Html.TextBoxFor(m => m.nombreDistrito, new { @class = "form-control", placeholder = "Ej: Carmen, Centro, La Uruca..." })
+                            @Html.ValidationMessageFor(m => m.nombreDistrito, "", new { @class = "text-danger" })
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            @Html.LabelFor(m => m.idCalle, "Calle")
-                            @Html.DropDownListFor(m => m.idCalle, (SelectList)ViewBag.Calles, "-- Seleccione calle --", new { @class = "form-control", id = "ddlCalle", disabled = "disabled" })
-                            @Html.ValidationMessageFor(m => m.idCalle, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
+
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -188,8 +180,23 @@
             <div class="panel-heading"><h3 class="panel-title">Credenciales de Acceso</h3></div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.UserName) @Html.EditorFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })</div></div>
-                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.Role, "Rol de Usuario") @Html.DropDownListFor(m => m.Role, (IEnumerable<SelectListItem>)ViewBag.RolesList, "Seleccione rol", new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.Role, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.UserName) 
+                            @Html.EditorFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control" } }) 
+                            @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Rol de Usuario</label>
+                            <div class="form-control-static" style="background-color: #e9f7ef; border: 1px solid #d4edda; padding: 8px; border-radius: 4px;">
+                                <i class="fa fa-info-circle text-success"></i> 
+                                <strong>Empleado</strong> (asignado automáticamente)
+                            </div>
+                            <small class="text-muted">Todos los usuarios nuevos reciben el rol de "Empleado" por defecto. Los roles adicionales (Contador, Administrador) se asignan posteriormente según sea necesario.</small>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6"><div class="form-group"><div class="password-wrapper">@Html.LabelFor(m => m.Password) @Html.PasswordFor(m => m.Password, new { @class = "form-control" }) <i class="fa fa-eye toggle-password"></i></div>@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })</div></div>
@@ -291,150 +298,11 @@
                 $('#adminPasswordModal').modal('hide');
             });
 
-            // ===============================================
-            // LÓGICA PARA DROPDOWNS DE DIRECCIÓN EN CASCADA
-            // ===============================================
-            
-            // Al cargar la página, si hay provincia seleccionada, cargar cantones
-            var provinciaId = $('#ddlProvincia').val();
-            if (provinciaId) {
-                cargarCantones(provinciaId, '@Model.idCanton');
-            }
 
-            // Evento change para Provincia
-            $('#ddlProvincia').change(function () {
-                var provinciaId = $(this).val();
-                
-                // Resetear dropdowns dependientes
-                resetearDropdowns(['#ddlCanton', '#ddlDistrito', '#ddlCalle']);
-                
-                if (provinciaId) {
-                    cargarCantones(provinciaId);
-                }
-            });
 
-            // Evento change para Cantón
-            $('#ddlCanton').change(function () {
-                var cantonId = $(this).val();
-                
-                // Resetear dropdowns dependientes
-                resetearDropdowns(['#ddlDistrito', '#ddlCalle']);
-                
-                if (cantonId) {
-                    cargarDistritos(cantonId);
-                }
-            });
 
-            // Evento change para Distrito
-            $('#ddlDistrito').change(function () {
-                var distritoId = $(this).val();
-                
-                // Resetear dropdowns dependientes
-                resetearDropdowns(['#ddlCalle']);
-                
-                if (distritoId) {
-                    cargarCalles(distritoId);
-                }
-            });
 
-            // Función para cargar cantones
-            function cargarCantones(provinciaId, selectedCantonId) {
-                $.ajax({
-                    url: '@Url.Action("ObtenerCantonesPorProvincia", "Empleado")',
-                    type: 'GET',
-                    data: { idProvincia: provinciaId },
-                    success: function (data) {
-                        var $canton = $('#ddlCanton');
-                        $canton.empty().append('<option value="">-- Seleccione cantón --</option>');
-                        
-                        $.each(data, function (index, item) {
-                            var selected = selectedCantonId && item.value == selectedCantonId ? 'selected' : '';
-                            $canton.append('<option value="' + item.value + '" ' + selected + '>' + item.text + '</option>');
-                        });
-                        
-                        $canton.prop('disabled', false);
-                        
-                        // Si hay cantón preseleccionado, cargar sus distritos
-                        if (selectedCantonId) {
-                            cargarDistritos(selectedCantonId, '@Model.idDistrito');
-                        }
-                    },
-                    error: function () {
-                        console.error('Error cargando cantones');
-                        resetearDropdowns(['#ddlCanton', '#ddlDistrito', '#ddlCalle']);
-                    }
-                });
-            }
 
-            // Función para cargar distritos
-            function cargarDistritos(cantonId, selectedDistritoId) {
-                $.ajax({
-                    url: '@Url.Action("ObtenerDistritosPorCanton", "Empleado")',
-                    type: 'GET',
-                    data: { idCanton: cantonId },
-                    success: function (data) {
-                        var $distrito = $('#ddlDistrito');
-                        $distrito.empty().append('<option value="">-- Seleccione distrito --</option>');
-                        
-                        $.each(data, function (index, item) {
-                            var selected = selectedDistritoId && item.value == selectedDistritoId ? 'selected' : '';
-                            $distrito.append('<option value="' + item.value + '" ' + selected + '>' + item.text + '</option>');
-                        });
-                        
-                        $distrito.prop('disabled', false);
-                        
-                        // Si hay distrito preseleccionado, cargar sus calles
-                        if (selectedDistritoId) {
-                            cargarCalles(selectedDistritoId, '@Model.idCalle');
-                        }
-                    },
-                    error: function () {
-                        console.error('Error cargando distritos');
-                        resetearDropdowns(['#ddlDistrito', '#ddlCalle']);
-                    }
-                });
-            }
-
-            // Función para cargar calles
-            function cargarCalles(distritoId, selectedCalleId) {
-                $.ajax({
-                    url: '@Url.Action("ObtenerCallesPorDistrito", "Empleado")',
-                    type: 'GET',
-                    data: { idDistrito: distritoId },
-                    success: function (data) {
-                        var $calle = $('#ddlCalle');
-                        $calle.empty().append('<option value="">-- Seleccione calle --</option>');
-                        
-                        $.each(data, function (index, item) {
-                            var selected = selectedCalleId && item.value == selectedCalleId ? 'selected' : '';
-                            $calle.append('<option value="' + item.value + '" ' + selected + '>' + item.text + '</option>');
-                        });
-                        
-                        $calle.prop('disabled', false);
-                    },
-                    error: function () {
-                        console.error('Error cargando calles');
-                        resetearDropdowns(['#ddlCalle']);
-                    }
-                });
-            }
-
-            // Función para resetear dropdowns
-            function resetearDropdowns(selectors) {
-                $.each(selectors, function(index, selector) {
-                    var $dropdown = $(selector);
-                    $dropdown.empty().prop('disabled', true);
-                    
-                    // Agregar opción por defecto según el dropdown
-                    if (selector === '#ddlCanton') {
-                        $dropdown.append('<option value="">-- Seleccione cantón --</option>');
-                    } else if (selector === '#ddlDistrito') {
-                        $dropdown.append('<option value="">-- Seleccione distrito --</option>');
-                    } else if (selector === '#ddlCalle') {
-                        $dropdown.append('<option value="">-- Seleccione calle --</option>');
-                    }
-                });
-            }
         });
     </script>
 }
