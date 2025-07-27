@@ -55,15 +55,15 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public int? idProvincia { get; set; }
         [DisplayName("Provincia")]
         public string nombreProvincia { get; set; }
-        public int? idCanton { get; set; }
+        
         [DisplayName("Cantón")]
+        [Required(ErrorMessage = "El cantón es obligatorio.")]
         public string nombreCanton { get; set; }
-        public int? idDistrito { get; set; }
+        
         [DisplayName("Distrito")]
+        [Required(ErrorMessage = "El distrito es obligatorio.")]
         public string nombreDistrito { get; set; }
-        public int? idCalle { get; set; }
-        [DisplayName("Calle")]
-        public string nombreCalle { get; set; }
+
         [DisplayName("Dirección Detallada")]
         //[Required(ErrorMessage = "La dirección detallada del empleado es obligatorio.")]
         public string direccionDetallada { get; set; }
@@ -146,7 +146,7 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         [Compare("Password", ErrorMessage = "La contraseña y la confirmación de contraseña no coinciden.")]
         public string ConfirmPassword { get; set; }
 
-        [DisplayName("Rol")]
-        public string Role { get; set; }
+        [DisplayName("Roles")]
+        public string RolesUsuario { get; set; }
     }
 }

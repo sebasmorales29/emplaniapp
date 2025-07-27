@@ -3,7 +3,11 @@
   "WorkspaceRootPath": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\sebas\\onedrive\\escritorio\\emplaniapp\\emplaniapp\\emplaniapp.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|c:\\users\\sebas\\onedrive\\escritorio\\emplaniapp\\emplaniapp\\emplaniapp.ui\\controllers\\empleadocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\controllers\\empleadocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\emplaniapp.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
       "RelativeMoniker": "D:0:0:{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}|Emplaniapp.UI\\Emplaniapp.UI.csproj|solutionrelative:emplaniapp.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
@@ -63,6 +67,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "EmpleadoController.cs",
+              "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\EmpleadoController.cs",
+              "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\EmpleadoController.cs",
+              "ToolTip": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\EmpleadoController.cs",
+              "RelativeToolTip": "Emplaniapp.UI\\Controllers\\EmpleadoController.cs",
+              "ViewState": "AgIAAKwAAAAAAAAAAAAewL4AAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-27T22:21:44.96Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Web.config",
               "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Web.config",
               "RelativeDocumentMoniker": "Emplaniapp.UI\\Web.config",
@@ -75,7 +92,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "EditarRemuneracion.cshtml",
               "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Views\\Remuneraciones\\EditarRemuneracion.cshtml",
               "RelativeDocumentMoniker": "Emplaniapp.UI\\Views\\Remuneraciones\\EditarRemuneracion.cshtml",
@@ -87,7 +104,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "EditarRemuneracionLN.cs",
               "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.LogicaDeNegocio\\Remuneraciones\\EditarRemuneracion\\EditarRemuneracionLN.cs",
               "RelativeDocumentMoniker": "Emplaniapp.LogicaDeNegocio\\Remuneraciones\\EditarRemuneracion\\EditarRemuneracionLN.cs",
@@ -99,7 +116,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "EditarRemuneracionAD.cs",
               "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.AccesoADatos\\Remuneraciones\\EditarRemuneracion\\EditarRemuneracionAD.cs",
               "RelativeDocumentMoniker": "Emplaniapp.AccesoADatos\\Remuneraciones\\EditarRemuneracion\\EditarRemuneracionAD.cs",
@@ -111,7 +128,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "RemuneracionesController.cs",
               "DocumentMoniker": "C:\\Users\\sebas\\OneDrive\\Escritorio\\emplaniapp\\Emplaniapp\\Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",
               "RelativeDocumentMoniker": "Emplaniapp.UI\\Controllers\\RemuneracionesController.cs",

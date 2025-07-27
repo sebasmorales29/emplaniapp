@@ -56,12 +56,11 @@ namespace Emplaniapp.AccesoADatos.Empleado.agregarEmpleado
                         numeroTelefonico = empleadoDto.numeroTelefonico,
                         correoInstitucional = empleadoDto.correoInstitucional,
                         
-                        // Campos de dirección - usar valores por defecto seguros
+                        // Campos de dirección - resolver IDs basándose en nombres
                         idDireccion = 1, // Campo requerido por BD - usar dirección por defecto
                         idProvincia = empleadoDto.idProvincia ?? 1,
-                        idCanton = empleadoDto.idCanton ?? 1,
-                        idDistrito = empleadoDto.idDistrito ?? 1,
-                        idCalle = empleadoDto.idCalle ?? 1,
+                        idCanton = ObtenerOCrearCantonPorNombre(empleadoDto.nombreCanton, empleadoDto.idProvincia ?? 1),
+                        idDistrito = ObtenerOCrearDistritoPorNombre(empleadoDto.nombreDistrito, empleadoDto.nombreCanton, empleadoDto.idProvincia ?? 1),
                         direccionDetallada = empleadoDto.direccionDetallada ?? "Dirección por defecto",
                         
                         // Campos laborales
@@ -95,7 +94,6 @@ namespace Emplaniapp.AccesoADatos.Empleado.agregarEmpleado
                     System.Diagnostics.Debug.WriteLine("idProvincia: " + nuevoEmpleado.idProvincia);
                     System.Diagnostics.Debug.WriteLine("idCanton: " + nuevoEmpleado.idCanton);
                     System.Diagnostics.Debug.WriteLine("idDistrito: " + nuevoEmpleado.idDistrito);
-                    System.Diagnostics.Debug.WriteLine("idCalle: " + nuevoEmpleado.idCalle);
                     System.Diagnostics.Debug.WriteLine("direccionDetallada: " + nuevoEmpleado.direccionDetallada);
                     System.Diagnostics.Debug.WriteLine("idCargo: " + nuevoEmpleado.idCargo);
                     System.Diagnostics.Debug.WriteLine("periocidadPago: " + nuevoEmpleado.periocidadPago);
@@ -165,6 +163,99 @@ namespace Emplaniapp.AccesoADatos.Empleado.agregarEmpleado
                 
                 System.Diagnostics.Debug.WriteLine("❌ ERROR: Retornando false - creación de empleado falló");
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Busca un cantón por nombre y provincia, si no existe lo crea
+        /// </summary>
+        private int ObtenerOCrearCantonPorNombre(string nombreCanton, int idProvincia)
+        {
+            try
+            {
+                using (var contexto = new Contexto())
+                {
+                    // Buscar cantón existente por nombre (insensible a mayúsculas/minúsculas)
+                    var canton = contexto.Canton
+                        .FirstOrDefault(c => c.nombreCanton.ToLower() == nombreCanton.ToLower() && c.idProvincia == idProvincia);
+
+                    if (canton != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"✅ Cantón encontrado: {canton.nombreCanton} (ID: {canton.idCanton})");
+                        return canton.idCanton;
+                    }
+
+                    // Si no existe, crear nuevo cantón con ID único
+                    var maxId = contexto.Canton.Max(c => (int?)c.idCanton) ?? 100;
+                    var nuevoId = maxId + 1;
+
+                    var nuevoCanton = new Emplaniapp.Abstracciones.ModelosAD.Canton
+                    {
+                        idCanton = nuevoId,
+                        nombreCanton = nombreCanton.Trim(),
+                        idProvincia = idProvincia
+                    };
+
+                    contexto.Canton.Add(nuevoCanton);
+                    contexto.SaveChanges();
+
+                    System.Diagnostics.Debug.WriteLine($"✅ Nuevo cantón creado: {nuevoCanton.nombreCanton} (ID: {nuevoCanton.idCanton})");
+                    return nuevoCanton.idCanton;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error en ObtenerOCrearCantonPorNombre: {ex.Message}");
+                // En caso de error, devolver San José como fallback
+                return 101;
+            }
+        }
+
+        /// <summary>
+        /// Busca un distrito por nombre, si no existe lo crea
+        /// </summary>
+        private int ObtenerOCrearDistritoPorNombre(string nombreDistrito, string nombreCanton, int idProvincia)
+        {
+            try
+            {
+                using (var contexto = new Contexto())
+                {
+                    // Primero obtener el ID del cantón
+                    var idCanton = ObtenerOCrearCantonPorNombre(nombreCanton, idProvincia);
+
+                    // Buscar distrito existente por nombre y cantón
+                    var distrito = contexto.Distrito
+                        .FirstOrDefault(d => d.nombreDistrito.ToLower() == nombreDistrito.ToLower() && d.idCanton == idCanton);
+
+                    if (distrito != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"✅ Distrito encontrado: {distrito.nombreDistrito} (ID: {distrito.idDistrito})");
+                        return distrito.idDistrito;
+                    }
+
+                    // Si no existe, crear nuevo distrito con ID único
+                    var maxId = contexto.Distrito.Max(d => (int?)d.idDistrito) ?? 100;
+                    var nuevoId = maxId + 1;
+
+                    var nuevoDistrito = new Emplaniapp.Abstracciones.ModelosAD.Distrito
+                    {
+                        idDistrito = nuevoId,
+                        nombreDistrito = nombreDistrito.Trim(),
+                        idCanton = idCanton
+                    };
+
+                    contexto.Distrito.Add(nuevoDistrito);
+                    contexto.SaveChanges();
+
+                    System.Diagnostics.Debug.WriteLine($"✅ Nuevo distrito creado: {nuevoDistrito.nombreDistrito} (ID: {nuevoDistrito.idDistrito})");
+                    return nuevoDistrito.idDistrito;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error en ObtenerOCrearDistritoPorNombre: {ex.Message}");
+                // En caso de error, devolver Carmen como fallback
+                return 1;
             }
         }
     }

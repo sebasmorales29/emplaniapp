@@ -24,7 +24,6 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                                 join prov in _contexto.Provincia on emp.idProvincia equals prov.idProvincia
                                 join cant in _contexto.Canton on emp.idCanton equals cant.idCanton
                                 join dist in _contexto.Distrito on emp.idDistrito equals dist.idDistrito
-                                join ca in _contexto.Calle on emp.idCalle equals ca.idCalle
                                 join user in _contexto.Users on emp.IdNetUser equals user.Id into userGroup
                                 from user in userGroup.DefaultIfEmpty() 
                                 orderby emp.primerApellido, emp.segundoApellido, emp.nombre
@@ -55,11 +54,10 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                                     nombreProvincia = prov.nombreProvincia,
                                     nombreCanton = cant.nombreCanton,
                                     nombreDistrito = dist.nombreDistrito,
-                                    nombreCalle = ca.nombreCalle,
                                     emp.IdNetUser
                                 }).ToList();
 
-            // Ahora obtenemos los roles agrupados por usuario
+            // Obtenemos los roles agrupados por usuario
             var rolesRaw = (from userRole in _contexto.Set<Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole>()
                            join role in _contexto.Roles on userRole.RoleId equals role.Id
                            select new
@@ -73,7 +71,7 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                 .GroupBy(x => x.UserId)
                 .ToDictionary(g => g.Key, g => string.Join(", ", g.Select(x => x.RoleName)));
 
-            // Combinamos la información
+            // Convertimos la información a DTOs
             var empleados = empleadosBase.Select(emp => new EmpleadoDto
             {
                 idEmpleado = emp.idEmpleado,
@@ -99,13 +97,13 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                 idBanco = emp.idBanco,
                 nombreBanco = emp.nombreBanco,
 
-                direccionCompleta = $"{emp.nombreProvincia}, {emp.nombreCanton}, {emp.nombreDistrito}, {emp.nombreCalle}",
+                direccionCompleta = $"{emp.nombreProvincia}, {emp.nombreCanton}, {emp.nombreDistrito}",
 
                 fechaContratacion = emp.fechaContratacion,
                 fechaSalida = emp.fechaSalida,
                 
                 // Obtener roles concatenados o "Sin rol" si no tiene
-                Role = !string.IsNullOrEmpty(emp.IdNetUser) && rolesAgrupadosPorUsuario.ContainsKey(emp.IdNetUser) 
+                RolesUsuario = !string.IsNullOrEmpty(emp.IdNetUser) && rolesAgrupadosPorUsuario.ContainsKey(emp.IdNetUser) 
                       ? rolesAgrupadosPorUsuario[emp.IdNetUser] 
                       : "Sin rol"
             }).ToList();

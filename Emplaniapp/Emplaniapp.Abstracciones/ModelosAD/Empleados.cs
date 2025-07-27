@@ -28,7 +28,6 @@ namespace Emplaniapp.Abstracciones.ModelosAD
         public int? idProvincia { get; set; }
         public int? idCanton { get; set; }
         public int? idDistrito { get; set; }
-        public int? idCalle { get; set; }
         public String direccionDetallada { get; set; }
         public int? idCargo { get; set; }
         public DateTime fechaContratacion { get; set; }
