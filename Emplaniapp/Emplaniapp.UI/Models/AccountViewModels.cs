@@ -50,7 +50,7 @@ namespace Emplaniapp.UI.Models
         [Display(Name = "Rol")]
         public string Role { get; set; }
 
-        [Display(Name = "Cédula (sólo para rol Empleado)")]
+        [Display(Name = "Cédula (solo para rol Empleado)")]
         public int? Cedula { get; set; }
 
         // Nueva: lista de roles para el dropdown

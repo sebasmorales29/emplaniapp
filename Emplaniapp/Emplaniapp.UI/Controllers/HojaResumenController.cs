@@ -1,7 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Host.SystemWeb;
+using Emplaniapp.Abstracciones.Entidades;
 using Emplaniapp.Abstracciones.InterfacesParaUI;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Cargos.ListarCargos;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Estados.ListarEstados;
@@ -32,6 +38,8 @@ namespace Emplaniapp.UI.Controllers
         private IFiltrarEmpleadosLN _filtrarEmpleadosLN;
         private IObtenerTotalEmpleadosLN _obtenerTotalEmpleadosLN;
         private ICrearRemuneracionesLN _crearRemuneracionesLN;
+        private ApplicationUserManager _userManager;
+        private ApplicationRoleManager _roleManager;
 
         public HojaResumenController()
         {
@@ -43,6 +51,19 @@ namespace Emplaniapp.UI.Controllers
             _obtenerTotalEmpleadosLN = new obtenerTotalEmpleadosLN();
             _crearRemuneracionesLN = new CrearRemuneracionesLN();
         }
+
+        public ApplicationUserManager UserManager
+        {
+            get => _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            private set => _userManager = value;
+        }
+
+        public ApplicationRoleManager RoleManager
+        {
+            get => _roleManager ?? HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+            private set => _roleManager = value;
+        }
+
         private List<SelectListItem> ObtenerCargos()
         {
             return _listarCargosLN.ObtenerCargos()
@@ -110,6 +131,35 @@ namespace Emplaniapp.UI.Controllers
             {
                 TempData["ErrorMessage"] = "Error al generar remuneraciones: " + ex.Message;
                 return RedirectToAction("listarHojaResumen");
+            }
+        }
+
+        // POST: Validar contraseña de administrador
+        [HttpPost]
+        [Authorize(Roles = "Administrador")]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> ValidateAdminPassword(string password)
+        {
+            if (string.IsNullOrEmpty(password))
+            {
+                return Json(new { success = false, message = "La contraseña no puede estar vacía." });
+            }
+
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (user == null)
+            {
+                return Json(new { success = false, message = "No se pudo identificar al usuario." });
+            }
+
+            var correctPassword = await UserManager.CheckPasswordAsync(user, password);
+
+            if (correctPassword)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Contraseña incorrecta." });
             }
         }
 

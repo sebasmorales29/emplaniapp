@@ -6,6 +6,16 @@
     overflow: hidden;
 }
 
+/* Animación para el ícono de recarga */
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* Botones personalizados con la paleta de colores */
 .btn-primary-custom {
     background-color: #3674B5;

@@ -24,10 +24,10 @@ namespace Emplaniapp.Abstracciones.ModelosAD
         public int cedula { get; set; }
         public string numeroTelefonico { get; set; }
         public string correoInstitucional { get; set; }
+        public int idDireccion { get; set; }
         public int? idProvincia { get; set; }
         public int? idCanton { get; set; }
         public int? idDistrito { get; set; }
-        public int? idCalle { get; set; }
         public String direccionDetallada { get; set; }
         public int? idCargo { get; set; }
         public DateTime fechaContratacion { get; set; }

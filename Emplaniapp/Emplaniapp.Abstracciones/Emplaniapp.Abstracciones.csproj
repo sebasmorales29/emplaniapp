@@ -126,6 +126,7 @@
     <Compile Include="ModelosAD\Calle.cs" />
     <Compile Include="ModelosAD\Canton.cs" />
     <Compile Include="ModelosAD\Cargo.cs" />
+    <Compile Include="ModelosAD\Direccion.cs" />
     <Compile Include="ModelosAD\Distrito.cs" />
     <Compile Include="ModelosAD\Empleados.cs" />
     <Compile Include="ModelosAD\Estado.cs" />
