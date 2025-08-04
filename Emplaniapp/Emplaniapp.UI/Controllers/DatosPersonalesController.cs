@@ -16,6 +16,7 @@ using Emplaniapp.Abstracciones.Entidades;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Newtonsoft.Json;
 using Emplaniapp.AccesoADatos;
+using Emplaniapp.UI.Attributes;
 
 namespace Emplaniapp.UI.Controllers
 {
@@ -556,7 +557,7 @@ namespace Emplaniapp.UI.Controllers
 
         // GET: Obtener roles del empleado (solo Administradores)
         [HttpGet]
-        [Authorize(Roles = "Administrador")]
+        [ActiveRoleAuthorize("Administrador")]
         public async Task<JsonResult> ObtenerRolesEmpleado(int idEmpleado)
         {
             try
@@ -608,7 +609,7 @@ namespace Emplaniapp.UI.Controllers
 
         // POST: Asignar rol al empleado (solo Administradores)
         [HttpPost]
-        [Authorize(Roles = "Administrador")]
+        [ActiveRoleAuthorize("Administrador")]
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> AsignarRol(int idEmpleado, string nombreRol)
         {
@@ -669,7 +670,7 @@ namespace Emplaniapp.UI.Controllers
 
         // POST: Remover rol del empleado (solo Administradores)
         [HttpPost]
-        [Authorize(Roles = "Administrador")]
+        [ActiveRoleAuthorize("Administrador")]
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> RemoverRol(int idEmpleado, string nombreRol)
         {
@@ -724,7 +725,7 @@ namespace Emplaniapp.UI.Controllers
 
         // POST: Validar contraseña de administrador
         [HttpPost]
-        [Authorize(Roles = "Administrador")]
+        [ActiveRoleAuthorize("Administrador")]
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> ValidateAdminPassword(string password)
         {

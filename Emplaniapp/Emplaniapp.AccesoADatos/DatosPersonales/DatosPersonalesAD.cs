@@ -399,13 +399,12 @@ namespace Emplaniapp.AccesoADatos
         {
             using (var contexto = new Contexto())
             {
-                // Por ahora retornamos datos hardcodeados
-                return new List<BancoDto>
-                {
-                    new BancoDto { idBanco = 1, nombreBanco = "Banco Nacional" },
-                    new BancoDto { idBanco = 2, nombreBanco = "Banco de Costa Rica" },
-                    new BancoDto { idBanco = 3, nombreBanco = "BAC San José" }
-                };
+                return contexto.Bancos
+                    .Select(b => new BancoDto
+                    {
+                        idBanco = b.idBanco,
+                        nombreBanco = b.nombreBanco
+                    }).ToList();
             }
         }
 

@@ -1,0 +1,58 @@
+@{
+    ViewBag.Title = "Acceso Denegado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="alert alert-warning text-center" style="margin-top: 50px;">
+                <h2><i class="fa fa-exclamation-triangle"></i> Acceso Denegado</h2>
+                <p class="lead">No tienes permisos para acceder a esta sección con tu rol actual.</p>
+                
+                <div class="well">
+                    <p><strong>¿Qué puedes hacer?</strong></p>
+                    <ul class="list-unstyled">
+                        <li><i class="fa fa-arrow-right"></i> Si tienes múltiples roles, cambia a un rol con los permisos necesarios usando el selector en la parte superior</li>
+                        <li><i class="fa fa-arrow-right"></i> Contacta al administrador si crees que deberías tener acceso</li>
+                        <li><i class="fa fa-arrow-right"></i> Regresa a la página principal</li>
+                    </ul>
+                </div>
+
+                <div class="btn-group" role="group">
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">
+                        <i class="fa fa-home"></i> Ir al Inicio
+                    </a>
+                    <button onclick="history.back()" class="btn btn-default">
+                        <i class="fa fa-arrow-left"></i> Volver Atrás
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .alert {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .well {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        text-align: left;
+        margin: 20px 0;
+    }
+    
+    .list-unstyled li {
+        margin-bottom: 8px;
+        padding-left: 10px;
+    }
+    
+    .fa {
+        margin-right: 8px;
+        color: #5bc0de;
+    }
+</style>

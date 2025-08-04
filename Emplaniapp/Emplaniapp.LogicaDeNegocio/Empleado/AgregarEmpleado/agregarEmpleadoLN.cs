@@ -27,6 +27,8 @@ namespace Emplaniapp.LogicaDeNegocio.Empleado.AgregarEmpleado
             System.Diagnostics.Debug.WriteLine($"Fecha contratación: {empleado.fechaContratacion}");
             System.Diagnostics.Debug.WriteLine($"Periodicidad: {empleado.periocidadPago}");
             System.Diagnostics.Debug.WriteLine($"Salario aprobado: {empleado.salarioAprobado}");
+            System.Diagnostics.Debug.WriteLine($"Correo: {empleado.correoInstitucional}");
+            System.Diagnostics.Debug.WriteLine($"IdNetUser: {empleado.IdNetUser}");
 
             // Validar campos obligatorios
             if (string.IsNullOrWhiteSpace(empleado.nombre))
@@ -79,6 +81,55 @@ namespace Emplaniapp.LogicaDeNegocio.Empleado.AgregarEmpleado
             if (empleado.salarioAprobado <= 0)
             {
                 System.Diagnostics.Debug.WriteLine("❌ Error: Salario aprobado debe ser mayor a 0: " + empleado.salarioAprobado);
+                return false;
+            }
+
+            System.Diagnostics.Debug.WriteLine("✅ Validaciones básicas pasaron, verificando duplicados...");
+
+            // Verificar que la cédula no esté duplicada
+            try
+            {
+                var contexto = new Emplaniapp.AccesoADatos.Contexto();
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine("🔍 Verificando cédula duplicada...");
+                    var empleadoExistente = contexto.Empleados.FirstOrDefault(e => e.cedula == empleado.cedula);
+                    if (empleadoExistente != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Error: La cédula {empleado.cedula} ya está registrada para el empleado {empleadoExistente.nombre} {empleadoExistente.primerApellido}");
+                        return false;
+                    }
+                    System.Diagnostics.Debug.WriteLine($"✅ Cédula {empleado.cedula} disponible");
+
+                    // Verificar que el correo electrónico no esté duplicado
+                    System.Diagnostics.Debug.WriteLine("🔍 Verificando correo duplicado...");
+                    var empleadoConEmail = contexto.Empleados.FirstOrDefault(e => e.correoInstitucional == empleado.correoInstitucional);
+                    if (empleadoConEmail != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Error: El correo {empleado.correoInstitucional} ya está registrado para el empleado {empleadoConEmail.nombre} {empleadoConEmail.primerApellido}");
+                        return false;
+                    }
+                    System.Diagnostics.Debug.WriteLine($"✅ Correo {empleado.correoInstitucional} disponible");
+
+                    // Verificar que el IdNetUser no esté duplicado
+                    System.Diagnostics.Debug.WriteLine("🔍 Verificando IdNetUser duplicado...");
+                    var empleadoConIdNetUser = contexto.Empleados.FirstOrDefault(e => e.IdNetUser == empleado.IdNetUser);
+                    if (empleadoConIdNetUser != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Error: El IdNetUser {empleado.IdNetUser} ya está registrado para el empleado {empleadoConIdNetUser.nombre} {empleadoConIdNetUser.primerApellido}");
+                        return false;
+                    }
+                    System.Diagnostics.Debug.WriteLine($"✅ IdNetUser {empleado.IdNetUser} disponible");
+                }
+                finally
+                {
+                    contexto.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error al verificar datos duplicados: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"📚 Stack trace: {ex.StackTrace}");
                 return false;
             }
 
