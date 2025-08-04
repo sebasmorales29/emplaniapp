@@ -1,4 +1,35 @@
 @model IEnumerable<Emplaniapp.Abstracciones.ModelosParaUI.ObservacionDto>
+@using Microsoft.AspNet.Identity
+@using System.Security.Claims
+
+@{
+    // Definir funciones de rol activo localmente
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    var roleClaim = claimsIdentity?.FindFirst(ClaimTypes.Role);
+    string userRole = "Usuario";
+    if (roleClaim != null)
+    {
+        userRole = roleClaim.Value;
+    }
+
+    Func<string> getActiveRole = () => {
+        var activeRole = Session["ActiveRole"] as string;
+        if (!string.IsNullOrEmpty(activeRole))
+        {
+            return activeRole;
+        }
+        return userRole;
+    };
+
+    Func<string, bool> isInActiveRole = (role) => {
+        var activeRole = getActiveRole();
+        return activeRole.Equals(role, StringComparison.OrdinalIgnoreCase);
+    };
+
+    Func<string, bool> isNotInActiveRole = (role) => {
+        return !isInActiveRole(role);
+    };
+}
 
 <style>
     .observaciones-container {
@@ -69,7 +100,7 @@
 <div class="observaciones-container">
     <div class="observaciones-sidebar">
         
-        @if (!User.IsInRole("Empleado"))
+        @if (isNotInActiveRole("Empleado"))
         {
             <button type="button" class="btn btn-primary btn-block mb-3 btn-agregar-observacion"
                     data-url="@Url.Action("AgregarObservacion", "DatosPersonales", new { idEmpleado = ViewBag.IdEmpleado })">
@@ -116,7 +147,7 @@
                 <div class="observacion-card">
                     <div class="observacion-header">
                         <h5 class="observacion-titulo">@item.Titulo</h5>
-                        @if (!User.IsInRole("Empleado"))
+                        @if (isNotInActiveRole("Empleado"))
                         {
                             <button type="button" class="btn btn-secondary btn-editar-observacion"
                                     data-url="@Url.Action("EditarObservacion", "DatosPersonales", new { id = item.IdObservacion })">

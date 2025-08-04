@@ -1,4 +1,5 @@
 using System.Web.Mvc;
+using Emplaniapp.UI.Attributes;
 
 namespace Emplaniapp.UI.Controllers
 {
@@ -6,7 +7,7 @@ namespace Emplaniapp.UI.Controllers
     public class PagoQuincenalController : Controller
     {
         // GET: PagoQuincenal/HistorialPagos/5
-        [Authorize(Roles = "Empleado")]
+        [ActiveRoleAuthorize("Empleado")]
         public ActionResult HistorialPagos(int idEmpleado)
         {
             // Aquí iría la lógica para buscar y mostrar el historial de pagos del empleado.

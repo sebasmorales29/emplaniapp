@@ -25,10 +25,11 @@ using Emplaniapp.LogicaDeNegocio.General.ObtenerTotalEmpleados;
 using Emplaniapp.LogicaDeNegocio.Hoja_Resumen.ListarHojaResumen;
 using Emplaniapp.LogicaDeNegocio.Remuneraciones.CrearRemuneraciones;
 using Emplaniapp.LogicaDeNegocio.Tipo_Remuneracion;
+using Emplaniapp.UI.Attributes;
 
 namespace Emplaniapp.UI.Controllers
 {
-    [Authorize(Roles = "Administrador, Contador")]
+    [ActiveRoleAuthorize("Administrador", "Contador")]
     public class HojaResumenController : Controller
     {
         private IlistarHojaResumenLN _listarHojaResumenLN;
@@ -136,7 +137,7 @@ namespace Emplaniapp.UI.Controllers
 
         // POST: Validar contraseña de administrador
         [HttpPost]
-        [Authorize(Roles = "Administrador")]
+        [ActiveRoleAuthorize("Administrador")]
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> ValidateAdminPassword(string password)
         {

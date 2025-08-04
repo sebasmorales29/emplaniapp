@@ -29,6 +29,17 @@
         return activeRole.Equals(role, StringComparison.OrdinalIgnoreCase);
     };
 
+    // Función para verificar si el usuario está en cualquiera de los roles activos especificados
+    Func<string[], bool> isInAnyActiveRole = (roles) => {
+        var activeRole = getActiveRole();
+        return roles.Any(role => activeRole.Equals(role, StringComparison.OrdinalIgnoreCase));
+    };
+
+    // Función para verificar si el usuario NO está en el rol activo especificado
+    Func<string, bool> isNotInActiveRole = (role) => {
+        return !isInActiveRole(role);
+    };
+
     var activeUserRole = getActiveRole();
     
 
@@ -262,10 +273,10 @@
                         // Actualizar inmediatamente la visualización del rol
                         container.html(data.newRole);
                         
-                        // Pequeña pausa para mostrar el cambio, luego recargar para actualizar el navbar
+                        // Pequeña pausa para mostrar el cambio, luego redirigir al index para resetear las vistas
                         setTimeout(function() {
-                            console.log('Recargando página para actualizar navbar...');
-                            location.reload();
+                            console.log('🔄 Redirigiendo al index para resetear las vistas...');
+                            window.location.href = '@Url.Action("Index", "Home")';
                         }, 500);
                     } else {
                         console.log('✗ Error en el cambio de rol:', data.message);
@@ -306,9 +317,9 @@
                                 return;
                             }
                             
-                            // Recargar la página para reflejar los nuevos roles en el navbar
-                            console.log('🔄 Recargando página para actualizar navbar con nuevos roles...');
-                            location.reload();
+                            // Redirigir al index para resetear las vistas con los nuevos roles
+                            console.log('🔄 Redirigiendo al index para resetear las vistas con nuevos roles...');
+                            window.location.href = '@Url.Action("Index", "Home")';
                         }
                     },
                     error: function(xhr, status, error) {
