@@ -15,12 +15,46 @@ namespace Emplaniapp.AccesoADatos
         {
             using (var contexto = new Contexto())
             {
-                var empleado = contexto.Empleados.FirstOrDefault(e => e.idEmpleado == idEmpleado);
-                if (empleado == null) return null;
+                var consulta = from emp in contexto.Empleados
+                              join cargo in contexto.Cargos on emp.idCargo equals cargo.idCargo into cargoGroup
+                              from cargoData in cargoGroup.DefaultIfEmpty()
+                              join estado in contexto.Estado on emp.idEstado equals estado.idEstado into estadoGroup
+                              from estadoData in estadoGroup.DefaultIfEmpty()
+                              join tipoMoneda in contexto.TipoMoneda on emp.idTipoMoneda equals tipoMoneda.idTipoMoneda into monedaGroup
+                              from monedaData in monedaGroup.DefaultIfEmpty()
+                              join banco in contexto.Bancos on emp.idBanco equals banco.idBanco into bancoGroup
+                              from bancoData in bancoGroup.DefaultIfEmpty()
+                              // 🔥 NUEVOS JOINS PARA INFORMACIÓN GEOGRÁFICA
+                              join provincia in contexto.Provincia on emp.idProvincia equals provincia.idProvincia into provinciaGroup
+                              from provinciaData in provinciaGroup.DefaultIfEmpty()
+                              join canton in contexto.Canton on emp.idCanton equals canton.idCanton into cantonGroup
+                              from cantonData in cantonGroup.DefaultIfEmpty()
+                              join distrito in contexto.Distrito on emp.idDistrito equals distrito.idDistrito into distritoGroup
+                              from distritoData in distritoGroup.DefaultIfEmpty()
+                              where emp.idEmpleado == idEmpleado
+                              select new 
+                              {
+                                  Empleado = emp,
+                                  NombreCargo = cargoData.nombreCargo,
+                                  NombreEstado = estadoData.nombreEstado,
+                                  NombreMoneda = monedaData.nombreMoneda,
+                                  NombreBanco = bancoData.nombreBanco,
+                                  NombreProvincia = provinciaData.nombreProvincia,
+                                  NombreCanton = cantonData.nombreCanton,
+                                  NombreDistrito = distritoData.nombreDistrito
+                              };
 
-                // Obtener información relacionada
-                var cargo = contexto.Cargos.FirstOrDefault(c => c.idCargo == empleado.idCargo);
-                var estado = contexto.Estado.FirstOrDefault(e => e.idEstado == empleado.idEstado);
+                var resultado = consulta.FirstOrDefault();
+                if (resultado == null) return null;
+
+                var empleado = resultado.Empleado;
+
+                System.Diagnostics.Debug.WriteLine($"=== ObtenerEmpleadoPorId - Con información geográfica ===");
+                System.Diagnostics.Debug.WriteLine($"Empleado: {empleado.nombre} {empleado.primerApellido}");
+                System.Diagnostics.Debug.WriteLine($"Provincia: {resultado.NombreProvincia ?? "No encontrada"}");
+                System.Diagnostics.Debug.WriteLine($"Cantón: {resultado.NombreCanton ?? "No encontrado"}");
+                System.Diagnostics.Debug.WriteLine($"Distrito: {resultado.NombreDistrito ?? "No encontrado"}");
+                System.Diagnostics.Debug.WriteLine($"Dirección detallada: {empleado.direccionDetallada ?? "No especificada"}");
 
                 return new EmpleadoDto
                 {
@@ -33,13 +67,22 @@ namespace Emplaniapp.AccesoADatos
                     cedula = empleado.cedula,
                     numeroTelefonico = empleado.numeroTelefonico,
                     correoInstitucional = empleado.correoInstitucional,
+                    
+                    // 🔥 CAMPOS GEOGRÁFICOS CON IDs Y NOMBRES
                     idProvincia = empleado.idProvincia,
-                    idCanton = empleado.idCanton,
-                    idDistrito = empleado.idDistrito,
-                    idCalle = empleado.idCalle,
-                    direccionDetallada = empleado.direccionDetallada,
+                    nombreProvincia = resultado.NombreProvincia ?? "No especificada",
+                    nombreCanton = resultado.NombreCanton ?? "No especificado",
+                    nombreDistrito = resultado.NombreDistrito ?? "No especificado",
+                    direccionDetallada = empleado.direccionDetallada ?? "No especificada",
+                    
+                    // 🔥 DIRECCIÓN COMPLETA CONCATENADA (sin calle)
+                    direccionCompleta = $"{resultado.NombreProvincia ?? "Provincia no especificada"}, " +
+                                       $"{resultado.NombreCanton ?? "Cantón no especificado"}, " +
+                                       $"{resultado.NombreDistrito ?? "Distrito no especificado"}. " +
+                                       $"{empleado.direccionDetallada ?? "Sin detalles adicionales"}",
+                    
                     idCargo = empleado.idCargo,
-                    nombreCargo = cargo?.nombreCargo ?? "Sin cargo",
+                    nombreCargo = resultado.NombreCargo ?? "Sin cargo",
                     fechaContratacion = empleado.fechaContratacion,
                     fechaSalida = empleado.fechaSalida,
                     periocidadPago = empleado.periocidadPago,
@@ -49,12 +92,12 @@ namespace Emplaniapp.AccesoADatos
                     salarioPoHora = empleado.salarioPoHora,
                     salarioPorHoraExtra = empleado.salarioPorHoraExtra,
                     idMoneda = empleado.idTipoMoneda,
-                    nombreMoneda = "Colones", // Por ahora hardcodeado, después implementar tabla TipoMoneda
+                    nombreMoneda = resultado.NombreMoneda ?? "Sin moneda",
                     cuentaIBAN = empleado.cuentaIBAN,
                     idBanco = empleado.idBanco,
-                    nombreBanco = "BN", // Por ahora hardcodeado, después implementar tabla Bancos
+                    nombreBanco = resultado.NombreBanco ?? "Sin banco",
                     idEstado = empleado.idEstado,
-                    nombreEstado = estado?.nombreEstado ?? "Sin estado"
+                    nombreEstado = resultado.NombreEstado ?? "Sin estado"
                 };
             }
         }
@@ -104,9 +147,8 @@ namespace Emplaniapp.AccesoADatos
                         numeroTelefonico = empleadoDto.numeroTelefonico,
                         correoInstitucional = empleadoDto.correoInstitucional,
                         idProvincia = empleadoDto.idProvincia,
-                        idCanton = empleadoDto.idCanton,
-                        idDistrito = empleadoDto.idDistrito,
-                        idCalle = empleadoDto.idCalle,
+                        idCanton = ObtenerOCrearCantonPorNombre(empleadoDto.nombreCanton, empleadoDto.idProvincia ?? 1),
+                        idDistrito = ObtenerOCrearDistritoPorNombre(empleadoDto.nombreDistrito, empleadoDto.nombreCanton, empleadoDto.idProvincia ?? 1),
                         direccionDetallada = empleadoDto.direccionDetallada,
                         idCargo = empleadoDto.idCargo,
                         fechaContratacion = empleadoDto.fechaContratacion,
@@ -170,11 +212,22 @@ namespace Emplaniapp.AccesoADatos
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"=== ACCESO A DATOS - ActualizarDatosPersonales ===");
+                System.Diagnostics.Debug.WriteLine($"Empleado ID: {empleadoDto.idEmpleado}");
+                
                 using (var contexto = new Contexto())
                 {
                     var empleado = contexto.Empleados.FirstOrDefault(e => e.idEmpleado == empleadoDto.idEmpleado);
-                    if (empleado == null) return false;
+                    if (empleado == null) 
+                    {
+                        System.Diagnostics.Debug.WriteLine("ERROR: Empleado no encontrado en la base de datos");
+                        return false;
+                    }
 
+                    System.Diagnostics.Debug.WriteLine($"Empleado encontrado. Actualizando datos...");
+                    System.Diagnostics.Debug.WriteLine($"Nombre anterior: {empleado.nombre} -> Nuevo: {empleadoDto.nombre}");
+                    
+                    // 📋 DATOS PERSONALES BÁSICOS
                     empleado.nombre = empleadoDto.nombre;
                     empleado.segundoNombre = empleadoDto.segundoNombre;
                     empleado.primerApellido = empleadoDto.primerApellido;
@@ -184,12 +237,41 @@ namespace Emplaniapp.AccesoADatos
                     empleado.numeroTelefonico = empleadoDto.numeroTelefonico;
                     empleado.correoInstitucional = empleadoDto.correoInstitucional;
 
-                    contexto.SaveChanges();
+                    // 🔥 DATOS DE DIRECCIÓN
+                    if (empleadoDto.idProvincia.HasValue)
+                    {
+                        empleado.idProvincia = empleadoDto.idProvincia.Value;
+                        System.Diagnostics.Debug.WriteLine($"Provincia actualizada: {empleadoDto.idProvincia.Value}");
+                    }
+                    
+                    if (!string.IsNullOrWhiteSpace(empleadoDto.nombreCanton))
+                    {
+                        empleado.idCanton = ObtenerOCrearCantonPorNombre(empleadoDto.nombreCanton, empleadoDto.idProvincia ?? 1);
+                        System.Diagnostics.Debug.WriteLine($"Cantón actualizado: {empleadoDto.nombreCanton} (ID: {empleado.idCanton})");
+                    }
+                    
+                    if (!string.IsNullOrWhiteSpace(empleadoDto.nombreDistrito))
+                    {
+                        empleado.idDistrito = ObtenerOCrearDistritoPorNombre(empleadoDto.nombreDistrito, empleadoDto.nombreCanton, empleadoDto.idProvincia ?? 1);
+                        System.Diagnostics.Debug.WriteLine($"Distrito actualizado: {empleadoDto.nombreDistrito} (ID: {empleado.idDistrito})");
+                    }
+                    
+
+                    
+                    if (!string.IsNullOrWhiteSpace(empleadoDto.direccionDetallada))
+                    {
+                        empleado.direccionDetallada = empleadoDto.direccionDetallada;
+                        System.Diagnostics.Debug.WriteLine($"Dirección detallada actualizada: {empleadoDto.direccionDetallada}");
+                    }
+
+                    int cambios = contexto.SaveChanges();
+                    System.Diagnostics.Debug.WriteLine($"Número de cambios guardados: {cambios}");
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"ERROR en ActualizarDatosPersonales: {ex.Message}");
                 return false;
             }
         }
@@ -222,10 +304,31 @@ namespace Emplaniapp.AccesoADatos
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"=== ACCESO A DATOS - ActualizarDatosFinancieros ===");
+                System.Diagnostics.Debug.WriteLine($"Parámetros recibidos:");
+                System.Diagnostics.Debug.WriteLine($"- idEmpleado: {idEmpleado}");
+                System.Diagnostics.Debug.WriteLine($"- salarioAprobado: {salarioAprobado}");
+                System.Diagnostics.Debug.WriteLine($"- salarioDiario: {salarioDiario}");
+                System.Diagnostics.Debug.WriteLine($"- periocidadPago: {periocidadPago}");
+                System.Diagnostics.Debug.WriteLine($"- idTipoMoneda: {idTipoMoneda}");
+                System.Diagnostics.Debug.WriteLine($"- cuentaIBAN: {cuentaIBAN}");
+                System.Diagnostics.Debug.WriteLine($"- idBanco: {idBanco}");
+
                 using (var contexto = new Contexto())
                 {
                     var empleado = contexto.Empleados.FirstOrDefault(e => e.idEmpleado == idEmpleado);
-                    if (empleado == null) return false;
+                    if (empleado == null) 
+                    {
+                        System.Diagnostics.Debug.WriteLine("ERROR: Empleado no encontrado en BD");
+                        return false;
+                    }
+
+                    System.Diagnostics.Debug.WriteLine($"Empleado encontrado - Valores ANTES de actualizar:");
+                    System.Diagnostics.Debug.WriteLine($"- salarioAprobado: {empleado.salarioAprobado}");
+                    System.Diagnostics.Debug.WriteLine($"- periocidadPago: {empleado.periocidadPago}");
+                    System.Diagnostics.Debug.WriteLine($"- idTipoMoneda: {empleado.idTipoMoneda}");
+                    System.Diagnostics.Debug.WriteLine($"- cuentaIBAN: {empleado.cuentaIBAN}");
+                    System.Diagnostics.Debug.WriteLine($"- idBanco: {empleado.idBanco}");
 
                     empleado.salarioAprobado = salarioAprobado;
                     empleado.salarioDiario = salarioDiario;
@@ -233,6 +336,13 @@ namespace Emplaniapp.AccesoADatos
                     empleado.idTipoMoneda = idTipoMoneda;
                     empleado.cuentaIBAN = cuentaIBAN;
                     empleado.idBanco = idBanco;
+
+                    System.Diagnostics.Debug.WriteLine($"Valores DESPUÉS de asignar:");
+                    System.Diagnostics.Debug.WriteLine($"- salarioAprobado: {empleado.salarioAprobado}");
+                    System.Diagnostics.Debug.WriteLine($"- periocidadPago: {empleado.periocidadPago}");
+                    System.Diagnostics.Debug.WriteLine($"- idTipoMoneda: {empleado.idTipoMoneda}");
+                    System.Diagnostics.Debug.WriteLine($"- cuentaIBAN: {empleado.cuentaIBAN}");
+                    System.Diagnostics.Debug.WriteLine($"- idBanco: {empleado.idBanco}");
 
                     // Recalcular salarios basados en el salario aprobado
                     if (periocidadPago == "Quincenal")
@@ -248,12 +358,17 @@ namespace Emplaniapp.AccesoADatos
                     empleado.salarioPorMinuto = empleado.salarioPoHora / 60;
                     empleado.salarioPorHoraExtra = empleado.salarioPoHora * 1.5m;
 
-                    contexto.SaveChanges();
+                    System.Diagnostics.Debug.WriteLine($"Guardando cambios en la base de datos...");
+                    int registrosAfectados = contexto.SaveChanges();
+                    System.Diagnostics.Debug.WriteLine($"Registros afectados: {registrosAfectados}");
+                    System.Diagnostics.Debug.WriteLine($"=== ACTUALIZACIÓN COMPLETADA EXITOSAMENTE ===");
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"EXCEPCIÓN en ActualizarDatosFinancieros (AccesoADatos): {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
                 return false;
             }
         }
@@ -284,13 +399,105 @@ namespace Emplaniapp.AccesoADatos
         {
             using (var contexto = new Contexto())
             {
-                // Por ahora retornamos datos hardcodeados
-                return new List<BancoDto>
+                return contexto.Bancos
+                    .Select(b => new BancoDto
+                    {
+                        idBanco = b.idBanco,
+                        nombreBanco = b.nombreBanco
+                    }).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Busca un cantón por nombre y provincia, si no existe lo crea
+        /// </summary>
+        private int ObtenerOCrearCantonPorNombre(string nombreCanton, int idProvincia)
+        {
+            try
+            {
+                using (var contexto = new Contexto())
                 {
-                    new BancoDto { idBanco = 1, nombreBanco = "Banco Nacional" },
-                    new BancoDto { idBanco = 2, nombreBanco = "Banco de Costa Rica" },
-                    new BancoDto { idBanco = 3, nombreBanco = "BAC San José" }
-                };
+                    // Buscar cantón existente por nombre (insensible a mayúsculas/minúsculas)
+                    var canton = contexto.Canton
+                        .FirstOrDefault(c => c.nombreCanton.ToLower() == nombreCanton.ToLower() && c.idProvincia == idProvincia);
+
+                    if (canton != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"✅ Cantón encontrado: {canton.nombreCanton} (ID: {canton.idCanton})");
+                        return canton.idCanton;
+                    }
+
+                    // Si no existe, crear nuevo cantón con ID único
+                    var maxId = contexto.Canton.Max(c => (int?)c.idCanton) ?? 100;
+                    var nuevoId = maxId + 1;
+
+                    var nuevoCanton = new Emplaniapp.Abstracciones.ModelosAD.Canton
+                    {
+                        idCanton = nuevoId,
+                        nombreCanton = nombreCanton.Trim(),
+                        idProvincia = idProvincia
+                    };
+
+                    contexto.Canton.Add(nuevoCanton);
+                    contexto.SaveChanges();
+
+                    System.Diagnostics.Debug.WriteLine($"✅ Nuevo cantón creado: {nuevoCanton.nombreCanton} (ID: {nuevoCanton.idCanton})");
+                    return nuevoCanton.idCanton;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error en ObtenerOCrearCantonPorNombre: {ex.Message}");
+                // En caso de error, devolver San José como fallback
+                return 101;
+            }
+        }
+
+        /// <summary>
+        /// Busca un distrito por nombre, si no existe lo crea
+        /// </summary>
+        private int ObtenerOCrearDistritoPorNombre(string nombreDistrito, string nombreCanton, int idProvincia)
+        {
+            try
+            {
+                using (var contexto = new Contexto())
+                {
+                    // Primero obtener el ID del cantón
+                    var idCanton = ObtenerOCrearCantonPorNombre(nombreCanton, idProvincia);
+
+                    // Buscar distrito existente por nombre y cantón
+                    var distrito = contexto.Distrito
+                        .FirstOrDefault(d => d.nombreDistrito.ToLower() == nombreDistrito.ToLower() && d.idCanton == idCanton);
+
+                    if (distrito != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"✅ Distrito encontrado: {distrito.nombreDistrito} (ID: {distrito.idDistrito})");
+                        return distrito.idDistrito;
+                    }
+
+                    // Si no existe, crear nuevo distrito con ID único
+                    var maxId = contexto.Distrito.Max(d => (int?)d.idDistrito) ?? 100;
+                    var nuevoId = maxId + 1;
+
+                    var nuevoDistrito = new Emplaniapp.Abstracciones.ModelosAD.Distrito
+                    {
+                        idDistrito = nuevoId,
+                        nombreDistrito = nombreDistrito.Trim(),
+                        idCanton = idCanton
+                    };
+
+                    contexto.Distrito.Add(nuevoDistrito);
+                    contexto.SaveChanges();
+
+                    System.Diagnostics.Debug.WriteLine($"✅ Nuevo distrito creado: {nuevoDistrito.nombreDistrito} (ID: {nuevoDistrito.idDistrito})");
+                    return nuevoDistrito.idDistrito;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error en ObtenerOCrearDistritoPorNombre: {ex.Message}");
+                // En caso de error, devolver Carmen como fallback
+                return 1;
             }
         }
     }

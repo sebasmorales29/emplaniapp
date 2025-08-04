@@ -20,37 +20,131 @@ namespace Emplaniapp.LogicaDeNegocio.Empleado.AgregarEmpleado
 
         public bool CrearEmpleado(EmpleadoDto empleado)
         {
+            System.Diagnostics.Debug.WriteLine("🔍 INICIO - Validaciones de lógica de negocio");
+            System.Diagnostics.Debug.WriteLine($"Empleado: {empleado.nombre} {empleado.primerApellido}");
+            System.Diagnostics.Debug.WriteLine($"Cédula: {empleado.cedula}");
+            System.Diagnostics.Debug.WriteLine($"Fecha nacimiento: {empleado.fechaNacimiento}");
+            System.Diagnostics.Debug.WriteLine($"Fecha contratación: {empleado.fechaContratacion}");
+            System.Diagnostics.Debug.WriteLine($"Periodicidad: {empleado.periocidadPago}");
+            System.Diagnostics.Debug.WriteLine($"Salario aprobado: {empleado.salarioAprobado}");
+            System.Diagnostics.Debug.WriteLine($"Correo: {empleado.correoInstitucional}");
+            System.Diagnostics.Debug.WriteLine($"IdNetUser: {empleado.IdNetUser}");
+
+            // Validar campos obligatorios
+            if (string.IsNullOrWhiteSpace(empleado.nombre))
+            {
+                System.Diagnostics.Debug.WriteLine("❌ Error: Nombre es obligatorio");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(empleado.primerApellido))
+            {
+                System.Diagnostics.Debug.WriteLine("❌ Error: Primer apellido es obligatorio");
+                return false;
+            }
+
+            if (empleado.cedula <= 0)
+            {
+                System.Diagnostics.Debug.WriteLine("❌ Error: Cédula inválida: " + empleado.cedula);
+                return false;
+            }
+
+            // Validar que la cédula tenga el formato correcto (9 dígitos)
+            if (empleado.cedula < 100000000 || empleado.cedula > 999999999)
+            {
+                System.Diagnostics.Debug.WriteLine("❌ Error: Cédula debe tener 9 dígitos: " + empleado.cedula);
+                return false;
+            }
+
             // Validar que la fecha de nacimiento sea válida (mayor de edad)
             if (empleado.fechaNacimiento > DateTime.Now.AddYears(-18))
             {
-                System.Diagnostics.Debug.WriteLine("Error: Menor de edad: " + empleado.fechaNacimiento);
+                System.Diagnostics.Debug.WriteLine("❌ Error: Menor de edad: " + empleado.fechaNacimiento);
                 return false; // Debe ser mayor de edad
             }
 
             // Validar que la fecha de contratación no sea futura
             if (empleado.fechaContratacion > DateTime.Now)
             {
-                System.Diagnostics.Debug.WriteLine("Error: Fecha contratación futura: " + empleado.fechaContratacion);
+                System.Diagnostics.Debug.WriteLine("❌ Error: Fecha contratación futura: " + empleado.fechaContratacion);
                 return false; // La fecha de contratación no puede ser futura
             }
+
             // Validar periodicidad de pago
             if (empleado.periocidadPago != "Quincenal" && empleado.periocidadPago != "Mensual")
             {
-                System.Diagnostics.Debug.WriteLine("Error: Periodicidad inválida: " + empleado.periocidadPago);
+                System.Diagnostics.Debug.WriteLine("❌ Error: Periodicidad inválida: " + empleado.periocidadPago);
                 return false; // Periodicidad inválida
             }
 
-            System.Diagnostics.Debug.WriteLine("Todas las validaciones pasaron, llamando a AccesoADatos");
+            // Validar salario aprobado
+            if (empleado.salarioAprobado <= 0)
+            {
+                System.Diagnostics.Debug.WriteLine("❌ Error: Salario aprobado debe ser mayor a 0: " + empleado.salarioAprobado);
+                return false;
+            }
+
+            System.Diagnostics.Debug.WriteLine("✅ Validaciones básicas pasaron, verificando duplicados...");
+
+            // Verificar que la cédula no esté duplicada
+            try
+            {
+                var contexto = new Emplaniapp.AccesoADatos.Contexto();
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine("🔍 Verificando cédula duplicada...");
+                    var empleadoExistente = contexto.Empleados.FirstOrDefault(e => e.cedula == empleado.cedula);
+                    if (empleadoExistente != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Error: La cédula {empleado.cedula} ya está registrada para el empleado {empleadoExistente.nombre} {empleadoExistente.primerApellido}");
+                        return false;
+                    }
+                    System.Diagnostics.Debug.WriteLine($"✅ Cédula {empleado.cedula} disponible");
+
+                    // Verificar que el correo electrónico no esté duplicado
+                    System.Diagnostics.Debug.WriteLine("🔍 Verificando correo duplicado...");
+                    var empleadoConEmail = contexto.Empleados.FirstOrDefault(e => e.correoInstitucional == empleado.correoInstitucional);
+                    if (empleadoConEmail != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Error: El correo {empleado.correoInstitucional} ya está registrado para el empleado {empleadoConEmail.nombre} {empleadoConEmail.primerApellido}");
+                        return false;
+                    }
+                    System.Diagnostics.Debug.WriteLine($"✅ Correo {empleado.correoInstitucional} disponible");
+
+                    // Verificar que el IdNetUser no esté duplicado
+                    System.Diagnostics.Debug.WriteLine("🔍 Verificando IdNetUser duplicado...");
+                    var empleadoConIdNetUser = contexto.Empleados.FirstOrDefault(e => e.IdNetUser == empleado.IdNetUser);
+                    if (empleadoConIdNetUser != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Error: El IdNetUser {empleado.IdNetUser} ya está registrado para el empleado {empleadoConIdNetUser.nombre} {empleadoConIdNetUser.primerApellido}");
+                        return false;
+                    }
+                    System.Diagnostics.Debug.WriteLine($"✅ IdNetUser {empleado.IdNetUser} disponible");
+                }
+                finally
+                {
+                    contexto.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error al verificar datos duplicados: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"📚 Stack trace: {ex.StackTrace}");
+                return false;
+            }
+
+            System.Diagnostics.Debug.WriteLine("✅ Todas las validaciones pasaron, llamando a AccesoADatos");
 
             try
             {
                 bool resultado = _agregarEmpleadoAD.CrearEmpleado(empleado);
-                System.Diagnostics.Debug.WriteLine("Resultado de AccesoADatos: " + resultado);
+                System.Diagnostics.Debug.WriteLine($"📊 Resultado de AccesoADatos: {resultado}");
                 return resultado;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("Excepción en CrearEmpleado: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine($"❌ Excepción en CrearEmpleado LN: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"📚 Stack trace: {ex.StackTrace}");
                 return false;
             }
         }

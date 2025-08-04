@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
+using Emplaniapp.UI.Attributes;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.Abstracciones.InterfacesParaUI.TipoRetencion;
 using Emplaniapp.LogicaDeNegocio.Tipo_Remuneracion;
@@ -10,7 +11,7 @@ using System;
 
 namespace Emplaniapp.UI.Controllers
 {
-    [Authorize(Roles = "Administrador, Contador")]
+    [ActiveRoleAuthorize("Administrador", "Contador")]
     public class VariablesFinancierasController : Controller
     {
         readonly IListarTipoRemuneracionLN _listarRemuLN = new ListarTipoRemuneracionLN();

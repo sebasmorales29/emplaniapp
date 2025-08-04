@@ -1,7 +1,33 @@
 ﻿@model Emplaniapp.Abstracciones.ModelosParaUI.EmpleadoDto
+@using Microsoft.AspNet.Identity
+@using System.Security.Claims
 
 @{
     ViewBag.Title = "Agregar Empleado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    // Definir funciones de rol activo localmente
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    var roleClaim = claimsIdentity?.FindFirst(ClaimTypes.Role);
+    string userRole = "Usuario";
+    if (roleClaim != null)
+    {
+        userRole = roleClaim.Value;
+    }
+
+    Func<string> getActiveRole = () => {
+        var activeRole = Session["ActiveRole"] as string;
+        if (!string.IsNullOrEmpty(activeRole))
+        {
+            return activeRole;
+        }
+        return userRole;
+    };
+
+    Func<string, bool> isInActiveRole = (role) => {
+        var activeRole = getActiveRole();
+        return activeRole.Equals(role, StringComparison.OrdinalIgnoreCase);
+    };
 }
 
 <style>
@@ -61,6 +87,11 @@
         background-color: #d9534f;
         border-color: #d9534f;
     }
+
+    .panel-warning > .panel-heading {
+        background-color: #f0ad4e;
+        border-color: #f0ad4e;
+    }
 </style>
 
 <div class="container">
@@ -116,7 +147,47 @@
             </div>
         </div>
 
-        <!-- SECCIÓN 3: DATOS BANCARIOS -->
+        <!-- SECCIÓN 3: DIRECCIÓN -->
+        <div class="panel panel-warning">
+            <div class="panel-heading"><h3 class="panel-title">Dirección</h3></div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.idProvincia, "Provincia")
+                            @Html.DropDownListFor(m => m.idProvincia, (SelectList)ViewBag.Provincias, "-- Seleccione provincia --", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.idProvincia, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.nombreCanton, "Cantón")
+                            @Html.TextBoxFor(m => m.nombreCanton, new { @class = "form-control", placeholder = "Ej: San José, Escazú, Desamparados..." })
+                            @Html.ValidationMessageFor(m => m.nombreCanton, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.nombreDistrito, "Distrito")
+                            @Html.TextBoxFor(m => m.nombreDistrito, new { @class = "form-control", placeholder = "Ej: Carmen, Centro, La Uruca..." })
+                            @Html.ValidationMessageFor(m => m.nombreDistrito, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.direccionDetallada, "Dirección Detallada")
+                            @Html.TextAreaFor(m => m.direccionDetallada, new { @class = "form-control", rows = "3", placeholder = "Detalle específico de la dirección (casa #, apartamento, referencias, etc.)" })
+                            @Html.ValidationMessageFor(m => m.direccionDetallada, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4: DATOS BANCARIOS -->
         <div class="panel panel-success">
             <div class="panel-heading"><h3 class="panel-title">Datos Bancarios</h3></div>
             <div class="panel-body">
@@ -130,13 +201,28 @@
             </div>
         </div>
 
-        <!-- SECCIÓN 4: CREDENCIALES DE ACCESO -->
+        <!-- SECCIÓN 5: CREDENCIALES DE ACCESO -->
         <div class="panel panel-danger">
             <div class="panel-heading"><h3 class="panel-title">Credenciales de Acceso</h3></div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.UserName) @Html.EditorFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })</div></div>
-                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.Role, "Rol de Usuario") @Html.DropDownListFor(m => m.Role, (IEnumerable<SelectListItem>)ViewBag.RolesList, "Seleccione rol", new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.Role, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.UserName) 
+                            @Html.EditorFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control" } }) 
+                            @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Rol de Usuario</label>
+                            <div class="form-control-static" style="background-color: #e9f7ef; border: 1px solid #d4edda; padding: 8px; border-radius: 4px;">
+                                <i class="fa fa-info-circle text-success"></i> 
+                                <strong>Empleado</strong> (asignado automáticamente)
+                            </div>
+                            <small class="text-muted">Todos los usuarios nuevos reciben el rol de "Empleado" por defecto. Los roles adicionales (Contador, Administrador) se asignan posteriormente según sea necesario.</small>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6"><div class="form-group"><div class="password-wrapper">@Html.LabelFor(m => m.Password) @Html.PasswordFor(m => m.Password, new { @class = "form-control" }) <i class="fa fa-eye toggle-password"></i></div>@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })</div></div>
@@ -148,6 +234,12 @@
         <!-- BOTÓN DE ENVÍO -->
         <div class="row" style="margin-top: 20px;">
             <div class="col-md-12 text-right">
+                <button type="button" class="btn btn-info" id="testConnectionBtn" style="margin-right: 10px;">
+                    <i class="fa fa-database"></i> Probar Conexión BD
+                </button>
+                <button type="button" class="btn btn-warning" id="testEmployeeDataBtn" style="margin-right: 10px;">
+                    <i class="fa fa-user-check"></i> Probar Datos Empleado
+                </button>
                 <button type="submit" class="btn btn-primary" id="submitEmployeeBtn">
                     <i class="fa fa-user-plus"></i> Agregar Empleado
                 </button>
@@ -169,7 +261,7 @@
 
             var form = $('#createEmployeeForm');
             var isAdmin = false;
-            @if (User != null && User.IsInRole("Administrador"))
+            @if (User != null && isInActiveRole("Administrador"))
             {
                 <text>isAdmin = true;</text>
             }
@@ -185,9 +277,15 @@
                     // Detenemos el envío normal para mostrar el modal de confirmación.
                     e.preventDefault();
                     
-                    $('#adminPasswordInput').val('');
-                    $('#adminPasswordError').hide();
-                    $('#adminPasswordModal').modal('show');
+                    // Usar función centralizada para mostrar el modal
+                    if (window.AdminPasswordModal && window.AdminPasswordModal.show) {
+                        window.AdminPasswordModal.show();
+                    } else {
+                        // Fallback si el modal centralizado no está disponible
+                        $('#adminPasswordInput').val('');
+                        $('#adminPasswordError').hide();
+                        $('#adminPasswordModal').modal('show');
+                    }
                 }
                 
                 // Si no es admin, no hacemos nada aquí, y el formulario se envía normalmente.
@@ -231,6 +329,86 @@
             $('#cancelAdminPasswordBtn').click(function () {
                 $('#adminPasswordModal').modal('hide');
             });
+
+            // Botón de prueba de conexión a BD
+            $('#testConnectionBtn').click(function () {
+                $.ajax({
+                    url: '@Url.Action("VerificarConexionBD", "Empleado")',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.conexionExitosa) {
+                            var mensaje = '✅ Conexión exitosa\n\n';
+                            mensaje += 'Datos en la base de datos:\n';
+                            mensaje += `• Provincias: ${response.datos.provincias}\n`;
+                            mensaje += `• Cargos: ${response.datos.cargos}\n`;
+                            mensaje += `• Bancos: ${response.datos.bancos}\n`;
+                            mensaje += `• Tipos de Moneda: ${response.datos.tiposMoneda}\n`;
+                            mensaje += `• Estados: ${response.datos.estados}\n`;
+                            mensaje += `• Direcciones: ${response.datos.direcciones}\n`;
+                            mensaje += `• Empleados: ${response.datos.empleados}\n`;
+                            mensaje += `• Usuarios: ${response.datos.usuarios}`;
+                            alert(mensaje);
+                        } else {
+                            alert('❌ Error de conexión: ' + response.error);
+                        }
+                    },
+                    error: function () {
+                        alert('❌ Error al verificar la conexión a la base de datos');
+                    }
+                });
+            });
+
+            // Botón de prueba de datos del empleado
+            $('#testEmployeeDataBtn').click(function () {
+                // Obtener los datos del formulario
+                var formData = form.serialize();
+                
+                $.ajax({
+                    url: '@Url.Action("VerificarDatosEmpleado", "Empleado")',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.exito) {
+                            var mensaje = '📋 Datos del empleado:\n\n';
+                            mensaje += `• Nombre: ${response.datos.nombre}\n`;
+                            mensaje += `• Cédula: ${response.datos.cedula}\n`;
+                            mensaje += `• Correo: ${response.datos.correo}\n`;
+                            mensaje += `• IdNetUser: ${response.datos.idNetUser}\n`;
+                            mensaje += `• IdProvincia: ${response.datos.idProvincia}\n`;
+                            mensaje += `• IdCargo: ${response.datos.idCargo}\n`;
+                            mensaje += `• IdBanco: ${response.datos.idBanco}\n`;
+                            mensaje += `• IdMoneda: ${response.datos.idMoneda}\n`;
+                            mensaje += `• IdEstado: ${response.datos.idEstado}\n`;
+                            mensaje += `• Cantón: ${response.datos.nombreCanton}\n`;
+                            mensaje += `• Distrito: ${response.datos.nombreDistrito}\n`;
+                            mensaje += `• Salario: ${response.datos.salarioAprobado}\n`;
+                            mensaje += `• Periodicidad: ${response.datos.periocidadPago}\n`;
+                            mensaje += `• Fecha Nacimiento: ${response.datos.fechaNacimiento}\n`;
+                            mensaje += `• Fecha Contratación: ${response.datos.fechaContratacion}\n\n`;
+                            
+                            mensaje += '✅ Validaciones:\n';
+                            mensaje += `• Nombre válido: ${response.validaciones.nombreValido ? '✅' : '❌'}\n`;
+                            mensaje += `• Cédula válida: ${response.validaciones.cedulaValida ? '✅' : '❌'}\n`;
+                            mensaje += `• Correo válido: ${response.validaciones.correoValido ? '✅' : '❌'}\n`;
+                            mensaje += `• IdNetUser válido: ${response.validaciones.idNetUserValido ? '✅' : '❌'} (se genera automáticamente)\n`;
+                            mensaje += `• Mayor de edad: ${response.validaciones.mayorDeEdad ? '✅' : '❌'}\n`;
+                            mensaje += `• Fecha contratación válida: ${response.validaciones.fechaContratacionValida ? '✅' : '❌'}\n`;
+                            mensaje += `• Salario válido: ${response.validaciones.salarioValido ? '✅' : '❌'}\n`;
+                            mensaje += `• Periodicidad válida: ${response.validaciones.periodicidadValida ? '✅' : '❌'}`;
+                            
+                            alert(mensaje);
+                        } else {
+                            alert('❌ Error al verificar datos: ' + response.error);
+                        }
+                    },
+                    error: function () {
+                        alert('❌ Error al verificar los datos del empleado');
+                    }
+                });
+            });
+
         });
     </script>
 }

@@ -1,0 +1,44 @@
+@using Microsoft.AspNet.Identity
+@using System.Security.Claims
+
+@{
+    // Helper reutilizable para funciones de rol activo
+    // Incluir este archivo en cualquier vista que necesite verificar roles activos
+    
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    var roleClaim = claimsIdentity?.FindFirst(ClaimTypes.Role);
+    string userRole = "Usuario"; // Valor por defecto
+    if (roleClaim != null)
+    {
+        userRole = roleClaim.Value;
+    }
+
+    // Función para obtener el rol activo (del Session si existe, sino el rol por defecto)
+    Func<string> getActiveRole = () => {
+        var activeRole = Session["ActiveRole"] as string;
+        if (!string.IsNullOrEmpty(activeRole))
+        {
+            return activeRole;
+        }
+        return userRole; // Fallback al rol original
+    };
+
+    // Función para verificar si el usuario está en el rol activo especificado
+    Func<string, bool> isInActiveRole = (role) => {
+        var activeRole = getActiveRole();
+        return activeRole.Equals(role, StringComparison.OrdinalIgnoreCase);
+    };
+
+    // Función para verificar si el usuario está en cualquiera de los roles activos especificados
+    Func<string[], bool> isInAnyActiveRole = (roles) => {
+        var activeRole = getActiveRole();
+        return roles.Any(role => activeRole.Equals(role, StringComparison.OrdinalIgnoreCase));
+    };
+
+    // Función para verificar si el usuario NO está en el rol activo especificado
+    Func<string, bool> isNotInActiveRole = (role) => {
+        return !isInActiveRole(role);
+    };
+
+    var activeUserRole = getActiveRole();
+}

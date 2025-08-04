@@ -12,12 +12,44 @@
     {
         userRole = roleClaim.Value;
     }
+
+    // Función para obtener el rol activo (del Session si existe, sino el rol por defecto)
+    Func<string> getActiveRole = () => {
+        var activeRole = Session["ActiveRole"] as string;
+        if (!string.IsNullOrEmpty(activeRole))
+        {
+            return activeRole;
+        }
+        return userRole; // Fallback al rol original
+    };
+
+    // Función para verificar si el usuario está en el rol activo especificado
+    Func<string, bool> isInActiveRole = (role) => {
+        var activeRole = getActiveRole();
+        return activeRole.Equals(role, StringComparison.OrdinalIgnoreCase);
+    };
+
+    // Función para verificar si el usuario está en cualquiera de los roles activos especificados
+    Func<string[], bool> isInAnyActiveRole = (roles) => {
+        var activeRole = getActiveRole();
+        return roles.Any(role => activeRole.Equals(role, StringComparison.OrdinalIgnoreCase));
+    };
+
+    // Función para verificar si el usuario NO está en el rol activo especificado
+    Func<string, bool> isNotInActiveRole = (role) => {
+        return !isInActiveRole(role);
+    };
+
+    var activeUserRole = getActiveRole();
+    
+
 }
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Language" content="es" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Suplidora Royal Ltda.</title>
     @Styles.Render("~/Content/css")
@@ -38,14 +70,14 @@
             </button>
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    @if (User.IsInRole("Administrador"))
+                    @if (isInActiveRole("Administrador"))
                     {
                         <!-- Menú para Administrador -->
                         <li class="nav-item">@Html.ActionLink("Empleados", "ListarEmpleados", "Empleado", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
                         <li class="nav-item">@Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
                     }
 
-                    @if (User.IsInRole("Contador"))
+                    @if (isInActiveRole("Contador"))
                     {
                         <!-- Menú para Contador -->
                         <li class="nav-item">@Html.ActionLink("Tablero de Control", "Index", "Home", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
@@ -53,7 +85,7 @@
                         <li class="nav-item">@Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
                     }
 
-                    @if (User.IsInRole("Empleado"))
+                    @if (isInActiveRole("Empleado"))
                     {
                         <!-- Menú para Empleado -->
                         <li class="nav-item">@Html.ActionLink("Perfil", "Detalles", "DatosPersonales", null, new { @class = "nav-link", style = "color: white;" })</li>
@@ -64,10 +96,11 @@
                 <ul class="navbar-nav">
                     @if (Request.IsAuthenticated)
                     {
-                        <!-- Si el usuario está autenticado, mostrar nombre de usuario y botón de Salir -->
-                        <li class="nav-item navbar-user" style="margin-right: 20px; color: white;">
+                        <!-- Si el usuario está autenticado, mostrar role switcher y botón de Salir -->
+                        <li class="nav-item navbar-user" style="margin-right: 20px; color: white;" id="role-switcher-container">
                             <i class="glyphicon glyphicon-user"></i>
-                            @userRole
+                            <!-- Contenedor que será actualizado dinámicamente -->
+                            <span id="role-display">@activeUserRole</span>
                         </li>
                         <li class="nav-item">
                             @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "form-inline" }))
@@ -95,6 +128,8 @@
     </nav>
 
     <div class="container body-content">
+        <!-- Token anti-falsificación para AJAX -->
+        @Html.AntiForgeryToken()
         <br />
         @RenderBody()
         <hr />
@@ -108,26 +143,211 @@
     @RenderSection("scripts", required: false)
 
     <!-- Modal de Confirmación de Contraseña de Administrador -->
-    <div class="modal fade" id="adminPasswordModal" tabindex="-1" role="dialog" aria-labelledby="adminPasswordModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="adminPasswordModalLabel">Confirmación de Administrador</h5>
-                </div>
-                <div class="modal-body">
-                    <p>Para completar esta acción, por favor ingrese su contraseña de administrador.</p>
-                    <div class="form-group">
-                        <label for="adminPasswordInput">Contraseña</label>
-                        <input type="password" class="form-control" id="adminPasswordInput" placeholder="Contraseña">
-                        <span id="adminPasswordError" class="text-danger" style="display: none;">Contraseña incorrecta.</span>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="cancelAdminPasswordBtn">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="confirmAdminPasswordBtn">Confirmar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    @Html.Partial("_AdminPasswordModal")
+
+    <!-- Estilos para Role Switcher -->
+    <style>
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .dropdown-menu li a {
+            transition: all 0.2s ease !important;
+        }
+    </style>
+
+    <!-- Role Switcher JavaScript -->
+    <script>
+        $(document).ready(function() {
+            // Verificar que el contenedor existe
+            if ($('#role-display').length === 0) {
+                console.error('Container #role-display not found!');
+                return;
+            }
+
+            initializeRoleSwitcher();
+        });
+
+        function initializeRoleSwitcher() {
+            // Obtener información de roles del usuario
+            $.ajax({
+                url: '@Url.Action("GetUserRoleInfo", "DatosPersonales")',
+                type: 'GET',
+                success: function(data) {
+                    if (data.success) {
+                        updateRoleDisplay(data);
+                    } else {
+                        console.log('Error al obtener roles:', data.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error al cargar información de roles:', status, error);
+                }
+            });
+        }
+
+        function updateRoleDisplay(roleInfo) {
+            var container = $('#role-display');
+            
+            if (roleInfo.hasMultipleRoles) {
+                
+                // Crear dropdown para múltiples roles (Bootstrap 3) con mejor diseño
+                var dropdownHtml = '<div class="dropdown" style="display: inline-block;">' +
+                    '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" ' +
+                    'style="color: white; text-decoration: none; padding: 5px 10px; border-radius: 4px; background-color: rgba(255,255,255,0.1); transition: all 0.3s ease;" ' +
+                    'onmouseover="this.style.backgroundColor=\'rgba(255,255,255,0.2)\'" ' +
+                    'onmouseout="this.style.backgroundColor=\'rgba(255,255,255,0.1)\'">' +
+                    roleInfo.activeRole + ' <span class="caret"></span>' +
+                    '</a>' +
+                    '<ul class="dropdown-menu" style="background-color: #4682A9; border: 1px solid #3a6b8a; min-width: 160px; border-radius: 6px; margin-top: 5px;">';
+                
+                // Agregar cada rol disponible al dropdown
+                roleInfo.availableRoles.forEach(function(role) {
+                    var isActive = role === roleInfo.activeRole;
+                    var checkIcon = isActive ? '<i class="glyphicon glyphicon-ok" style="margin-right: 8px; color: #90EE90;"></i>' : '<span style="margin-right: 20px;"></span>';
+                    var fontWeight = isActive ? 'font-weight: bold;' : '';
+                    var backgroundColor = isActive ? 'background-color: rgba(255,255,255,0.1);' : '';
+                    
+                    dropdownHtml += '<li>' +
+                        '<a href="#" onclick="switchRole(\'' + role + '\')" ' +
+                        'style="color: white; padding: 12px 16px; display: block; text-decoration: none; ' + fontWeight + backgroundColor + ' border-radius: 4px; margin: 2px 4px; transition: all 0.2s ease;" ' +
+                        'onmouseover="if(\'' + role + '\' !== \'' + roleInfo.activeRole + '\') this.style.backgroundColor=\'rgba(255,255,255,0.15)\'" ' +
+                        'onmouseout="this.style.backgroundColor=\'' + (isActive ? 'rgba(255,255,255,0.1)' : 'transparent') + '\'">' +
+                        checkIcon + role +
+                        '</a>' +
+                        '</li>';
+                });
+                
+                dropdownHtml += '</ul></div>';
+                
+                container.html(dropdownHtml);
+                
+                // Asegurar que Bootstrap procese el nuevo dropdown
+                setTimeout(function() {
+                    var dropdownElement = container.find('.dropdown-toggle');
+                    
+                    // Agregar evento de clic manual si Bootstrap no funciona
+                    dropdownElement.on('click', function(e) {
+                        e.preventDefault();
+                        var menu = $(this).next('.dropdown-menu');
+                        menu.toggle();
+                    });
+                    
+                }, 100);
+            } else {
+                // Solo mostrar el rol actual si no hay múltiples roles
+                container.html(roleInfo.activeRole);
+            }
+        }
+
+        // Función global para cambiar de rol
+        window.switchRole = function(newRole) {
+            console.log('=== SWITCH ROLE LLAMADO ===');
+            console.log('Nuevo rol solicitado:', newRole);
+            
+            // Ocultar el dropdown después del clic
+            $('.dropdown-menu').hide();
+            
+            // Mostrar indicador de carga temporal
+            var container = $('#role-display');
+            var originalContent = container.html();
+            container.html('<i class="glyphicon glyphicon-refresh spin" style="color: white;"></i> Cambiando...');
+            
+            $.ajax({
+                url: '@Url.Action("SwitchRole", "DatosPersonales")',
+                type: 'POST',
+                data: { 
+                    role: newRole,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(data) {
+                    console.log('Respuesta del servidor al cambiar rol:', data);
+                    if (data.success) {
+                        console.log('✓ Rol cambiado exitosamente a:', data.newRole);
+                        
+                        // Actualizar inmediatamente la visualización del rol
+                        container.html(data.newRole);
+                        
+                        // Pequeña pausa para mostrar el cambio, luego redirigir al index para resetear las vistas
+                        setTimeout(function() {
+                            console.log('🔄 Redirigiendo al index para resetear las vistas...');
+                            window.location.href = '@Url.Action("Index", "Home")';
+                        }, 500);
+                    } else {
+                        console.log('✗ Error en el cambio de rol:', data.message);
+                        container.html(originalContent);
+                        alert('Error: ' + data.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('✗ Error AJAX al cambiar rol:');
+                    console.log('Status:', status);
+                    console.log('Error:', error);
+                    console.log('Response Text:', xhr.responseText);
+                    container.html(originalContent);
+                    alert('Error al cambiar el rol: ' + error);
+                }
+            });
+        };
+
+        // Función para verificar cambios de roles en tiempo real
+        function verificarCambiosRoles() {
+            // Solo verificar si el usuario está autenticado
+            if ($('#role-switcher-container').length > 0) {
+                $.ajax({
+                    url: '@Url.Action("VerificarCambiosRoles", "DatosPersonales")',
+                    type: 'GET',
+                    cache: false,
+                    success: function(data) {
+                        if (data.success && data.hasChanges) {
+                            console.log('🔄 Cambios detectados en roles del usuario');
+                            console.log('Nuevos roles:', data.newRoles);
+                            console.log('Rol activo actualizado:', data.activeRole);
+                            
+                            // Mostrar mensaje de actualización
+                            if (data.newRoles.length === 0) {
+                                // El usuario ya no tiene roles asignados
+                                alert('Sus permisos han sido modificados. Será redirigido al inicio de sesión.');
+                                window.location.href = '@Url.Action("Login", "Account")';
+                                return;
+                            }
+                            
+                            // Redirigir al index para resetear las vistas con los nuevos roles
+                            console.log('🔄 Redirigiendo al index para resetear las vistas con nuevos roles...');
+                            window.location.href = '@Url.Action("Index", "Home")';
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Error silencioso - solo logear en consola
+                        console.log('Error al verificar cambios de roles:', error);
+                    }
+                });
+            }
+        }
+
+        // Verificar cambios de roles cada 10 segundos (solo si está autenticado)
+        @if (Request.IsAuthenticated)
+        {
+            <text>
+            // Verificar inmediatamente cuando se carga la página
+            $(document).ready(function() {
+                console.log('🔄 Verificando roles al cargar la página...');
+                verificarCambiosRoles();
+            });
+
+            setInterval(verificarCambiosRoles, 10000); // 10 segundos
+
+            // También verificar cuando la página obtiene el foco (usuario regresa a la pestaña)
+            $(window).on('focus', function() {
+                verificarCambiosRoles();
+            });
+            </text>
+        }
+    </script>
 </body>
 </html>

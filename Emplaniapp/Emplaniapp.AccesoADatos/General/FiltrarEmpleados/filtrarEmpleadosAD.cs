@@ -107,7 +107,6 @@ namespace Emplaniapp.AccesoADatos.General.Filtrar
                                           join prov in _contexto.Provincia on emp.idProvincia equals prov.idProvincia
                                           join cant in _contexto.Canton on emp.idCanton equals cant.idCanton
                                           join dist in _contexto.Distrito on emp.idDistrito equals dist.idDistrito
-                                          join ca in _contexto.Calle on emp.idCalle equals ca.idCalle
                                           where idsFiltrados.Contains(emp.idEmpleado)
                                           orderby emp.primerApellido, emp.segundoApellido, emp.nombre
                                           select new
@@ -119,8 +118,7 @@ namespace Emplaniapp.AccesoADatos.General.Filtrar
                                               moneda,
                                               prov,
                                               cant,
-                                              dist,
-                                              ca
+                                              dist
                                           }).ToList();
 
                 return empleadosCompletos.Select(emp => new EmpleadoDto
@@ -144,7 +142,7 @@ namespace Emplaniapp.AccesoADatos.General.Filtrar
                     cuentaIBAN = emp.emp.cuentaIBAN,
                     idBanco = emp.emp.idBanco,
                     nombreBanco = emp.banco.nombreBanco,
-                    direccionCompleta = $"{emp.prov.nombreProvincia}, {emp.cant.nombreCanton}, {emp.dist.nombreDistrito}, {emp.ca.nombreCalle},{emp.emp.direccionDetallada} ",
+                    direccionCompleta = $"{emp.prov.nombreProvincia}, {emp.cant.nombreCanton}, {emp.dist.nombreDistrito}, {emp.emp.direccionDetallada}",
                     fechaContratacion = emp.emp.fechaContratacion,
                     fechaSalida = emp.emp.fechaSalida
                 } as T).ToList();

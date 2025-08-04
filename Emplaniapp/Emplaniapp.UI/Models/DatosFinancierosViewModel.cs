@@ -15,9 +15,7 @@ namespace Emplaniapp.UI.Models
         [Range(0.01, double.MaxValue, ErrorMessage = "El salario debe ser mayor a cero")]
         public decimal SalarioAprobado { get; set; }
 
-        [Required(ErrorMessage = "El salario diario es requerido")]
         [Display(Name = "Salario Diario")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "El salario debe ser mayor a cero")]
         public decimal SalarioDiario { get; set; }
 
         [Required(ErrorMessage = "El tipo de moneda es requerido")]

@@ -24,9 +24,5 @@ namespace Emplaniapp.UI.Models
         [Display(Name = "Fecha de Salida")]
         [DataType(DataType.Date)]
         public DateTime? FechaSalida { get; set; }
-
-        [Display(Name = "Inicio de Vacaciones")]
-        [DataType(DataType.Date)]
-        public DateTime? InicioVacaciones { get; set; }
     }
 } 
