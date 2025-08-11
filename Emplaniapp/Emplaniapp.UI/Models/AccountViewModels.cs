@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 
@@ -43,7 +43,7 @@ namespace Emplaniapp.UI.Models
         ErrorMessage = "La contraseña y la confirmación no coinciden."
     )]
         public string ConfirmPassword { get; set; }
-  
+
 
         // Nuevo: rol seleccionado
         [Required]
