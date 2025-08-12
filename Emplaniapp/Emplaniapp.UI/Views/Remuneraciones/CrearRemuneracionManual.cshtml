@@ -1,7 +1,8 @@
 ﻿@model Emplaniapp.Abstracciones.ModelosParaUI.RemuneracionDto
 
 @{
-    ViewBag.Title = "Crear Remuneración ";
+    ViewBag.Title = "Crear Remuneración";
+    bool esVendedor = ViewBag.EsVendedor != null && (bool)ViewBag.EsVendedor;
 }
 
 <h2 class="mb-4">Crear Remuneración Manual</h2>
@@ -31,57 +32,75 @@
                                 @Html.DropDownListFor(model => model.idTipoRemuneracion,
                                     (SelectList)ViewBag.TiposRemuneracion,
                                     "Seleccione una opción",
-                                    new { @class = "form-control text-center", required = "required" })
+                                    new { @class = "form-control text-center", required = "required", id = "idTipoRemuneracion" })
                                 @Html.ValidationMessageFor(model => model.idTipoRemuneracion, "", new { @class = "text-danger" })
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Panel de Horas y Pagos -->
-                <div class="card mb-4">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">Horas y Pagos</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group row mb-3">
-                            <label class="col-md-4 col-form-label">Días Trabajados</label>
-                            <div class="col-md-8">
-                                @Html.TextBoxFor(m => m.diasTrabajados, new { @class = "form-control", type = "number", min = "0", placeholder = "Ingrese los dias trabajados" })
-                                @Html.ValidationMessageFor(m => m.diasTrabajados, "", new { @class = "text-danger" })
-                            </div>
+                @if (esVendedor)
+                {
+                    <!-- Campos para vendedor -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">Pagos</h5>
                         </div>
+                        <div class="card-body">
 
-                        <div class="form-group row mb-3">
-                            <label class="col-md-4 col-form-label">Horas Trabajadas</label>
-                            <div class="col-md-8">
-                                @Html.TextBoxFor(m => m.horas, new { @class = "form-control", type = "number", min = "0", placeholder = "Ingrese horas trabajadas" })
-                                @Html.ValidationMessageFor(m => m.horas, "", new { @class = "text-danger" })
+                            <div class="form-group row mb-3">
+                                <label class="col-md-4 col-form-label">Pago Quincenal</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(m => m.pagoQuincenal, new { @class = "form-control", type = "number", step = "0.01", min = "0", placeholder = "0.00" })
+                                    @Html.ValidationMessageFor(m => m.pagoQuincenal, "", new { @class = "text-danger" })
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-check" id="trabajoEnDiaGroup">
-                            @Html.CheckBoxFor(m => m.TrabajoEnDia, new { @class = "form-check-input" })
-                            @Html.LabelFor(m => m.TrabajoEnDia, "¿Trabajó ese día? (Feriado/Vacaciones)")
-                        </div>
-
-                        <div class="form-group row mb-3">
-                            <label class="col-md-4 col-form-label">Pago Quincenal</label>
-                            <div class="col-md-8">
-                                @Html.TextBoxFor(m => m.pagoQuincenal, new { @class = "form-control", type = "number", step = "0.01", min = "0", placeholder = "0.00" })
-                                @Html.ValidationMessageFor(m => m.pagoQuincenal, "", new { @class = "text-danger" })
+                            <div class="form-group row mb-3">
+                                <label class="col-md-4 col-form-label">Comisión ($)</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(m => m.comision, new { @class = "form-control", type = "number", step = "0.01", min = "0", placeholder = "0.00" })
+                                    @Html.ValidationMessageFor(m => m.comision, "", new { @class = "text-danger" })
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group row mb-3">
-                            <label class="col-md-4 col-form-label">Comisión ($)</label>
-                            <div class="col-md-8">
-                                @Html.TextBoxFor(m => m.comision, new { @class = "form-control", type = "number", step = "0.01", min = "0", placeholder = "0.00" })
-                                @Html.ValidationMessageFor(m => m.comision, "", new { @class = "text-danger" })
-                            </div>
                         </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <!-- Campos para no vendedor -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">Horas y Días Trabajados</h5>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="form-group row mb-3" id="grupoDiasTrabajados">
+                                <label class="col-md-4 col-form-label">Días Trabajados</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(m => m.diasTrabajados, new { @class = "form-control", type = "number", min = "0", placeholder = "Ingrese los días trabajados", id = "diasTrabajados" })
+                                    @Html.ValidationMessageFor(m => m.diasTrabajados, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group row mb-3" id="grupoHorasTrabajadas">
+                                <label class="col-md-4 col-form-label">Horas Trabajadas</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(m => m.horas, new { @class = "form-control", type = "number", min = "0", placeholder = "Ingrese horas trabajadas", id = "horas" })
+                                    @Html.ValidationMessageFor(m => m.horas, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-check mb-3" id="grupoTrabajoEnDia">
+                                @Html.CheckBoxFor(m => m.TrabajoEnDia, new { @class = "form-check-input", id = "TrabajoEnDia" })
+                                @Html.LabelFor(m => m.TrabajoEnDia, "¿Trabajó ese día? (Feriado/Vacaciones)")
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
                 <!-- Botones -->
                 <div class="form-group row">
                     <div class="col-md-12 text-center">
@@ -97,4 +116,48 @@
     </div>
 }
 
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var esVendedor = @Html.Raw(Json.Encode(esVendedor));
 
+            if (!esVendedor) {
+                function ajustarCamposPorTipo(tipo) {
+                    $('#grupoDiasTrabajados').hide();
+                    $('#grupoHorasTrabajadas').hide();
+                    $('#grupoTrabajoEnDia').hide();
+
+                    switch (tipo) {
+                        case 1: // Horas extras
+                            $('#grupoHorasTrabajadas').show();
+                            break;
+                        case 2: // Día feriado
+                            $('#grupoTrabajoEnDia').show();
+                            break;
+                        case 3: // Incapacidad enfermedad
+                            $('#grupoDiasTrabajados').show();
+                            break;
+                        case 5: // Vacaciones
+                            $('#grupoDiasTrabajados').show();
+                            break;
+                        case 6: // Pago quincenal
+                            $('#grupoDiasTrabajados').show();
+                            break;
+                        default:
+                            // No mostrar ninguno si no aplica
+                            break;
+                    }
+                }
+
+                var selectTipo = $('#idTipoRemuneracion');
+                selectTipo.change(function () {
+                    var tipoSeleccionado = parseInt($(this).val());
+                    ajustarCamposPorTipo(tipoSeleccionado);
+                });
+
+                // Ejecutar al cargar la página para mostrar campos correctos
+                ajustarCamposPorTipo(parseInt(selectTipo.val()));
+            }
+        });
+    </script>
+}

@@ -1,5 +1,6 @@
 using Emplaniapp.Abstracciones.Entidades;
 using Emplaniapp.AccesoADatos;
+using Fluent.Infrastructure.FluentStartup;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
