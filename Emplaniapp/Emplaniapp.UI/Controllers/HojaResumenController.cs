@@ -4,9 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Host.SystemWeb;
 using Emplaniapp.Abstracciones.Entidades;
 using Emplaniapp.Abstracciones.InterfacesParaUI;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Cargos.ListarCargos;
@@ -14,6 +11,7 @@ using Emplaniapp.Abstracciones.InterfacesParaUI.Estados.ListarEstados;
 using Emplaniapp.Abstracciones.InterfacesParaUI.General.FiltrarEmpleados;
 using Emplaniapp.Abstracciones.InterfacesParaUI.General.ObtenerTotalEmpleados;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Hoja_Resumen.ListarHojaResumen;
+using Emplaniapp.Abstracciones.InterfacesParaUI.PeriodoPago.CrearPeriodoPago;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.CrearRemuneraciones;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Remuneracion;
 using Emplaniapp.Abstracciones.ModelosParaUI;
@@ -23,12 +21,17 @@ using Emplaniapp.LogicaDeNegocio.Estados.ListarEstados;
 using Emplaniapp.LogicaDeNegocio.General.FiltrarEmpleados;
 using Emplaniapp.LogicaDeNegocio.General.ObtenerTotalEmpleados;
 using Emplaniapp.LogicaDeNegocio.Hoja_Resumen.ListarHojaResumen;
+using Emplaniapp.LogicaDeNegocio.PeriodoPago;
 using Emplaniapp.LogicaDeNegocio.Remuneraciones.CrearRemuneraciones;
 using Emplaniapp.LogicaDeNegocio.Tipo_Remuneracion;
+using Emplaniapp.UI.Attributes;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Host.SystemWeb;
 
 namespace Emplaniapp.UI.Controllers
 {
-    [Authorize(Roles = "Administrador, Contador")]
+    [ActiveRoleAuthorize("Administrador", "Contador")]
     public class HojaResumenController : Controller
     {
         private IlistarHojaResumenLN _listarHojaResumenLN;
@@ -38,6 +41,7 @@ namespace Emplaniapp.UI.Controllers
         private IFiltrarEmpleadosLN _filtrarEmpleadosLN;
         private IObtenerTotalEmpleadosLN _obtenerTotalEmpleadosLN;
         private ICrearRemuneracionesLN _crearRemuneracionesLN;
+        private ICrearPeriodoPagoLN _crearPeriodoPagoLN;
         private ApplicationUserManager _userManager;
         private ApplicationRoleManager _roleManager;
 
@@ -50,6 +54,7 @@ namespace Emplaniapp.UI.Controllers
             _filtrarEmpleadosLN = new filtrarEmpleadosLN();
             _obtenerTotalEmpleadosLN = new obtenerTotalEmpleadosLN();
             _crearRemuneracionesLN = new CrearRemuneracionesLN();
+            _crearPeriodoPagoLN = new CrearPeriodoPagoLN();
         }
 
         public ApplicationUserManager UserManager
@@ -106,6 +111,7 @@ namespace Emplaniapp.UI.Controllers
         public ActionResult Generar()
         {
             DateTime fechaProceso = DateTime.Today;
+            DateTime fechaCreacionPeriodoPago = DateTime.Today;
             //DateTime fechaProceso = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 10);
 
             int dia = fechaProceso.Day;
@@ -123,20 +129,21 @@ namespace Emplaniapp.UI.Controllers
             try
             {
                 var remuneraciones = _crearRemuneracionesLN.GenerarRemuneracionesQuincenales(fechaProceso);
-
+                var periodoPago = _crearPeriodoPagoLN.GenerarPeriodoPago(fechaCreacionPeriodoPago);
+                TempData["SuccessMessage"] = $"Periodo de pago generadas exitosamente para la fecha {fechaCreacionPeriodoPago:dd/MM/yyyy}.";
                 TempData["SuccessMessage"] = $"Remuneraciones generadas exitosamente para la fecha {fechaProceso:dd/MM/yyyy}.";
                 return RedirectToAction("listarHojaResumen");
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Error al generar remuneraciones: " + ex.Message;
+                TempData["ErrorMessage"] = "Error al generar remuneraciones y periodos de pago: " + ex.Message;
                 return RedirectToAction("listarHojaResumen");
             }
         }
 
         // POST: Validar contraseña de administrador
         [HttpPost]
-        [Authorize(Roles = "Administrador")]
+        [ActiveRoleAuthorize("Administrador")]
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> ValidateAdminPassword(string password)
         {

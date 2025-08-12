@@ -29,10 +29,11 @@ using Emplaniapp.LogicaDeNegocio.Monedas.ListarMonedas;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Emplaniapp.AccesoADatos;
+using Emplaniapp.UI.Attributes;
 
 namespace Emplaniapp.UI.Controllers
 {
-    [Authorize(Roles = "Administrador")]
+    [ActiveRoleAuthorize("Administrador")]
     public class EmpleadoController : Controller
     {
         private IListarEmpleadoLN _listarEmpleadoLN;
@@ -309,7 +310,7 @@ namespace Emplaniapp.UI.Controllers
                             {
                                 // Si falla la creación del empleado, hay que borrar el usuario que ya creamos para no dejar datos huérfanos.
                                 await UserManager.DeleteAsync(user);
-                                ModelState.AddModelError("", "Hubo un error al guardar los datos del empleado.");
+                                ModelState.AddModelError("", "Hubo un error al guardar los datos del empleado. Verifique que: 1) La cédula no esté duplicada, 2) El correo electrónico no esté duplicado, 3) Todos los datos sean válidos.");
                                 System.Diagnostics.Debug.WriteLine("❌ ERROR: Falló la creación del EMPLEADO en la BD, se ha borrado el usuario de Identity para evitar datos huérfanos.");
                             }
                         }
@@ -449,22 +450,12 @@ namespace Emplaniapp.UI.Controllers
                         errores.Add("El nombre del distrito es obligatorio");
                     }
 
-
-
                     // Verificar Cargo
                     if (empleado.idCargo.HasValue)
                     {
                         var cargoExiste = contexto.Cargos.Any(c => c.idCargo == empleado.idCargo.Value);
                         if (!cargoExiste)
                             errores.Add($"Cargo con ID {empleado.idCargo} no existe");
-                    }
-
-                    // Verificar Moneda
-                    if (empleado.idMoneda.HasValue)
-                    {
-                        var monedaExiste = contexto.TipoMoneda.Any(m => m.idTipoMoneda == empleado.idMoneda.Value);
-                        if (!monedaExiste)
-                            errores.Add($"Tipo de moneda con ID {empleado.idMoneda} no existe");
                     }
 
                     // Verificar Banco
@@ -475,34 +466,133 @@ namespace Emplaniapp.UI.Controllers
                             errores.Add($"Banco con ID {empleado.idBanco} no existe");
                     }
 
-                    // Verificar Estado
+                    // Verificar TipoMoneda
+                    if (empleado.idMoneda.HasValue)
+                    {
+                        var monedaExiste = contexto.TipoMoneda.Any(t => t.idTipoMoneda == empleado.idMoneda.Value);
+                        if (!monedaExiste)
+                            errores.Add($"TipoMoneda con ID {empleado.idMoneda} no existe");
+                    }
+
+                    // Verificar Estado (idEstado es int, no int?)
                     var estadoExiste = contexto.Estado.Any(e => e.idEstado == empleado.idEstado);
                     if (!estadoExiste)
                         errores.Add($"Estado con ID {empleado.idEstado} no existe");
 
-                    // Verificar que existe dirección por defecto (ID = 1)
+                    // Verificar Direccion
                     var direccionExiste = contexto.Direccion.Any(d => d.idDireccion == 1);
                     if (!direccionExiste)
-                        errores.Add("Dirección por defecto (ID = 1) no existe en la BD");
+                        errores.Add("Dirección con ID 1 no existe");
 
-                    if (errores.Any())
-                    {
-                        System.Diagnostics.Debug.WriteLine("🔍 ERRORES DE VALIDACIÓN ENCONTRADOS:");
-                        foreach (var error in errores)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"  ❌ {error}");
-                        }
-                        return string.Join("; ", errores);
-                    }
-
-                    System.Diagnostics.Debug.WriteLine("✅ Validación de datos básicos EXITOSA");
-                    return null; // Sin errores
+                    return string.Join("; ", errores);
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"❌ ERROR en ValidarDatosBasicos: {ex.Message}");
-                return $"Error de validación: {ex.Message}";
+                return $"Error al validar datos básicos: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Método de prueba para verificar la conexión a la base de datos y datos existentes
+        /// </summary>
+        [HttpGet]
+        public JsonResult VerificarConexionBD()
+        {
+            try
+            {
+                using (var contexto = new Contexto())
+                {
+                    var resultado = new
+                    {
+                        conexionExitosa = true,
+                        datos = new
+                        {
+                            provincias = contexto.Provincia.Count(),
+                            cargos = contexto.Cargos.Count(),
+                            bancos = contexto.Bancos.Count(),
+                            tiposMoneda = contexto.TipoMoneda.Count(),
+                            estados = contexto.Estado.Count(),
+                            direcciones = contexto.Direccion.Count(),
+                            empleados = contexto.Empleados.Count(),
+                            usuarios = contexto.Users.Count()
+                        },
+                        mensaje = "Conexión exitosa"
+                    };
+
+                    return Json(resultado, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                var resultado = new
+                {
+                    conexionExitosa = false,
+                    error = ex.Message,
+                    stackTrace = ex.StackTrace,
+                    mensaje = "Error de conexión a la base de datos"
+                };
+
+                return Json(resultado, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /// <summary>
+        /// Método de prueba para verificar los datos de un empleado específico
+        /// </summary>
+        [HttpPost]
+        public JsonResult VerificarDatosEmpleado(EmpleadoDto empleado)
+        {
+            try
+            {
+                var resultado = new
+                {
+                    exito = true,
+                    datos = new
+                    {
+                        nombre = empleado.nombre,
+                        cedula = empleado.cedula,
+                        correo = empleado.correoInstitucional,
+                        idNetUser = empleado.IdNetUser,
+                        idProvincia = empleado.idProvincia,
+                        idCargo = empleado.idCargo,
+                        idBanco = empleado.idBanco,
+                        idMoneda = empleado.idMoneda,
+                        idEstado = empleado.idEstado,
+                        nombreCanton = empleado.nombreCanton,
+                        nombreDistrito = empleado.nombreDistrito,
+                        salarioAprobado = empleado.salarioAprobado,
+                        periocidadPago = empleado.periocidadPago,
+                        fechaNacimiento = empleado.fechaNacimiento,
+                        fechaContratacion = empleado.fechaContratacion
+                    },
+                    validaciones = new
+                    {
+                        nombreValido = !string.IsNullOrWhiteSpace(empleado.nombre),
+                        cedulaValida = empleado.cedula >= 100000000 && empleado.cedula <= 999999999,
+                        correoValido = !string.IsNullOrWhiteSpace(empleado.correoInstitucional),
+                        idNetUserValido = true, // El IdNetUser se genera después de crear el usuario, no es un error que esté vacío
+                        mayorDeEdad = empleado.fechaNacimiento <= DateTime.Now.AddYears(-18),
+                        fechaContratacionValida = empleado.fechaContratacion <= DateTime.Now,
+                        salarioValido = empleado.salarioAprobado > 0,
+                        periodicidadValida = empleado.periocidadPago == "Quincenal" || empleado.periocidadPago == "Mensual"
+                    },
+                    mensaje = "Datos verificados correctamente. Nota: El IdNetUser se genera automáticamente al crear el usuario."
+                };
+
+                return Json(resultado, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                var resultado = new
+                {
+                    exito = false,
+                    error = ex.Message,
+                    stackTrace = ex.StackTrace,
+                    mensaje = "Error al verificar datos del empleado"
+                };
+
+                return Json(resultado, JsonRequestBehavior.AllowGet);
             }
         }
     }

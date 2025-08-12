@@ -1,9 +1,35 @@
 ﻿@using Emplaniapp.Abstracciones.ModelosParaUI
+@using Microsoft.AspNet.Identity
+@using System.Security.Claims
 @model Tuple<EmpleadoDto, List<RetencionDto>>
 
 @{
     var emp = Model.Item1;
     ViewBag.Title = $"Retenciones – {emp.nombre} {emp.primerApellido}";
+    var seccionActiva = "Retenciones";
+    
+    // Definir funciones de rol activo localmente
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    var roleClaim = claimsIdentity?.FindFirst(ClaimTypes.Role);
+    string userRole = "Usuario";
+    if (roleClaim != null)
+    {
+        userRole = roleClaim.Value;
+    }
+
+    Func<string> getActiveRole = () => {
+        var activeRole = Session["ActiveRole"] as string;
+        if (!string.IsNullOrEmpty(activeRole))
+        {
+            return activeRole;
+        }
+        return userRole;
+    };
+
+    Func<string, bool> isInActiveRole = (role) => {
+        var activeRole = getActiveRole();
+        return activeRole.Equals(role, StringComparison.OrdinalIgnoreCase);
+    };
 }
 
 <link rel="stylesheet" href="~/Content/EstilosDatos.css" />
@@ -16,15 +42,48 @@
         new { @class = "btn btn-outline-secondary mb-3", @escape = false }
     )
 
-    <h2 class="mb-4">Retenciones de @emp.nombre @emp.primerApellido</h2>
+    <!-- Título del empleado -->
+    <div class="row">
+        <div class="col-md-12">
+            <h2>@emp.nombre @emp.primerApellido @emp.segundoApellido</h2>
+        </div>
+    </div>
 
-    <button id="btnAbrirCrearRetencion"
-            class="btn btn-primary mb-4"
-            data-emp="@emp.idEmpleado">
-        <i class="fa fa-plus"></i> Agregar Retención
-    </button>
+    <!-- Enlaces de navegación -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="nav-enlaces">
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = emp.idEmpleado, seccion = "Datos personales" })" class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = emp.idEmpleado, seccion = "Historial" })" class="@(seccionActiva == "Historial" ? "active" : "")">Historial</a>
+                @if (isInActiveRole("Administrador"))
+                {
+                    <a href="@Url.Action("Detalles", "DatosPersonales", new { id = emp.idEmpleado, seccion = "Roles y Permisos" })" class="@(seccionActiva == "Roles y Permisos" ? "active" : "")">Roles y Permisos</a>
+                }
+                @if (isInActiveRole("Contador"))
+                {
+                    <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = emp.idEmpleado})" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
+                    <a href="@Url.Action("Detalles", "Retenciones", new { id = emp.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
+                    <a href="@Url.Action("Detalles", "Liquidaciones", new { id = emp.idEmpleado })" class="@(seccionActiva == "Liquidacion" ? "active" : "")">Liquidación</a>
+                }
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = emp.idEmpleado, seccion = "Observaciones" })" class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
+            </div>
+            <hr />
+        </div>
+    </div>
 
-    <div id="contenedorLista" class="row">
+    <!-- Contenido -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Retenciones</h2>
+                <button id="btnAbrirCrearRetencion"
+                        class="btn btn-primary"
+                        data-emp="@emp.idEmpleado">
+                    <i class="fa fa-plus"></i> Agregar Retención
+                </button>
+            </div>
+
+            <div id="contenedorLista" class="row">
         @if (Model.Item2.Any())
         {
             foreach (var item in Model.Item2)
@@ -68,6 +127,7 @@
             </div>
         }
     </div>
+</div>
 </div>
 
 @* Modal Create *@

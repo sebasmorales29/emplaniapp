@@ -68,6 +68,7 @@
     <Compile Include="InterfacesAD\Hoja_Resumen\ListarHojaResumen\IListarHojaResumenAD.cs" />
     <Compile Include="InterfacesAD\Monedas\ListarMonedas\IListarMonedasAD.cs" />
     <Compile Include="InterfacesAD\Observacion\IObservacionAD.cs" />
+    <Compile Include="InterfacesAD\PeriodoPago\CrearPeriodoPago\ICrearPeriodoPagoAD.cs" />
     <Compile Include="InterfacesAD\Remuneraciones\CrearRemuneracion\ICrearRemuneracionesAD.cs" />
     <Compile Include="InterfacesAD\Remuneraciones\EditarRemuneracion\IEditarRemuneracionAD.cs" />
     <Compile Include="InterfacesAD\Remuneraciones\EliminarRemuneracion\IEliminarRemuneracionAD.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="InterfacesParaUI\Liquidaciones\IMostrarCalculosPreviosLiqLN.cs" />
     <Compile Include="InterfacesParaUI\Monedas\ListarMonedas\IlistarMonedasLN.cs" />
     <Compile Include="InterfacesParaUI\Observacion\IObservacionLN.cs" />
+    <Compile Include="InterfacesParaUI\PeriodoPago\CrearPeriodoPago\ICrearPeriodoPagoLN.cs" />
     <Compile Include="InterfacesParaUI\Remuneraciones\CrearRemuneraciones\ICrearRemuneracionesLN.cs" />
     <Compile Include="InterfacesParaUI\Remuneraciones\EditarRemuneracion\IEditarRemuneracionLN.cs" />
     <Compile Include="InterfacesParaUI\Remuneraciones\EliminarRemuneracion\IEliminarRemuneracionLN.cs" />
@@ -134,7 +136,7 @@
     <Compile Include="ModelosAD\NumeroOcupacion.cs" />
     <Compile Include="ModelosAD\Observacion.cs" />
     <Compile Include="ModelosAD\PagoQuincenal.cs" />
-    <Compile Include="ModelosAD\PeriodoPago.cs" />
+    <Compile Include="ModelosAD\PeriodoPagos.cs" />
     <Compile Include="ModelosAD\Provincia.cs" />
     <Compile Include="ModelosAD\Remuneracion.cs" />
     <Compile Include="ModelosAD\Retencion.cs" />
@@ -153,6 +155,7 @@
     <Compile Include="ModelosParaUI\MonedaDto.cs" />
     <Compile Include="ModelosParaUI\NumeroOcupacioDto.cs" />
     <Compile Include="ModelosParaUI\ObservacionDto.cs" />
+    <Compile Include="ModelosParaUI\PeriodoPagoDto.cs" />
     <Compile Include="ModelosParaUI\ProvinciaDto.cs" />
     <Compile Include="ModelosParaUI\RemuneracionDto.cs" />
     <Compile Include="ModelosParaUI\RetencionCrearDto.cs" />

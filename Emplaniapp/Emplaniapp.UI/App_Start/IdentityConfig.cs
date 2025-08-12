@@ -1,10 +1,12 @@
-﻿using Emplaniapp.Abstracciones.Entidades;
+using Emplaniapp.Abstracciones.Entidades;
 using Emplaniapp.AccesoADatos;
+using Fluent.Infrastructure.FluentStartup;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
+using System;
 
 namespace Emplaniapp.UI
 {
@@ -21,7 +23,7 @@ namespace Emplaniapp.UI
             IOwinContext context)
         {
             var manager = new ApplicationUserManager(
-                new UserStore<ApplicationUser>(context.Get<Emplaniapp.AccesoADatos.Contexto>())
+                new UserStore<ApplicationUser>(context.Get<Contexto>())
             );
 
             // Configurar la lógica de validación para nombres de usuario
@@ -40,6 +42,18 @@ namespace Emplaniapp.UI
                 RequireLowercase = false,
                 RequireUppercase = false,
             };
+
+            // ✅ Registro del EmailService para recuperar contraseña
+            manager.EmailService = new EmailService();
+
+            // ✅ Registro del token provider para recuperación segura
+            var dataProtectionProvider = options.DataProtectionProvider;
+            if (dataProtectionProvider != null)
+            {
+                manager.UserTokenProvider =
+                    new DataProtectorTokenProvider<ApplicationUser>(
+                        dataProtectionProvider.Create("ASP.NET Identity"));
+            }
 
             return manager;
         }

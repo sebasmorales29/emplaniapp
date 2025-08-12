@@ -1,7 +1,33 @@
 ﻿@model Emplaniapp.Abstracciones.ModelosParaUI.EmpleadoDto
+@using Microsoft.AspNet.Identity
+@using System.Security.Claims
 
 @{
     ViewBag.Title = "Agregar Empleado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    // Definir funciones de rol activo localmente
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    var roleClaim = claimsIdentity?.FindFirst(ClaimTypes.Role);
+    string userRole = "Usuario";
+    if (roleClaim != null)
+    {
+        userRole = roleClaim.Value;
+    }
+
+    Func<string> getActiveRole = () => {
+        var activeRole = Session["ActiveRole"] as string;
+        if (!string.IsNullOrEmpty(activeRole))
+        {
+            return activeRole;
+        }
+        return userRole;
+    };
+
+    Func<string, bool> isInActiveRole = (role) => {
+        var activeRole = getActiveRole();
+        return activeRole.Equals(role, StringComparison.OrdinalIgnoreCase);
+    };
 }
 
 <style>
@@ -208,6 +234,12 @@
         <!-- BOTÓN DE ENVÍO -->
         <div class="row" style="margin-top: 20px;">
             <div class="col-md-12 text-right">
+                <button type="button" class="btn btn-info" id="testConnectionBtn" style="margin-right: 10px;">
+                    <i class="fa fa-database"></i> Probar Conexión BD
+                </button>
+                <button type="button" class="btn btn-warning" id="testEmployeeDataBtn" style="margin-right: 10px;">
+                    <i class="fa fa-user-check"></i> Probar Datos Empleado
+                </button>
                 <button type="submit" class="btn btn-primary" id="submitEmployeeBtn">
                     <i class="fa fa-user-plus"></i> Agregar Empleado
                 </button>
@@ -229,7 +261,7 @@
 
             var form = $('#createEmployeeForm');
             var isAdmin = false;
-            @if (User != null && User.IsInRole("Administrador"))
+            @if (User != null && isInActiveRole("Administrador"))
             {
                 <text>isAdmin = true;</text>
             }
@@ -298,10 +330,84 @@
                 $('#adminPasswordModal').modal('hide');
             });
 
+            // Botón de prueba de conexión a BD
+            $('#testConnectionBtn').click(function () {
+                $.ajax({
+                    url: '@Url.Action("VerificarConexionBD", "Empleado")',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.conexionExitosa) {
+                            var mensaje = '✅ Conexión exitosa\n\n';
+                            mensaje += 'Datos en la base de datos:\n';
+                            mensaje += `• Provincias: ${response.datos.provincias}\n`;
+                            mensaje += `• Cargos: ${response.datos.cargos}\n`;
+                            mensaje += `• Bancos: ${response.datos.bancos}\n`;
+                            mensaje += `• Tipos de Moneda: ${response.datos.tiposMoneda}\n`;
+                            mensaje += `• Estados: ${response.datos.estados}\n`;
+                            mensaje += `• Direcciones: ${response.datos.direcciones}\n`;
+                            mensaje += `• Empleados: ${response.datos.empleados}\n`;
+                            mensaje += `• Usuarios: ${response.datos.usuarios}`;
+                            alert(mensaje);
+                        } else {
+                            alert('❌ Error de conexión: ' + response.error);
+                        }
+                    },
+                    error: function () {
+                        alert('❌ Error al verificar la conexión a la base de datos');
+                    }
+                });
+            });
 
-
-
-
+            // Botón de prueba de datos del empleado
+            $('#testEmployeeDataBtn').click(function () {
+                // Obtener los datos del formulario
+                var formData = form.serialize();
+                
+                $.ajax({
+                    url: '@Url.Action("VerificarDatosEmpleado", "Empleado")',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.exito) {
+                            var mensaje = '📋 Datos del empleado:\n\n';
+                            mensaje += `• Nombre: ${response.datos.nombre}\n`;
+                            mensaje += `• Cédula: ${response.datos.cedula}\n`;
+                            mensaje += `• Correo: ${response.datos.correo}\n`;
+                            mensaje += `• IdNetUser: ${response.datos.idNetUser}\n`;
+                            mensaje += `• IdProvincia: ${response.datos.idProvincia}\n`;
+                            mensaje += `• IdCargo: ${response.datos.idCargo}\n`;
+                            mensaje += `• IdBanco: ${response.datos.idBanco}\n`;
+                            mensaje += `• IdMoneda: ${response.datos.idMoneda}\n`;
+                            mensaje += `• IdEstado: ${response.datos.idEstado}\n`;
+                            mensaje += `• Cantón: ${response.datos.nombreCanton}\n`;
+                            mensaje += `• Distrito: ${response.datos.nombreDistrito}\n`;
+                            mensaje += `• Salario: ${response.datos.salarioAprobado}\n`;
+                            mensaje += `• Periodicidad: ${response.datos.periocidadPago}\n`;
+                            mensaje += `• Fecha Nacimiento: ${response.datos.fechaNacimiento}\n`;
+                            mensaje += `• Fecha Contratación: ${response.datos.fechaContratacion}\n\n`;
+                            
+                            mensaje += '✅ Validaciones:\n';
+                            mensaje += `• Nombre válido: ${response.validaciones.nombreValido ? '✅' : '❌'}\n`;
+                            mensaje += `• Cédula válida: ${response.validaciones.cedulaValida ? '✅' : '❌'}\n`;
+                            mensaje += `• Correo válido: ${response.validaciones.correoValido ? '✅' : '❌'}\n`;
+                            mensaje += `• IdNetUser válido: ${response.validaciones.idNetUserValido ? '✅' : '❌'} (se genera automáticamente)\n`;
+                            mensaje += `• Mayor de edad: ${response.validaciones.mayorDeEdad ? '✅' : '❌'}\n`;
+                            mensaje += `• Fecha contratación válida: ${response.validaciones.fechaContratacionValida ? '✅' : '❌'}\n`;
+                            mensaje += `• Salario válido: ${response.validaciones.salarioValido ? '✅' : '❌'}\n`;
+                            mensaje += `• Periodicidad válida: ${response.validaciones.periodicidadValida ? '✅' : '❌'}`;
+                            
+                            alert(mensaje);
+                        } else {
+                            alert('❌ Error al verificar datos: ' + response.error);
+                        }
+                    },
+                    error: function () {
+                        alert('❌ Error al verificar los datos del empleado');
+                    }
+                });
+            });
 
         });
     </script>
