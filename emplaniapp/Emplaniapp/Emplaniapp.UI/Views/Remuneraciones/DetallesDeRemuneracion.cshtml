@@ -1,0 +1,77 @@
+@model Emplaniapp.Abstracciones.ModelosParaUI.RemuneracionDto
+@{
+    ViewBag.Title = "Detalles de Remuneración";
+}
+
+<div class="container mt-4">
+    <div class="card mx-auto" style="max-width: 800px;">
+        <div class="card-header">
+            <h4 class="mb-0">Detalles de la Remuneración</h4>
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Razón:</strong> @Model.nombreTipoRemuneracion
+                </li>
+                <li class="list-group-item">
+                    <strong>Periodo:</strong> @Model.fechaRemuneracion.ToString("dd/MM/yyyy")
+                </li>
+                @if (Model.porcentajeRemuneracion.HasValue && Model.porcentajeRemuneracion > 0)
+                {
+                    <li class="list-group-item">
+                        <strong>Porcentaje:</strong> @Model.porcentajeRemuneracion%
+                    </li>
+                }
+                <li class="list-group-item">
+                    <strong>Estado:</strong>
+                    <span class="badge @(Model.nombreEstado == "Activo" ? "badge-success" : "badge-secondary")">@Model.nombreEstado</span>
+                </li>
+            </ul>
+
+            <hr>
+
+            <div class="row mt-3">
+                <!-- Pagos -->
+                @if (Model.pagoQuincenal > 0 || Model.comision > 0)
+                {
+                    <div class="col-md-6">
+                        <h6>Desglose de Pagos</h6>
+                        <ul class="list-group">
+                            @if (Model.pagoQuincenal > 0) {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Pago Quincenal
+                                    <span class="badge badge-primary badge-pill">@String.Format("{0:C}", Model.pagoQuincenal)</span>
+                                </li>
+                            }
+                            @if (Model.comision > 0) {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Comisión
+                                    <span class="badge badge-primary badge-pill">@String.Format("{0:C}", Model.comision)</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <!-- Horas -->
+                @if (Model.diasTrabajados > 0 || Model.horas > 0)
+                {
+                    <div class="col-md-6">
+                        <h6>Detalle de Horas</h6>
+                        <ul class="list-group">
+                            @if (Model.horasTrabajadas > 0) {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Dias Trabajados<span class="badge badge-secondary badge-pill">@Model.diasTrabajados</span></li>
+                            }
+                            @if (Model.horas > 0) {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Horas<span class="badge badge-secondary badge-pill">@Model.horas</span></li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            @Html.ActionLink(" < Volver a la lista", "DetallesRemu", "Remuneraciones", new { id = Model.idEmpleado }, new { @class="btn btn-outline-secondary" })
+        </div>
+    </div>
+</div> 

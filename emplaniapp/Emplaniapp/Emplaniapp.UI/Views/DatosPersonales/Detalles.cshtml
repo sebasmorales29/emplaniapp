@@ -1,0 +1,371 @@
+@model Emplaniapp.Abstracciones.ModelosParaUI.EmpleadoDto
+@using Microsoft.AspNet.Identity
+@using System.Security.Claims
+
+@{
+    ViewBag.Title = $"{Model.nombre} {Model.primerApellido} {Model.segundoApellido}";
+    var seccionActiva = ViewBag.Seccion ?? "Datos personales";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    // Definir funciones de rol activo localmente
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    var roleClaim = claimsIdentity?.FindFirst(ClaimTypes.Role);
+    string userRole = "Usuario";
+    if (roleClaim != null)
+    {
+        userRole = roleClaim.Value;
+    }
+
+    Func<string> getActiveRole = () => {
+        var activeRole = Session["ActiveRole"] as string;
+        if (!string.IsNullOrEmpty(activeRole))
+        {
+            return activeRole;
+        }
+        return userRole;
+    };
+
+    Func<string, bool> isInActiveRole = (role) => {
+        var activeRole = getActiveRole();
+        return activeRole.Equals(role, StringComparison.OrdinalIgnoreCase);
+    };
+
+    Func<string[], bool> isInAnyActiveRole = (roles) => {
+        var activeRole = getActiveRole();
+        return roles.Any(role => activeRole.Equals(role, StringComparison.OrdinalIgnoreCase));
+    };
+
+    Func<string, bool> isNotInActiveRole = (role) => {
+        return !isInActiveRole(role);
+    };
+}
+
+<!-- Estilos -->
+<link type="text/css" href="@Href("~/Content/EstilosDatos.css")" rel="Stylesheet" />
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<div class="container">
+    <!-- Mensaje de éxito -->
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Mensaje"]
+        </div>
+    }
+
+    <!-- Título del empleado -->
+    <div class="row">
+        <div class="col-md-12">
+            <h2>@Model.nombre @Model.primerApellido @Model.segundoApellido</h2>
+        </div>
+    </div>
+
+
+    <!-- Enlaces de navegación -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="nav-enlaces">
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Datos personales" })" class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Historial" })" class="@(seccionActiva == "Historial" ? "active" : "")">Historial</a>
+                @if (isInActiveRole("Administrador"))
+                {
+                    <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Roles y Permisos" })" class="@(seccionActiva == "Roles y Permisos" ? "active" : "")">Roles y Permisos</a>
+                }
+                @if (isInActiveRole("Contador"))
+                {
+                    <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = Model.idEmpleado})" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
+                    <a href="@Url.Action("Detalles", "Retenciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
+                    <a href="@Url.Action("Detalles", "Liquidaciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Liquidacion" ? "active" : "")">Liquidación</a>
+                }
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Observaciones" })" class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
+            </div>
+            <hr />
+        </div>
+    </div>
+
+
+    <!-- Contenido -->
+    <div class="row">
+        <div class="col-md-12">
+            @if (seccionActiva == "Datos personales")
+            {
+                <div id="contenido-datos-personales">
+                    <div class="row">
+                        <!-- Información personal -->
+                        <div class="col-md-6">
+                            <div class="seccion-box">
+                                <div class="seccion-header">
+                                    <h3>Información personal</h3>
+                                    @if (isInAnyActiveRole(new[] { "Administrador", "Empleado" }))
+                                    {
+                                        <a href="@Url.Action("EditarDatosPersonales", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
+                                    }
+                                </div>
+                                <div class="seccion-body">
+                                    <div class="datos-row">
+                                        <div class="datos-label">Primer Nombre:</div>
+                                        <div class="datos-value">@Model.nombre</div>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(Model.segundoNombre))
+                                    {
+                                        <div class="datos-row">
+                                            <div class="datos-label">Segundo Nombre:</div>
+                                            <div class="datos-value">@Model.segundoNombre</div>
+                                        </div>
+                                    }
+                                    <div class="datos-row">
+                                        <div class="datos-label">Primer Apellido:</div>
+                                        <div class="datos-value">@Model.primerApellido</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Segundo apellido:</div>
+                                        <div class="datos-value">@Model.segundoApellido</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Nacimiento:</div>
+                                        <div class="datos-value">@Model.fechaNacimiento.ToString("dd/MM/yyyy")</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Cédula:</div>
+                                        <div class="datos-value">@Model.cedula</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Dirección:</div>
+                                        <div class="datos-value">@Model.direccionCompleta</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Correo electrónico:</div>
+                                        <div class="datos-value">@Model.correoInstitucional</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Teléfono:</div>
+                                        <div class="datos-value">@Model.numeroTelefonico</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <!-- Datos Laborales -->
+                            <div class="seccion-box">
+                                <div class="seccion-header">
+                                    <h3>Datos Laborales</h3>
+                                    @if (isInAnyActiveRole(new[] { "Administrador", "Contador" }))
+                                    {
+                                        <a href="@Url.Action("EditarDatosLaborales", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
+                                    }
+                                </div>
+                                <div class="seccion-body">
+                                    <div class="datos-row">
+                                        <div class="datos-label">Nº Ocupación:</div>
+                                        <div class="datos-value">9832</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Cargo:</div>
+                                        <div class="datos-value">@Model.nombreCargo</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Fecha de Ingreso:</div>
+                                        <div class="datos-value">@Model.fechaContratacion.ToString("dd/MM/yyyy")</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Fecha de Salida:</div>
+                                        <div class="datos-value">@(Model.fechaSalida.HasValue ? Model.fechaSalida.Value.ToString("dd/MM/yyyy") : "--/--/----")</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Datos Financieros -->
+                            <div class="seccion-box">
+                                <div class="seccion-header">
+                                    <h3>Datos Financieros</h3>
+                                    @if (isInAnyActiveRole(new[] { "Administrador", "Contador" }))
+                                    {
+                                        <a href="@Url.Action("EditarDatosFinancieros", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
+                                    }
+                                </div>
+                                <div class="seccion-body">
+                                    <div class="datos-row">
+                                        <div class="datos-label">Periodicidad de pago:</div>
+                                        <div class="datos-value">@Model.periocidadPago</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Salario Aprobado:</div>
+                                        <div class="datos-value">@Model.salarioAprobado.ToString("C")</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Tipo de Moneda:</div>
+                                        <div class="datos-value">@Model.nombreMoneda</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Cuenta IBAN:</div>
+                                        <div class="datos-value">@Model.cuentaIBAN</div>
+                                    </div>
+                                    <div class="datos-row">
+                                        <div class="datos-label">Banco:</div>
+                                        <div class="datos-value">@Model.nombreBanco</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (seccionActiva == "Historial")
+            {
+                <div id="contenedor-lista-historial">
+                    @{ Html.RenderAction("Historial", "Historial", new { id = Model.idEmpleado }); }
+                </div>
+            }
+            else if (seccionActiva == "Roles y Permisos")
+            {
+                if (isInActiveRole("Administrador"))
+                {
+                    <div id="contenedor-roles-permisos">
+                        @Html.Partial("_RolesYPermisos", Model)
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        No tienes permisos para acceder a esta sección.
+                    </div>
+                }
+            }
+            else if (seccionActiva == "Observaciones")
+            {
+                <div id="contenedor-lista-observaciones"> </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function () {
+
+            // --- INICIO: Lógica de carga y filtrado de observaciones ---
+            function cargarObservaciones() {
+                var empleadoId = @Model.idEmpleado;
+                var container = $('#contenedor-lista-observaciones');
+
+                // Leer valores de los filtros
+                var ano = container.find('#filtro-ano').val();
+                var mes = container.find('#filtro-mes').val();
+                var usuarioId = container.find('#filtro-usuario').val();
+
+                var url = '@Url.Action("ObtenerListaObservaciones", "DatosPersonales")' +
+                          '?id=' + empleadoId +
+                          '&ano=' + (ano || '') +
+                          '&mes=' + (mes || '') +
+                          '&usuarioId=' + (usuarioId || '');
+
+                container.html("<p>Cargando observaciones...</p>");
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            container.html(response.html);
+                        } else {
+                            container.html("<p class='text-danger'>Hubo un problema al obtener las observaciones.</p>");
+                        }
+                    },
+                    error: function (xhr) {
+                        container.html("<p class='text-danger'>Error al cargar las observaciones: " + xhr.status + " " + xhr.statusText + "</p>");
+                    }
+                });
+            }
+
+            if ('@seccionActiva' === 'Observaciones') {
+                cargarObservaciones();
+            }
+
+            // Listener para el botón de aplicar filtros
+            $('#contenedor-lista-observaciones').on('click', '#btn-aplicar-filtros', function() {
+                cargarObservaciones();
+            });
+
+            // Listener para el botón de quitar filtros
+            $('#contenedor-lista-observaciones').on('click', '#btn-quitar-filtros', function() {
+                var container = $('#contenedor-lista-observaciones');
+                // Limpiar los dropdowns
+                container.find('#filtro-ano').val('');
+                container.find('#filtro-mes').val('');
+                container.find('#filtro-usuario').val('');
+                // Recargar la lista sin filtros
+                cargarObservaciones();
+            });
+            // --- FIN: Lógica de carga y filtrado ---
+
+
+            // --- INICIO: Lógica del modal para agregar/editar observaciones ---
+            var modalContainer = $('#modal-container');
+            var modalContent = $('#modal-content-container'); // Contenedor para todo el contenido del modal
+
+            // 1. Escuchar clics en botones que abren el modal (se usa delegación de eventos para que funcione con contenido cargado por AJAX)
+            $('#contenedor-lista-observaciones').on('click', '.btn-agregar-observacion, .btn-editar-observacion', function () {
+                var url = $(this).data('url');
+
+                // 2. Cargar el formulario COMPLETO (header, body, footer) desde el servidor
+                modalContent.load(url, function () {
+                    // 3. Mostrar el modal
+                    modalContainer.modal('show');
+                    // Volver a registrar el validador de jQuery Unobtrusive en el nuevo contenido
+                    $.validator.unobtrusive.parse(modalContent.find('form'));
+                });
+            });
+
+            // 4. Escuchar clic en el botón Guardar del modal (usando delegación de eventos)
+            modalContainer.on('click', '#btn-guardar-observacion', function () {
+                var form = modalContent.find('form');
+
+                // Validar el formulario del lado del cliente
+                if (!form.valid()) {
+                    return;
+                }
+
+                // 5. Enviar el formulario vía AJAX
+                $.ajax({
+                    url: form.attr('action'),
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            modalContainer.modal('hide');
+
+                            // Recargar la lista de observaciones para ver el nuevo item
+                            cargarObservaciones();
+                        } else {
+                            // Si el servidor devuelve el formulario con errores de validación
+                            // La respuesta ya es el HTML del formulario completo, lo reemplazamos
+                            modalContent.html(response);
+                            $.validator.unobtrusive.parse(modalContent.find('form'));
+                        }
+                    },
+                    error: function () {
+                        alert('Ocurrió un error de comunicación con el servidor.');
+                    }
+                });
+            });
+            // --- FIN: Lógica del modal ---
+        });
+    </script>
+}
+
+<!-- Modal Genérico (Solo el contenedor) -->
+<div class="modal fade" id="modal-container" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="modal-content-container">
+            <!-- El contenido completo del modal (header, body, footer) se cargará aquí -->
+        </div>
+    </div>
+</div>
+
+
+
+

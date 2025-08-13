@@ -1,0 +1,89 @@
+﻿@model Emplaniapp.Abstracciones.ModelosParaUI.RemuneracionDto
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <h4>Editar Remuneración</h4>
+    <hr />
+    @Html.HiddenFor(m => m.idRemuneracion)
+    @Html.HiddenFor(m => m.idEmpleado)
+    @Html.HiddenFor(m => m.idTipoRemuneracion)
+
+    <!-- Pasar valores de cálculo desde el modelo -->
+    @Html.HiddenFor(m => m.SalarioPorHoraExtra, new { id = "salarioHora" })
+    @Html.HiddenFor(m => m.SalarioDiario, new { id = "salarioDia" })
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.nombreTipoRemuneracion, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.nombreTipoRemuneracion, new { @class = "form-control", @readonly = "readonly" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.diasTrabajados, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.diasTrabajados, new { htmlAttributes = new { @class = "form-control", @oninput = "calcularPago()" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.horas, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.horas, new { htmlAttributes = new { @class = "form-control", @oninput = "calcularPago()" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.comision, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.comision, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.TrabajoEnDia, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(m => m.TrabajoEnDia) Trabajo en día feriado/vacaciones
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.pagoQuincenal, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.pagoQuincenal, new { @class = "form-control", @readonly = "readonly", id = "pagoQuincenal" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Guardar" class="btn btn-primary" />
+        </div>
+    </div>
+
+
+    @section Scripts {
+        <script>
+            function calcularPago() {
+                const horas = parseFloat(document.getElementsByName("horas")[0].value) || 0;
+                const dias = parseFloat(document.getElementsByName("diasTrabajados")[0].value) || 0;
+
+                const salarioHora = parseFloat(document.getElementById("salarioHora").value) || 0;
+                const salarioDia = parseFloat(document.getElementById("salarioDia").value) || 0;
+
+                let pago = (horas * salarioHora) + (dias * salarioDia);
+
+                document.getElementById("pagoQuincenal").value = pago.toFixed(2);
+            }
+
+            // Asignar IDs si aún no existen
+            document.getElementsByName("horas")[0].id = "horas";
+            document.getElementsByName("diasTrabajados")[0].id = "diasTrabajados";
+        </script>
+    }
+}

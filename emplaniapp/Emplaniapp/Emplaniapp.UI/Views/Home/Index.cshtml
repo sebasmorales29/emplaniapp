@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Inicio - Suplidora Royal Ltda.";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Estilos definitivos para garantizar la visibilidad de los cuadros */
+    body {
+        background-color: #f8f9fa !important; /* Fondo gris claro para la página */
+    }
+    .content-box {
+        background-color: #ffffff; /* Fondo blanco sólido */
+        border: 1px solid #dee2e6; /* Borde claro pero visible */
+        border-radius: 16px;       /* Bordes redondeados */
+        padding: 40px;
+        margin-bottom: 30px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.07); /* Sombra para dar profundidad */
+    }
+</style>
+
+<div class="container" style="padding-top: 40px; padding-bottom: 40px;">
+
+    <!-- Primer recuadro de contenido -->
+    <div class="content-box">
+        <h2 class="text-center" style="font-weight: bold; margin-bottom: 20px;">Suplidora Internacional Royal Ltda</h2>
+        <p class="text-center">
+            Empresa costarricense con más de 35 años en la importación y distribución de productos para mascotas. Ofrecemos más de 9 000 productos de marcas reconocidas, con presencia en Costa Rica, Nicaragua y Panamá. Nuestro compromiso es brindar calidad, confianza y atención personalizada.
+        </p>
+    </div>
+
+    <!-- Segundo recuadro de contenido -->
+    <div class="content-box">
+        <h2 class="text-center" style="font-weight: bold; margin-bottom: 20px;">¿A qué nos dedicamos?</h2>
+        <p class="text-center">
+            Distribuimos alimentos, cosméticos, accesorios y equipos profesionales para mascotas. Ofrecemos venta en línea, tiendas físicas, envío gratis, mantenimiento de equipos y atención por WhatsApp. Somos representantes oficiales de marcas como Andis, Oster, Applaws y más.
+        </p>
+    </div>
+
+</div>
+
+<!-- Referencia a Font Awesome para los íconos (si se necesitan en el futuro) -->
+@section scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+}

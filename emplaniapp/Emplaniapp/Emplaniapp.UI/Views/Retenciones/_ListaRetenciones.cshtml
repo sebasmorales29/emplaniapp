@@ -1,0 +1,32 @@
+﻿@model List<Emplaniapp.Abstracciones.ModelosParaUI.RetencionDto>
+
+<div id="listaRetenciones" class="row">
+    @if (!Model.Any())
+    {
+        <div class="col-12">
+            <div class="alert alert-info">No hay retenciones registradas para este empleado.</div>
+        </div>
+    }
+    else
+    {
+        foreach (var item in Model)
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.nombreTipoRetencio</h5>
+                        <h6 class="card-subtitle text-muted">@item.fechaRetencio:dd/MM/yyyy</h6>
+                        <hr />
+                        <p><strong>Rebajo:</strong> @item.rebajo.ToString("C2")</p>
+                        <p>
+                            <strong>Estado:</strong>
+                            <span class="badge @(item.nombreEstado=="Activo"? "badge-success":"badge-secondary")">
+                                @item.nombreEstado
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

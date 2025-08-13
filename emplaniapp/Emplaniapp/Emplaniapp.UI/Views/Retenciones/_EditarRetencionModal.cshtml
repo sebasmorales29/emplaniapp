@@ -1,0 +1,54 @@
+﻿@model Emplaniapp.UI.Models.RetencionViewModel
+
+@using (Html.BeginForm("Edit", "Retenciones", FormMethod.Post, new { id = "formEditarRetencion" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.IdRetencion)
+    @Html.HiddenFor(m => m.IdEmpleado)
+    @Html.HiddenFor(m => m.SalarioBase, new { id = "SalarioBase" })
+
+    <div class="validation-summary"></div>
+    <div class="modal-header">
+        <h5 class="modal-title">Editar Retención de @Model.NombreEmpleado</h5>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Salario Base</label>
+            <input type="text" readonly class="form-control"
+                   value="@Model.SalarioBase.ToString("N2")" />
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.IdTipoRetencion, "Tipo de Retención")
+            @Html.DropDownListFor(m => m.IdTipoRetencion, Model.TiposRetencion,
+                                  "-- Seleccione --",
+                                  new { id = "ddlTipo", @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.IdTipoRetencion, "",
+                                      new { @class = "text-danger" })
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Porcentaje (%)</label>
+                @Html.HiddenFor(m => m.Porcentaje, new { id = "txtPorcentaje" })
+                <input type="text" readonly class="form-control" id="pctDisplay" />
+            </div>
+            <div class="form-group col-md-6">
+                <label>Monto a Retener</label>
+                @Html.HiddenFor(m => m.MontoRetencion, new { id = "txtMonto" })
+                <input type="text" readonly class="form-control" id="mtoDisplay" />
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.FechaRetencion, "Fecha")
+            @Html.TextBoxFor(m => m.FechaRetencion, "{0:yyyy-MM-dd}",
+                new { @class = "form-control", type = "date" })
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">
+            <i class="fa fa-save"></i> Guardar cambios
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Cancelar
+        </button>
+    </div>
+}
