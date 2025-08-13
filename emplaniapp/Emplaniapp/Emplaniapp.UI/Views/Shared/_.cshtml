@@ -1,0 +1,96 @@
+﻿@model Emplaniapp.Abstracciones.ModelosParaUI.EmpleadoDto
+@using Microsoft.AspNet.Identity
+@using System.Security.Claims
+
+@{
+    ViewBag.Title = $"{Model.nombre} {Model.primerApellido} {Model.segundoApellido}";
+    var seccionActiva = ViewBag.Seccion ?? "Datos personales";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    // Definir funciones de rol activo localmente
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    var roleClaim = claimsIdentity?.FindFirst(ClaimTypes.Role);
+    string userRole = "Usuario";
+    if (roleClaim != null)
+    {
+        userRole = roleClaim.Value;
+    }
+
+    Func<string> getActiveRole = () => {
+        var activeRole = Session["ActiveRole"] as string;
+        if (!string.IsNullOrEmpty(activeRole))
+        {
+            return activeRole;
+        }
+        return userRole;
+    };
+
+    Func<string, bool> isInActiveRole = (role) => {
+        var activeRole = getActiveRole();
+        return activeRole.Equals(role, StringComparison.OrdinalIgnoreCase);
+    };
+}
+
+<!-- Estilos -->
+<link type="text/css" href="@Href("~/Content/EstilosDatos.css")" rel="Stylesheet" />
+
+<div class="container">
+
+    <!-- Botón regresar -->
+    @if (isInActiveRole("Administrador"))
+    {
+        @Html.ActionLink("< Volver a Lista de Empleados", "ListarEmpleados", "Empleado", null, new { @class = "btn btn-outline-secondary mb-3" })
+    }
+    else if (isInActiveRole("Contador"))
+    {
+        @Html.ActionLink("< Volver a Hoja Resumen", "listarHojaResumen", "HojaResumen", null, new { @class = "btn btn-outline-secondary mb-3" })
+    }
+
+
+    <!-- Mensaje de éxito -->
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Mensaje"]
+        </div>
+    }
+
+
+    <!-- Título del empleado -->
+    <div class="row">
+        <div class="col-md-12">
+            <h2>@Model.nombre @Model.primerApellido @Model.segundoApellido</h2>
+        </div>
+    </div>
+
+
+    <!-- Enlaces de navegación -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="nav-enlaces">
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Datos personales" })" class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Historial" })" class="@(seccionActiva == "Historial" ? "active" : "")">Historial</a>
+                @if (isInActiveRole("Administrador"))
+                {
+                    <a href="@Url.Action("RolesYPermisos", "Usuario", new { id = Model.idEmpleado })" class="@(seccionActiva == "Roles y Permisos" ? "active" : "")">Roles y Permisos</a>
+                }
+                @if (isInActiveRole("Contador"))
+                {
+                    <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = Model.idEmpleado})" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
+                    <a href="@Url.Action("ListarRetenciones", "Retenciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
+                    <a href="@Url.Action("LiquidarEmpleado", "Liquidacion", new { id = Model.idEmpleado })" class="@(seccionActiva == "Liquidación" ? "active" : "")">Liquidación</a>
+                }
+                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Observaciones" })" class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
+            </div>
+            <hr />
+        </div>
+    </div>
+
+
+    <!-- Contenido -->
+    <div class="row">
+        <div class="col-md-12">
+            @RenderBody()
+        </div>
+    </div>
+</div>

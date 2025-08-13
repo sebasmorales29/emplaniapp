@@ -1,0 +1,196 @@
+﻿@model IEnumerable<Emplaniapp.Abstracciones.ModelosParaUI.EmpleadoDto>
+
+@{
+    ViewBag.Title = "Empleados";
+}
+
+<h2>Empleados</h2>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .tabla-empleados thead th {
+        background-color: #578FCA;
+        color: white;
+        text-align: center;
+    }
+
+    .tabla-empleados td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .btn-celeste-claro {
+        background-color: #B3DAF7;
+        color: #003F5C;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        text-decoration: none;
+        display: block;
+        width: 100%;
+        margin-bottom: 5px;
+        text-align: center;
+        font-weight: 500;
+    }
+
+        .btn-celeste-claro:hover {
+            background-color: #A0CFF2;
+        }
+
+    .acciones {
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .total-empleados-container {
+        display: flex;
+        justify-content: flex-end;
+        margin: 20px 0;
+    }
+
+    .total-empleados-box {
+        background-color: #4a87c7;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+        border: 1px solid #3a6fa5;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        min-width: 120px;
+    }
+</style>
+
+<div class="d-flex justify-content-start mb-3" style="max-width: 200px;">
+    <a href="@Url.Action("CrearEmpleado", "Empleado")"
+       class="btn"
+       style="background-color: #B3DAF7;
+              color: #000;
+              border-radius: 8px;
+              padding: 6px 12px;
+              font-size: 14px;
+              font-weight: 600;
+              display: inline-flex;
+              align-items: center;
+              text-decoration: none;">
+        <i class="fas fa-plus" style="margin-right: 6px;"></i> Agregar Empleado
+    </a>
+</div>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["Mensaje"]
+    </div>
+}
+
+<div class="modal fade" id="modalCambiarEstado" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Aquí se cargará la vista parcial -->
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("Filtrar", "Empleado", FormMethod.Post))
+{
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        
+        <div class="d-flex align-items-center">
+            <div class="me-2">
+                <input type="text" name="filtro" value="@ViewBag.Filtro" class="form-control" placeholder="Buscar por nombre o cédula" />
+            </div>
+            <div class="me-2">
+                @Html.DropDownList("idCargo", new SelectList(ViewBag.Cargos, "Value", "Text", ViewBag.idCargo), "Todos los cargos", new { @class = "form-control" })
+            </div>
+            <div class="me-2">
+                @Html.DropDownList("idEstado", new SelectList(ViewBag.Estados, "Value", "Text", ViewBag.idEstado), "Todos los estados", new { @class = "form-control" })
+            </div>
+            <div class="me-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Filtrar
+                </button>
+            </div>
+            @if (!string.IsNullOrEmpty(ViewBag.Filtro as string) || (ViewBag.idCargo != null && ViewBag.idCargo != 0) || (ViewBag.idEstado != null && ViewBag.idEstado != 0))
+            {
+                <div class="me-2">
+                    <a href="@Url.Action("ListarEmpleados", "Empleado")" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Quitar
+                    </a>
+                </div>
+            }
+        </div>
+        
+        <div class="total-empleados-box">
+            <span>Total: @ViewBag.TotalEmpleados</span>
+        </div>
+    </div>
+}
+
+<table class="table tabla-empleados" id="TablaEmpleado">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.First().cedula)</th>
+            <th>@Html.DisplayNameFor(model => model.First().nombreCompleto)</th>
+            <th>@Html.DisplayNameFor(model => model.First().nombreCargo)</th>
+            <th>@Html.DisplayNameFor(model => model.First().nombreEstado)</th>
+            <th>@Html.DisplayNameFor(model => model.First().RolesUsuario)</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.cedula)</td>
+                <td>@($"{item.nombre} {item.segundoNombre} {item.primerApellido} {item.segundoApellido}")</td>
+                <td>@Html.DisplayFor(modelItem => item.nombreCargo)</td>
+                <td>@Html.DisplayFor(modelItem => item.nombreEstado)</td>
+                <td>
+                    <span class="badge badge-light" style="background-color: #e3f2fd; color: #000; border: 1px solid #90caf9;">@Html.DisplayFor(modelItem => item.RolesUsuario)</span>
+                </td>
+                <td class="acciones">
+                    <a href="@Url.Action("Detalles", "DatosPersonales", new { id = item.idEmpleado })" class="btn-celeste-claro">Ver detalles</a>
+                    <a href="@Url.Action("_CambiarEstado", "Empleado", new { id = item.idEmpleado })"
+                       class="btn-celeste-claro"
+                       data-toggle="modal"
+                       data-target="#modalCambiarEstado"
+                       data-url="@Url.Action("_CambiarEstado", "Empleado", new { id = item.idEmpleado })">
+                        Cambiar Estado
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).on('click', 'a[data-toggle="modal"]', function (e) {
+            e.preventDefault();
+            var url = $(this).data("url");
+            var modal = $($(this).data("target"));
+
+            $.get(url, function (data) {
+                modal.find(".modal-content").html(data);
+                modal.modal("show");
+            });
+        });
+
+        $(document).ready(function () {
+            $("#buscarEmpleado").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#TablaEmpleado tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            $("#limpiarFiltro").click(function () {
+                $("#buscarEmpleado").val('');
+                $("#buscarEmpleado").trigger("keyup");
+            });
+        });
+    </script>
+}

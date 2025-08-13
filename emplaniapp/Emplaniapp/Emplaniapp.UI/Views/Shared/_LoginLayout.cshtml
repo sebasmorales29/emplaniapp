@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Emplaniapp</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Prevenir scroll en la página principal */
+        }
+
+        .login-page-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .login-main-content {
+            display: flex;
+            flex-grow: 1;
+            height: calc(100% - 40px); /* Resta la altura del footer */
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-form-section {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-form-content {
+            width: 100%;
+        }
+
+        .login-footer {
+            background-color: #4a87c7;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            height: 40px;
+            font-size: 12px;
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-page-container">
+        <div class="login-main-content">
+            <div class="login-form-section">
+                <div class="login-form-content">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+        <footer class="login-footer">
+            Emplaniapp @DateTime.Now.Year - Todos los derechos reservados
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html> 

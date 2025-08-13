@@ -1,0 +1,472 @@
+@model Emplaniapp.Abstracciones.ModelosParaUI.EmpleadoDto
+
+<div class="roles-container-wrapper">
+    <div class="roles-container">
+        <div class="seccion-box">
+            <div class="seccion-header">
+                <h3><i class="fa fa-user-shield"></i> Roles y Permisos</h3>
+            </div>
+            <div class="seccion-body">
+                <!-- Información del empleado -->
+                <div class="empleado-info">
+                    <p><strong>Empleado:</strong> @Model.nombre @Model.primerApellido @Model.segundoApellido</p>
+                </div>
+
+                <!-- Estado del sistema -->
+                <div id="mensaje-estado" class="alert" style="display: none;"></div>
+
+                <!-- Lista de roles con checkboxes -->
+                <div id="roles-section">
+                    <h4>Asignar Roles</h4>
+                    <div id="loading" class="text-center" style="display: none;">
+                        <i class="fa fa-spinner fa-spin"></i> Cargando...
+                    </div>
+                    
+                    <div id="roles-list" style="display: none;">
+                        <div class="role-checkbox-item">
+                            <label>
+                                <input type="checkbox" id="rol-Administrador" value="Administrador">
+                                <span class="role-label">Administrador</span>
+                            </label>
+                        </div>
+                        
+                        <div class="role-checkbox-item">
+                            <label>
+                                <input type="checkbox" id="rol-Contador" value="Contador">
+                                <span class="role-label">Contador</span>
+                            </label>
+                        </div>
+                        
+                        <div class="role-checkbox-item">
+                            <label>
+                                <input type="checkbox" id="rol-Empleado" value="Empleado">
+                                <span class="role-label">Empleado</span>
+                            </label>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="botones-accion">
+                            <button type="button" id="btn-confirmar" class="btn btn-confirmar">
+                                <i class="fa fa-check"></i> Confirmar Cambios
+                            </button>
+                            <button type="button" id="btn-cancelar" class="btn btn-cancelar">
+                                <i class="fa fa-times"></i> Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estilos -->
+<style>
+    .roles-container-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .roles-container {
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .empleado-info {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        border-left: 4px solid #007bff;
+        text-align: center;
+    }
+
+    .empleado-info p {
+        margin-bottom: 0;
+        font-size: 16px;
+    }
+
+    #roles-section h4 {
+        margin-bottom: 15px;
+        color: #333;
+        text-align: center;
+    }
+
+    .role-checkbox-item {
+        padding: 12px 15px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fff;
+        transition: all 0.2s ease;
+    }
+
+    .role-checkbox-item:hover {
+        border-color: #007bff;
+        background-color: #f8f9fa;
+    }
+
+    .role-checkbox-item label {
+        display: flex;
+        align-items: center;
+        margin: 0;
+        cursor: pointer;
+        font-weight: normal;
+    }
+
+    .role-checkbox-item input[type="checkbox"] {
+        margin-right: 10px;
+        transform: scale(1.2);
+    }
+
+    .role-label {
+        font-size: 16px;
+        color: #333;
+    }
+
+    #loading {
+        padding: 20px;
+        color: #666;
+    }
+
+    .botones-accion {
+        margin-top: 20px;
+        text-align: center;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        margin: 0 5px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-confirmar {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .btn-confirmar:hover {
+        background-color: #218838;
+    }
+
+    .btn-confirmar:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+    }
+
+    .btn-cancelar {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-cancelar:hover {
+        background-color: #545b62;
+    }
+
+    .alert {
+        padding: 10px 15px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        border-color: #ffeaa7;
+        color: #856404;
+    }
+</style>
+
+<!-- JavaScript -->
+<script>
+$(document).ready(function() {
+    var empleadoId = @Model.idEmpleado;
+    var rolesOriginales = {}; // Para rastrear el estado original
+    var cambiosPendientes = false;
+    
+    // Cargar roles al inicializar
+    cargarRoles();
+    
+    function cargarRoles() {
+        $('#loading').show();
+        $('#roles-list').hide();
+        ocultarMensaje();
+        
+        $.ajax({
+            url: '@Url.Action("ObtenerRolesEmpleado", "DatosPersonales")',
+            type: 'GET',
+            data: { idEmpleado: empleadoId },
+            success: function(response) {
+                $('#loading').hide();
+                
+                if (response.success) {
+                    actualizarCheckboxes(response.roles);
+                    $('#roles-list').show();
+                } else {
+                    mostrarMensaje('warning', response.message);
+                    $('#roles-list').show();
+                }
+            },
+            error: function() {
+                $('#loading').hide();
+                mostrarMensaje('danger', 'Error al cargar la información de roles.');
+                $('#roles-list').show();
+            }
+        });
+    }
+    
+    function actualizarCheckboxes(roles) {
+        // Limpiar estado anterior
+        rolesOriginales = {};
+        $('input[type="checkbox"]').prop('checked', false);
+        
+        // Marcar los roles asignados y guardar estado original
+        roles.forEach(function(rol) {
+            rolesOriginales[rol.nombre] = rol.asignado;
+            $('#rol-' + rol.nombre).prop('checked', rol.asignado);
+        });
+        
+        // Resetear estado de cambios
+        cambiosPendientes = false;
+        actualizarBotones();
+        
+        // Agregar listeners a los checkboxes
+        $('input[type="checkbox"]').off('change').on('change', function() {
+            verificarCambios();
+        });
+    }
+    
+    function verificarCambios() {
+        cambiosPendientes = false;
+        
+        $('input[type="checkbox"]').each(function() {
+            var rol = $(this).val();
+            var estadoActual = $(this).is(':checked');
+            var estadoOriginal = rolesOriginales[rol] || false;
+            
+            if (estadoActual !== estadoOriginal) {
+                cambiosPendientes = true;
+                return false; // break
+            }
+        });
+        
+        actualizarBotones();
+    }
+    
+    function actualizarBotones() {
+        if (cambiosPendientes) {
+            $('#btn-confirmar').prop('disabled', false);
+        } else {
+            $('#btn-confirmar').prop('disabled', true);
+        }
+    }
+    
+    function mostrarMensaje(tipo, mensaje) {
+        var alertClass = 'alert-' + tipo;
+        var icono = 'fa-info-circle';
+        
+        // Seleccionar icono según el tipo de mensaje
+        switch(tipo) {
+            case 'success':
+                icono = 'fa-check-circle';
+                break;
+            case 'danger':
+                icono = 'fa-exclamation-triangle';
+                break;
+            case 'warning':
+                icono = 'fa-exclamation-circle';
+                break;
+            default:
+                icono = 'fa-info-circle';
+        }
+        
+        $('#mensaje-estado')
+            .removeClass('alert-success alert-danger alert-warning alert-info')
+            .addClass(alertClass)
+            .html('<i class="fa ' + icono + '"></i> ' + mensaje)
+            .show();
+        
+        // Auto-ocultar después de 7 segundos para mensajes de éxito (más tiempo para leer)
+        var tiempo = tipo === 'success' ? 7000 : 5000;
+        setTimeout(function() {
+            $('#mensaje-estado').fadeOut();
+        }, tiempo);
+    }
+    
+    function ocultarMensaje() {
+        $('#mensaje-estado').hide();
+    }
+    
+    // Botón Confirmar Cambios
+    $('#btn-confirmar').click(function() {
+        if (!cambiosPendientes) return;
+        
+        // Usar función centralizada para mostrar el modal
+        if (window.AdminPasswordModal && window.AdminPasswordModal.show) {
+            window.AdminPasswordModal.show();
+        } else {
+            // Fallback si el modal centralizado no está disponible
+            $('#adminPasswordInput').val('');
+            $('#adminPasswordError').hide().text('');
+            $('#adminPasswordModal').modal('show');
+        }
+    });
+    
+    // Botón Cancelar
+    $('#btn-cancelar').click(function() {
+        if (cambiosPendientes) {
+            if (!confirm('¿Está seguro que desea cancelar los cambios realizados?')) {
+                return;
+            }
+        }
+        
+        // Revertir checkboxes al estado original
+        Object.keys(rolesOriginales).forEach(function(rol) {
+            $('#rol-' + rol).prop('checked', rolesOriginales[rol]);
+        });
+        
+        cambiosPendientes = false;
+        actualizarBotones();
+        ocultarMensaje();
+    });
+    
+    // Modal de confirmación de contraseña de administrador
+    $('#confirmAdminPasswordBtn').off('click').on('click', function() {
+        var password = $('#adminPasswordInput').val();
+        var errorDiv = $('#adminPasswordError');
+        
+        if (!password) {
+            errorDiv.text('La contraseña no puede estar vacía.').show();
+            return;
+        }
+        
+        // Validar contraseña con el servidor
+        $.ajax({
+            url: '@Url.Action("ValidateAdminPassword", "DatosPersonales")',
+            type: 'POST',
+            data: {
+                password: password,
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Contraseña correcta, ocultar modal y aplicar cambios
+                    $('#adminPasswordModal').modal('hide');
+                    aplicarCambios();
+                } else {
+                    // Contraseña incorrecta
+                    errorDiv.text(response.message || 'Contraseña incorrecta.').show();
+                }
+            },
+            error: function() {
+                errorDiv.text('Error de comunicación con el servidor.').show();
+            }
+        });
+    });
+    
+    function aplicarCambios() {
+        var cambios = [];
+        
+        $('input[type="checkbox"]').each(function() {
+            var rol = $(this).val();
+            var estadoActual = $(this).is(':checked');
+            var estadoOriginal = rolesOriginales[rol] || false;
+            
+            if (estadoActual !== estadoOriginal) {
+                cambios.push({
+                    rol: rol,
+                    accion: estadoActual ? 'asignar' : 'remover'
+                });
+            }
+        });
+        
+        if (cambios.length === 0) {
+            mostrarMensaje('info', 'No hay cambios para aplicar.');
+            return;
+        }
+        
+        // Mostrar mensaje de progreso
+        var mensajeProgreso = cambios.length === 1 
+            ? 'Aplicando cambio de rol...'
+            : 'Aplicando ' + cambios.length + ' cambios de roles...';
+        mostrarMensaje('info', mensajeProgreso);
+        
+        // Deshabilitar controles durante el proceso
+        $('input[type="checkbox"], #btn-confirmar, #btn-cancelar').prop('disabled', true);
+        
+        procesarCambios(cambios, 0);
+    }
+    
+    function procesarCambios(cambios, indice) {
+        if (indice >= cambios.length) {
+            // Todos los cambios completados
+            $('input[type="checkbox"], #btn-cancelar').prop('disabled', false);
+            
+            // Mensaje más descriptivo según la cantidad de cambios
+            var mensaje = cambios.length === 1 
+                ? '¡Cambio aplicado exitosamente! El rol se actualizó correctamente.<br/><small class="text-muted">La sesión del empleado se actualizará automáticamente en unos segundos.</small>'
+                : '¡Éxito! Se aplicaron correctamente ' + cambios.length + ' cambios de roles.<br/><small class="text-muted">La sesión del empleado se actualizará automáticamente en unos segundos.</small>';
+            
+            mostrarMensaje('success', mensaje);
+            cargarRoles(); // Recargar para actualizar estado
+            return;
+        }
+        
+        var cambio = cambios[indice];
+        var url = cambio.accion === 'asignar' ? 
+            '@Url.Action("AsignarRol", "DatosPersonales")' : 
+            '@Url.Action("RemoverRol", "DatosPersonales")';
+        
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                idEmpleado: empleadoId,
+                nombreRol: cambio.rol,
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Verificar si se requiere refresh de la sesión del usuario afectado
+                    if (response.requiresRefresh) {
+                        console.log('🔄 Rol modificado - sesión del usuario afectado invalidada');
+                    }
+                    
+                    // Continuar con el siguiente cambio
+                    procesarCambios(cambios, indice + 1);
+                } else {
+                    // Error en este cambio
+                    $('input[type="checkbox"], #btn-confirmar, #btn-cancelar').prop('disabled', false);
+                    mostrarMensaje('danger', 'Error al ' + cambio.accion + ' el rol ' + cambio.rol + ': ' + response.message);
+                }
+            },
+            error: function() {
+                $('input[type="checkbox"], #btn-confirmar, #btn-cancelar').prop('disabled', false);
+                mostrarMensaje('danger', 'Error al ' + cambio.accion + ' el rol ' + cambio.rol + '.');
+            }
+        });
+    }
+});
+</script> 

@@ -1,0 +1,117 @@
+﻿/* Importar la fuente Inter desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap');
+
+/* Forzar la tipografía Inter en todos los elementos para consistencia global */
+* {
+    font-family: 'Inter', sans-serif !important;
+}
+
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    background-color: #f8f9fa; /* Fondo gris muy claro para la página */
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    margin-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.dl-horizontal dd {
+    margin-left: 180px;
+}
+
+/*
+==========================================================================
+   Estilos experimentales para Navbar (Desactivados)
+==========================================================================
+*/
+/* Todas las reglas personalizadas para el navbar han sido eliminadas para prevenir conflictos. */
+/* El estilo se ha aplicado directamente en _Layout.cshtml para garantizar la visualización. */
+
+/* ==========================================================================
+   Estilos para la nueva página de Inicio (Diseño Definitivo con Cuadros Visibles)
+   ========================================================================== */
+
+.logo-container {
+    text-align: center;
+    padding: 40px 0 20px 0;
+}
+
+.logo-container img {
+    max-width: 180px;
+    border-radius: 8px;
+}
+
+.content-blob {
+    background: #ffffff; /* Fondo blanco para que contraste */
+    border: 1px solid #dee2e6; /* Borde gris claro y definido */
+    border-radius: 12px; /* Bordes redondeados simples */
+    padding: 40px;
+    margin-bottom: 50px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); /* Sombra sutil para dar profundidad */
+}
+
+.content-blob:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.content-blob .section-title {
+    text-align: center;
+    margin-bottom: 40px;
+    font-weight: bold;
+    color: #343a40;
+}
+
+.feature-item {
+    text-align: center;
+    padding: 15px;
+}
+
+.feature-item .icon {
+    font-size: 35px;
+    color: #91C8E4;
+    margin-bottom: 15px;
+}
+
+.feature-item h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #343a40;
+}
+
+.btn-primary {
+    background-color: #91C8E4 !important;
+    border-color: #91C8E4 !important;
+}
+
+.btn-danger {
+    background-color: #E57373 !important;
+    border-color: #E57373 !important;
+}
+
+.btn-success {
+    background-color: #81C784 !important;
+    border-color: #81C784 !important;
+}
+
+.home-container {
+    padding-top: 50px;
+}

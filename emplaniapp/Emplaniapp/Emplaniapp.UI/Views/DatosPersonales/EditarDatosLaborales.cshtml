@@ -1,0 +1,124 @@
+@model Emplaniapp.UI.Models.DatosLaboralesViewModel
+
+@{
+    ViewBag.Title = "Editar Datos Laborales";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Editar Datos Laborales</h2>
+            <hr />
+        </div>
+    </div>
+
+    @using (Html.BeginForm("EditarDatosLaborales", "DatosPersonales", FormMethod.Post, new { @class = "form-horizontal", id = "editForm" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.IdEmpleado)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NumeroOcupacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NumeroOcupacion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IdCargo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.IdCargo, (SelectList)ViewBag.Cargos, "Seleccione un cargo", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.IdCargo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FechaIngreso, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.FechaIngreso, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
+                @Html.ValidationMessageFor(model => model.FechaIngreso, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FechaSalida, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FechaSalida, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+                @Html.ValidationMessageFor(model => model.FechaSalida, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+        <div class="form-group" style="margin-top: 20px;">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                @Html.ActionLink("Cancelar", "Detalles", new { id = Model.IdEmpleado }, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    }
+
+    <!-- Renderiza el modal de confirmación -->
+    @Html.Partial("_AdminPasswordModal")
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            var mainForm = $('#editForm');
+
+            mainForm.on('submit', function (e) {
+                e.preventDefault();
+                
+                // Usar función centralizada para mostrar el modal
+                if (window.AdminPasswordModal && window.AdminPasswordModal.show) {
+                    window.AdminPasswordModal.show();
+                } else {
+                    // Fallback si el modal centralizado no está disponible
+                    $('#adminPasswordInput').val('');
+                    $('#adminPasswordError').hide().text('');
+                    $('#adminPasswordModal').modal('show');
+                }
+            });
+
+            $('#confirmAdminPasswordBtn').on('click', function () {
+                var password = $('#adminPasswordInput').val();
+                var errorDiv = $('#adminPasswordError');
+                var token = mainForm.find('input[name="__RequestVerificationToken"]').val();
+
+                if (!password) {
+                    errorDiv.text('La contraseña no puede estar vacía.').show();
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("ValidateAdminPassword", "DatosPersonales")',
+                    method: 'POST',
+                    data: {
+                        __RequestVerificationToken: token,
+                        password: password
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#adminPasswordModal').modal('hide');
+                            mainForm.off('submit').submit();
+                        } else {
+                            errorDiv.text(response.message).show();
+                        }
+                    },
+                    error: function () {
+                        errorDiv.text('Error de comunicación con el servidor.').show();
+                    }
+                });
+            });
+        });
+    </script>
+} 
