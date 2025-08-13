@@ -1,0 +1,660 @@
+@model List<Emplaniapp.Abstracciones.ModelosParaUI.HistorialEmpleadoDto>
+@using Microsoft.AspNet.Identity
+@using System.Security.Claims
+
+@{
+    // No usar layout cuando se renderiza como partial view
+    Layout = null;
+    
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    var roleClaim = claimsIdentity?.FindFirst(ClaimTypes.Role);
+    string userRole = "Usuario";
+    if (roleClaim != null)
+    {
+        userRole = roleClaim.Value;
+    }
+
+    Func<string> getActiveRole = () => {
+        var activeRole = Session["ActiveRole"] as string;
+        if (!string.IsNullOrEmpty(activeRole))
+        {
+            return activeRole;
+        }
+        return userRole;
+    };
+
+    Func<string, bool> isInActiveRole = (role) => {
+        var activeRole = getActiveRole();
+        return activeRole.Equals(role, StringComparison.OrdinalIgnoreCase);
+    };
+
+    var idEmpleado = ViewBag.IdEmpleado as int? ?? 0;
+    var totalEventos = ViewBag.TotalEventos as int? ?? 0;
+    var categorias = ViewBag.Categorias as List<string> ?? new List<string>();
+}
+
+<style>
+    .historial-container {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        padding: 20px 0;
+    }
+
+
+
+    .filtros-container {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .filtro-input-compact {
+        width: 100%;
+        padding: 6px 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.9em;
+        transition: border-color 0.2s ease;
+    }
+
+    .filtro-input-compact:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.9em;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+
+    .evento-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        border-left: 4px solid #667eea;
+        transition: all 0.3s ease;
+    }
+
+    .evento-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+    }
+
+    .evento-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .evento-icono {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2em;
+        flex-shrink: 0;
+    }
+
+    .evento-info {
+        flex: 1;
+    }
+
+    .evento-titulo {
+        margin: 0 0 8px 0;
+        color: #333;
+        font-size: 1.2em;
+        font-weight: 600;
+    }
+
+    .evento-descripcion {
+        color: #666;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .evento-fecha {
+        text-align: right;
+        color: #888;
+        font-size: 0.9em;
+    }
+
+    .fecha-principal {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 4px;
+    }
+
+    .tiempo-relativo {
+        color: #999;
+    }
+
+    .evento-cambios {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .cambio-item {
+        text-align: center;
+        flex: 1;
+    }
+
+    .cambio-label {
+        font-weight: 600;
+        color: #666;
+        font-size: 0.85em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .cambio-valor {
+        font-weight: 500;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.95em;
+    }
+
+    .cambio-valor.anterior {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+    }
+
+    .cambio-valor.nuevo {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .evento-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+        font-size: 0.9em;
+    }
+
+    .evento-usuario {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #666;
+    }
+
+    .evento-categoria {
+        display: flex;
+        align-items: center;
+    }
+
+    .categoria-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: 500;
+    }
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+
+    .categoria-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .categoria-personal { background: #e3f2fd; color: #1976d2; }
+    .categoria-laboral { background: #f3e5f5; color: #7b1fa2; }
+    .categoria-financiero { background: #e8f5e8; color: #388e3c; }
+    .categoria-sistema { background: #fff3e0; color: #f57c00; }
+
+    .sin-eventos {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+    .sin-eventos i {
+        font-size: 4em;
+        margin-bottom: 20px;
+        color: #dee2e6;
+    }
+
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .btn-exportar {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-exportar:hover {
+        background: #218838;
+        color: white;
+    }
+
+    .periodo-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .btn-periodo {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-periodo.active {
+        background: #667eea;
+    }
+
+    .btn-periodo:hover {
+        background: #5a6268;
+        color: white;
+    }
+</style>
+
+<div class="historial-container">
+    <div class="container">
+
+
+        <!-- Filtros Compactos -->
+        <div class="filtros-container">
+            <div class="row justify-content-center">
+                <div class="col-md-2">
+                    <select id="categoriaFiltro" class="filtro-input-compact">
+                        <option value="">Todas</option>
+                        @foreach (var categoria in categorias)
+                        {
+                            <option value="@categoria">@categoria</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select id="periodoFiltro" class="filtro-input-compact">
+                        <option value="hoy">Hoy</option>
+                        <option value="semana">Semana</option>
+                        <option value="mes" selected>Mes</option>
+                        <option value="anio">Año</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select id="usuarioFiltro" class="filtro-input-compact">
+                        <option value="">Todos</option>
+                        @if (ViewBag.Usuarios != null)
+                        {
+                            foreach (var usuario in ViewBag.Usuarios)
+                            {
+                                <option value="@usuario">@usuario</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select id="cantidadFiltro" class="filtro-input-compact">
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button id="btnFiltrar" class="btn btn-primary btn-sm">
+                        <i class="fas fa-search"></i> Filtrar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Eventos -->
+        <div id="eventosContainer">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var evento in Model)
+                {
+                    <div class="evento-card">
+                        <div class="evento-header">
+                            <div class="evento-icono">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="evento-info">
+                                <h5 class="evento-titulo">@evento.nombreEvento</h5>
+                                <p class="evento-descripcion">@evento.descripcionEvento</p>
+                            </div>
+                            <div class="evento-fecha">
+                                <div class="fecha-principal">@evento.fechaEventoFormateada</div>
+                                <small class="tiempo-relativo">@evento.tiempoTranscurrido</small>
+                            </div>
+                        </div>
+                        
+                        @if (!string.IsNullOrEmpty(evento.valorAnterior) || !string.IsNullOrEmpty(evento.valorNuevo))
+                        {
+                            <div class="evento-cambios">
+                                @if (!string.IsNullOrEmpty(evento.valorAnterior))
+                                {
+                                    <div class="cambio-item">
+                                        <span class="cambio-label">Antes:</span>
+                                        <span class="cambio-valor anterior">@evento.valorAnterior</span>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(evento.valorNuevo))
+                                {
+                                    <div class="cambio-item">
+                                        <span class="cambio-label">Después:</span>
+                                        <span class="cambio-valor nuevo">@evento.valorNuevo</span>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        
+                        <div class="evento-footer">
+                            <div class="evento-usuario">
+                                <i class="fas fa-user"></i>
+                                <span>Cambiado por: @evento.nombreUsuarioModificacion</span>
+                            </div>
+                            <div class="evento-categoria">
+                                <span class="categoria-badge">@evento.categoriaEvento</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="no-eventos">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Este empleado aún no tiene eventos en su historial.</p>
+                </div>
+            }
+        </div>
+
+        <!-- Loading -->
+        <div id="loadingEventos" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Cargando eventos...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Configurar fechas por defecto
+    var hoy = new Date();
+    var haceUnMes = new Date();
+    haceUnMes.setMonth(haceUnMes.getMonth() - 1);
+    
+    $('#fechaInicio').val(haceUnMes.toISOString().split('T')[0]);
+    $('#fechaFin').val(hoy.toISOString().split('T')[0]);
+
+    // Filtrar historial
+    $('#btnFiltrar').click(function() {
+        filtrarHistorial();
+    });
+
+    // Cambio en filtros
+    $('#categoriaFiltro, #periodoFiltro, #usuarioFiltro, #cantidadFiltro').change(function() {
+        filtrarHistorial();
+    });
+
+    // Enter en campos de filtro
+    $('.filtro-input').keypress(function(e) {
+        if (e.which == 13) {
+            filtrarHistorial();
+        }
+    });
+});
+
+function filtrarHistorial() {
+    var idEmpleado = @idEmpleado;
+    var categoria = $('#categoriaFiltro').val();
+    var periodo = $('#periodoFiltro').val();
+    var usuario = $('#usuarioFiltro').val();
+    var cantidad = $('#cantidadFiltro').val();
+
+    mostrarLoading();
+
+    $.ajax({
+        url: '@Url.Action("PorPeriodo", "Historial")',
+        type: 'POST',
+        data: {
+            idEmpleado: idEmpleado,
+            categoriaEvento: categoria,
+            periodo: periodo,
+            usuario: usuario,
+            top: cantidad,
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+        },
+        success: function(response) {
+            if (response.success) {
+                mostrarEventos(response.data);
+            } else {
+                mostrarError(response.message);
+            }
+        },
+        error: function() {
+            mostrarError('Error al filtrar el historial');
+        },
+        complete: function() {
+            ocultarLoading();
+        }
+    });
+}
+
+
+
+function mostrarEventos(eventos) {
+    var container = $('#eventosContainer');
+    
+    if (!eventos || eventos.length === 0) {
+        container.html(`
+            <div class="no-eventos">
+                <i class="fas fa-search"></i>
+                <p>No se encontraron eventos. Intenta ajustar los filtros de búsqueda.</p>
+            </div>
+        `);
+        return;
+    }
+
+    var html = '';
+    eventos.forEach(function(evento) {
+        html += crearHTMLEvento(evento);
+    });
+    
+    container.html(html);
+}
+
+function crearHTMLEvento(evento) {
+    var cambiosHTML = '';
+    if (evento.valorAnterior || evento.valorNuevo) {
+        cambiosHTML = '<div class="evento-cambios">';
+        if (evento.valorAnterior) {
+            cambiosHTML += `
+                <div class="cambio-item">
+                    <div class="cambio-label">Valor Anterior</div>
+                    <div class="cambio-valor">${evento.valorAnterior}</div>
+                </div>
+            `;
+        }
+        if (evento.valorNuevo) {
+            cambiosHTML += `
+                <div class="cambio-item">
+                    <div class="cambio-label">Valor Nuevo</div>
+                    <div class="cambio-valor">${evento.valorNuevo}</div>
+                </div>
+            `;
+        }
+        cambiosHTML += '</div>';
+    }
+
+    var detallesHTML = '';
+    if (evento.detallesEvento) {
+        detallesHTML = `
+            <div class="evento-detalles">
+                <strong>Detalles:</strong> ${evento.detallesEvento}
+            </div>
+        `;
+    }
+
+    return `
+        <div class="evento-card" style="border-left-color: ${getColorForCategoria(evento.categoriaEvento)}">
+            <div class="evento-header">
+                <div>
+                    <h5 class="evento-titulo">
+                        <i class="fas fa-${evento.iconoEvento} text-${evento.colorEvento}"></i>
+                        ${evento.nombreEvento}
+                    </h5>
+                    <span class="categoria-badge categoria-${evento.categoriaEvento.toLowerCase()}">
+                        ${evento.categoriaEvento}
+                    </span>
+                </div>
+                <div class="evento-fecha">
+                    <div>${formatearFecha(evento.fechaEvento)}</div>
+                    <small>${calcularTiempoTranscurrido(evento.fechaEvento)}</small>
+                </div>
+            </div>
+            
+            <div class="evento-descripcion">
+                ${evento.descripcionEvento}
+            </div>
+            
+            ${detallesHTML}
+            ${cambiosHTML}
+            
+            <div class="evento-footer">
+                <div class="evento-usuario">
+                    <i class="fas fa-user"></i>
+                    <span>${evento.nombreUsuarioModificacion}</span>
+                </div>
+                <div class="evento-ip">
+                    <i class="fas fa-network-wired"></i>
+                    ${evento.ipModificacion}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function mostrarLoading() {
+    $('#loadingEventos').show();
+    $('#eventosContainer').hide();
+}
+
+function ocultarLoading() {
+    $('#loadingEventos').hide();
+    $('#eventosContainer').show();
+}
+
+function mostrarError(mensaje) {
+    // Implementar notificación de error
+    console.error(mensaje);
+}
+
+function formatearFecha(fechaString) {
+    var fecha = new Date(fechaString);
+    return fecha.toLocaleDateString('es-CR') + ' ' + fecha.toLocaleTimeString('es-CR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function calcularTiempoTranscurrido(fechaString) {
+    var fecha = new Date(fechaString);
+    var ahora = new Date();
+    var diferencia = ahora - fecha;
+    
+    var dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+    var horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (dias > 0) return `${dias} día(s)`;
+    if (horas > 0) return `${horas} hora(s)`;
+    if (minutos > 0) return `${minutos} minuto(s)`;
+    return 'Hace un momento';
+}
+
+function getColorForCategoria(categoria) {
+    switch (categoria.toLowerCase()) {
+        case 'personal': return '#1976d2';
+        case 'laboral': return '#7b1fa2';
+        case 'financiero': return '#388e3c';
+        case 'sistema': return '#f57c00';
+        default: return '#6c757d';
+    }
+}
+</script>
+
+@functions {
+    private string GetColorForCategoria(string categoria)
+    {
+        switch (categoria?.ToLower())
+        {
+            case "personal": return "#1976d2";
+            case "laboral": return "#7b1fa2";
+            case "financiero": return "#388e3c";
+            case "sistema": return "#f57c00";
+            default: return "#6c757d";
+        }
+    }
+}
+
+
