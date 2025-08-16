@@ -65,6 +65,8 @@
     <Compile Include="InterfacesAD\Estados\ListarEstados\IListarEstadosAD.cs" />
     <Compile Include="InterfacesAD\General\FiltrarEmpleados\IFiltrarEmpleadosAD.cs" />
     <Compile Include="InterfacesAD\General\OtenerTotalEmpleados\IObtenerTotalEmpleadosAD.cs" />
+    <Compile Include="InterfacesAD\Historial\IConsultarHistorial.cs" />
+    <Compile Include="InterfacesAD\Historial\IRegistrarEventoHistorial.cs" />
     <Compile Include="InterfacesAD\Hoja_Resumen\ListarHojaResumen\IListarHojaResumenAD.cs" />
     <Compile Include="InterfacesAD\Liquidaciones\IEditarLiquidacionAD.cs" />
     <Compile Include="InterfacesAD\Liquidaciones\IGuardarLiquidacionAD.cs" />
@@ -101,6 +103,8 @@
     <Compile Include="InterfacesParaUI\Estados\ListarEstados\IListarEstadosLN.cs" />
     <Compile Include="InterfacesParaUI\General\FiltrarEmpleados\IFiltrarEmpleadosLN.cs" />
     <Compile Include="InterfacesParaUI\General\ObtenerTotalEmpleados\IObtenerTotalEmpleadosLN.cs" />
+    <Compile Include="InterfacesParaUI\Historial\IConsultarHistorialLN.cs" />
+    <Compile Include="InterfacesParaUI\Historial\IRegistrarEventoHistorialLN.cs" />
     <Compile Include="InterfacesParaUI\Hoja_Resumen\ListarHojaResumen\IlistarHojaResumenLN.cs" />
     <Compile Include="InterfacesParaUI\Liquidaciones\IEditarLiquidacionLN.cs" />
     <Compile Include="InterfacesParaUI\Liquidaciones\IGuardarLiquidacionLN.cs" />
@@ -136,6 +140,7 @@
     <Compile Include="ModelosAD\Distrito.cs" />
     <Compile Include="ModelosAD\Empleados.cs" />
     <Compile Include="ModelosAD\Estado.cs" />
+    <Compile Include="ModelosAD\HistorialEmpleado.cs" />
     <Compile Include="ModelosAD\Liquidacion.cs" />
     <Compile Include="ModelosAD\NumeroOcupacion.cs" />
     <Compile Include="ModelosAD\Observacion.cs" />
@@ -147,6 +152,7 @@
     <Compile Include="ModelosAD\TipoMoneda.cs" />
     <Compile Include="ModelosAD\TipoRemuneracion.cs" />
     <Compile Include="ModelosAD\TipoRetencion.cs" />
+    <Compile Include="ModelosAD\TiposEventoHistorial.cs" />
     <Compile Include="ModelosParaUI\BancoDto.cs" />
     <Compile Include="ModelosParaUI\CalleDto.cs" />
     <Compile Include="ModelosParaUI\CantonDto.cs" />
@@ -154,6 +160,7 @@
     <Compile Include="ModelosParaUI\DistristoDto.cs" />
     <Compile Include="ModelosParaUI\EmpleadoDto.cs" />
     <Compile Include="ModelosParaUI\EstadoDto.cs" />
+    <Compile Include="ModelosParaUI\HistorialEmpleadoDto.cs" />
     <Compile Include="ModelosParaUI\HojaResumenDto.cs" />
     <Compile Include="ModelosParaUI\LiquidacionDto.cs" />
     <Compile Include="ModelosParaUI\MonedaDto.cs" />

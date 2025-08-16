@@ -323,6 +323,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\RemuneracionesController.cs" />
     <Compile Include="Controllers\RetencionesController.cs" />
+    <Compile Include="Controllers\HistorialController.cs" />
     <Compile Include="Controllers\VariablesFinancierasController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -442,6 +443,10 @@
     <Content Include="Views\Retenciones\_EliminarRetencionModal.cshtml" />
     <Content Include="Views\Liquidaciones\AgregarDatos.cshtml" />
     <Content Include="Views\Liquidaciones\EditDatos.cshtml" />
+    <Content Include="Views\Historial\Empleado.cshtml" />
+    <Content Include="Views\Historial\EmpleadoCompleto.cshtml" />
+    <Content Include="Views\Historial\_HistorialContent.cshtml" />
+    <Content Include="Views\Historial\_HistorialSimple.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
