@@ -65,6 +65,8 @@
     <Compile Include="General\FiltrarEmpleados\filtrarEmpleadosLN.cs" />
     <Compile Include="General\ObtenerTotalEmpleados\obtenerTotalEmpleadosLN.cs" />
     <Compile Include="Hoja_Resumen\ListarHojaResumen\listarHojaResumenLN.cs" />
+    <Compile Include="Historial\ConsultarHistorialLN.cs" />
+    <Compile Include="Historial\RegistrarEventoHistorialLN.cs" />
     <Compile Include="Liquidaciones\EditarLiquidacionLN.cs" />
     <Compile Include="Liquidaciones\GuardarLiquidacionLN.cs" />
     <Compile Include="Liquidaciones\MostrarCalculosPreviosLiqLN.cs" />

@@ -69,6 +69,8 @@
     <Compile Include="General\FiltrarEmpleados\filtrarEmpleadosAD.cs" />
     <Compile Include="General\ObtenerTotalEmpleados\obtenerTotalEmpleadosAD.cs" />
     <Compile Include="Hoja_Resumen\ListarHojaResumen\listarHojaResumenAD.cs" />
+    <Compile Include="Historial\ConsultarHistorialAD.cs" />
+    <Compile Include="Historial\RegistrarEventoHistorialAD.cs" />
     <Compile Include="Liquidaciones\EditarLiquidacionAD.cs" />
     <Compile Include="Liquidaciones\GuardarLiquidacionAD.cs" />
     <Compile Include="Liquidaciones\ObtenerLiqPorEmpleadoIdAD.cs" />

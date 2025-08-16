@@ -1,0 +1,40 @@
+@model List<Emplaniapp.Abstracciones.ModelosParaUI.HistorialEmpleadoDto>
+
+@{
+    Layout = null;
+    var idEmpleado = ViewBag.IdEmpleado as int? ?? 0;
+    var totalEventos = ViewBag.TotalEventos as int? ?? 0;
+    var categorias = ViewBag.Categorias as List<string> ?? new List<string>();
+}
+
+<div style="padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <h3>Historial del Empleado</h3>
+    
+    <div style="margin-bottom: 20px;">
+        <strong>ID Empleado:</strong> @idEmpleado<br>
+        <strong>Total Eventos:</strong> @totalEventos<br>
+        <strong>Categorías:</strong> @(string.Join(", ", categorias ?? new List<string>()))<br>
+        <strong>Model Count:</strong> @(Model?.Count ?? 0)
+    </div>
+    
+    @if (Model != null && Model.Any())
+    {
+        <div style="margin-top: 20px;">
+            <h4>Eventos del Historial:</h4>
+            @foreach (var evento in Model.Take(5))
+            {
+                <div style="border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 4px;">
+                    <strong>@(evento.nombreEvento ?? "Sin nombre")</strong><br>
+                    <small>@(evento.descripcionEvento ?? "Sin descripción")</small><br>
+                    <small>Categoría: @(evento.categoriaEvento ?? "Sin categoría")</small>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div style="text-align: center; padding: 40px; color: #666;">
+            <p>No hay eventos en el historial para este empleado.</p>
+        </div>
+    }
+</div>
