@@ -68,8 +68,9 @@
     <Compile Include="Historial\ConsultarHistorialLN.cs" />
     <Compile Include="Historial\RegistrarEventoHistorialLN.cs" />
     <Compile Include="Liquidaciones\EditarLiquidacionLN.cs" />
+    <Compile Include="Liquidaciones\GenerarCalculoLiqLN.cs" />
     <Compile Include="Liquidaciones\GuardarLiquidacionLN.cs" />
-    <Compile Include="Liquidaciones\MostrarCalculosPreviosLiqLN.cs" />
+    <Compile Include="Liquidaciones\MostrarCalculosLiqLN.cs" />
     <Compile Include="Liquidaciones\ObtenerLiqPorEmpleadoIdLN.cs" />
     <Compile Include="Monedas\ListarMonedas\listarMonedasLN.cs" />
     <Compile Include="Observaciones\ObservacionLN.cs" />

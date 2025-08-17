@@ -107,8 +107,9 @@
     <Compile Include="InterfacesParaUI\Historial\IRegistrarEventoHistorialLN.cs" />
     <Compile Include="InterfacesParaUI\Hoja_Resumen\ListarHojaResumen\IlistarHojaResumenLN.cs" />
     <Compile Include="InterfacesParaUI\Liquidaciones\IEditarLiquidacionLN.cs" />
+    <Compile Include="InterfacesParaUI\Liquidaciones\IGenerarCalculoLiqLN.cs" />
     <Compile Include="InterfacesParaUI\Liquidaciones\IGuardarLiquidacionLN.cs" />
-    <Compile Include="InterfacesParaUI\Liquidaciones\IMostrarCalculosPreviosLiqLN.cs" />
+    <Compile Include="InterfacesParaUI\Liquidaciones\IMostrarCalculosLiqLN.cs" />
     <Compile Include="InterfacesParaUI\Liquidaciones\IObtenerLiqPorEmpleadoIdLN.cs" />
     <Compile Include="InterfacesParaUI\Monedas\ListarMonedas\IlistarMonedasLN.cs" />
     <Compile Include="InterfacesParaUI\Observacion\IObservacionLN.cs" />

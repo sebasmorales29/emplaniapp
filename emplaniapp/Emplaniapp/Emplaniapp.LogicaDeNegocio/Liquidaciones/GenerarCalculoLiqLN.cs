@@ -1,89 +1,44 @@
 ﻿using Emplaniapp.Abstracciones.InterfacesParaUI.Empleado.ObtenerEmpleadoPorId;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Liquidaciones;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones;
-using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Remuneracion;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.LogicaDeNegocio.Empleado.ObtenerEmpleadoPorId;
 using Emplaniapp.LogicaDeNegocio.Remuneraciones;
-using Emplaniapp.LogicaDeNegocio.Tipo_Remuneracion;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Core.Common.EntitySql;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
 {
-    public class MostrarCalculosPreviosLiqLN : IMostrarCalculosPreviosLiqLN
+    public class GenerarCalculoLiqLN : IGenerarCalculoLiqLN
     {
         IObtenerEmpleadoPorIdLN _empleado;
         IListarRemuneracionesLN _remuneraciones;
-        IObtenerIdTipoRemuneracionLN _tipo;
 
-
-        public MostrarCalculosPreviosLiqLN()
-        {
+        public GenerarCalculoLiqLN() { 
             _empleado = new ObtenerEmpleadoPorIdLN();
             _remuneraciones = new ListarRemuneracionesLN();
-            _tipo = new ObtenerIdTipoRemuneracionLN();
         }
-
-
-        public LiquidacionDto MostrarLiquidacionParcial(EmpleadoDto emp)
-        {
-            // Datos generales
-            DateTime fechaliq = DateTime.Now.Date;
-
-            // Generar objero liquidación previo
-            LiquidacionDto liquid = new LiquidacionDto
-            {
-                idEmpleado = emp.idEmpleado,
-
-                // Lo que se puede editar
-                fechaLiquidacion = fechaliq,
-                motivoLiquidacion = "",
-                // Lo que se toma en cuenta
-                salarioPromedio = 0,
-                aniosAntiguedad = 0,
-                diasPreaviso = 0,
-                fechaPreaviso = "--/--/----",
-                diasVacacionesPendientes = 0,
-
-                // Cálculos finales
-                pagoPreaviso = 0,
-                pagoAguinaldoProp = 0,
-                pagoCesantia = 0,
-                remuPendientes = 0,
-                costoLiquidacion = 0,
-
-                observacionLiquidacion = "",
-                idEstado = 0
-            };
-
-            return liquid;
-        }
-
-
 
         // Generar cálculo
-        public LiquidacionDto MostrarLiquidacionTotal(EmpleadoDto emp, DateTime fechaliq, string motivo)
+        public LiquidacionDto PrimerCalculo(EmpleadoDto emp, DateTime fechaliq, string motivo)
         {
             // 1. cálculo del Tiempo de trabajo
             int aniosTrab = fechaliq.Year - emp.fechaContratacion.Year;
-            int mesesTrab = mesesDeTrabajo(emp.fechaContratacion,fechaliq);
+            int mesesTrab = mesesDeTrabajo(emp.fechaContratacion, fechaliq);
 
             // 2. Salario Promedio 
             decimal salProm = calcularSalarioProm(emp.idEmpleado, emp.salarioPorHoraExtra, mesesTrab, fechaliq);
 
             // 3. Preaviso
             int diasPreav = diasPreaviso(mesesTrab);
-            string fechaPrev = fechaDePreaviso(fechaliq,diasPreav);
+            string fechaPrev = fechaDePreaviso(fechaliq, diasPreav);
             decimal preaviso = calculoPreaviso(motivo, salProm);
 
             // 4. Aguinaldo Proporcional 
-            decimal aguinaldoProp = calculoAguinaldoP(mesesTrab,fechaliq,salProm);
+            decimal aguinaldoProp = calculoAguinaldoP(mesesTrab, fechaliq, salProm);
 
             // 5. Cesantía 
             decimal cesantia = pagoCesantia(motivo, mesesTrab, emp.salarioDiario, aniosTrab);
@@ -109,7 +64,7 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
 
                 pagoPreaviso = preaviso,
                 pagoAguinaldoProp = aguinaldoProp,
-                pagoVacacionesNG = diasPreav * emp.salarioDiario, 
+                pagoVacacionesNG = diasPreav * emp.salarioDiario,
                 pagoCesantia = cesantia,
                 remuPendientes = pagosFaltantes, // preguntar como se hizo
                 costoLiquidacion = 0,
@@ -120,6 +75,67 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
 
             return liquid;
 
+        }
+
+        public LiquidacionDto ModificarCalculo(LiquidacionDto liq)
+        {
+            // Se extraen datos
+            DateTime fechaliq = liq.fechaLiquidacion;
+            EmpleadoDto emp = _empleado.ObtenerEmpleadoPorId(liq.idEmpleado);
+            string motivo = liq.motivoLiquidacion.ToString();
+
+            //  CALCULOS -------------------------------------------------------------
+
+            // 1. cálculo del Tiempo de trabajo
+            int aniosTrab = fechaliq.Year - emp.fechaContratacion.Year;
+            int mesesTrab = mesesDeTrabajo(emp.fechaContratacion, fechaliq);
+
+            // 2. Salario Promedio 
+            decimal salProm = calcularSalarioProm(emp.idEmpleado, emp.salarioPorHoraExtra, mesesTrab, fechaliq);
+
+            // 3. Preaviso
+            int diasPreav = diasPreaviso(mesesTrab);
+            string fechaPrev = fechaDePreaviso(fechaliq, diasPreav);
+            decimal preaviso = calculoPreaviso(motivo, salProm);
+
+            // 4. Aguinaldo Proporcional 
+            decimal aguinaldoProp = calculoAguinaldoP(mesesTrab, fechaliq, salProm);
+
+            // 5. Cesantía 
+            decimal cesantia = pagoCesantia(motivo, mesesTrab, emp.salarioDiario, aniosTrab);
+
+            // 6. Remuneraciones pendientes: vacaciones, pagos no hechos hasta el momento
+            int diasVac = diasVacaciones(emp);
+            decimal pagosFaltantes = remuneracionesPendientes(emp.idEmpleado, fechaliq, emp.salarioDiario);
+
+
+            //decimal salariosPendientes = remuneracionesPendientes(emp.idEmpleado, fechaliq);
+            LiquidacionDto liquid = new LiquidacionDto
+            {
+                idLiquidacion = liq.idLiquidacion,
+                idEmpleado = emp.idEmpleado,
+
+                fechaLiquidacion = fechaliq,
+                motivoLiquidacion = motivo,
+
+                salarioPromedio = salProm,
+                aniosAntiguedad = aniosTrab,
+                diasPreaviso = diasPreav,
+                fechaPreaviso = fechaPrev,
+                diasVacacionesPendientes = diasVac, // Nota, estoy hay que hablarlo con el grupo
+
+                pagoPreaviso = preaviso,
+                pagoAguinaldoProp = aguinaldoProp,
+                pagoVacacionesNG = diasPreav * emp.salarioDiario,
+                pagoCesantia = cesantia,
+                remuPendientes = pagosFaltantes, // preguntar como se hizo
+                costoLiquidacion = 0,
+
+                observacionLiquidacion = "",
+                idEstado = 2
+            };
+
+            return liquid;
         }
 
 
@@ -164,7 +180,7 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
             if (remuneraciones != null)
             {
                 // Pasa por todos los valores
-                for (int i = remuneraciones.Count-1; i >= 0 ; i--)
+                for (int i = remuneraciones.Count - 1; i >= 0; i--)
                 {
                     // Compara la fecha de la remuneración la fecha límite, 
                     int fecha = DateTime.Compare(remuneraciones[i].fechaRemuneracion, tiempo);
@@ -192,7 +208,7 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
             int dias = 0;
 
             if (meses < 3) { dias = 0; }
-            else if(meses >= 3 && meses < 6) { dias = 7; }
+            else if (meses >= 3 && meses < 6) { dias = 7; }
             else if (meses >= 6 && meses < 12) { dias = 14; }
             else { dias = 30; }
 
@@ -203,7 +219,7 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
         // 4. Cálculo de FECHA DE PREAVISO ------------------------------------------------------------
         private string fechaDePreaviso(DateTime fechaliq, int diasPreav)
         {
-            if(diasPreav == 0) { return "No aplica"; }
+            if (diasPreav == 0) { return "No aplica"; }
             return fechaliq.AddDays(-diasPreav).ToString();
         }
 
@@ -211,7 +227,7 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
         // 5. Cálculo de PREAVISO -----------------------------------------------------------------------
         private decimal calculoPreaviso(string motivo, decimal salProm)
         {
-            if(motivo.Equals("Pensión o muerte")) { return 0; }
+            if (motivo.Equals("Pensión o muerte")) { return 0; }
             else { return salProm; }
         }
 
@@ -219,7 +235,7 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
         // 6. Cálculo de AGUINALDO PROPORCIONAL ---------------------------------------------------------
         private decimal calculoAguinaldoP(int meses, DateTime salida, decimal salProm)
         {
-            if (salida.Month < meses ) { meses = salida.Month + 1; }
+            if (salida.Month < meses) { meses = salida.Month + 1; }
             decimal aguinaldo = salProm * meses;
             return aguinaldo;
         }
@@ -310,23 +326,21 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
 
 
         // 9. Cálculo remuneraciones pendientes ---------------------------------------------------------
-        private decimal remuneracionesPendientes(int id, DateTime fechaSalida,decimal salDiario)
+        private decimal remuneracionesPendientes(int id, DateTime fechaSalida, decimal salDiario)
         {
             decimal remuPen = 0;
             DateTime today = DateTime.Today;
             int hoy = today.DayOfYear;
             int salida = fechaSalida.DayOfYear;
             int diferencia = hoy - salida;
-             /*
-            if( )
-            {
+            /*
+           if( )
+           {
 
-            }*/
-            
+           }*/
+
             return remuPen;
         }
-
-
 
     }
 }

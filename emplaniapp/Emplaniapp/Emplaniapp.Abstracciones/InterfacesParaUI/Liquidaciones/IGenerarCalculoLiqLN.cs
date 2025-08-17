@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Emplaniapp.Abstracciones.InterfacesParaUI.Liquidaciones
 {
-    public interface IMostrarCalculosPreviosLiqLN
+    public interface IGenerarCalculoLiqLN
     {
-        LiquidacionDto MostrarLiquidacionParcial(EmpleadoDto emp);
-        LiquidacionDto MostrarLiquidacionTotal(EmpleadoDto emp, DateTime fechaliq, string motivo);
+        LiquidacionDto PrimerCalculo(EmpleadoDto emp, DateTime fechaliq, string motivo);
+        LiquidacionDto ModificarCalculo(LiquidacionDto liq);
     }
 }

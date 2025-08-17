@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Emplaniapp.Abstracciones.InterfacesParaUI.Liquidaciones
 {
-    public interface IEditarLiquidacionLN
+    public interface IMostrarCalculosLiqLN
     {
-        int Editar(LiquidacionDto liquidacion);
-        int EditarFinal(LiquidacionDto liquidacion);
+        LiquidacionDto MostrarLiquidacionParcial(EmpleadoDto emp);
+        LiquidacionDto MostrarLiquidacionTotal(int caso, LiquidacionDto liq);
     }
 }
