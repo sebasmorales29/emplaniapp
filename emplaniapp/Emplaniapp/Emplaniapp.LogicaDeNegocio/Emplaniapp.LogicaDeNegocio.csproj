@@ -74,6 +74,7 @@
     <Compile Include="Liquidaciones\ObtenerLiqPorEmpleadoIdLN.cs" />
     <Compile Include="Monedas\ListarMonedas\listarMonedasLN.cs" />
     <Compile Include="Observaciones\ObservacionLN.cs" />
+    <Compile Include="PeriodoPago\CrearPeriodoPago\CrearPeriodoPagoLN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Remuneraciones\CrearRemuneraciones\CrearRemuneracionesLN.cs" />
     <Compile Include="Remuneraciones\EditarRemuneracion\EditarRemuneracionLN.cs" />

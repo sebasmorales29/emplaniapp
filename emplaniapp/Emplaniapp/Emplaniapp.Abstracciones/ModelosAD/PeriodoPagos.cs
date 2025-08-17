@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Emplaniapp.Abstracciones.ModelosAD
 {
     [Table("PeridoPago")]
-    public class PeriodoPago
+    public class PeriodoPagos
     { 
         [Column("idPeriodoPago")]
         [Key]
@@ -19,5 +19,6 @@ namespace Emplaniapp.Abstracciones.ModelosAD
         public DateTime fechaAprobado { get; set; }
         public string idUsuario { get; set; }
         public string registroPeriodoPago { get; set; }
+        public DateTime? fechaCreacion { get; set; }
     }
 }
