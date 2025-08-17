@@ -19,7 +19,7 @@ namespace Emplaniapp.UI.Controllers
     {
         private readonly IObtenerEmpleadoPorIdLN _obtenerEmpleado;
         private readonly IObtenerLiqPorEmpleadoIdLN _obtenerLiqPorEmpleado;
-        private readonly IMostrarCalculosPreviosLiqLN _calculosPrevios;
+        private readonly IMostrarCalculosLiqLN _calculosPrevios;
         private readonly IGuardarLiquidacionLN _guardarLiquidacion;
         private readonly IEditarLiquidacionLN _editarLiq;
 
@@ -27,7 +27,7 @@ namespace Emplaniapp.UI.Controllers
         {
             _obtenerEmpleado = new ObtenerEmpleadoPorIdLN();
             _obtenerLiqPorEmpleado = new ObtenerLiqPorEmpleadoIdLN();
-            _calculosPrevios = new MostrarCalculosPreviosLiqLN();
+            _calculosPrevios = new MostrarCalculosLiqLN();
             _guardarLiquidacion = new GuardarLiquidacionLN();
             _editarLiq = new EditarLiquidacionLN();
         }
@@ -43,53 +43,50 @@ namespace Emplaniapp.UI.Controllers
             if (emp == null) return HttpNotFound();
 
             ViewBag.Seccion = seccion;
-            ViewBag.MuestraLiq = true;
-            // hacer un obtener liquidacion para que, si es nulo, entonces presente el mostrar:                
-
+                         
+            // Se verifica si existe ya la liquidación
             var liqExiste = _obtenerLiqPorEmpleado.ObtenerPorEmpleadoID(emp.idEmpleado);
             if (liqExiste != null)
             {
-                if (liqExiste.idEstado == 1) { ViewBag.MuestraLiq = false; }
                 return View(Tuple.Create(emp, liqExiste));
             }
             else
             {
+                // Se crea desde cero, pero no se guarda en BD
                 var liq = _calculosPrevios.MostrarLiquidacionParcial(emp);
-
-
                 return View(Tuple.Create(emp, liq));
             }
         }
 
 
-        public ActionResult AgregarDatos(int id)
+        // Agregar ------------------------------------------------------------------------------------------------------------
+        public ActionResult AgregarDatos(int id) //  Se crea la vista
         {
             var motivos = new List<SelectListItem>
-                {
-                    new SelectListItem { Text = "Despido Injustificado", Value = "Despido Injustificado" },
-                    new SelectListItem { Text = "Despido Justificado", Value = "Despido Justificado" },
-                    new SelectListItem { Text = "Renuncia", Value = "Renuncia" },
-                    new SelectListItem { Text = "Renuncia por razones de empleador", Value = "Renuncia por razones de empleador" },
-                    new SelectListItem { Text = "Pensión o muerte", Value = "Pensión o muerte" }
-                };
+            {
+                new SelectListItem { Text = "Despido Injustificado", Value = "Despido Injustificado" },
+                new SelectListItem { Text = "Despido Justificado", Value = "Despido Justificado" },
+                new SelectListItem { Text = "Renuncia", Value = "Renuncia" },
+                new SelectListItem { Text = "Renuncia por razones de empleador", Value = "Renuncia por razones de empleador" },
+                new SelectListItem { Text = "Pensión o muerte", Value = "Pensión o muerte" }
+            };
             ViewBag.MotivosLiq = motivos;
             var emp = _obtenerEmpleado.ObtenerEmpleadoPorId(id);
-            LiquidacionDto liq = _calculosPrevios.MostrarLiquidacionParcial(emp);
+            LiquidacionDto liq = _calculosPrevios.MostrarLiquidacionParcial(emp);  // liquidación previa fuera de bd
             return View(liq);
         }
         [HttpPost]
-        public async Task<ActionResult> AgregarDatos(LiquidacionDto liq)
+        public async Task<ActionResult> AgregarDatos(LiquidacionDto liq) // Se agregan los datos
         {
-            var emp = _obtenerEmpleado.ObtenerEmpleadoPorId(liq.idEmpleado);
-            LiquidacionDto liquidacion = _calculosPrevios.MostrarLiquidacionTotal
-                (emp, liq.fechaLiquidacion, liq.motivoLiquidacion);
-            await _guardarLiquidacion.Guardar(liquidacion);
-            return RedirectToAction("Detalles", "Liquidaciones",
+            LiquidacionDto liquidacion = _calculosPrevios.MostrarLiquidacionTotal(1,liq); // Se genera primer cálculo
+            await _guardarLiquidacion.Guardar(liquidacion);                               // y se guarda en base de datos
+            return RedirectToAction("Detalles", "Liquidaciones",                          // Se redirige a la página principal
                 new { id = liq.idEmpleado, seccion = "Liquidacion" });
         }
 
 
-        public ActionResult EditDatos(int id)
+        // Editar -------------------------------------------------------------------------------------------------------------
+        public ActionResult EditDatos(int id) // Vista con 
         {
             var motivos = new List<SelectListItem>
                 {
@@ -100,24 +97,23 @@ namespace Emplaniapp.UI.Controllers
                     new SelectListItem { Text = "Pensión o muerte", Value = "Pensión o muerte" }
                 };
             ViewBag.MotivosLiq = motivos;
-            LiquidacionDto liq = _obtenerLiqPorEmpleado.ObtenerPorEmpleadoID(id);
+            LiquidacionDto liq = _obtenerLiqPorEmpleado.ObtenerPorEmpleadoID(id);           // liquidación guardada en bd
             return View(liq);
         }
         [HttpPost]
-        public ActionResult EditDatos(LiquidacionDto liq)
+        public ActionResult EditDatos(LiquidacionDto liq)                                   // Se edita en base de datos
         {
-            var emp = _obtenerEmpleado.ObtenerEmpleadoPorId(liq.idEmpleado);
-            _editarLiq.Editar(emp, liq);
+            LiquidacionDto liquid = _calculosPrevios.MostrarLiquidacionTotal(2, liq);       // Obtengo la liquidación alterada
+            _editarLiq.Editar(liquid);                                                      // Guardo el cambio en BD
             return RedirectToAction("Detalles", "Liquidaciones",
-                new { id = liq.idEmpleado, seccion = "Liquidacion" });
+                new { id = liquid.idEmpleado, seccion = "Liquidacion" });
         }
 
 
         [HttpPost]
         public ActionResult GuardarDatos(LiquidacionDto liq)
         {
-            var emp = _obtenerEmpleado.ObtenerEmpleadoPorId(liq.idEmpleado);
-            _editarLiq.EditarFinal(emp, liq);
+            _editarLiq.EditarFinal(liq);
             return RedirectToAction("Detalles", "Liquidaciones",
                 new { id = liq.idEmpleado, seccion = "Liquidacion" });
         }

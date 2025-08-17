@@ -316,7 +316,7 @@ CREATE TABLE [dbo].[Liquidaciones](
 	[pagoAguinaldoProp] [decimal](18, 2) NULL,
 	[pagoCesantia] [decimal](18, 2) NULL,
 	[remuPendientes] [decimal](18, 2) NULL,
-	[deducPendientes] [decimal](18, 2) NULL,
+	[pagoVacacionesNG] [decimal](18, 2) NULL,
 PRIMARY KEY CLUSTERED ([idLiquidacion] ASC)
 ) ON [PRIMARY]
 GO
@@ -337,11 +337,12 @@ GO
 
 CREATE TABLE [dbo].[PeriodoPago](
 	[idPeriodoPago] [int] IDENTITY(1,1) NOT NULL,
+	[fechaCreacion] [date] NOT NULL,
 	[PeriodoPago] [varchar](255) NOT NULL,
 	[aprobacion] [bit] NOT NULL,
 	[fechaAprobado] [date] NULL,
-	[idUsuario] [nvarchar](128) NOT NULL,
-	[registroPeriodoPago] [nvarchar](max) NOT NULL,
+	[idUsuario] [nvarchar](128) NULL,
+	[registroPeriodoPago] [nvarchar](max) NULL,
 PRIMARY KEY CLUSTERED ([idPeriodoPago] ASC)
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
@@ -352,8 +353,8 @@ CREATE TABLE [dbo].[PagoQuincenal](
 	[fechaFin] [date] NOT NULL,
 	[idPeriodoPago] [int] NOT NULL,
 	[idEmpleado] [int] NOT NULL,
-	[idRemuneracion] [int] NOT NULL,
-	[idRetencion] [int] NOT NULL,
+	[idRemuneracion] [int] NULL,
+	[idRetencion] [int] NULL,
 	[salarioNeto] [decimal](12, 2) NOT NULL,
 	[idLiquidacion] [int] NULL,
 	[total] [decimal](12, 2) NOT NULL,
@@ -754,9 +755,8 @@ GO
 -- =====================================================
 SET IDENTITY_INSERT [dbo].[TipoRemuneracion] ON 
 INSERT [dbo].[TipoRemuneracion] ([idTipoRemuneracion], [nombreTipoRemuneracion], [porcentajeRemuneracion], [idEstado]) VALUES 
-(1, N'Salario Base', 100, 1), (2, N'Horas Extra', 50, 1), (3, N'Día Feriado', 100, 1), (4, N'Incapacidad por Enfermedad', 60, 1), 
-(5, N'Incapacidad por Maternidad', 100, 1), (6, N'Vacaciones', 100, 1), (7, N'Pago Quincenal', 100, 1), (8, N'Comisiones', 100, 1), 
-(9, N'Aguinaldo', 100, 1), (10, N'Bono Productividad', 100, 1)
+(1, N'Horas Extra', 50, 1), (2, N'Día Feriado', 100, 1), (3, N'Incapacidad por Enfermedad', 60, 1), 
+(4, N'Incapacidad por Maternidad', 100, 1), (5, N'Vacaciones', 100, 1), (6, N'Pago Quincenal', 100, 1)
 SET IDENTITY_INSERT [dbo].[TipoRemuneracion] OFF
 GO
 
@@ -1488,3 +1488,236 @@ PRINT ''
 PRINT '🎊 ¡SISTEMA DE HISTORIAL 100% FUNCIONAL Y LISTO!'
 
 GO
+
+
+-- PROCEDIMIENTO PARA GENERAR PAGOS DE MANERA AUTOMÁTICA
+
+-- =====================================================
+-- 1. PROCEDIMIENTO ALMACENADO: GENERAR PERÍODO PAGO AUTOMÁTICO
+-- =====================================================
+
+CREATE PROCEDURE GenerarPeriodoPagoAutomatico
+    @fechaCreacion DATE = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Si no se pasa fecha, usar fecha actual
+    IF @fechaCreacion IS NULL
+        SET @fechaCreacion = CAST(GETDATE() AS DATE);
+
+    DECLARE @anio INT = YEAR(@fechaCreacion);
+    DECLARE @mes INT = MONTH(@fechaCreacion);
+    DECLARE @dia INT = DAY(@fechaCreacion);
+    DECLARE @fechaInicio DATE;
+    DECLARE @fechaFin DATE;
+    DECLARE @nombrePeriodo VARCHAR(255);
+
+    -- Determinar quincena
+    IF @dia BETWEEN 1 AND 15
+    BEGIN
+        SET @fechaInicio = DATEFROMPARTS(@anio, @mes, 1);
+        SET @fechaFin = DATEFROMPARTS(@anio, @mes, 15);
+        SET @nombrePeriodo = CONCAT('Periodo del ', FORMAT(@fechaInicio, 'dd/MM/yyyy'), ' al ', FORMAT(@fechaFin, 'dd/MM/yyyy'));
+    END
+    ELSE
+    BEGIN
+        SET @fechaInicio = DATEFROMPARTS(@anio, @mes, 16);
+        SET @fechaFin = EOMONTH(@fechaCreacion);
+        SET @nombrePeriodo = CONCAT('Periodo del ', FORMAT(@fechaInicio, 'dd/MM/yyyy'), ' al ', FORMAT(@fechaFin, 'dd/MM/yyyy'));
+    END
+
+    -- Verificar si ya existe un periodo para esa quincena
+    IF NOT EXISTS (
+        SELECT 1
+        FROM PeriodoPago
+        WHERE fechaCreacion BETWEEN @fechaInicio AND @fechaFin
+    )
+    BEGIN
+        INSERT INTO PeriodoPago (
+            PeriodoPago,
+            fechaCreacion,
+            aprobacion,
+            fechaAprobado,
+            idUsuario,
+            registroPeriodoPago
+        )
+        VALUES (
+            @nombrePeriodo,
+            @fechaInicio,
+            0,
+            NULL,
+            NULL,
+            NULL
+        );
+    END
+    ELSE
+    BEGIN
+        PRINT 'Ya existe un periodo para esta quincena.';
+    END
+END;
+
+
+-- =====================================================
+-- 2. TRIGGER: AGREGAR PAGO QUINCENAL
+-- =====================================================
+
+CREATE TRIGGER trg_AgregarPagoQuincenal
+ON Remuneracion
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Procesar cada empleado y fecha distinta de inserted con fechaRemuneracion no NULL
+    ;WITH InsertedValid AS (
+        SELECT DISTINCT idEmpleado, fechaRemuneracion
+        FROM inserted
+        WHERE fechaRemuneracion IS NOT NULL
+    )
+    -- Para cada fila de InsertedValid, calcular y actualizar PagoQuincenal
+    SELECT 
+        iv.idEmpleado,
+        iv.fechaRemuneracion
+    INTO #Procesar
+    FROM InsertedValid iv;
+
+    DECLARE @idEmpleado INT, @fecha DATE;
+
+    WHILE EXISTS (SELECT 1 FROM #Procesar)
+    BEGIN
+        SELECT TOP 1 @idEmpleado = idEmpleado, @fecha = fechaRemuneracion FROM #Procesar;
+
+        -- Calcular quincena
+        DECLARE @dia INT = DAY(@fecha), @anio INT = YEAR(@fecha), @mes INT = MONTH(@fecha);
+        DECLARE @fechaInicio DATE, @fechaFin DATE;
+
+        IF @dia <= 15
+        BEGIN
+            SET @fechaInicio = DATEFROMPARTS(@anio, @mes, 1);
+            SET @fechaFin = DATEFROMPARTS(@anio, @mes, 15);
+        END
+        ELSE
+        BEGIN
+            SET @fechaInicio = DATEFROMPARTS(@anio, @mes, 16);
+            SET @fechaFin = EOMONTH(@fecha);
+        END
+
+        -- Obtener idPeriodoPago o crearlo si no existe
+        DECLARE @idPeriodoPago INT;
+
+        SELECT @idPeriodoPago = idPeriodoPago
+        FROM PeriodoPago
+        WHERE fechaCreacion BETWEEN @fechaInicio AND @fechaFin;
+
+        IF @idPeriodoPago IS NULL
+        BEGIN
+            EXEC GenerarPeriodoPagoAutomatico @fechaInicio;
+
+            SELECT @idPeriodoPago = idPeriodoPago
+            FROM PeriodoPago
+            WHERE fechaCreacion = @fechaInicio;
+        END
+
+        -- Sumar remuneraciones quincena para este empleado y fecha
+        DECLARE @totalRemuneracion DECIMAL(12,2) = (
+            SELECT ISNULL(SUM(pagoQuincenal), 0)
+            FROM Remuneracion
+            WHERE idEmpleado = @idEmpleado
+              AND fechaRemuneracion BETWEEN @fechaInicio AND @fechaFin
+        );
+
+        -- Sumar retenciones
+        DECLARE @totalRetencion DECIMAL(12,2) = (
+            SELECT ISNULL(SUM(rebajo), 0)
+            FROM Retenciones
+            WHERE idEmpleado = @idEmpleado
+              AND fechaRetencion BETWEEN @fechaInicio AND @fechaFin
+        );
+
+        -- Obtener liquidación
+        DECLARE @idLiquidacion INT = NULL;
+        DECLARE @montoLiquidacion DECIMAL(12,2) = 0;
+
+        SELECT TOP 1 
+            @idLiquidacion = idLiquidacion, 
+            @montoLiquidacion = costoLiquidacion
+        FROM Liquidaciones
+        WHERE idEmpleado = @idEmpleado 
+          AND fechaLiquidacion BETWEEN @fechaInicio AND @fechaFin;
+
+        DECLARE @salarioNeto DECIMAL(12,2) = @totalRemuneracion - @totalRetencion;
+        DECLARE @totalFinal DECIMAL(12,2) = @salarioNeto + ISNULL(@montoLiquidacion, 0);
+
+        -- Retención más reciente
+        DECLARE @idRetencion INT = (
+            SELECT TOP 1 idRetencion
+            FROM Retenciones
+            WHERE idEmpleado = @idEmpleado
+              AND fechaRetencion BETWEEN @fechaInicio AND @fechaFin
+            ORDER BY fechaRetencion DESC
+        );
+
+        -- Verificar si existe pago quincenal
+        IF EXISTS (
+            SELECT 1 FROM PagoQuincenal
+            WHERE idEmpleado = @idEmpleado 
+              AND fechaInicio = @fechaInicio 
+              AND fechaFin = @fechaFin
+        )
+        BEGIN
+            -- Actualizar
+            UPDATE PagoQuincenal
+            SET salarioNeto = @salarioNeto,
+                total = @totalFinal,
+                idRemuneracion = (
+                    SELECT TOP 1 idRemuneracion
+                    FROM Remuneracion
+                    WHERE idEmpleado = @idEmpleado
+                      AND fechaRemuneracion BETWEEN @fechaInicio AND @fechaFin
+                    ORDER BY fechaRemuneracion DESC
+                ),
+                idRetencion = @idRetencion,
+                idLiquidacion = @idLiquidacion,
+                aprobacion = 0,
+                idUsuario = NULL,
+                idPeriodoPago = @idPeriodoPago
+            WHERE idEmpleado = @idEmpleado 
+              AND fechaInicio = @fechaInicio 
+              AND fechaFin = @fechaFin;
+        END
+        ELSE
+        BEGIN
+            -- Insertar
+            INSERT INTO PagoQuincenal (
+                fechaInicio, fechaFin,
+                idEmpleado, idRemuneracion, idRetencion,
+                salarioNeto, idLiquidacion, total,
+                aprobacion, idUsuario, idPeriodoPago
+            )
+            VALUES (
+                @fechaInicio, @fechaFin,
+                @idEmpleado,
+                (
+                    SELECT TOP 1 idRemuneracion
+                    FROM Remuneracion
+                    WHERE idEmpleado = @idEmpleado
+                      AND fechaRemuneracion BETWEEN @fechaInicio AND @fechaFin
+                    ORDER BY fechaRemuneracion DESC
+                ),
+                @idRetencion,
+                @salarioNeto, @idLiquidacion, @totalFinal,
+                0, NULL, @idPeriodoPago
+            );
+        END
+
+        -- Eliminar la fila procesada para continuar
+        DELETE TOP (1) FROM #Procesar WHERE idEmpleado = @idEmpleado AND fechaRemuneracion = @fecha;
+    END
+
+    DROP TABLE IF EXISTS #Procesar;
+END;
+
+
+--------------------------------------------------------------------------------------------------------------------
+

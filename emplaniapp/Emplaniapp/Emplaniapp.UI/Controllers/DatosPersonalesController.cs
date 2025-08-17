@@ -6,7 +6,9 @@ using System.Web;
 using System.Web.Mvc;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.Abstracciones.InterfacesParaUI;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Historial;
 using Emplaniapp.LogicaDeNegocio;
+using Emplaniapp.LogicaDeNegocio.Historial;
 using Emplaniapp.UI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -25,6 +27,7 @@ namespace Emplaniapp.UI.Controllers
     {
         private IDatosPersonalesLN _datosPersonalesLN;
         private IObservacionLN _observacionLN;
+        private IRegistrarEventoHistorialLN _registrarEventoHistorialLN;
         private ApplicationUserManager _userManager;
         private ApplicationRoleManager _roleManager;
 
@@ -33,6 +36,7 @@ namespace Emplaniapp.UI.Controllers
         {
             _datosPersonalesLN = new DatosPersonalesLN();
             _observacionLN = new ObservacionLN();
+            _registrarEventoHistorialLN = new RegistrarEventoHistorialLN();
         }
 
         // Constructor para inyección de dependencias (usado por Identity/OWIN)
@@ -42,6 +46,7 @@ namespace Emplaniapp.UI.Controllers
             RoleManager = roleManager;
             _datosPersonalesLN = new DatosPersonalesLN();
             _observacionLN = new ObservacionLN();
+            _registrarEventoHistorialLN = new RegistrarEventoHistorialLN();
         }
 
         public ApplicationUserManager UserManager
@@ -86,6 +91,9 @@ namespace Emplaniapp.UI.Controllers
             {
                 return HttpNotFound();
             }
+
+            // La sección Historial se maneja directamente en la vista
+            // No es necesario redirigir
 
             ViewBag.Seccion = seccion;
             return View(empleado);
@@ -133,12 +141,132 @@ namespace Emplaniapp.UI.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    // Obtener datos anteriores para comparar
+                    var empleadoAnterior = _datosPersonalesLN.ObtenerEmpleadoPorId(model.idEmpleado);
+                    
                     System.Diagnostics.Debug.WriteLine($"Llamando a _datosPersonalesLN.ActualizarDatosPersonales");
                     bool resultado = _datosPersonalesLN.ActualizarDatosPersonales(model);
                     System.Diagnostics.Debug.WriteLine($"Resultado de ActualizarDatosPersonales: {resultado}");
                     
                     if (resultado)
                     {
+                        // Registrar evento en el historial
+                        try
+                        {
+                            System.Diagnostics.Debug.WriteLine($"🔍 === COMPARANDO CAMBIOS ===");
+                            System.Diagnostics.Debug.WriteLine($"🔍 Empleado ID: {model.idEmpleado}");
+                            System.Diagnostics.Debug.WriteLine($"🔍 Nombre anterior: '{empleadoAnterior.nombre}' vs nuevo: '{model.nombre}'");
+                            System.Diagnostics.Debug.WriteLine($"🔍 Primer apellido anterior: '{empleadoAnterior.primerApellido}' vs nuevo: '{model.primerApellido}'");
+                            System.Diagnostics.Debug.WriteLine($"🔍 Segundo apellido anterior: '{empleadoAnterior.segundoApellido}' vs nuevo: '{model.segundoApellido}'");
+                            
+                            var cambios = new List<string>();
+                            
+                            // Comparar nombre
+                            if (empleadoAnterior.nombre != model.nombre)
+                            {
+                                cambios.Add($"Nombre: {empleadoAnterior.nombre} → {model.nombre}");
+                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en NOMBRE: '{empleadoAnterior.nombre}' → '{model.nombre}'");
+                            }
+                            
+                            // Comparar primer apellido
+                            if (empleadoAnterior.primerApellido != model.primerApellido)
+                            {
+                                cambios.Add($"Primer Apellido: {empleadoAnterior.primerApellido} → {model.primerApellido}");
+                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en PRIMER APELLIDO: '{empleadoAnterior.primerApellido}' → '{model.primerApellido}'");
+                            }
+                            
+                            // Comparar segundo apellido
+                            if (empleadoAnterior.segundoApellido != model.segundoApellido)
+                            {
+                                cambios.Add($"Segundo Apellido: {empleadoAnterior.segundoApellido} → {model.segundoApellido}");
+                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en SEGUNDO APELLIDO: '{empleadoAnterior.segundoApellido}' → '{model.segundoApellido}'");
+                            }
+                            
+                            // Comparar fecha de nacimiento
+                            if (empleadoAnterior.fechaNacimiento != model.fechaNacimiento)
+                            {
+                                cambios.Add($"Fecha Nacimiento: {empleadoAnterior.fechaNacimiento:dd/MM/yyyy} → {model.fechaNacimiento:dd/MM/yyyy}");
+                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en FECHA NACIMIENTO: '{empleadoAnterior.fechaNacimiento:dd/MM/yyyy}' → '{model.fechaNacimiento:dd/MM/yyyy}'");
+                            }
+                            
+                            // Comparar dirección detallada
+                            if (empleadoAnterior.direccionDetallada != model.direccionDetallada)
+                            {
+                                cambios.Add($"Dirección Detallada: {empleadoAnterior.direccionDetallada} → {model.direccionDetallada}");
+                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en DIRECCIÓN: '{empleadoAnterior.direccionDetallada}' → '{model.direccionDetallada}'");
+                            }
+                            
+                            // Comparar provincia
+                            if (empleadoAnterior.nombreProvincia != model.nombreProvincia)
+                            {
+                                cambios.Add($"Provincia: {empleadoAnterior.nombreProvincia} → {model.nombreProvincia}");
+                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en PROVINCIA: '{empleadoAnterior.nombreProvincia}' → '{model.nombreProvincia}'");
+                            }
+                            
+                            // Comparar cantón
+                            if (empleadoAnterior.nombreCanton != model.nombreCanton)
+                            {
+                                cambios.Add($"Cantón: {empleadoAnterior.nombreCanton} → {model.nombreCanton}");
+                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en CANTÓN: '{empleadoAnterior.nombreCanton}' → '{model.nombreCanton}'");
+                            }
+                            
+                            // Comparar distrito
+                            if (empleadoAnterior.nombreDistrito != model.nombreDistrito)
+                            {
+                                cambios.Add($"Distrito: {empleadoAnterior.nombreDistrito} → {model.nombreDistrito}");
+                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en DISTRITO: '{empleadoAnterior.nombreDistrito}' → '{model.nombreDistrito}'");
+                            }
+                            
+                            // Comparar teléfono
+                            if (empleadoAnterior.numeroTelefonico != model.numeroTelefonico)
+                            {
+                                cambios.Add($"Teléfono: {empleadoAnterior.numeroTelefonico} → {model.numeroTelefonico}");
+                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en TELÉFONO: '{empleadoAnterior.numeroTelefonico}' → '{model.numeroTelefonico}'");
+                            }
+                            
+                            // Comparar correo
+                            if (empleadoAnterior.correoInstitucional != model.correoInstitucional)
+                            {
+                                cambios.Add($"Correo: {empleadoAnterior.correoInstitucional} → {model.correoInstitucional}");
+                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en CORREO: '{empleadoAnterior.correoInstitucional}' → '{model.correoInstitucional}'");
+                            }
+                            
+                            System.Diagnostics.Debug.WriteLine($"🔍 Total de cambios detectados: {cambios.Count}");
+                            
+                                                         if (cambios.Any())
+                             {
+                                 var descripcionCambios = string.Join("; ", cambios);
+                                 
+                                 System.Diagnostics.Debug.WriteLine($"🎯 Llamando a RegistrarEvento con:");
+                                 System.Diagnostics.Debug.WriteLine($"   - ID Empleado: {model.idEmpleado}");
+                                 System.Diagnostics.Debug.WriteLine($"   - Nombre Evento: Modificación de Datos Personales");
+                                 System.Diagnostics.Debug.WriteLine($"   - Descripción: Se actualizaron los datos personales del empleado");
+                                 System.Diagnostics.Debug.WriteLine($"   - Detalles: {descripcionCambios}");
+                                 System.Diagnostics.Debug.WriteLine($"   - Usuario: {User.Identity.GetUserId()}");
+                                 System.Diagnostics.Debug.WriteLine($"   - IP: {Request.UserHostAddress}");
+                                 
+                                 _registrarEventoHistorialLN.RegistrarEvento(
+                                     model.idEmpleado,
+                                     "Modificación de Datos Personales",
+                                     "Se actualizaron los datos personales del empleado",
+                                     descripcionCambios,
+                                     null,
+                                     null,
+                                     User.Identity.GetUserId(),
+                                     Request.UserHostAddress
+                                 );
+                                
+                                System.Diagnostics.Debug.WriteLine($"✅ Evento registrado en historial: {descripcionCambios}");
+                                System.Diagnostics.Debug.WriteLine($"✅ Usuario: {User.Identity.GetUserId()}");
+                                System.Diagnostics.Debug.WriteLine($"✅ IP: {Request.UserHostAddress}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // Log del error pero no fallar la operación principal
+                            System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento en historial: {ex.Message}");
+                        }
+
                         TempData["Mensaje"] = "Datos personales actualizados con éxito.";
                         TempData["TipoMensaje"] = "success";
                         return RedirectToAction("Detalles", new { id = model.idEmpleado });
@@ -200,12 +328,61 @@ namespace Emplaniapp.UI.Controllers
                     model.FechaIngreso, 
                     model.FechaSalida);
 
-                if (resultado)
-                {
-                    TempData["Mensaje"] = "Datos laborales actualizados correctamente";
-                    TempData["TipoMensaje"] = "success";
-                    return RedirectToAction("Detalles", new { id = model.IdEmpleado });
-                }
+                                 if (resultado)
+                 {
+                     // Registrar evento en el historial
+                     try
+                     {
+                         var empleadoAnterior = _datosPersonalesLN.ObtenerEmpleadoPorId(model.IdEmpleado);
+                         var cambios = new List<string>();
+                         
+                         // Comparar cargo
+                         if (empleadoAnterior.idCargo != model.IdCargo)
+                         {
+                             var cargoAnterior = _datosPersonalesLN.ObtenerCargos().FirstOrDefault(c => c.idCargo == empleadoAnterior.idCargo);
+                             var cargoNuevo = _datosPersonalesLN.ObtenerCargos().FirstOrDefault(c => c.idCargo == model.IdCargo);
+                             
+                             cambios.Add($"Cargo: {cargoAnterior?.nombreCargo ?? "N/A"} → {cargoNuevo?.nombreCargo ?? "N/A"}");
+                         }
+                         
+                         // Comparar fechas
+                         if (empleadoAnterior.fechaContratacion != model.FechaIngreso)
+                         {
+                             cambios.Add($"Fecha Ingreso: {empleadoAnterior.fechaContratacion:dd/MM/yyyy} → {model.FechaIngreso:dd/MM/yyyy}");
+                         }
+                         
+                         if (empleadoAnterior.fechaSalida != model.FechaSalida)
+                         {
+                             cambios.Add($"Fecha Salida: {empleadoAnterior.fechaSalida?.ToString("dd/MM/yyyy") ?? "N/A"} → {model.FechaSalida?.ToString("dd/MM/yyyy") ?? "N/A"}");
+                         }
+                         
+                         if (cambios.Any())
+                         {
+                             var descripcionCambios = string.Join("; ", cambios);
+                             
+                             _registrarEventoHistorialLN.RegistrarEvento(
+                                 model.IdEmpleado,
+                                 "Cambio de Datos Laborales",
+                                 "Se modificaron los datos laborales del empleado",
+                                 descripcionCambios,
+                                 null,
+                                 null,
+                                 User.Identity.GetUserId(),
+                                 Request.UserHostAddress
+                             );
+                             
+                             System.Diagnostics.Debug.WriteLine($"✅ Evento laboral registrado en historial: {descripcionCambios}");
+                         }
+                     }
+                     catch (Exception ex)
+                     {
+                         System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento laboral en historial: {ex.Message}");
+                     }
+                     
+                     TempData["Mensaje"] = "Datos laborales actualizados correctamente";
+                     TempData["TipoMensaje"] = "success";
+                     return RedirectToAction("Detalles", new { id = model.IdEmpleado });
+                 }
                 else
                 {
                     ModelState.AddModelError("", "Error al guardar los cambios");
@@ -309,13 +486,71 @@ namespace Emplaniapp.UI.Controllers
 
                     System.Diagnostics.Debug.WriteLine($"Resultado de ActualizarDatosFinancieros: {resultado}");
 
-                    if (resultado)
-                    {
-                        TempData["Mensaje"] = "Datos financieros actualizados correctamente";
-                        TempData["TipoMensaje"] = "success";
-                        System.Diagnostics.Debug.WriteLine("=== ACTUALIZACIÓN EXITOSA ===");
-                        return RedirectToAction("Detalles", new { id = model.IdEmpleado });
-                    }
+                                         if (resultado)
+                     {
+                         // Registrar evento en el historial
+                         try
+                         {
+                             var cambios = new List<string>();
+                             
+                             // Comparar salario
+                             if (empleadoOriginal.salarioAprobado != model.SalarioAprobado)
+                             {
+                                 cambios.Add($"Salario: {empleadoOriginal.salarioAprobado:C} → {model.SalarioAprobado:C}");
+                             }
+                             
+                             // Comparar periodicidad
+                             if (empleadoOriginal.periocidadPago != model.PeriocidadPago)
+                             {
+                                 cambios.Add($"Periodicidad: {empleadoOriginal.periocidadPago} → {model.PeriocidadPago}");
+                             }
+                             
+                             // Comparar moneda
+                             if (empleadoOriginal.idMoneda != model.IdTipoMoneda)
+                             {
+                                 cambios.Add($"Moneda: {empleadoOriginal.nombreMoneda} → {model.TipoMoneda}");
+                             }
+                             
+                             // Comparar IBAN
+                             if (empleadoOriginal.cuentaIBAN != model.CuentaIBAN)
+                             {
+                                 cambios.Add($"IBAN: {empleadoOriginal.cuentaIBAN} → {model.CuentaIBAN}");
+                             }
+                             
+                             // Comparar banco
+                             if (empleadoOriginal.idBanco != model.IdBanco)
+                             {
+                                 cambios.Add($"Banco: {empleadoOriginal.nombreBanco} → {model.Banco}");
+                             }
+                             
+                             if (cambios.Any())
+                             {
+                                 var descripcionCambios = string.Join("; ", cambios);
+                                 
+                                 _registrarEventoHistorialLN.RegistrarEvento(
+                                     model.IdEmpleado,
+                                     "Cambio de Datos Financieros",
+                                     "Se modificaron los datos financieros del empleado",
+                                     descripcionCambios,
+                                     null,
+                                     null,
+                                     User.Identity.GetUserId(),
+                                     Request.UserHostAddress
+                                 );
+                                 
+                                 System.Diagnostics.Debug.WriteLine($"✅ Evento financiero registrado en historial: {descripcionCambios}");
+                             }
+                         }
+                         catch (Exception ex)
+                         {
+                             System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento financiero en historial: {ex.Message}");
+                         }
+                         
+                         TempData["Mensaje"] = "Datos financieros actualizados correctamente";
+                         TempData["TipoMensaje"] = "success";
+                         System.Diagnostics.Debug.WriteLine("=== ACTUALIZACIÓN EXITOSA ===");
+                         return RedirectToAction("Detalles", new { id = model.IdEmpleado });
+                     }
                     else
                     {
                         ModelState.AddModelError("", "Error al guardar los cambios");
@@ -509,12 +744,33 @@ namespace Emplaniapp.UI.Controllers
                 model.IdUsuarioCreo = User.Identity.GetUserId();
                 model.FechaCreacion = DateTime.Now;
 
-                bool resultado = _observacionLN.GuardarObservacion(model);
+                                 bool resultado = _observacionLN.GuardarObservacion(model);
 
-                if (resultado)
-                {
-                    return Json(new { success = true });
-                }
+                 if (resultado)
+                 {
+                     // Registrar evento en el historial
+                     try
+                     {
+                                                   _registrarEventoHistorialLN.RegistrarEvento(
+                              model.IdEmpleado,
+                              "Agregar Observación",
+                              "Se agregó una nueva observación al empleado",
+                              $"Observación: {model.Descripcion}",
+                              null,
+                              null,
+                              User.Identity.GetUserId(),
+                              Request.UserHostAddress
+                          );
+                         
+                         System.Diagnostics.Debug.WriteLine($"✅ Evento de observación agregada registrado en historial");
+                     }
+                     catch (Exception ex)
+                     {
+                         System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento de observación en historial: {ex.Message}");
+                     }
+                     
+                     return Json(new { success = true });
+                 }
                 ModelState.AddModelError("", "Ocurrió un error al guardar la observación.");
             }
             return PartialView("_ObservacionForm", model);
@@ -542,12 +798,33 @@ namespace Emplaniapp.UI.Controllers
                 model.IdUsuarioEdito = User.Identity.GetUserId();
                 model.FechaEdicion = DateTime.Now;
 
-                bool resultado = _observacionLN.ActualizarObservacion(model);
+                                 bool resultado = _observacionLN.ActualizarObservacion(model);
 
-                if (resultado)
-                {
-                    return Json(new { success = true });
-                }
+                 if (resultado)
+                 {
+                     // Registrar evento en el historial
+                     try
+                     {
+                                                   _registrarEventoHistorialLN.RegistrarEvento(
+                              model.IdEmpleado,
+                              "Modificar Observación",
+                              "Se modificó una observación del empleado",
+                              $"Observación modificada: {model.Descripcion}",
+                              null,
+                              null,
+                              User.Identity.GetUserId(),
+                              Request.UserHostAddress
+                          );
+                         
+                         System.Diagnostics.Debug.WriteLine($"✅ Evento de observación modificada registrado en historial");
+                     }
+                     catch (Exception ex)
+                     {
+                         System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento de observación modificada en historial: {ex.Message}");
+                     }
+                     
+                     return Json(new { success = true });
+                 }
                 ModelState.AddModelError("", "Ocurrió un error al guardar los cambios.");
             }
             return PartialView("_ObservacionForm", model);
@@ -649,14 +926,35 @@ namespace Emplaniapp.UI.Controllers
                     return Json(new { success = false, message = "El usuario ya tiene este rol asignado." });
                 }
 
-                var result = await UserManager.AddToRoleAsync(user.Id, nombreRol);
-                if (result.Succeeded)
-                {
-                    // Invalidar la sesión del usuario afectado para forzar actualización de roles
-                    await InvalidateUserSessions(user.Id);
-                    
-                    return Json(new { success = true, message = $"Rol '{nombreRol}' asignado correctamente a {empleado.nombre} {empleado.primerApellido}.", requiresRefresh = true });
-                }
+                                 var result = await UserManager.AddToRoleAsync(user.Id, nombreRol);
+                 if (result.Succeeded)
+                 {
+                     // Registrar evento en el historial
+                     try
+                     {
+                         _registrarEventoHistorialLN.RegistrarEvento(
+                             idEmpleado,
+                             "Asignación de Rol",
+                             $"Se asignó el rol '{nombreRol}' al empleado",
+                             $"Rol asignado: {nombreRol}",
+                             null,
+                             nombreRol,
+                             User.Identity.GetUserId(),
+                             Request.UserHostAddress
+                         );
+                         
+                         System.Diagnostics.Debug.WriteLine($"✅ Evento de asignación de rol registrado en historial: {nombreRol}");
+                     }
+                     catch (Exception ex)
+                     {
+                         System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento de rol en historial: {ex.Message}");
+                     }
+                     
+                     // Invalidar la sesión del usuario afectado para forzar actualización de roles
+                     await InvalidateUserSessions(user.Id);
+                     
+                     return Json(new { success = true, message = $"Rol '{nombreRol}' asignado correctamente a {empleado.nombre} {empleado.primerApellido}.", requiresRefresh = true });
+                 }
                 else
                 {
                     return Json(new { success = false, message = "Error al asignar el rol: " + string.Join(", ", result.Errors) });
@@ -704,14 +1002,35 @@ namespace Emplaniapp.UI.Controllers
                     return Json(new { success = false, message = "El usuario no tiene este rol asignado." });
                 }
 
-                var result = await UserManager.RemoveFromRoleAsync(user.Id, nombreRol);
-                if (result.Succeeded)
-                {
-                    // Invalidar la sesión del usuario afectado para forzar actualización de roles
-                    await InvalidateUserSessions(user.Id);
-                    
-                    return Json(new { success = true, message = $"Rol '{nombreRol}' removido correctamente de {empleado.nombre} {empleado.primerApellido}.", requiresRefresh = true });
-                }
+                                 var result = await UserManager.RemoveFromRoleAsync(user.Id, nombreRol);
+                 if (result.Succeeded)
+                 {
+                     // Registrar evento en el historial
+                     try
+                     {
+                         _registrarEventoHistorialLN.RegistrarEvento(
+                             idEmpleado,
+                             "Remoción de Rol",
+                             $"Se removió el rol '{nombreRol}' del empleado",
+                             $"Rol removido: {nombreRol}",
+                             nombreRol,
+                             null,
+                             User.Identity.GetUserId(),
+                             Request.UserHostAddress
+                         );
+                         
+                         System.Diagnostics.Debug.WriteLine($"✅ Evento de remoción de rol registrado en historial: {nombreRol}");
+                     }
+                     catch (Exception ex)
+                     {
+                         System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento de rol en historial: {ex.Message}");
+                     }
+                     
+                     // Invalidar la sesión del usuario afectado para forzar actualización de roles
+                     await InvalidateUserSessions(user.Id);
+                     
+                     return Json(new { success = true, message = $"Rol '{nombreRol}' removido correctamente de {empleado.nombre} {empleado.primerApellido}.", requiresRefresh = true });
+                 }
                 else
                 {
                     return Json(new { success = false, message = "Error al remover el rol: " + string.Join(", ", result.Errors) });

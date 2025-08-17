@@ -47,6 +47,8 @@ namespace Emplaniapp.AccesoADatos
             modelBuilder.Entity<NumeroOcupacion>().ToTable("NumeroOcupacion");
             modelBuilder.Entity<TipoMoneda>().ToTable("TipoMoneda");
             modelBuilder.Entity<Banco>().ToTable("Bancos");
+            modelBuilder.Entity<TiposEventoHistorial>().ToTable("TiposEventoHistorial");
+            modelBuilder.Entity<HistorialEmpleado>().ToTable("HistorialEmpleado");
 
         }
 
@@ -71,6 +73,8 @@ namespace Emplaniapp.AccesoADatos
         public DbSet<NumeroOcupacion> NumeroOcupacion { get; set; }
         public DbSet<TipoMoneda> TipoMoneda { get; set; }
         public DbSet<Banco> Bancos { get; set; }
+        public DbSet<TiposEventoHistorial> TiposEventoHistorial { get; set; }
+        public DbSet<HistorialEmpleado> HistorialEmpleado { get; set; }
 
     }
 }

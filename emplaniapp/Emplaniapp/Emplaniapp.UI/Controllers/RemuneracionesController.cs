@@ -14,10 +14,13 @@ using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.EditarRemuneracio
 using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.EliminarRemuneracion;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.ObtenerRemuneracionPorId;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Remuneracion;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Historial;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.LogicaDeNegocio;
+using Microsoft.AspNet.Identity;
 using Emplaniapp.LogicaDeNegocio.Empleado.ObtenerEmpleadoPorId;
 using Emplaniapp.LogicaDeNegocio.Remuneraciones;
+using Emplaniapp.LogicaDeNegocio.Historial;
 using Emplaniapp.LogicaDeNegocio.Remuneraciones.CrearRemuneraciones;
 using Emplaniapp.LogicaDeNegocio.Remuneraciones.EditarRemuneracion;
 using Emplaniapp.LogicaDeNegocio.Remuneraciones.EliminarRemuneracion;
@@ -39,6 +42,7 @@ namespace Emplaniapp.UI.Controllers
         private IEliminarRemuneracionLN _eliminarRemuneracionLN;
         private IEditarRemuneracionLN _editarRemuneracionLN;
         private IObtenerRemuneracionPorIdLN _obtenerRemuneracionPorIdLN;
+        private IRegistrarEventoHistorialLN _registrarEventoHistorialLN;
         private ApplicationUserManager _userManager;
 
         // Constructores ------------------------------------------------------------------------------
@@ -52,6 +56,7 @@ namespace Emplaniapp.UI.Controllers
             _eliminarRemuneracionLN = new EliminarRemuneracionLN();
             _editarRemuneracionLN = new EditarRemuneracionLN();
             _obtenerRemuneracionPorIdLN = new ObtenerRemuneracionPorIdLN();
+            _registrarEventoHistorialLN = new RegistrarEventoHistorialLN();
         }
 
 
@@ -64,6 +69,10 @@ namespace Emplaniapp.UI.Controllers
             _crearRemuneracionesLN = new CrearRemuneracionesLN();
             _listarTipoRemuneracionLN = new ListarTipoRemuneracionLN();
             _obtenerEmpleadoPorIdLN = new ObtenerEmpleadoPorIdLN();
+            _eliminarRemuneracionLN = new EliminarRemuneracionLN();
+            _editarRemuneracionLN = new EditarRemuneracionLN();
+            _obtenerRemuneracionPorIdLN = new ObtenerRemuneracionPorIdLN();
+            _registrarEventoHistorialLN = new RegistrarEventoHistorialLN();
             UserManager = userManager;
         }
 
@@ -152,6 +161,26 @@ namespace Emplaniapp.UI.Controllers
 
                     if (resultado > 0)
                     {
+                        // Registrar evento en el historial
+                        try
+                        {
+                            var empleado = _obtenerEmpleadoPorIdLN.ObtenerEmpleadoPorId(remuneracionDto.idEmpleado);
+                            var tipoRemuneracion = _listarTipoRemuneracionLN.ObtenerTipoRemuneracion().FirstOrDefault(t => t.Id == remuneracionDto.idTipoRemuneracion);
+                            
+                            _registrarEventoHistorialLN.RegistrarRemuneracion(
+                                remuneracionDto.idEmpleado,
+                                remuneracionDto.pagoQuincenal ?? 0,
+                                tipoRemuneracion?.nombreTipoRemuneracion ?? "Desconocido",
+                                User.Identity.GetUserId(),
+                                Request.UserHostAddress
+                            );
+                        }
+                        catch (Exception ex)
+                        {
+                            // Log del error pero no fallar la operación principal
+                            System.Diagnostics.Debug.WriteLine($"Error al registrar evento en historial: {ex.Message}");
+                        }
+
                         TempData["mensaje"] = "Remuneración creada exitosamente.";
                         return RedirectToAction("DetallesRemu", new { id = remuneracionDto.idEmpleado });
                     }
@@ -197,6 +226,28 @@ namespace Emplaniapp.UI.Controllers
              int resultado = _editarRemuneracionLN.Actualizar(remuneracion);
             if (resultado > 0)
             {
+                // Registrar evento en el historial
+                try
+                {
+                    var tipoRemuneracion = _listarTipoRemuneracionLN.ObtenerTipoRemuneracion().FirstOrDefault(t => t.Id == remuneracion.idTipoRemuneracion);
+                    
+                    _registrarEventoHistorialLN.RegistrarEvento(
+                        remuneracion.idEmpleado,
+                        "Remuneración Modificada",
+                        $"Se modificó la remuneración de {tipoRemuneracion?.nombreTipoRemuneracion ?? "Tipo desconocido"}",
+                        $"Monto: {remuneracion.pagoQuincenal:C}",
+                        null,
+                        remuneracion.pagoQuincenal?.ToString("C") ?? "0.00",
+                        User.Identity.GetUserId(),
+                        Request.UserHostAddress
+                    );
+                }
+                catch (Exception ex)
+                {
+                    // Log del error pero no fallar la operación principal
+                    System.Diagnostics.Debug.WriteLine($"Error al registrar evento en historial: {ex.Message}");
+                }
+
                 TempData["mensaje"] = "Remuneración actualizada correctamente.";
             }
             else
@@ -228,6 +279,26 @@ namespace Emplaniapp.UI.Controllers
 
                 if (resultado)
                 {
+                    // Registrar evento en el historial
+                    try
+                    {
+                        _registrarEventoHistorialLN.RegistrarEvento(
+                            idEmpleado,
+                            "Remuneración Eliminada",
+                            "Se eliminó una remuneración del empleado",
+                            $"ID Remuneración: {id}",
+                            null,
+                            "Eliminada",
+                            User.Identity.GetUserId(),
+                            Request.UserHostAddress
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log del error pero no fallar la operación principal
+                        System.Diagnostics.Debug.WriteLine($"Error al registrar evento en historial: {ex.Message}");
+                    }
+
                     TempData["Mensaje"] = "Remuneración eliminada correctamente";
                     TempData["TipoMensaje"] = "success";
                 }
