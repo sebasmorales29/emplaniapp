@@ -18,10 +18,10 @@ namespace Emplaniapp.AccesoADatos.Liquidaciones
             contexto = new Contexto();
         }
 
-        public int Editar(Liquidacion liqEdit)
+        public int Editar(Liquidacion liquid)
         {
-            Liquidacion liquid = contexto.Liquidaciones.
-                Where(l => l.idEmpleado == liqEdit.idEmpleado).
+            Liquidacion liqEdit = contexto.Liquidaciones.
+                Where(l => l.idLiquidacion == liquid.idLiquidacion).
                 FirstOrDefault();
 
             liqEdit.idLiquidacion = liquid.idLiquidacion;

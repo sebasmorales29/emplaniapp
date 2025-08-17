@@ -48,20 +48,20 @@
             </div>
             <div class="col-md-6">
                 @Html.DropDownListFor(model => model.motivoLiquidacion, (IEnumerable<SelectListItem>)ViewBag.MotivosLiq,
-                    "Seleccione un motivo", new { @id = "motivo", @name = "selectorMotivo", @class = "form-control ", @required = true })
+         "Seleccione un motivo", new { @id = "motivo", @name = "selectorMotivo", @class = "form-control ", @required = true })
                 @Html.ValidationMessageFor(model => model.motivoLiquidacion, "", new { @class = "text-danger" })
             </div>
         </div>
         <br />
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Añadir Datos" class="btn btn-outline-primary mb-3" />
+                @Html.ActionLink("Cancelar", "Detalles", new {@class="btn btn-outline-secondary mb-3"})
+                <input type="submit" value="Modificar Datos" class="btn btn-outline-primary mb-3" />
             </div>
         </div>
     </div>
 
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+
+
