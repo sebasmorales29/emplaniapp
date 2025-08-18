@@ -1,5 +1,7 @@
-﻿using Emplaniapp.Abstracciones.InterfacesParaUI.Empleado.ObtenerEmpleadoPorId;
+﻿using Emplaniapp.Abstracciones.InterfacesParaUI;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Empleado.ObtenerEmpleadoPorId;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Liquidaciones;
+using Emplaniapp.Abstracciones.ModelosAD;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 using Emplaniapp.LogicaDeNegocio.Empleado.ObtenerEmpleadoPorId;
 using Emplaniapp.LogicaDeNegocio.Liquidaciones;
@@ -22,6 +24,7 @@ namespace Emplaniapp.UI.Controllers
         private readonly IMostrarCalculosLiqLN _calculosPrevios;
         private readonly IGuardarLiquidacionLN _guardarLiquidacion;
         private readonly IEditarLiquidacionLN _editarLiq;
+        private readonly IDatosPersonalesLN  _datosEmp;
 
         public LiquidacionesController()
         {
@@ -110,10 +113,22 @@ namespace Emplaniapp.UI.Controllers
         }
 
 
+
+        public ActionResult GuardarDatos(int id)
+        {
+            LiquidacionDto liq = _obtenerLiqPorEmpleado.ObtenerPorEmpleadoID(id);           // liquidación guardada en bd
+            return View(liq);
+        }
         [HttpPost]
         public ActionResult GuardarDatos(LiquidacionDto liq)
         {
+            // Se modifica el estado de la liquidación a 1 (activo)
             _editarLiq.EditarFinal(liq);
+
+            // Se modifica la fecha de salida
+            EmpleadoDto emp = _obtenerEmpleado.ObtenerEmpleadoPorId(liq.idEmpleado);
+            //var empleado = _datosEmp.ActualizarDatosLaborales(emp.idEmpleado, (int)emp.idCargo, emp.fechaContratacion, liq.fechaLiquidacion);
+
             return RedirectToAction("Detalles", "Liquidaciones",
                 new { id = liq.idEmpleado, seccion = "Liquidacion" });
         }

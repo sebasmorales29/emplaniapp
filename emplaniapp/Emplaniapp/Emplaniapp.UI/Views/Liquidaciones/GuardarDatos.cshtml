@@ -1,0 +1,50 @@
+﻿@model Emplaniapp.Abstracciones.ModelosParaUI.LiquidacionDto
+
+@{
+    ViewBag.Title = "GuardarDatos";
+}
+
+<script>
+    window.onload = function () {
+        document.getElementById("autoSubmitForm").submit();
+    };
+</script>
+
+<h2 class="text-light">GuardarDatos</h2>
+
+@using (Html.BeginForm("GuardarDatos", "Liquidaciones", FormMethod.Post, new { @id = "autoSubmitForm" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <h6>Procesando Liquidación... </h6>
+        @Html.HiddenFor(model => model.idLiquidacion)
+        @Html.HiddenFor(model => model.idEmpleado)
+        @Html.HiddenFor(model => model.fechaLiquidacion)
+        @Html.HiddenFor(model => model.motivoLiquidacion)
+        @Html.HiddenFor(model => model.observacionLiquidacion)
+        @Html.HiddenFor(model => model.salarioPromedio)
+        @Html.HiddenFor(model => model.aniosAntiguedad)
+        @Html.HiddenFor(model => model.diasPreaviso)
+        @Html.HiddenFor(model => model.fechaPreaviso)
+        @Html.HiddenFor(model => model.diasVacacionesPendientes)
+        @Html.HiddenFor(model => model.pagoPreaviso)
+        @Html.HiddenFor(model => model.pagoAguinaldoProp)
+        @Html.HiddenFor(model => model.pagoCesantia)
+        @Html.HiddenFor(model => model.pagoVacacionesNG)
+        @Html.HiddenFor(model => model.remuPendientes)
+        @Html.HiddenFor(model => model.costoLiquidacion)
+        @Html.HiddenFor(model => model.idEstado, 2)
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn bg-light text-light border-0 mb-3" />
+            </div>
+        </div>
+    </div>
+}
+
+

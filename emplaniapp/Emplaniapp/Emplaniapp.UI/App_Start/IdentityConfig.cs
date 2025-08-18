@@ -1,4 +1,6 @@
-﻿using Emplaniapp.Abstracciones.Entidades;
+﻿using System;
+using System.Configuration;
+using Emplaniapp.Abstracciones.Entidades;
 using Emplaniapp.AccesoADatos;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -13,7 +15,7 @@ namespace Emplaniapp.UI
         public ApplicationUserManager(IUserStore<ApplicationUser> store)
             : base(store)
         {
-            // Configuración de validadores si la tienes
+            // Puedes dejar esta ctor vacía; toda la config se hace en Create(...)
         }
 
         public static ApplicationUserManager Create(
@@ -21,25 +23,49 @@ namespace Emplaniapp.UI
             IOwinContext context)
         {
             var manager = new ApplicationUserManager(
-                new UserStore<ApplicationUser>(context.Get<Emplaniapp.AccesoADatos.Contexto>())
+                new UserStore<ApplicationUser>(context.Get<Contexto>()) // tu DbContext
             );
 
-            // Configurar la lógica de validación para nombres de usuario
+            // ===== Validación de usuario =====
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
                 RequireUniqueEmail = true
             };
 
-            // Configurar la lógica de validación para contraseñas
+            // ===== Validación de contraseña =====
             manager.PasswordValidator = new PasswordValidator
             {
                 RequiredLength = 6,
-                RequireNonLetterOrDigit = false,
                 RequireDigit = false,
                 RequireLowercase = false,
                 RequireUppercase = false,
+                RequireNonLetterOrDigit = false
             };
+
+            // ===== Lockout (opcional pero recomendado) =====
+            manager.UserLockoutEnabledByDefault = true;
+            manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            manager.MaxFailedAccessAttemptsBeforeLockout = 5;
+
+            // ===== Email Service (usa SmtpClient con Web.config) =====
+            manager.EmailService = new EmailService();
+
+            // ===== Proveedor de tokens con caducidad =====
+            // Lee la vida del token desde appSettings; por defecto 24h
+            int hours;
+            if (!int.TryParse(ConfigurationManager.AppSettings["ResetTokenLifespanHours"], out hours))
+                hours = 24;
+
+            var dataProtectionProvider = options.DataProtectionProvider;
+            if (dataProtectionProvider != null)
+            {
+                manager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(
+                    dataProtectionProvider.Create("ASP.NET Identity - Emplaniapp"))
+                {
+                    TokenLifespan = TimeSpan.FromHours(hours)
+                };
+            }
 
             return manager;
         }
@@ -64,7 +90,7 @@ namespace Emplaniapp.UI
         }
     }
 
-    // --------- Nuevo: RoleManager ---------
+    // --------- RoleManager (como lo tenías) ---------
     public class ApplicationRoleManager : RoleManager<IdentityRole>
     {
         public ApplicationRoleManager(IRoleStore<IdentityRole, string> store)
