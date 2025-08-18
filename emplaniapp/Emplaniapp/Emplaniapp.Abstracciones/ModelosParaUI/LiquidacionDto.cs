@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
 
         // Detalles
         [DisplayName("Fecha de Liquidación")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime fechaLiquidacion { get; set; }
 
         [DisplayName("Motivo")]
@@ -30,6 +32,7 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public int diasPreaviso { get; set; }
 
         [DisplayName("Fecha de Preaviso")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public string fechaPreaviso { get; set; }
 
         [DisplayName("Vacaciones Pendientes")]
@@ -55,6 +58,7 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
 
         [DisplayName("Total")]
         public decimal costoLiquidacion { get; set; }
+
 
 
         [DisplayName("Observaciones")]
