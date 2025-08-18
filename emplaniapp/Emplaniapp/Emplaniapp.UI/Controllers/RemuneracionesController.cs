@@ -134,6 +134,32 @@ namespace Emplaniapp.UI.Controllers
         [HttpGet]
         public ActionResult CrearRemuneracionManual(int idEmpleado)
         {
+            var empleado = _obtenerEmpleadoPorIdLN.ObtenerEmpleadoPorId(idEmpleado);
+
+            bool esVendedor = false;
+
+            if (empleado != null && !string.IsNullOrEmpty(empleado.nombreCargo))
+            {
+                if (empleado.nombreCargo.ToLower().Contains("vendedor"))
+                {
+                    esVendedor = true;
+                }
+            }
+
+            ViewBag.EsVendedor = esVendedor;
+
+            // Obtener todas las opciones de tipos remuneracion
+            var tiposRemuneracion = _listarTipoRemuneracionLN.ObtenerTipoRemuneracion();
+
+            if (esVendedor)
+            {
+                // Filtrar solo la opción con Id = 6 (Pago Quincenal)
+                tiposRemuneracion = tiposRemuneracion.Where(t => t.Id == 6).ToList();
+            }
+
+            // Crear SelectList con la lista filtrada o completa
+            ViewBag.TiposRemuneracion = new SelectList(tiposRemuneracion, "Id", "nombreTipoRemuneracion");
+
             var nuevoDto = new RemuneracionDto
             {
                 idEmpleado = idEmpleado,
@@ -141,7 +167,6 @@ namespace Emplaniapp.UI.Controllers
                 idEstado = 1
             };
 
-            ViewBag.TiposRemuneracion = ObtenerTipoRemuneracionSelectList();
             return View("CrearRemuneracionManual", nuevoDto);
         }
 
@@ -161,26 +186,6 @@ namespace Emplaniapp.UI.Controllers
 
                     if (resultado > 0)
                     {
-                        // Registrar evento en el historial
-                        try
-                        {
-                            var empleado = _obtenerEmpleadoPorIdLN.ObtenerEmpleadoPorId(remuneracionDto.idEmpleado);
-                            var tipoRemuneracion = _listarTipoRemuneracionLN.ObtenerTipoRemuneracion().FirstOrDefault(t => t.Id == remuneracionDto.idTipoRemuneracion);
-                            
-                            _registrarEventoHistorialLN.RegistrarRemuneracion(
-                                remuneracionDto.idEmpleado,
-                                remuneracionDto.pagoQuincenal ?? 0,
-                                tipoRemuneracion?.nombreTipoRemuneracion ?? "Desconocido",
-                                User.Identity.GetUserId(),
-                                Request.UserHostAddress
-                            );
-                        }
-                        catch (Exception ex)
-                        {
-                            // Log del error pero no fallar la operación principal
-                            System.Diagnostics.Debug.WriteLine($"Error al registrar evento en historial: {ex.Message}");
-                        }
-
                         TempData["mensaje"] = "Remuneración creada exitosamente.";
                         return RedirectToAction("DetallesRemu", new { id = remuneracionDto.idEmpleado });
                     }
@@ -194,7 +199,27 @@ namespace Emplaniapp.UI.Controllers
                 }
             }
 
-            ViewBag.TiposRemuneracion = ObtenerTipoRemuneracionSelectList(remuneracionDto.idTipoRemuneracion);
+            var empleado = _obtenerEmpleadoPorIdLN.ObtenerEmpleadoPorId(idEmpleado);
+            bool esVendedor = false;
+            if (empleado != null && !string.IsNullOrEmpty(empleado.nombreCargo))
+            {
+                if (empleado.nombreCargo.ToLower().Contains("vendedor"))
+                {
+                    esVendedor = true;
+                }
+            }
+            ViewBag.EsVendedor = esVendedor;
+
+            var tiposRemuneracion = _listarTipoRemuneracionLN.ObtenerTipoRemuneracion();
+
+            if (esVendedor)
+            {
+                // Filtrar solo la opción con Id = 6 (Pago Quincenal)
+                tiposRemuneracion = tiposRemuneracion.Where(t => t.Id == 6).ToList();
+            }
+
+            // Crear SelectList con la lista filtrada o completa
+            ViewBag.TiposRemuneracion = new SelectList(tiposRemuneracion, "Id", "nombreTipoRemuneracion");
             return View("CrearRemuneracionManual", remuneracionDto);
         }
 
