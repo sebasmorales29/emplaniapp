@@ -71,7 +71,7 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
             if (caso == 1) { // Si se crea por primera vez
                 EmpleadoDto emp = _empleado.ObtenerEmpleadoPorId(liq.idEmpleado);
                 liquid = _generarCalculo.PrimerCalculo
-                    (emp, liq.fechaLiquidacion,liq.motivoLiquidacion);
+                    (emp, liq.fechaLiquidacion,liq.motivoLiquidacion, liq.observacionLiquidacion);
             }
             else {  // Si es editar
                 liquid = _generarCalculo.ModificarCalculo(liq);

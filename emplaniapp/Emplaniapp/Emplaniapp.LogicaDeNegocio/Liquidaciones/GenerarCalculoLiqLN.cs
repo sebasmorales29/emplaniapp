@@ -23,7 +23,7 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
         }
 
         // Generar cálculo
-        public LiquidacionDto PrimerCalculo(EmpleadoDto emp, DateTime fechaliq, string motivo)
+        public LiquidacionDto PrimerCalculo(EmpleadoDto emp, DateTime fechaliq, string motivo, string observs)
         {
             // 1. cálculo del Tiempo de trabajo
             int aniosTrab = fechaliq.Year - emp.fechaContratacion.Year;
@@ -45,8 +45,11 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
 
             // 6. Remuneraciones pendientes: vacaciones, pagos no hechos hasta el momento
             int diasVac = diasVacaciones(emp);
+            decimal vacFaltantes = vacasFaltantes(diasPreav ,emp.salarioDiario);
             decimal pagosFaltantes = remuneracionesPendientes(emp.idEmpleado, fechaliq, emp.salarioDiario);
 
+            // Costo de Liquidación
+            decimal costoLiq = preaviso + aguinaldoProp + vacFaltantes + cesantia + pagosFaltantes;
 
             //decimal salariosPendientes = remuneracionesPendientes(emp.idEmpleado, fechaliq);
             LiquidacionDto liquid = new LiquidacionDto
@@ -64,12 +67,12 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
 
                 pagoPreaviso = preaviso,
                 pagoAguinaldoProp = aguinaldoProp,
-                pagoVacacionesNG = diasPreav * emp.salarioDiario,
+                pagoVacacionesNG = vacFaltantes,
                 pagoCesantia = cesantia,
                 remuPendientes = pagosFaltantes, // preguntar como se hizo
-                costoLiquidacion = 0,
+                costoLiquidacion = costoLiq,
 
-                observacionLiquidacion = "",
+                observacionLiquidacion = observs,
                 idEstado = 2
             };
 
@@ -83,6 +86,7 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
             DateTime fechaliq = liq.fechaLiquidacion;
             EmpleadoDto emp = _empleado.ObtenerEmpleadoPorId(liq.idEmpleado);
             string motivo = liq.motivoLiquidacion.ToString();
+            string observs = liq.observacionLiquidacion;
 
             //  CALCULOS -------------------------------------------------------------
 
@@ -106,8 +110,11 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
 
             // 6. Remuneraciones pendientes: vacaciones, pagos no hechos hasta el momento
             int diasVac = diasVacaciones(emp);
+            decimal vacFaltantes = vacasFaltantes(diasPreav, emp.salarioDiario);
             decimal pagosFaltantes = remuneracionesPendientes(emp.idEmpleado, fechaliq, emp.salarioDiario);
 
+            // Costo de Liquidación
+            decimal costoLiq = preaviso + aguinaldoProp + vacFaltantes +cesantia + pagosFaltantes;
 
             //decimal salariosPendientes = remuneracionesPendientes(emp.idEmpleado, fechaliq);
             LiquidacionDto liquid = new LiquidacionDto
@@ -126,12 +133,12 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
 
                 pagoPreaviso = preaviso,
                 pagoAguinaldoProp = aguinaldoProp,
-                pagoVacacionesNG = diasPreav * emp.salarioDiario,
+                pagoVacacionesNG = vacFaltantes,
                 pagoCesantia = cesantia,
                 remuPendientes = pagosFaltantes, // preguntar como se hizo
-                costoLiquidacion = 0,
+                costoLiquidacion = costoLiq,
 
-                observacionLiquidacion = "",
+                observacionLiquidacion = observs,
                 idEstado = 2
             };
 
@@ -324,20 +331,50 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
 
         }
 
+        private decimal vacasFaltantes(decimal diasPreav ,  decimal salarioDiario)
+        {
+            decimal vf = diasPreav * salarioDiario;
+            return vf;
+        }
+
 
         // 9. Cálculo remuneraciones pendientes ---------------------------------------------------------
         private decimal remuneracionesPendientes(int id, DateTime fechaSalida, decimal salDiario)
         {
             decimal remuPen = 0;
+
+            // Tomar el día de hoy
             DateTime today = DateTime.Today;
+
+            // Checkpoints
+            DateTime checkpoint1 = new DateTime(today.Year, today.Month, 15);
+            DateTime checkpoint2 = checkpoint1.AddMonths(1).AddDays(-14);
+
+            // Se mide cuantos días hay de diferencia
             int hoy = today.DayOfYear;
             int salida = fechaSalida.DayOfYear;
-            int diferencia = hoy - salida;
-            /*
-           if( )
-           {
+            int diferencia = salida - hoy;
 
-           }*/
+            // Si la diferencia es positiva y si sobrepasa la quincena
+            if (diferencia > 0) {
+                int toCP = 0;           // to checkpoint
+                int realDif = 0;        // diferencia real 
+
+                // Verificar donde estamos con respecto al chekpoint
+                if (today < checkpoint1) {
+                    toCP = checkpoint1.Day - today.Day;     // cuanto falta para CP
+                    realDif = diferencia - toCP;            // se le resta a la diferencia de días original
+                }
+                else {
+                    toCP = checkpoint2.Day - today.Day;     // cuanto falta para CP
+                    realDif = diferencia - toCP;            // se le resta a la diferencia de días original
+                }
+
+                if (realDif > 0)
+                {
+                    remuPen = realDif * salDiario;              // Se calcula con la diferencia real 
+                }
+            }
 
             return remuPen;
         }
