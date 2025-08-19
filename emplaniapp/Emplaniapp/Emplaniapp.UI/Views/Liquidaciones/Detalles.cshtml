@@ -13,7 +13,8 @@
 
 <div class="container">
 
-    @Html.ActionLink("< Volver a Hoja Resumen", "listarHojaResumen", "HojaResumen", null, new { @class = "btn btn-outline-secondary mb-3" })
+    @Html.ActionLink("< Volver a Hoja Resumen", "listarHojaResumen", "HojaResumen",
+        null, new { @class = "btn btn-light text-secondary mt-0 mb-4" })
 
     <!-- Mensaje de éxito -->
     @if (TempData["Mensaje"] != null)
@@ -24,15 +25,15 @@
     }
 
     <!-- Título del empleado -->
-    <div class="row mb-4">
+    <div class="row">
         <div class="col-md-12">
-            <h2>@Model.Item1.nombre @Model.Item1.primerApellido @Model.Item1.segundoApellido</h2>
+            <h2 class="titulo">@Model.Item1.nombre @Model.Item1.primerApellido @Model.Item1.segundoApellido</h2>
         </div>
     </div>
 
 
     <!-- Enlaces de navegación -->
-    <div class="row mb-4">
+    <div class="row">
         <div class="col-md-12">
             <div class="nav-enlaces">
                 <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Datos personales" })" class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
@@ -48,19 +49,17 @@
 
 
     <!-- Contenido -->
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3>Liquidación</h3>
-    </div>
-
-
     <div class="row">
         <div class="col-md-12">
+
             @if (seccionActiva == "Liquidacion")
             {
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="subtitulo">Liquidación</h2>
+                </div>
                 var item = Model.Item2;
 
-                using (Html.BeginForm("GuardarDatos", "Liquidaciones", FormMethod.Post,new {@id="myform"}))
+                using (Html.BeginForm("GuardarDatos", "Liquidaciones", FormMethod.Post, new { @id = "myform" }))
                 {
                     @Html.AntiForgeryToken()
 
@@ -143,7 +142,7 @@
 
                                         <a href="@Url.Action("GuardarDatos", "Liquidaciones", new { id = Model.Item1.idEmpleado, seccion = "Liquidacion" })"
                                            id="submitButton" name="submitButton" class="btn btn-success mb-3" disabled>Procesar Liquidación</a>
-                                   </div>
+                                    </div>
                                 }
 
 

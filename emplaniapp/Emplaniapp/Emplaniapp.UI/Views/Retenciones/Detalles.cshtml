@@ -35,17 +35,13 @@
 <link rel="stylesheet" href="~/Content/EstilosDatos.css" />
 
 <div class="container">
-    @Html.ActionLink(
-        "< Volver a Hoja Resumen",
-        "listarHojaResumen", "HojaResumen",
-        new { id = emp.idEmpleado },
-        new { @class = "btn btn-outline-secondary mb-3", @escape = false }
-    )
+    @Html.ActionLink("< Volver a Hoja Resumen", "listarHojaResumen", "HojaResumen",
+        null, new { @class = "btn btn-light text-secondary mt-0 mb-4" })
 
     <!-- Título del empleado -->
     <div class="row">
         <div class="col-md-12">
-            <h2>@emp.nombre @emp.primerApellido @emp.segundoApellido</h2>
+            <h2 class="titulo">@emp.nombre @emp.primerApellido @emp.segundoApellido</h2>
         </div>
     </div>
 
@@ -84,79 +80,79 @@
             </div>
 
             <div id="contenedorLista" class="row">
-        @if (Model.Item2.Any())
-        {
-            foreach (var item in Model.Item2)
-            {
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">@item.nombreTipoRetencio</h5>
-                            <h6 class="card-subtitle text-muted">
-                                @item.fechaRetencio:dd/MM/yyyy
-                            </h6>
-                            <hr />
-                            <p><strong>Rebajo:</strong> @item.rebajo.ToString("C2")</p>
-                            <p>
-                                <strong>Estado:</strong>
-                                <span class="badge @(item.nombreEstado=="Activo"?"badge-success":"badge-secondary")">
-                                    @item.nombreEstado
-                                </span>
-                            </p>
+                @if (Model.Item2.Any())
+                {
+                    foreach (var item in Model.Item2)
+                    {
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">@item.nombreTipoRetencio</h5>
+                                    <h6 class="card-subtitle text-muted">
+                                        @item.fechaRetencio:dd/MM/yyyy
+                                    </h6>
+                                    <hr />
+                                    <p><strong>Rebajo:</strong> @item.rebajo.ToString("C2")</p>
+                                    <p>
+                                        <strong>Estado:</strong>
+                                        <span class="badge @(item.nombreEstado=="Activo"?"badge-success":"badge-secondary")">
+                                            @item.nombreEstado
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="card-footer bg-transparent border-top-0">
+                                    <a href="javascript:;"
+                                       class="btn btn-primary btn-sm btn-editar-retencion"
+                                       data-id="@item.idRetencion">
+                                        Editar
+                                    </a>
+                                    <a href="javascript:;"
+                                       class="btn btn-danger btn-sm btn-eliminar-retencion"
+                                       data-id="@item.idRetencion">
+                                        Eliminar
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-footer bg-transparent border-top-0">
-                            <a href="javascript:;"
-                               class="btn btn-primary btn-sm btn-editar-retencion"
-                               data-id="@item.idRetencion">
-                                Editar
-                            </a>
-                            <a href="javascript:;"
-                               class="btn btn-danger btn-sm btn-eliminar-retencion"
-                               data-id="@item.idRetencion">
-                                Eliminar
-                            </a>
-                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info">No hay retenciones registradas.</div>
                     </div>
-                </div>
-            }
-        }
-        else
-        {
-            <div class="col-12">
-                <div class="alert alert-info">No hay retenciones registradas.</div>
+                }
             </div>
-        }
+        </div>
     </div>
-</div>
-</div>
 
-@* Modal Create *@
-<div class="modal fade" id="modalCrearRetencion" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content" id="modal-body-retencion"></div>
+    @* Modal Create *@
+    <div class="modal fade" id="modalCrearRetencion" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modal-body-retencion"></div>
+        </div>
     </div>
-</div>
 
-@* Modal Edit *@
-<div class="modal fade" id="modalEditarRetencion" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content" id="modal-body-editar"></div>
+    @* Modal Edit *@
+    <div class="modal fade" id="modalEditarRetencion" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modal-body-editar"></div>
+        </div>
     </div>
-</div>
 
-@* Modal Delete *@
-<div class="modal fade" id="modalEliminarRetencion" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content" id="modal-body-eliminar"></div>
+    @* Modal Delete *@
+    <div class="modal fade" id="modalEliminarRetencion" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modal-body-eliminar"></div>
+        </div>
     </div>
-</div>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/jqueryval")
+    @section Scripts {
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @Scripts.Render("~/bundles/jqueryval")
 
-    <script>
+        <script>
     $(function() {
         const empId   = @Model.Item1.idEmpleado;
         const urlC    = '@Url.Action("Create","Retenciones")';
@@ -278,5 +274,5 @@
             form.prepend(html);
         }
     });
-    </script>
-}
+        </script>
+    }
