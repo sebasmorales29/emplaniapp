@@ -68,6 +68,7 @@
     <Compile Include="Estados\ListarEstados\listarEstadosAD.cs" />
     <Compile Include="General\FiltrarEmpleados\filtrarEmpleadosAD.cs" />
     <Compile Include="General\ObtenerTotalEmpleados\obtenerTotalEmpleadosAD.cs" />
+    <Compile Include="Hoja_Resumen\AprobarEmpleadosHojaResumen\AprobarEmpleadosHojaResumenAD.cs" />
     <Compile Include="Hoja_Resumen\ListarHojaResumen\listarHojaResumenAD.cs" />
     <Compile Include="Historial\ConsultarHistorialAD.cs" />
     <Compile Include="Historial\RegistrarEventoHistorialAD.cs" />

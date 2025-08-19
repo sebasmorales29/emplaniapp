@@ -18,10 +18,10 @@ namespace Emplaniapp.Abstracciones.ModelosAD
         public DateTime fechaFin { get; set; }
         public int idPeriodoPago { get; set; }
         public int idEmpleado { get; set; }
-        public int idRemuneracion { get; set; }
-        public int idRetencion { get; set; }
+        public int? idRemuneracion { get; set; }
+        public int? idRetencion { get; set; }
         public decimal salarioNeto { get; set; }
-        public int idLiquidacion { get; set; }
+        public int? idLiquidacion { get; set; }
         public bool aprobacion { get; set; }
         public string idUsuario { get; set; }
     }

@@ -111,7 +111,17 @@
                                 @Html.ActionLink("Detalles", "VerDetalles", new { id = item.IdEmpleado }, new { @class = "btn btn-info btn-sm" })
                                 @if (!item.Aprobado)
                                 {
-                                    <button type="button" class="btn btn-success btn-sm btn-aprobar" data-id="@item.IdEmpleado">Aprobar</button>
+                                    using (Html.BeginForm("Aprobar", "HojaResumen", FormMethod.Post, new { @class = "d-inline" }))
+                                    {
+                                        @Html.Hidden("idPagoQuincenal", item.IdPagoQuincenal)
+                                        <button type="submit" class="btn btn-success btn-sm aprobar-btn">
+                                            <i class="fas fa-check"></i> Aprobar
+                                        </button>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="label label-success">Aprobado</span>
                                 }
                             </td>
                         </tr>

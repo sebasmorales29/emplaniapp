@@ -10,6 +10,7 @@ using Emplaniapp.Abstracciones.InterfacesParaUI.Cargos.ListarCargos;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Estados.ListarEstados;
 using Emplaniapp.Abstracciones.InterfacesParaUI.General.FiltrarEmpleados;
 using Emplaniapp.Abstracciones.InterfacesParaUI.General.ObtenerTotalEmpleados;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Hoja_Resumen.AprobarEmpleadosHojaResumen;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Hoja_Resumen.ListarHojaResumen;
 using Emplaniapp.Abstracciones.InterfacesParaUI.PeriodoPago.CrearPeriodoPago;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.CrearRemuneraciones;
@@ -20,6 +21,7 @@ using Emplaniapp.LogicaDeNegocio.Cargos.ListarCargos;
 using Emplaniapp.LogicaDeNegocio.Estados.ListarEstados;
 using Emplaniapp.LogicaDeNegocio.General.FiltrarEmpleados;
 using Emplaniapp.LogicaDeNegocio.General.ObtenerTotalEmpleados;
+using Emplaniapp.LogicaDeNegocio.Hoja_Resumen.AprobarEmpleadosHojaResumen;
 using Emplaniapp.LogicaDeNegocio.Hoja_Resumen.ListarHojaResumen;
 using Emplaniapp.LogicaDeNegocio.PeriodoPago;
 using Emplaniapp.LogicaDeNegocio.Remuneraciones.CrearRemuneraciones;
@@ -42,6 +44,7 @@ namespace Emplaniapp.UI.Controllers
         private IObtenerTotalEmpleadosLN _obtenerTotalEmpleadosLN;
         private ICrearRemuneracionesLN _crearRemuneracionesLN;
         private ICrearPeriodoPagoLN _crearPeriodoPagoLN;
+        private IAprobarEmpleadosHojaResumenLN aprobarEmpleadosHojaResumenLN;
         private ApplicationUserManager _userManager;
         private ApplicationRoleManager _roleManager;
 
@@ -55,6 +58,7 @@ namespace Emplaniapp.UI.Controllers
             _obtenerTotalEmpleadosLN = new obtenerTotalEmpleadosLN();
             _crearRemuneracionesLN = new CrearRemuneracionesLN();
             _crearPeriodoPagoLN = new CrearPeriodoPagoLN();
+            aprobarEmpleadosHojaResumenLN = new AprobarEmpleadosHojaResumenLN();
         }
 
         public ApplicationUserManager UserManager
@@ -170,6 +174,23 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
+        public ActionResult Aprobar(int idPagoQuincenal)
+        {
+            string idUsuario = User.Identity.GetUserId();
+
+            bool aprobado = aprobarEmpleadosHojaResumenLN.AprobarPagoQuincenal(idPagoQuincenal, idUsuario);
+
+            if (aprobado)
+            {
+                TempData["Mensaje"] = "Pago aprobado correctamente.";
+            }
+            else
+            {
+                TempData["Error"] = "No se pudo aprobar el pago.";
+            }
+
+            return RedirectToAction("listarHojaResumen");
+        }
     }
 }
 
