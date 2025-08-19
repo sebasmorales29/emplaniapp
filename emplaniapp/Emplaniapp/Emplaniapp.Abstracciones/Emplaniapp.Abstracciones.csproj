@@ -67,6 +67,7 @@
     <Compile Include="InterfacesAD\General\OtenerTotalEmpleados\IObtenerTotalEmpleadosAD.cs" />
     <Compile Include="InterfacesAD\Historial\IConsultarHistorial.cs" />
     <Compile Include="InterfacesAD\Historial\IRegistrarEventoHistorial.cs" />
+    <Compile Include="InterfacesAD\Hoja_Resumen\AprobarEmpleadosHojaResumen\IAprobarEmpleadosHojaResumenAD.cs" />
     <Compile Include="InterfacesAD\Hoja_Resumen\ListarHojaResumen\IListarHojaResumenAD.cs" />
     <Compile Include="InterfacesAD\Liquidaciones\IEditarLiquidacionAD.cs" />
     <Compile Include="InterfacesAD\Liquidaciones\IGuardarLiquidacionAD.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="InterfacesParaUI\General\ObtenerTotalEmpleados\IObtenerTotalEmpleadosLN.cs" />
     <Compile Include="InterfacesParaUI\Historial\IConsultarHistorialLN.cs" />
     <Compile Include="InterfacesParaUI\Historial\IRegistrarEventoHistorialLN.cs" />
+    <Compile Include="InterfacesParaUI\Hoja_Resumen\AprobarEmpleadosHojaResumen\IAprobarEmpleadosHojaResumenLN.cs" />
     <Compile Include="InterfacesParaUI\Hoja_Resumen\ListarHojaResumen\IlistarHojaResumenLN.cs" />
     <Compile Include="InterfacesParaUI\Liquidaciones\IEditarLiquidacionLN.cs" />
     <Compile Include="InterfacesParaUI\Liquidaciones\IGenerarCalculoLiqLN.cs" />

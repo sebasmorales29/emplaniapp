@@ -68,6 +68,9 @@
     }
 </style>
 <div class="container">
+   
+
+
     <!-- Mensaje de éxito -->
     @if (TempData["Mensaje"] != null)
     {
@@ -79,7 +82,7 @@
     <!-- Título del empleado -->
     <div class="row">
         <div class="col-md-12">
-            <h2>@Model.nombre @Model.primerApellido @Model.segundoApellido</h2>
+            <h2 class="titulo">@Model.nombre @Model.primerApellido @Model.segundoApellido</h2>
         </div>
     </div>
 
@@ -234,15 +237,15 @@
                     </div>
                 </div>
             }
-                            else if (seccionActiva == "Historial")
-                {
-                    <div id="contenedor-lista-historial">
-                        <div class="loading">
-                            <div class="spinner"></div>
-                            <p>Cargando historial...</p>
-                        </div>
+            else if (seccionActiva == "Historial")
+            {
+                <div id="contenedor-lista-historial">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Cargando historial...</p>
                     </div>
-                }
+                </div>
+            }
             else if (seccionActiva == "Roles y Permisos")
             {
                 if (isInActiveRole("Administrador"))

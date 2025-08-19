@@ -63,11 +63,10 @@
     <style>
         /* === Paleta / tokens === */
         :root {
-            /* Colores de marca (cámbialos si quieres) */
             --brand-primary: #0f6cf2;
             --brand-secondary: #0a53bf;
-            --brand-bg: #4682A9; /* fallback */
-            --brand-bg-gradient: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+            --brand-bg: #4682A9; /* color de tu navbar */
+            --brand-bg-gradient: linear-gradient(135deg,var(--brand-primary),var(--brand-secondary));
             --text: #1f2937;
             --muted: #6b7280;
             --ring: rgba(15,108,242,.45);
@@ -80,16 +79,16 @@
             --radius-el: 10px;
         }
 
-        /* Tipografía + tamaño base más legible */
+        /* Tipografía + base */
         html {
             font-size: 16px;
         }
 
         html, body {
             height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, "Helvetica Neue", sans-serif;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,"Helvetica Neue",sans-serif;
             color: var(--text);
-            background: radial-gradient(1000px 600px at -10% -20%, rgba(90,155,213,.18), transparent 60%), radial-gradient(800px 400px at 110% 10%, rgba(74,135,199,.15), transparent 60%), linear-gradient(180deg, #f7f9ff 0%, #f3f6fc 100%);
+            background: radial-gradient(1000px 600px at -10% -20%,rgba(90,155,213,.18),transparent 60%), radial-gradient(800px 400px at 110% 10%,rgba(74,135,199,.15),transparent 60%), linear-gradient(180deg,#f7f9ff 0%,#f3f6fc 100%);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -100,11 +99,8 @@
             background: transparent;
             padding: 8px 0;
         }
-
-            /* --- Importante: sobreescribimos el inline del container con !important
-             para mostrar un gradiente de marca y mejor contraste --- */
+            /* NO seteamos background aquí para NO pisar tu color inline #4682A9 */
             #main-navbar > .container {
-                background: var(--brand-bg-gradient) !important; /* <— gradiente visible */
                 border-radius: 50px !important;
                 padding: 10px 25px !important;
                 box-shadow: 0 10px 24px var(--card-shadow) !important;
@@ -117,14 +113,15 @@
                 letter-spacing: .2px;
                 line-height: 1.1;
                 margin-right: 14px;
-                background: linear-gradient(135deg, #ffffff, #e6f0fa);
-                -webkit-background-clip: text;
-                background-clip: text;
+                background: linear-gradient(135deg,#ffffff,#e6f0fa);
+                -webkit-background-clip: text; /* VS puede avisar, pero es válido */
                 -webkit-text-fill-color: transparent;
+                /* Fallback por si el navegador no soporta el clip */
+                color: #fff;
                 text-shadow: 0 1px 0 rgba(0,0,0,.06);
             }
 
-            /* Links: más contraste + pastilla al hover */
+            /* Links */
             #main-navbar .nav-link,
             #main-navbar .navbar-nav > li > a {
                 color: #fff !important;
@@ -147,15 +144,13 @@
                     text-decoration: none;
                 }
 
-                /* Estado ACTIVO (pastilla). Ver JS abajo que añade .active automáticamente */
                 #main-navbar .navbar-nav > li.active > a,
                 #main-navbar .navbar-nav > li > a.active {
                     background: rgba(255,255,255,.30);
                     color: #fff !important;
-                    box-shadow: inset 0 0 0 1px rgba(255,255,255,.28), 0 6px 16px rgba(0,0,0,.12);
+                    box-shadow: inset 0 0 0 1px rgba(255,255,255,.28),0 6px 16px rgba(0,0,0,.12);
                 }
 
-            /* Usuario/rol */
             #main-navbar .navbar-user {
                 display: inline-flex;
                 align-items: center;
@@ -163,10 +158,10 @@
                 color: #fff !important;
             }
 
-        /* Dropdown del role switcher (mejor contraste) */
+        /* Dropdown del role switcher (usa tu azul) */
         #role-display .dropdown-menu {
-            background-color: rgba(10,83,191,.98);
-            border: 1px solid rgba(255,255,255,.2);
+            background-color: #4682A9;
+            border: 1px solid #3a6b8a;
             border-radius: 10px;
             min-width: 180px;
             padding: 6px 0;
@@ -188,44 +183,6 @@
                     text-decoration: none;
                     outline: none;
                 }
-
-        /* Toggler */
-        .navbar-toggle {
-            border: 0;
-        }
-
-            .navbar-toggle .icon-bar {
-                background: #fff;
-            }
-
-        .navbar-toggler {
-            border: 0;
-        }
-
-        .navbar-dark .navbar-toggler-icon {
-            background-image: none;
-            width: 1.25rem;
-            height: 1.25rem;
-            position: relative;
-        }
-
-            .navbar-dark .navbar-toggler-icon::before,
-            .navbar-dark .navbar-toggler-icon::after {
-                content: "";
-                position: absolute;
-                left: 0;
-                right: 0;
-                height: 2px;
-                background: #fff;
-            }
-
-            .navbar-dark .navbar-toggler-icon::before {
-                top: 35%;
-            }
-
-            .navbar-dark .navbar-toggler-icon::after {
-                bottom: 35%;
-            }
 
         /* ===== CONTENIDO ===== */
         .container.body-content {
@@ -299,7 +256,7 @@
 
         /* Validaciones */
         .validation-summary, .validation-summary-errors {
-            background: linear-gradient(135deg, var(--danger-bg) 0%, var(--danger-bg2) 100%);
+            background: linear-gradient(135deg,var(--danger-bg) 0%,var(--danger-bg2) 100%);
             color: var(--danger);
             padding: 12px 14px;
             border-left: 4px solid #ef4444;
@@ -314,7 +271,7 @@
             font-weight: 600;
         }
 
-        /* Accesibilidad: anillo de foco visible */
+        /* Accesibilidad */
         a:focus-visible, button:focus-visible,
         .nav-link:focus-visible, .navbar-nav > li > a:focus-visible,
         input:focus-visible, select:focus-visible, textarea:focus-visible {
@@ -334,12 +291,8 @@
             }
         }
 
-        .dropdown-menu li a {
-            transition: all .2s ease !important;
-        }
-
         /* Responsive */
-        @@media (max-width: 768px) {
+        @@media (max-width:768px) {
             #main-navbar .navbar-brand {
                 font-size: 18px;
             }
@@ -350,7 +303,62 @@
                 border-radius: 16px;
             }
         }
+
+        /* Extras opcionales */
+        .btn-accion-prim {
+            background: var(--brand-bg-gradient);
+            border: 0;
+            font-weight: 400;
+            color: #fff;
+            box-shadow: 0 8px 10px rgba(74,135,199,.10);
+            border-radius: 6px;
+            transition: transform .06s ease, filter .12s ease, box-shadow .12s ease;
+        }
+
+            .btn-accion-prim:hover {
+                filter: brightness(1.05);
+                color: #fff;
+            }
+
+            .btn-accion-prim:active {
+                transform: translateY(1px);
+                color: #fff;
+            }
+
+        .btn-accion-danger {
+            background: linear-gradient(135deg,#E36869,#D05556);
+            border: 0;
+            font-weight: 400;
+            color: #fff;
+            box-shadow: 0 8px 10px rgba(146,50,51,.20);
+            border-radius: 6px;
+            transition: transform .06s ease, filter .12s ease, box-shadow .12s ease;
+        }
+
+            .btn-accion-danger:hover {
+                filter: brightness(1.05);
+                color: #fff;
+            }
+
+            .btn-accion-danger:active {
+                transform: translateY(1px);
+                color: #fff;
+            }
+
+        .titulo {
+            font-size: 40px;
+            font-weight: 700;
+            padding-bottom: 6px;
+        }
+
+        .subtitulo {
+            font-size: 30px;
+            font-weight: 500;
+            padding-bottom: 4px;
+        }
     </style>
+
+
 
 </head>
 <body>
@@ -520,7 +528,7 @@
                 type: 'POST',
                 data: {
                     role: newRole,
-                    _RequestVerificationToken: $('input[name="_RequestVerificationToken"]').val()
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
                 },
                 success: function(data) {
                     if (data.success) {

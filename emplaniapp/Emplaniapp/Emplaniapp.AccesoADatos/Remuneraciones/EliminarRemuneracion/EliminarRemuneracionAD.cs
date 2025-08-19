@@ -19,14 +19,22 @@ namespace Emplaniapp.AccesoADatos.Remuneraciones.EliminarRemuneracion
         public bool EliminarRemuneracion(int idRemuneracion)
         {
             var remuneracion = _contexto.Remuneracion.Find(idRemuneracion);
-
             if (remuneracion == null)
-            {
                 return false;
+
+            var pagosQuincenales = _contexto.PagoQuincenal
+                .Where(p => p.idRemuneracion == idRemuneracion)
+                .ToList();
+
+            if (pagosQuincenales.Any())
+            {
+                _contexto.PagoQuincenal.RemoveRange(pagosQuincenales);
             }
 
             _contexto.Remuneracion.Remove(remuneracion);
+
             _contexto.SaveChanges();
+
             return true;
         }
     }
