@@ -34,5 +34,8 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public int Cedula { get; set; }
         public string NombrePuesto { get; set; }
 
+        public int IdPagoQuincenal { get; set; }
+        public int? IdPeriodoPago { get; set; }
     }
 }
+ 

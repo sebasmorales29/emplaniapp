@@ -1,0 +1,129 @@
+﻿@{
+    ViewBag.Title = "Tablero de Control";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<div class="container">
+    <h2 class="mb-4">Tablero de Control</h2>
+
+    <!-- KPIs -->
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-users fa-lg me-2 text-secondary"></i>
+                        <div>
+                            <div class="text-muted">Empleados</div>
+                            <div class="h4 mb-0" id="kpi-empleados">–</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-wallet fa-lg me-2 text-secondary"></i>
+                        <div>
+                            <div class="text-muted">Nómina actual</div>
+                            <div class="h4 mb-0" id="kpi-nomina">–</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-arrow-up-right-from-square fa-lg me-2 text-secondary"></i>
+                        <div>
+                            <div class="text-muted">Remuneraciones</div>
+                            <div class="h4 mb-0" id="kpi-remu">–</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-arrow-down fa-lg me-2 text-secondary"></i>
+                        <div>
+                            <div class="text-muted">Retenciones</div>
+                            <div class="h4 mb-0" id="kpi-ret">–</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="row mt-4 g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Estado de pagos</h5>
+                    <canvas id="chEstados" height="140"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Top salarios netos</h5>
+                    <canvas id="chTopSalarios" height="140"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fmtMoneda = new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC', maximumFractionDigits: 2 });
+    const fmtNumero = new Intl.NumberFormat('es-CR');
+
+    $(function () {
+        // KPIs
+        $.get('@Url.Action("Kpis", "TableroDeControl")', function (d) {
+            $("#kpi-empleados").text(fmtNumero.format(d.totalEmpleados || 0));
+            $("#kpi-nomina").text(fmtMoneda.format(d.nominaActual || 0));
+            $("#kpi-remu").text(fmtMoneda.format(d.totalRemuneraciones || 0));
+            $("#kpi-ret").text(fmtMoneda.format(d.totalRetenciones || 0));
+        });
+
+        // Estados (doughnut)
+        $.get('@Url.Action("Estados", "TableroDeControl")', function (d) {
+            const ctx = document.getElementById('chEstados').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: { labels: d.labels, datasets: [{ data: d.data }] },
+                options: { plugins: { legend: { position: 'bottom' } } }
+            });
+        });
+
+        // Top salarios (bar)
+        $.get('@Url.Action("TopSalarios", "TableroDeControl")', function (d) {
+            const ctx = document.getElementById('chTopSalarios').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: { labels: d.labels, datasets: [{ data: d.data }] },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: { ticks: { callback: (v) => fmtMoneda.format(v) } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        });
+    });
+</script>
+
