@@ -28,6 +28,11 @@ using Emplaniapp.LogicaDeNegocio.Remuneraciones.ObtenerRemuneracionPorId;
 using Emplaniapp.LogicaDeNegocio.Tipo_Remuneracion;
 using Microsoft.AspNet.Identity.Owin;
 
+// >>> AGREGADOS PARA PDF <<<
+using Rotativa;
+using Rotativa.Options;
+// <<< AGREGADOS PARA PDF <<<
+
 namespace Emplaniapp.UI.Controllers
 {
     [Authorize]
@@ -59,8 +64,6 @@ namespace Emplaniapp.UI.Controllers
             _registrarEventoHistorialLN = new RegistrarEventoHistorialLN();
         }
 
-
-
         // Constructor para inyección de dependencias (usado por Identity/OWIN)
         public RemuneracionesController(ApplicationUserManager userManager)
         {
@@ -81,7 +84,6 @@ namespace Emplaniapp.UI.Controllers
             get => _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             private set => _userManager = value;
         }
-
 
         // LISTA DE REMUNERACIONES ---------------------------------
         public ActionResult DetallesRemu(int? id, string seccion = "Remuneraciones")
@@ -114,14 +116,12 @@ namespace Emplaniapp.UI.Controllers
 
             var variables = new Tuple
                 <EmpleadoDto, List<RemuneracionDto>>
-                (empleado,_listarRemu.Listar(idEmpleado));
+                (empleado, _listarRemu.Listar(idEmpleado));
 
             ViewBag.SeccionRemu = seccion;
             return View("DetallesRemu", variables);
 
         }
-
-
 
         // AGREGAR REMUNERACIÓN ------------------------------------------
         private SelectList ObtenerTipoRemuneracionSelectList(int? selectedValue = null)
@@ -223,7 +223,6 @@ namespace Emplaniapp.UI.Controllers
             return View("CrearRemuneracionManual", remuneracionDto);
         }
 
-
         // EDITAR REMUNERACIÓN ------------------------------------------
 
         // GET: Remuneraciones/Edit/5
@@ -240,7 +239,6 @@ namespace Emplaniapp.UI.Controllers
             return View("EditarRemuneracion", remuneracion);
         }
 
-
         // POST: Remuneraciones/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -248,49 +246,47 @@ namespace Emplaniapp.UI.Controllers
         {
             try
             {
-             int resultado = _editarRemuneracionLN.Actualizar(remuneracion);
-            if (resultado > 0)
-            {
-                // Registrar evento en el historial
-                try
+                int resultado = _editarRemuneracionLN.Actualizar(remuneracion);
+                if (resultado > 0)
                 {
-                    var tipoRemuneracion = _listarTipoRemuneracionLN.ObtenerTipoRemuneracion().FirstOrDefault(t => t.Id == remuneracion.idTipoRemuneracion);
-                    
-                    _registrarEventoHistorialLN.RegistrarEvento(
-                        remuneracion.idEmpleado,
-                        "Remuneración Modificada",
-                        $"Se modificó la remuneración de {tipoRemuneracion?.nombreTipoRemuneracion ?? "Tipo desconocido"}",
-                        $"Monto: {remuneracion.pagoQuincenal:C}",
-                        null,
-                        remuneracion.pagoQuincenal?.ToString("C") ?? "0.00",
-                        User.Identity.GetUserId(),
-                        Request.UserHostAddress
-                    );
-                }
-                catch (Exception ex)
-                {
-                    // Log del error pero no fallar la operación principal
-                    System.Diagnostics.Debug.WriteLine($"Error al registrar evento en historial: {ex.Message}");
-                }
+                    // Registrar evento en el historial
+                    try
+                    {
+                        var tipoRemuneracion = _listarTipoRemuneracionLN.ObtenerTipoRemuneracion().FirstOrDefault(t => t.Id == remuneracion.idTipoRemuneracion);
 
-                TempData["mensaje"] = "Remuneración actualizada correctamente.";
-            }
-            else
-            {
-                TempData["mensaje"] = "No se pudo actualizar la remuneración.";
-            }
+                        _registrarEventoHistorialLN.RegistrarEvento(
+                            remuneracion.idEmpleado,
+                            "Remuneración Modificada",
+                            $"Se modificó la remuneración de {tipoRemuneracion?.nombreTipoRemuneracion ?? "Tipo desconocido"}",
+                            $"Monto: {remuneracion.pagoQuincenal:C}",
+                            null,
+                            remuneracion.pagoQuincenal?.ToString("C") ?? "0.00",
+                            User.Identity.GetUserId(),
+                            Request.UserHostAddress
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log del error pero no fallar la operación principal
+                        System.Diagnostics.Debug.WriteLine($"Error al registrar evento en historial: {ex.Message}");
+                    }
+
+                    TempData["mensaje"] = "Remuneración actualizada correctamente.";
+                }
+                else
+                {
+                    TempData["mensaje"] = "No se pudo actualizar la remuneración.";
+                }
 
                 return RedirectToAction("DetallesRemu", new { id = idEmpleado });
             }
-            
-             catch (Exception ex)
+            catch (Exception ex)
             {
                 TempData["Mensaje"] = $"Error: {ex.Message}";
                 TempData["TipoMensaje"] = "danger";
                 return RedirectToAction("DetallesRemu", new { id = idEmpleado });
             }
         }
-
 
         // ELIMINAR REMUNERACIÓN ------------------------------------------
 
@@ -354,5 +350,25 @@ namespace Emplaniapp.UI.Controllers
             }
             return View(remuneracion);
         }
+
+  
+        // GET: Remuneraciones/ReciboPagoPdf/5
+        [HttpGet]
+        public ActionResult ReciboPagoPdf(int id)
+        {
+            var remuneracion = _obtenerRemuneracionPorIdLN.ObtenerPorId(id);
+            if (remuneracion == null) return HttpNotFound();
+
+            var empleado = _obtenerEmpleadoPorIdLN.ObtenerEmpleadoPorId(remuneracion.idEmpleado);
+            var model = new Tuple<EmpleadoDto, RemuneracionDto>(empleado, remuneracion);
+
+            return new ViewAsPdf("ReciboPagoPDF", model)
+            {
+                FileName = $"Recibo_{empleado.nombre}_{remuneracion.fechaRemuneracion:yyyyMMdd}.pdf",
+                PageSize = Size.Letter,
+                CustomSwitches = "--print-media-type --enable-local-file-access"
+            };
+        }
+     
     }
 }

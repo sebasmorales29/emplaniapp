@@ -1,0 +1,113 @@
+﻿@model Tuple<Emplaniapp.Abstracciones.ModelosParaUI.EmpleadoDto, Emplaniapp.Abstracciones.ModelosParaUI.RemuneracionDto>
+@{
+    Layout = null;
+    var emp = Model.Item1;
+    var rem = Model.Item2;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Recibo de Pago - @emp.nombre @emp.primerApellido</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            margin: 28px;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 0;
+        }
+
+        h2 {
+            font-size: 14px;
+            color: #555;
+            margin-top: 4px;
+        }
+
+        .row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .col {
+            flex: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8f8f8;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .muted {
+            color: #666;
+        }
+
+        .box {
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Recibo de Pago</h1>
+    <h2 class="muted">@rem.fechaRemuneracion.ToString("dd/MM/yyyy")</h2>
+
+    <div class="row">
+        <div class="col box">
+            <strong>Empleado</strong><br />
+            @emp.nombre @emp.primerApellido @emp.segundoApellido<br />
+            Cédula: @emp.cedula<br />
+            Cargo: @emp.nombreCargo
+        </div>
+        <div class="col box">
+            <strong>Pago</strong><br />
+            Tipo: @rem.nombreTipoRemuneracion<br />
+            Estado: @rem.nombreEstado<br />
+            Periodo: @rem.fechaRemuneracion.ToString("MMMM yyyy")
+        </div>
+    </div>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Días trabajados</th>
+                <td class="right">@((rem.diasTrabajados ?? 0).ToString("N0"))</td>
+            </tr>
+            <tr>
+                <th>Horas</th>
+                <td class="right">@((rem.horas ?? 0).ToString("N0"))</td>
+            </tr>
+            <tr>
+                <th>Comisión</th>
+                <td class="right">@((rem.comision ?? 0m).ToString("N2"))</td>
+            </tr>
+            <tr>
+                <th>Pago quincenal</th>
+                <td class="right"><strong>@((rem.pagoQuincenal ?? 0m).ToString("N2"))</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="muted">Generado por Emplaniapp • Este documento es informativo.</p>
+</body>
+</html>

@@ -61,7 +61,6 @@ namespace Emplaniapp.UI.Controllers
             _obtenerEmpleadoLN = new ObtenerEmpleadoPorIdLN();
             _filtrarEmpleadosLN = new filtrarEmpleadosLN();
             _obtenerTotalEmpleadosLN = new obtenerTotalEmpleadosLN();
-
         }
 
         public EmpleadoController(ApplicationUserManager userManager, ApplicationRoleManager roleManager)
@@ -114,7 +113,7 @@ namespace Emplaniapp.UI.Controllers
         // ===============================================
         // MÉTODOS PARA DATOS GEOGRÁFICOS
         // ===============================================
-        
+
         private SelectList ObtenerProvinciasSelectList(int? selectedValue = null)
         {
             using (var contexto = new Contexto())
@@ -123,15 +122,20 @@ namespace Emplaniapp.UI.Controllers
                     .Select(p => new { p.idProvincia, p.nombreProvincia })
                     .OrderBy(p => p.nombreProvincia)
                     .ToList();
-                
+
                 return new SelectList(provincias, "idProvincia", "nombreProvincia", selectedValue);
             }
         }
 
-
-
-
-
+        // Helper para cargar SIEMPRE los combos necesarios de CrearEmpleado
+        private void CargarCombosEmpleado(EmpleadoDto model)
+        {
+            ViewBag.Cargos = ObtenerCargosSelectList(model.idCargo);
+            ViewBag.TiposMoneda = ObtenerTiposMonedasSelectList(model.idMoneda);
+            ViewBag.Bancos = ObtenerBancosSelectList(model.idBanco);
+            ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList(model.periocidadPago);
+            ViewBag.Provincias = ObtenerProvinciasSelectList(model.idProvincia);
+        }
 
         // GET: Empleado
         public ActionResult ListarEmpleados()
@@ -186,23 +190,16 @@ namespace Emplaniapp.UI.Controllers
         {
             var model = new EmpleadoDto
             {
-                fechaNacimiento = DateTime.Now.AddYears(-25), // Valor por defecto
+                fechaNacimiento = DateTime.Now.AddYears(-25),
                 fechaContratacion = DateTime.Now,
-                idProvincia = 1,   // San José
-                nombreCanton = "San José",    // Cantón por defecto
-                nombreDistrito = "Carmen",    // Distrito por defecto
-                direccionDetallada = "Dirección por defecto", // Valor por defecto
-                idEstado = 1       // Estado Activo por defecto
+                idProvincia = 1,
+                nombreCanton = "San José",
+                nombreDistrito = "Carmen",
+                direccionDetallada = "Dirección por defecto",
+                idEstado = 1
             };
 
-            ViewBag.Cargos = ObtenerCargosSelectList();
-            ViewBag.TiposMoneda = ObtenerTiposMonedasSelectList();
-            ViewBag.Bancos = ObtenerBancosSelectList();
-            ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList();
-            
-            // Cargar solo provincias para dropdown
-            ViewBag.Provincias = ObtenerProvinciasSelectList(model.idProvincia);
-            
+            CargarCombosEmpleado(model);
             return View(model);
         }
 
@@ -213,33 +210,24 @@ namespace Emplaniapp.UI.Controllers
         {
             try
             {
-                // Añadimos un log para ver qué datos llegan al controlador
                 System.Diagnostics.Debug.WriteLine($"Intento de crear empleado. UserName: {model.UserName}, Rol por defecto: Empleado");
 
                 if (ModelState.IsValid)
                 {
-                    // 1. Crear el usuario de ASP.NET Identity usando el UserName del modelo
                     var user = new ApplicationUser { UserName = model.UserName, Email = model.correoInstitucional };
                     var result = await UserManager.CreateAsync(user, model.Password);
 
-                    // --- INICIO DE CÓDIGO DE DEPURACIÓN ---
                     if (result.Succeeded)
                     {
                         System.Diagnostics.Debug.WriteLine($"ÉXITO: Usuario de Identity '{user.UserName}' (ID: {user.Id}) creado correctamente.");
-                        // --- FIN DE CÓDIGO DE DEPURACIÓN ---
 
-                        // 2. Asignar rol "Empleado" por defecto a todos los usuarios nuevos
                         const string rolPorDefecto = "Empleado";
                         await UserManager.AddToRoleAsync(user.Id, rolPorDefecto);
                         System.Diagnostics.Debug.WriteLine($"ÉXITO: Rol por defecto '{rolPorDefecto}' asignado al usuario '{user.UserName}'.");
 
-                        // 3. Crear el DTO del empleado para la lógica de negocio
                         var empleadoDto = new EmpleadoDto
                         {
-                            // Enlazar el usuario de Identity con el empleado
                             IdNetUser = user.Id,
-
-                            // Datos personales del formulario
                             nombre = model.nombre?.Trim(),
                             segundoNombre = string.IsNullOrWhiteSpace(model.segundoNombre) ? null : model.segundoNombre.Trim(),
                             primerApellido = model.primerApellido?.Trim(),
@@ -248,54 +236,28 @@ namespace Emplaniapp.UI.Controllers
                             cedula = model.cedula,
                             numeroTelefonico = model.numeroTelefonico?.Trim(),
                             correoInstitucional = model.correoInstitucional?.Trim(),
-                            
-                            // Datos de ubicación
-                            idProvincia = model.idProvincia ?? 1,   // San José por defecto
+                            idProvincia = model.idProvincia ?? 1,
                             nombreCanton = string.IsNullOrWhiteSpace(model.nombreCanton) ? "San José" : model.nombreCanton.Trim(),
                             nombreDistrito = string.IsNullOrWhiteSpace(model.nombreDistrito) ? "Carmen" : model.nombreDistrito.Trim(),
                             direccionDetallada = string.IsNullOrWhiteSpace(model.direccionDetallada) ? "Dirección por definir" : model.direccionDetallada.Trim(),
-                            
-                            // Datos laborales
-                            idCargo = model.idCargo.HasValue ? model.idCargo.Value : 1, // Validar que idCargo no sea null
+                            idCargo = model.idCargo.HasValue ? model.idCargo.Value : 1,
                             fechaContratacion = model.fechaContratacion,
                             periocidadPago = model.periocidadPago,
                             salarioAprobado = model.salarioAprobado,
-                            
-                            // Datos bancarios
-                            idMoneda = model.idMoneda.HasValue ? model.idMoneda.Value : 1, // Colón por defecto
+                            idMoneda = model.idMoneda.HasValue ? model.idMoneda.Value : 1,
                             cuentaIBAN = model.cuentaIBAN?.Trim(),
-                            idBanco = model.idBanco.HasValue ? model.idBanco.Value : 1, // Banco por defecto
-                            
-                            // Estado
-                            idEstado = 1 // Activo por defecto
+                            idBanco = model.idBanco.HasValue ? model.idBanco.Value : 1,
+                            idEstado = 1
                         };
 
-                        System.Diagnostics.Debug.WriteLine("📋 DTO del empleado creado:");
-                        System.Diagnostics.Debug.WriteLine($"IdNetUser: {empleadoDto.IdNetUser}");
-                        System.Diagnostics.Debug.WriteLine($"nombre: {empleadoDto.nombre}");
-                        System.Diagnostics.Debug.WriteLine($"cedula: {empleadoDto.cedula}");
-                        System.Diagnostics.Debug.WriteLine($"correoInstitucional: {empleadoDto.correoInstitucional}");
-                        System.Diagnostics.Debug.WriteLine($"idProvincia: {empleadoDto.idProvincia}");
-                        System.Diagnostics.Debug.WriteLine($"nombreCanton: {empleadoDto.nombreCanton}");
-                        System.Diagnostics.Debug.WriteLine($"nombreDistrito: {empleadoDto.nombreDistrito}");
-                        System.Diagnostics.Debug.WriteLine($"direccionDetallada: {empleadoDto.direccionDetallada}");
-                        System.Diagnostics.Debug.WriteLine($"idCargo: {empleadoDto.idCargo}");
-                        System.Diagnostics.Debug.WriteLine($"periocidadPago: {empleadoDto.periocidadPago}");
-                        System.Diagnostics.Debug.WriteLine($"salarioAprobado: {empleadoDto.salarioAprobado}");
-                        System.Diagnostics.Debug.WriteLine($"idMoneda: {empleadoDto.idMoneda}");
-                        System.Diagnostics.Debug.WriteLine($"idBanco: {empleadoDto.idBanco}");
-
-                        // 4. Verificar que existan los datos básicos necesarios
                         string validationError = ValidarDatosBasicos(empleadoDto);
                         if (!string.IsNullOrEmpty(validationError))
                         {
                             await UserManager.DeleteAsync(user);
                             ModelState.AddModelError("", $"Error de datos básicos: {validationError}");
-                            System.Diagnostics.Debug.WriteLine($"❌ ERROR DE VALIDACIÓN: {validationError}");
                         }
                         else
                         {
-                            // 5. Guardar el empleado en la base de datos
                             System.Diagnostics.Debug.WriteLine("🚀 Llamando a CrearEmpleado...");
                             bool creacionEmpleadoExitosa = _agregarEmpleadoLN.CrearEmpleado(empleadoDto);
                             System.Diagnostics.Debug.WriteLine($"🎯 Resultado CrearEmpleado: {creacionEmpleadoExitosa}");
@@ -308,23 +270,19 @@ namespace Emplaniapp.UI.Controllers
                             }
                             else
                             {
-                                // Si falla la creación del empleado, hay que borrar el usuario que ya creamos para no dejar datos huérfanos.
                                 await UserManager.DeleteAsync(user);
                                 ModelState.AddModelError("", "Hubo un error al guardar los datos del empleado. Verifique que: 1) La cédula no esté duplicada, 2) El correo electrónico no esté duplicado, 3) Todos los datos sean válidos.");
-                                System.Diagnostics.Debug.WriteLine("❌ ERROR: Falló la creación del EMPLEADO en la BD, se ha borrado el usuario de Identity para evitar datos huérfanos.");
                             }
                         }
                     }
                     else
                     {
-                        // --- INICIO DE CÓDIGO DE DEPURACIÓN ---
                         System.Diagnostics.Debug.WriteLine($"ERROR: Falló la creación del usuario de Identity '{model.UserName}'. Razones:");
                         foreach (var error in result.Errors)
                         {
                             ModelState.AddModelError("", error);
                             System.Diagnostics.Debug.WriteLine($"- {error}");
                         }
-                        // --- FIN DE CÓDIGO DE DEPURACIÓN ---
                     }
                 }
                 else
@@ -337,20 +295,15 @@ namespace Emplaniapp.UI.Controllers
                     }
                 }
 
-                // Si llegamos aquí, algo falló. Recargamos los dropdowns y devolvemos la vista.
-                ViewBag.Cargos = ObtenerCargosSelectList(model.idCargo);
-                ViewBag.TiposMoneda = ObtenerTiposMonedasSelectList(model.idMoneda);
-                ViewBag.Bancos = ObtenerBancosSelectList(model.idBanco);
-                ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList(model.periocidadPago);
-                
-                // Recargar datos geográficos
-                ViewBag.Provincias = ObtenerProvinciasSelectList(model.idProvincia);
-                
+                // Si aquí no hubo Redirect, recarga combos y devuelve la vista
+                CargarCombosEmpleado(model);
                 return View(model);
             }
             catch
             {
-                return View();
+                // Antes devolvías View() sin modelo ni combos -> provoca el error del ViewData.
+                CargarCombosEmpleado(model);
+                return View(model);
             }
         }
 
@@ -414,10 +367,6 @@ namespace Emplaniapp.UI.Controllers
             return RedirectToAction("ListarEmpleados");
         }
 
-
-
-
-
         // ===============================================
         // MÉTODOS DE VALIDACIÓN
         // ===============================================
@@ -430,7 +379,6 @@ namespace Emplaniapp.UI.Controllers
                 {
                     var errores = new List<string>();
 
-                    // Verificar Provincia
                     if (empleado.idProvincia.HasValue)
                     {
                         var provinciaExiste = contexto.Provincia.Any(p => p.idProvincia == empleado.idProvincia.Value);
@@ -438,19 +386,16 @@ namespace Emplaniapp.UI.Controllers
                             errores.Add($"Provincia con ID {empleado.idProvincia} no existe");
                     }
 
-                    // Verificar Cantón (nombre requerido)
                     if (string.IsNullOrWhiteSpace(empleado.nombreCanton))
                     {
                         errores.Add("El nombre del cantón es obligatorio");
                     }
 
-                    // Verificar Distrito (nombre requerido)
                     if (string.IsNullOrWhiteSpace(empleado.nombreDistrito))
                     {
                         errores.Add("El nombre del distrito es obligatorio");
                     }
 
-                    // Verificar Cargo
                     if (empleado.idCargo.HasValue)
                     {
                         var cargoExiste = contexto.Cargos.Any(c => c.idCargo == empleado.idCargo.Value);
@@ -458,7 +403,6 @@ namespace Emplaniapp.UI.Controllers
                             errores.Add($"Cargo con ID {empleado.idCargo} no existe");
                     }
 
-                    // Verificar Banco
                     if (empleado.idBanco.HasValue)
                     {
                         var bancoExiste = contexto.Bancos.Any(b => b.idBanco == empleado.idBanco.Value);
@@ -466,7 +410,6 @@ namespace Emplaniapp.UI.Controllers
                             errores.Add($"Banco con ID {empleado.idBanco} no existe");
                     }
 
-                    // Verificar TipoMoneda
                     if (empleado.idMoneda.HasValue)
                     {
                         var monedaExiste = contexto.TipoMoneda.Any(t => t.idTipoMoneda == empleado.idMoneda.Value);
@@ -474,12 +417,10 @@ namespace Emplaniapp.UI.Controllers
                             errores.Add($"TipoMoneda con ID {empleado.idMoneda} no existe");
                     }
 
-                    // Verificar Estado (idEstado es int, no int?)
                     var estadoExiste = contexto.Estado.Any(e => e.idEstado == empleado.idEstado);
                     if (!estadoExiste)
                         errores.Add($"Estado con ID {empleado.idEstado} no existe");
 
-                    // Verificar Direccion
                     var direccionExiste = contexto.Direccion.Any(d => d.idDireccion == 1);
                     if (!direccionExiste)
                         errores.Add("Dirección con ID 1 no existe");
@@ -493,9 +434,6 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        /// <summary>
-        /// Método de prueba para verificar la conexión a la base de datos y datos existentes
-        /// </summary>
         [HttpGet]
         public JsonResult VerificarConexionBD()
         {
@@ -537,9 +475,6 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        /// <summary>
-        /// Método de prueba para verificar los datos de un empleado específico
-        /// </summary>
         [HttpPost]
         public JsonResult VerificarDatosEmpleado(EmpleadoDto empleado)
         {
@@ -571,7 +506,7 @@ namespace Emplaniapp.UI.Controllers
                         nombreValido = !string.IsNullOrWhiteSpace(empleado.nombre),
                         cedulaValida = empleado.cedula >= 100000000 && empleado.cedula <= 999999999,
                         correoValido = !string.IsNullOrWhiteSpace(empleado.correoInstitucional),
-                        idNetUserValido = true, // El IdNetUser se genera después de crear el usuario, no es un error que esté vacío
+                        idNetUserValido = true,
                         mayorDeEdad = empleado.fechaNacimiento <= DateTime.Now.AddYears(-18),
                         fechaContratacionValida = empleado.fechaContratacion <= DateTime.Now,
                         salarioValido = empleado.salarioAprobado > 0,

@@ -5,7 +5,7 @@
 @{
     ViewBag.Title = "Agregar Empleado";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    
+
     // Definir funciones de rol activo localmente
     var claimsIdentity = User.Identity as ClaimsIdentity;
     var roleClaim = claimsIdentity?.FindFirst(ClaimTypes.Role);
@@ -15,7 +15,8 @@
         userRole = roleClaim.Value;
     }
 
-    Func<string> getActiveRole = () => {
+    Func<string> getActiveRole = () =>
+    {
         var activeRole = Session["ActiveRole"] as string;
         if (!string.IsNullOrEmpty(activeRole))
         {
@@ -24,7 +25,8 @@
         return userRole;
     };
 
-    Func<string, bool> isInActiveRole = (role) => {
+    Func<string, bool> isInActiveRole = (role) =>
+    {
         var activeRole = getActiveRole();
         return activeRole.Equals(role, StringComparison.OrdinalIgnoreCase);
     };
@@ -137,11 +139,31 @@
             <div class="panel-heading"><h3 class="panel-title">Datos Laborales</h3></div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.idCargo, "Cargo") @Html.DropDownListFor(m => m.idCargo, (SelectList)ViewBag.Cargos, "Seleccione cargo", new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.idCargo, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.idCargo, "Cargo")
+                            @Html.DropDownListFor(
+                                m => m.idCargo,
+                                ViewBag.Cargos as IEnumerable<SelectListItem>,
+                                "Seleccione cargo",
+                                new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.idCargo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
                     <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.fechaContratacion) @Html.EditorFor(m => m.fechaContratacion, new { htmlAttributes = new { @class = "form-control", type = "date" } }) @Html.ValidationMessageFor(m => m.fechaContratacion, "", new { @class = "text-danger" })</div></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.periocidadPago, "Periodicidad") @Html.DropDownListFor(m => m.periocidadPago, (SelectList)ViewBag.PeriocidadesPago, "Seleccione", new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.periocidadPago, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.periocidadPago, "Periodicidad")
+                            @Html.DropDownListFor(
+                                m => m.periocidadPago,
+                                ViewBag.PeriocidadesPago as IEnumerable<SelectListItem>,
+                                "Seleccione",
+                                new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.periocidadPago, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
                     <div class="col-md-6"><div class="form-group">@Html.LabelFor(m => m.salarioAprobado) @Html.EditorFor(m => m.salarioAprobado, new { htmlAttributes = new { @class = "form-control", type = "number", step = "0.01", min = "0", max = "100000" } })</div></div>
                 </div>
             </div>
@@ -155,7 +177,11 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             @Html.LabelFor(m => m.idProvincia, "Provincia")
-                            @Html.DropDownListFor(m => m.idProvincia, (SelectList)ViewBag.Provincias, "-- Seleccione provincia --", new { @class = "form-control" })
+                            @Html.DropDownListFor(
+                                m => m.idProvincia,
+                                ViewBag.Provincias as IEnumerable<SelectListItem>,
+                                "-- Seleccione provincia --",
+                                new { @class = "form-control" })
                             @Html.ValidationMessageFor(m => m.idProvincia, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -192,8 +218,28 @@
             <div class="panel-heading"><h3 class="panel-title">Datos Bancarios</h3></div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-6"><div class="form-group">@Html.DropDownListFor(m => m.idMoneda, (SelectList)ViewBag.TiposMoneda, "-- Seleccione moneda --", new { @class = "form-control", required = "required" })</div></div>
-                    <div class="col-md-6"><div class="form-group">@Html.DropDownListFor(m => m.idBanco, (SelectList)ViewBag.Bancos, "-- Seleccione banco --", new { @class = "form-control", required = "required" })</div></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.Label("Moneda")
+                            @Html.DropDownListFor(
+                                m => m.idMoneda,
+                                ViewBag.TiposMoneda as IEnumerable<SelectListItem>,
+                                "-- Seleccione moneda --",
+                                new { @class = "form-control", required = "required" })
+                            @Html.ValidationMessageFor(m => m.idMoneda, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.Label("Banco")
+                            @Html.DropDownListFor(
+                                m => m.idBanco,
+                                ViewBag.Bancos as IEnumerable<SelectListItem>,
+                                "-- Seleccione banco --",
+                                new { @class = "form-control", required = "required" })
+                            @Html.ValidationMessageFor(m => m.idBanco, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12"><div class="form-group">@Html.LabelFor(m => m.cuentaIBAN) @Html.EditorFor(m => m.cuentaIBAN, new { htmlAttributes = new { @class = "form-control" } }) @Html.ValidationMessageFor(m => m.cuentaIBAN, "", new { @class = "text-danger" })</div></div>
@@ -208,8 +254,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            @Html.LabelFor(m => m.UserName) 
-                            @Html.EditorFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control" } }) 
+                            @Html.LabelFor(m => m.UserName)
+                            @Html.EditorFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -217,7 +263,7 @@
                         <div class="form-group">
                             <label class="control-label">Rol de Usuario</label>
                             <div class="form-control-static" style="background-color: #e9f7ef; border: 1px solid #d4edda; padding: 8px; border-radius: 4px;">
-                                <i class="fa fa-info-circle text-success"></i> 
+                                <i class="fa fa-info-circle text-success"></i>
                                 <strong>Empleado</strong> (asignado automáticamente)
                             </div>
                             <small class="text-muted">Todos los usuarios nuevos reciben el rol de "Empleado" por defecto. Los roles adicionales (Contador, Administrador) se asignan posteriormente según sea necesario.</small>
@@ -248,6 +294,27 @@
     }
 </div>
 
+<!-- Modal de contraseña de administrador (usado por el script) -->
+<div class="modal fade" id="adminPasswordModal" tabindex="-1" role="dialog" aria-labelledby="adminPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminPasswordModalLabel">Confirmar acción</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p>Para continuar, confirme su contraseña de administrador.</p>
+                <input type="password" class="form-control" id="adminPasswordInput" placeholder="Contraseña de administrador" />
+                <small id="adminPasswordError" class="text-danger" style="display:none;">Contraseña incorrecta.</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelAdminPasswordBtn" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmAdminPasswordBtn">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script>
@@ -266,33 +333,20 @@
                 <text>isAdmin = true;</text>
             }
 
-            // --- Lógica de Envío Definitiva ---
+            // --- Envío con confirmación para admin ---
             form.on('submit', function(e) {
-                // jQuery Unobtrusive Validation ya validó el formulario. 
-                // Si no era válido, habría detenido el envío y nuestro código no se ejecutaría.
-                // Por lo tanto, si llegamos a este punto, el formulario es VÁLIDO.
-
-                // Solo necesitamos intervenir si el usuario es un administrador.
                 if (isAdmin) {
-                    // Detenemos el envío normal para mostrar el modal de confirmación.
                     e.preventDefault();
-                    
-                    // Usar función centralizada para mostrar el modal
                     if (window.AdminPasswordModal && window.AdminPasswordModal.show) {
                         window.AdminPasswordModal.show();
                     } else {
-                        // Fallback si el modal centralizado no está disponible
                         $('#adminPasswordInput').val('');
                         $('#adminPasswordError').hide();
                         $('#adminPasswordModal').modal('show');
                     }
                 }
-                
-                // Si no es admin, no hacemos nada aquí, y el formulario se envía normalmente.
             });
 
-
-            // --- Lógica del Modal ---
             $('#confirmAdminPasswordBtn').click(function () {
                 var password = $('#adminPasswordInput').val();
                 if (!password) {
@@ -311,9 +365,6 @@
                     },
                     success: function (response) {
                         if (response.success) {
-                            // Si la contraseña es correcta, enviamos el formulario.
-                            // Para evitar que nuestro 'submit' handler se ejecute otra vez en un bucle,
-                            // lo desvinculamos antes de enviar.
                             form.off('submit').submit();
                         } else {
                             $('#adminPasswordError').text('Contraseña incorrecta.').show();
@@ -361,9 +412,7 @@
 
             // Botón de prueba de datos del empleado
             $('#testEmployeeDataBtn').click(function () {
-                // Obtener los datos del formulario
                 var formData = form.serialize();
-                
                 $.ajax({
                     url: '@Url.Action("VerificarDatosEmpleado", "Empleado")',
                     type: 'POST',
@@ -387,7 +436,7 @@
                             mensaje += `• Periodicidad: ${response.datos.periocidadPago}\n`;
                             mensaje += `• Fecha Nacimiento: ${response.datos.fechaNacimiento}\n`;
                             mensaje += `• Fecha Contratación: ${response.datos.fechaContratacion}\n\n`;
-                            
+
                             mensaje += '✅ Validaciones:\n';
                             mensaje += `• Nombre válido: ${response.validaciones.nombreValido ? '✅' : '❌'}\n`;
                             mensaje += `• Cédula válida: ${response.validaciones.cedulaValida ? '✅' : '❌'}\n`;
@@ -397,7 +446,7 @@
                             mensaje += `• Fecha contratación válida: ${response.validaciones.fechaContratacionValida ? '✅' : '❌'}\n`;
                             mensaje += `• Salario válido: ${response.validaciones.salarioValido ? '✅' : '❌'}\n`;
                             mensaje += `• Periodicidad válida: ${response.validaciones.periodicidadValida ? '✅' : '❌'}`;
-                            
+
                             alert(mensaje);
                         } else {
                             alert('❌ Error al verificar datos: ' + response.error);

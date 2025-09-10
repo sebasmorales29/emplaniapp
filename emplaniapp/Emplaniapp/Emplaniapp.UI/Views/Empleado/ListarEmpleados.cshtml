@@ -46,6 +46,7 @@
         text-align: center;
         vertical-align: middle;
         white-space: nowrap;
+        min-width: 220px;
     }
 
     .total-empleados-box {
@@ -67,16 +68,7 @@
 
 <div class="d-flex justify-content-start mb-3" style="max-width: 200px;">
     <a href="@Url.Action("CrearEmpleado", "Empleado")"
-       class="btn btn-primary"
-       @*style="background-color: #B3DAF7;
-              color: #000;
-              border-radius: 8px;
-              padding: 6px 12px;
-              font-size: 14px;
-              font-weight: 600;
-              display: inline-flex;
-              align-items: center;
-              text-decoration: none;">*@
+       class="btn btn-primary">
         <i class="fas fa-plus" style="margin-right: 6px;"></i> Agregar Empleado
     </a>
 </div>
@@ -100,7 +92,6 @@
 @using (Html.BeginForm("Filtrar", "Empleado", FormMethod.Post))
 {
     <div class="d-flex justify-content-between align-items-center mb-3">
-
         <div class="d-flex align-items-center">
             <div class="me-2">
                 <input type="text" name="filtro" value="@ViewBag.Filtro" class="form-control" placeholder="Buscar por nombre o cédula" />
@@ -125,19 +116,17 @@
                 </div>
             }
         </div>
-
-
     </div>
 }
 
 <table class="table tabla-empleados" id="TablaEmpleado">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.First().cedula)</th>
-            <th>@Html.DisplayNameFor(model => model.First().nombreCompleto)</th>
-            <th>@Html.DisplayNameFor(model => model.First().nombreCargo)</th>
-            <th>@Html.DisplayNameFor(model => model.First().nombreEstado)</th>
-            <th>@Html.DisplayNameFor(model => model.First().RolesUsuario)</th>
+            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().cedula)</th>
+            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().nombreCompleto)</th>
+            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().nombreCargo)</th>
+            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().nombreEstado)</th>
+            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().RolesUsuario)</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -150,10 +139,24 @@
                 <td>@Html.DisplayFor(modelItem => item.nombreCargo)</td>
                 <td>@Html.DisplayFor(modelItem => item.nombreEstado)</td>
                 <td>
-                    <span class="badge badge-light" style="background-color: #e3f2fd; color: #000; border: 1px solid #90caf9;">@Html.DisplayFor(modelItem => item.RolesUsuario)</span>
+                    <span class="badge badge-light" style="background-color: #e3f2fd; color: #000; border: 1px solid #90caf9;">
+                        @Html.DisplayFor(modelItem => item.RolesUsuario)
+                    </span>
                 </td>
                 <td class="acciones">
-                    <a href="@Url.Action("Detalles", "DatosPersonales", new { id = item.idEmpleado })" class="btn-celeste-claro">Ver detalles</a>
+                    @* Ver perfil/detalles del empleado seleccionado *@
+                    <a href="@Url.Action("Detalles", "DatosPersonales", new { id = item.idEmpleado })"
+                       class="btn-celeste-claro">Ver detalles</a>
+
+                    @* Enlaces de edición DIRECTA, siempre enviando id = item.idEmpleado *@
+                    <a href="@Url.Action("EditarDatosPersonales",  "DatosPersonales", new { id = item.idEmpleado })"
+                       class="btn-celeste-claro">Editar personales</a>
+                    <a href="@Url.Action("EditarDatosLaborales",   "DatosPersonales", new { id = item.idEmpleado })"
+                       class="btn-celeste-claro">Editar laborales</a>
+                    <a href="@Url.Action("EditarDatosFinancieros", "DatosPersonales", new { id = item.idEmpleado })"
+                       class="btn-celeste-claro">Editar financieros</a>
+
+                    @* Cambiar estado (modal) *@
                     <a href="@Url.Action("_CambiarEstado", "Empleado", new { id = item.idEmpleado })"
                        class="btn-celeste-claro"
                        data-toggle="modal"
@@ -169,6 +172,7 @@
 
 @section Scripts {
     <script>
+        // Cargar parcial en modal "Cambiar Estado"
         $(document).on('click', 'a[data-toggle="modal"]', function (e) {
             e.preventDefault();
             var url = $(this).data("url");
@@ -180,20 +184,25 @@
             });
         });
 
-        $(document).ready(function () {
-            $("#buscarEmpleado").on("keyup", function () {
-                var value = $(this).val().toLowerCase();
-                $("#TablaEmpleado tbody tr").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        // Filtro en vivo (solo si existe el input de filtro)
+        $(function () {
+            var $search = $("input[name='filtro']");
+            if ($search.length) {
+                $search.on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+                    $("#TablaEmpleado tbody tr").each(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    });
                 });
-            });
+            }
 
-            $("#limpiarFiltro").click(function () {
-                $("#buscarEmpleado").val('');
-                $("#buscarEmpleado").trigger("keyup");
-            });
+            var $clear = $("#limpiarFiltro");
+            if ($clear.length) {
+                $clear.on("click", function () {
+                    $search.val('');
+                    $search.trigger("keyup");
+                });
+            }
         });
     </script>
-
-
 }
