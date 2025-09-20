@@ -43,7 +43,7 @@
         <div class="card">
             <div class="card-header card-header-flex">
                 <h3>Remuneraciones</h3>
-                @Html.ActionLink("Agregar", "CreateRemu", null, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Agregar", "CreateRemu", null, new { @class = "btn btn-accion-prim" })
             </div>
             <div class="card-body">
                 <table id="TablaTipoRemuneraciones" class="table table-hover">
@@ -72,8 +72,8 @@
                                     }
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Editar", "EditRemu", new { id = item.Id }, new { @class = "btn btn-sm btn-primary btn-block" })
-                                    @Html.ActionLink("Eliminar", "DeleteRemu", new { id = item.Id }, new { @class = "btn btn-sm btn-danger btn-block" })
+                                    @Html.ActionLink("Editar", "EditRemu", new { id = item.Id }, new { @class = "btn btn-sm btn-accion-prim btn-block" })
+                                    @Html.ActionLink("Eliminar", "DeleteRemu", new { id = item.Id }, new { @class = "btn btn-sm btn-accion-danger btn-block" })
                                 </td>
                             </tr>
                         }
@@ -88,7 +88,7 @@
         <div class="card">
             <div class="card-header card-header-flex">
                 <h3>Retenciones</h3>
-                @Html.ActionLink("Agregar", "CreateReten", null, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Agregar", "CreateReten", null, new { @class = "btn btn-accion-prim" })
             </div>
             <div class="card-body">
                 <table id="TablaTipoRetenciones" class="table table-hover">
@@ -117,8 +117,8 @@
                                     }
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Editar", "EditReten", new { id = item.Id }, new { @class = "btn btn-sm btn-primary btn-block" })
-                                    @Html.ActionLink("Eliminar", "DeleteReten", new { id = item.Id }, new { @class = "btn btn-sm btn-danger btn-block" })
+                                    @Html.ActionLink("Editar", "EditReten", new { id = item.Id }, new { @class = "btn btn-sm btn-accion-prim btn-block" })
+                                    @Html.ActionLink("Eliminar", "DeleteReten", new { id = item.Id }, new { @class = "btn btn-sm btn-accion-danger btn-block" })
                                 </td>
                             </tr>
                         }

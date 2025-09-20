@@ -9,7 +9,7 @@ namespace Emplaniapp.Abstracciones.InterfacesParaUI.Liquidaciones
 {
     public interface IEditarLiquidacionLN
     {
-        int Editar(EmpleadoDto emp, LiquidacionDto liquidacion);
-        int EditarFinal(EmpleadoDto emp, LiquidacionDto liquidacion);
+        int Editar(LiquidacionDto liquidacion);
+        int EditarFinal(LiquidacionDto liquidacion);
     }
 }

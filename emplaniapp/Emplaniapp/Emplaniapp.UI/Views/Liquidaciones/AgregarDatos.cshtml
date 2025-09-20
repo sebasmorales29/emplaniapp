@@ -11,57 +11,64 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Añadir Datos de Liquidación</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.idLiquidacion)
-        @Html.HiddenFor(model => model.idEmpleado)
-        @Html.HiddenFor(model => model.salarioPromedio)
-        @Html.HiddenFor(model => model.aniosAntiguedad)
-        @Html.HiddenFor(model => model.diasPreaviso)
-        @Html.HiddenFor(model => model.fechaPreaviso)
-        @Html.HiddenFor(model => model.diasVacacionesPendientes)
-        @Html.HiddenFor(model => model.pagoPreaviso)
-        @Html.HiddenFor(model => model.pagoAguinaldoProp)
-        @Html.HiddenFor(model => model.pagoCesantia)
-        @Html.HiddenFor(model => model.pagoVacacionesNG)
-        @Html.HiddenFor(model => model.remuPendientes)
-        @Html.HiddenFor(model => model.costoLiquidacion)
-        @Html.HiddenFor(model => model.observacionLiquidacion)
-        @Html.HiddenFor(model => model.idEstado)
+<div class="form-horizontal">
+    <h4>Añadir Datos de Liquidación</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.idEmpleado)
+    @Html.HiddenFor(model => model.salarioPromedio)
+    @Html.HiddenFor(model => model.aniosAntiguedad)
+    @Html.HiddenFor(model => model.diasPreaviso)
+    @Html.HiddenFor(model => model.fechaPreaviso)
+    @Html.HiddenFor(model => model.diasVacacionesPendientes)
+    @Html.HiddenFor(model => model.pagoPreaviso)
+    @Html.HiddenFor(model => model.pagoAguinaldoProp)
+    @Html.HiddenFor(model => model.pagoCesantia)
+    @Html.HiddenFor(model => model.pagoVacacionesNG)
+    @Html.HiddenFor(model => model.remuPendientes)
+    @Html.HiddenFor(model => model.costoLiquidacion)
+    @Html.HiddenFor(model => model.idEstado, 2)
 
-        <div class="form-group datos-row">
-            <div class="col-md-4">
-                @Html.DisplayNameFor(model => model.fechaLiquidacion)
-            </div>
-            <div class="col-md-6">
-                @Html.TextBoxFor(model => model.fechaLiquidacion, "{0:yyyy-MM-dd}", new { @id = "fechaLiq", @class = "form-control", @type = "date" })
-                @Html.ValidationMessageFor(model => model.fechaLiquidacion, "", new { @class = "text-danger" })
-
-            </div>
+    <div class="form-group datos-row">
+        <div class="col-md-4">
+            @Html.DisplayNameFor(model => model.fechaLiquidacion)
         </div>
+        <div class="col-md-6">
+            @Html.TextBoxFor(model => model.fechaLiquidacion, "{0:yyyy-MM-dd}", new { @id = "fechaLiq", @class = "form-control", @type = "date" })
+            @Html.ValidationMessageFor(model => model.fechaLiquidacion, "", new { @class = "text-danger" })
 
-        <div class="form-group datos-row">
-            <div class="col-md-4">
-                @Html.DisplayNameFor(model => model.motivoLiquidacion)
-            </div>
-            <div class="col-md-6">
-                @Html.DropDownListFor(model => model.motivoLiquidacion, (IEnumerable<SelectListItem>)ViewBag.MotivosLiq,
-                    "Seleccione un motivo", new { @id = "motivo", @name = "selectorMotivo", @class = "form-control ", @required = true })
-                @Html.ValidationMessageFor(model => model.motivoLiquidacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <br />
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Añadir Datos" class="btn btn-outline-primary mb-3" />
-            </div>
         </div>
     </div>
 
+    <div class="form-group datos-row">
+        <div class="col-md-4">
+            @Html.DisplayNameFor(model => model.motivoLiquidacion)
+        </div>
+        <div class="col-md-6">
+            @Html.DropDownListFor(model => model.motivoLiquidacion, (IEnumerable<SelectListItem>)ViewBag.MotivosLiq,
+                "Seleccione un motivo", new { @id = "motivo", @name = "selectorMotivo", @class = "form-control ", @required = true })
+            @Html.ValidationMessageFor(model => model.motivoLiquidacion, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group datos-row">
+        <div class="col-md-4">
+            @Html.DisplayNameFor(model => model.observacionLiquidacion)
+        </div>
+        <div class="col-md-6">
+            @Html.TextAreaFor(model => model.observacionLiquidacion, new { @id = "observs", @class = "form-control " })
+            @Html.ValidationMessageFor(model => model.observacionLiquidacion, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <br />
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink("Cancelar", "Detalles", new { @class = "btn btn-outline-secondary mb-3" })
+            <input type="submit" value="Añadir Datos" class="btn btn-outline-primary mb-3" />
+        </div>
+    </div>
+</div>
+
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>

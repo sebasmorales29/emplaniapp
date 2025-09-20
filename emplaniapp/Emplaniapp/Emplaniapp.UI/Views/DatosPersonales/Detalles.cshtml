@@ -6,18 +6,23 @@
     ViewBag.Title = $"{Model.nombre} {Model.primerApellido} {Model.segundoApellido}";
     var seccionActiva = ViewBag.Seccion ?? "Datos personales";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    
-    // Definir funciones de rol activo localmente
-    var claimsIdentity = User.Identity as ClaimsIdentity;
-    var roleClaim = claimsIdentity?.FindFirst(ClaimTypes.Role);
+
+    // Definir funciones de rol activo localmente (compatibles con C#5)
+    var claimsIdentity = User != null ? User.Identity as ClaimsIdentity : null;
+    Claim roleClaim = null;
+    if (claimsIdentity != null)
+    {
+        roleClaim = claimsIdentity.FindFirst(ClaimTypes.Role);
+    }
     string userRole = "Usuario";
     if (roleClaim != null)
     {
         userRole = roleClaim.Value;
     }
 
-    Func<string> getActiveRole = () => {
-        var activeRole = Session["ActiveRole"] as string;
+    Func<string> getActiveRole = () =>
+    {
+        var activeRole = Session != null ? Session["ActiveRole"] as string : null;
         if (!string.IsNullOrEmpty(activeRole))
         {
             return activeRole;
@@ -25,17 +30,21 @@
         return userRole;
     };
 
-    Func<string, bool> isInActiveRole = (role) => {
+    Func<string, bool> isInActiveRole = (role) =>
+    {
         var activeRole = getActiveRole();
-        return activeRole.Equals(role, StringComparison.OrdinalIgnoreCase);
+        return activeRole != null && activeRole.Equals(role, StringComparison.OrdinalIgnoreCase);
     };
 
-    Func<string[], bool> isInAnyActiveRole = (roles) => {
+    Func<string[], bool> isInAnyActiveRole = (roles) =>
+    {
         var activeRole = getActiveRole();
+        if (activeRole == null || roles == null) return false;
         return roles.Any(role => activeRole.Equals(role, StringComparison.OrdinalIgnoreCase));
     };
 
-    Func<string, bool> isNotInActiveRole = (role) => {
+    Func<string, bool> isNotInActiveRole = (role) =>
+    {
         return !isInActiveRole(role);
     };
 }
@@ -63,10 +72,16 @@
     }
 
     @@keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
     }
 </style>
+
 <div class="container">
     <!-- Mensaje de éxito -->
     @if (TempData["Mensaje"] != null)
@@ -79,10 +94,9 @@
     <!-- Título del empleado -->
     <div class="row">
         <div class="col-md-12">
-            <h2>@Model.nombre @Model.primerApellido @Model.segundoApellido</h2>
+            <h2 class="titulo">@Model.nombre @Model.primerApellido @Model.segundoApellido</h2>
         </div>
     </div>
-
 
     <!-- Enlaces de navegación -->
     <div class="row">
@@ -96,7 +110,7 @@
                 }
                 @if (isInActiveRole("Contador"))
                 {
-                    <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = Model.idEmpleado})" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
+                    <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
                     <a href="@Url.Action("Detalles", "Retenciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
                     <a href="@Url.Action("Detalles", "Liquidaciones", new { id = Model.idEmpleado })" class="@(seccionActiva == "Liquidacion" ? "active" : "")">Liquidación</a>
                 }
@@ -105,7 +119,6 @@
             <hr />
         </div>
     </div>
-
 
     <!-- Contenido -->
     <div class="row">
@@ -121,7 +134,7 @@
                                     <h3>Información personal</h3>
                                     @if (isInAnyActiveRole(new[] { "Administrador", "Empleado" }))
                                     {
-                                        <a href="@Url.Action("EditarDatosPersonales", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
+                                        <a href="@Url.Action("EditarDatosPersonales", "DatosPersonales", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
                                     }
                                 </div>
                                 <div class="seccion-body">
@@ -175,7 +188,7 @@
                                     <h3>Datos Laborales</h3>
                                     @if (isInAnyActiveRole(new[] { "Administrador", "Contador" }))
                                     {
-                                        <a href="@Url.Action("EditarDatosLaborales", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
+                                        <a href="@Url.Action("EditarDatosLaborales", "DatosPersonales", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
                                     }
                                 </div>
                                 <div class="seccion-body">
@@ -204,7 +217,7 @@
                                     <h3>Datos Financieros</h3>
                                     @if (isInAnyActiveRole(new[] { "Administrador", "Contador" }))
                                     {
-                                        <a href="@Url.Action("EditarDatosFinancieros", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
+                                        <a href="@Url.Action("EditarDatosFinancieros", "DatosPersonales", new { id = Model.idEmpleado })" class="btn-editar">Editar</a>
                                     }
                                 </div>
                                 <div class="seccion-body">
@@ -234,15 +247,15 @@
                     </div>
                 </div>
             }
-                            else if (seccionActiva == "Historial")
-                {
-                    <div id="contenedor-lista-historial">
-                        <div class="loading">
-                            <div class="spinner"></div>
-                            <p>Cargando historial...</p>
-                        </div>
+            else if (seccionActiva == "Historial")
+            {
+                <div id="contenedor-lista-historial">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Cargando historial...</p>
                     </div>
-                }
+                </div>
+            }
             else if (seccionActiva == "Roles y Permisos")
             {
                 if (isInActiveRole("Administrador"))
@@ -302,7 +315,7 @@
                         }
                     },
                     error: function (xhr) {
-                        container.html("<p class='text-danger'>Error al cargar las observaciones: " + xhr.status + " " + xhr.statusText + "</p>");
+                        container.html("<p class='text-danger'>Error al cargar las observaciones: " + xhr.status + ' ' + xhr.statusText + "</p>");
                     }
                 });
             }
@@ -319,7 +332,7 @@
                 console.log('🔍 Iniciando carga de historial para empleado:', empleadoId);
                 container.html("<div class='loading'><div class='spinner'></div><p>Cargando historial...</p></div>");
 
-                var url = '@Url.Action("Empleado", "Historial")'; // Volver a la acción original
+                var url = '@Url.Action("Empleado", "Historial")';
                 console.log('🌐 URL de la petición:', url);
 
                 $.ajax({
@@ -338,7 +351,7 @@
                     },
                     error: function (xhr, status, error) {
                         console.error('❌ Error en la petición AJAX:', {xhr: xhr, status: status, error: error});
-                        container.html("<p class='text-danger'>Error al cargar el historial: " + xhr.status + " " + xhr.statusText + "</p>");
+                        container.html("<p class='text-danger'>Error al cargar el historial: " + xhr.status + ' ' + xhr.statusText + "</p>");
                     }
                 });
             }
@@ -356,43 +369,30 @@
             // Listener para el botón de quitar filtros
             $('#contenedor-lista-observaciones').on('click', '#btn-quitar-filtros', function() {
                 var container = $('#contenedor-lista-observaciones');
-                // Limpiar los dropdowns
                 container.find('#filtro-ano').val('');
                 container.find('#filtro-mes').val('');
                 container.find('#filtro-usuario').val('');
-                // Recargar la lista sin filtros
                 cargarObservaciones();
             });
-            // --- FIN: Lógica de carga y filtrado ---
-
 
             // --- INICIO: Lógica del modal para agregar/editar observaciones ---
             var modalContainer = $('#modal-container');
-            var modalContent = $('#modal-content-container'); // Contenedor para todo el contenido del modal
+            var modalContent = $('#modal-content-container');
 
-            // 1. Escuchar clics en botones que abren el modal (se usa delegación de eventos para que funcione con contenido cargado por AJAX)
+            // Abrir modal (agregar/editar)
             $('#contenedor-lista-observaciones').on('click', '.btn-agregar-observacion, .btn-editar-observacion', function () {
                 var url = $(this).data('url');
-
-                // 2. Cargar el formulario COMPLETO (header, body, footer) desde el servidor
                 modalContent.load(url, function () {
-                    // 3. Mostrar el modal
                     modalContainer.modal('show');
-                    // Volver a registrar el validador de jQuery Unobtrusive en el nuevo contenido
                     $.validator.unobtrusive.parse(modalContent.find('form'));
                 });
             });
 
-            // 4. Escuchar clic en el botón Guardar del modal (usando delegación de eventos)
+            // Guardar en modal
             modalContainer.on('click', '#btn-guardar-observacion', function () {
                 var form = modalContent.find('form');
+                if (!form.valid()) return;
 
-                // Validar el formulario del lado del cliente
-                if (!form.valid()) {
-                    return;
-                }
-
-                // 5. Enviar el formulario vía AJAX
                 $.ajax({
                     url: form.attr('action'),
                     method: 'POST',
@@ -400,12 +400,8 @@
                     success: function (response) {
                         if (response.success) {
                             modalContainer.modal('hide');
-
-                            // Recargar la lista de observaciones para ver el nuevo item
                             cargarObservaciones();
                         } else {
-                            // Si el servidor devuelve el formulario con errores de validación
-                            // La respuesta ya es el HTML del formulario completo, lo reemplazamos
                             modalContent.html(response);
                             $.validator.unobtrusive.parse(modalContent.find('form'));
                         }
@@ -428,7 +424,3 @@
         </div>
     </div>
 </div>
-
-
-
-

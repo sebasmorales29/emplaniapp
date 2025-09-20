@@ -13,7 +13,8 @@
 
 <div class="container">
 
-    @Html.ActionLink("< Volver a Hoja Resumen", "listarHojaResumen", "HojaResumen", null, new { @class = "btn btn-outline-secondary mb-3" })
+    @Html.ActionLink("< Volver a Hoja Resumen", "listarHojaResumen", "HojaResumen",
+        null, new { @class = "btn btn-light text-secondary mt-0 mb-4" })
 
     <!-- Mensaje de éxito -->
     @if (TempData["Mensaje"] != null)
@@ -24,15 +25,15 @@
     }
 
     <!-- Título del empleado -->
-    <div class="row mb-4">
+    <div class="row">
         <div class="col-md-12">
-            <h2>@Model.Item1.nombre @Model.Item1.primerApellido @Model.Item1.segundoApellido</h2>
+            <h2 class="titulo">@Model.Item1.nombre @Model.Item1.primerApellido @Model.Item1.segundoApellido</h2>
         </div>
     </div>
 
 
     <!-- Enlaces de navegación -->
-    <div class="row mb-4">
+    <div class="row">
         <div class="col-md-12">
             <div class="nav-enlaces">
                 <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Datos personales" })" class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
@@ -48,27 +49,27 @@
 
 
     <!-- Contenido -->
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3>Liquidación</h3>
-
-    </div>
-
     <div class="row">
         <div class="col-md-12">
+
             @if (seccionActiva == "Liquidacion")
             {
-
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="subtitulo">Liquidación</h2>
+                </div>
                 var item = Model.Item2;
 
-                using (Html.BeginForm("GuardarDatos", "Liquidaciones", FormMethod.Post))
+                using (Html.BeginForm("GuardarDatos", "Liquidaciones", FormMethod.Post, new { @id = "myform" }))
                 {
                     @Html.AntiForgeryToken()
+
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => item.idLiquidacion)
                     @Html.HiddenFor(model => item.idEmpleado, new { @id = "idEmp" })
 
                     <div class="form-horizontal">
                         <div class="row">
+
                             <div class="col-md-6">
                                 <h5>Fecha y Motivo </h5>
 
@@ -93,16 +94,26 @@
                                 </div>
 
                                 <div class="form-group datos-row">
+                                    <div class="col-md-4">
+                                        @Html.DisplayNameFor(model => item.observacionLiquidacion)
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.DisplayFor(model => item.observacionLiquidacion, new { @id = "observs", @class = "form-control " })
+                                        @Html.ValidationMessageFor(model => item.observacionLiquidacion, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="form-group datos-row">
                                     <div class="col-md-4"></div>
                                     <div class="col-md-4">
 
 
-                                        @if (ViewBag.MuestraLiq)
+                                        @if (item.idEstado == 0)
                                         {
                                             <a href="@Url.Action("AgregarDatos", "Liquidaciones", new { id = Model.Item1.idEmpleado, seccion = "Liquidacion" })"
-                                               class="btn btn-outline-primary mb-3">Editar Datos</a>
+                                               class="btn btn-outline-primary mb-3">Modificar Datos</a>
                                         }
-                                        else
+                                        else if (item.idEstado == 2)
                                         {
                                             <a href="@Url.Action("EditDatos", "Liquidaciones", new { id = Model.Item1.idEmpleado, seccion = "Liquidacion" })"
                                                class="btn btn-outline-primary mb-3">Editar Datos</a>
@@ -110,6 +121,30 @@
                                     </div>
                                     <div class="col-md-4"></div>
                                 </div>
+
+                                @if (item.idEstado == 2)
+                                {
+                                    <hr /> <br /> <br />
+                                    bool terminos = false;
+
+                                    <div class="form-group datos-row">
+                                        <!-- Chech box -->
+                                        <div class="col-md-8 row">
+                                            <div class="col-md-1">
+                                                @Html.CheckBox("termsCheckbox", terminos, new { htmlAttributes = new { @class = "form-control" } })
+                                            </div>
+                                            <div class="col-md-11">
+                                                @Html.Label("termsCheckbox", "Estoy de acuerdo con los cálculos de liquidación generados")
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                        </div>
+                                        <!-- Botón final -->
+
+                                        <a href="@Url.Action("GuardarDatos", "Liquidaciones", new { id = Model.Item1.idEmpleado, seccion = "Liquidacion" })"
+                                           id="submitButton" name="submitButton" class="btn btn-success mb-3" disabled>Procesar Liquidación</a>
+                                    </div>
+                                }
+
 
                             </div>
 
@@ -150,7 +185,7 @@
                                         @Html.DisplayNameFor(model => item.fechaPreaviso)
                                     </div>
                                     <div class="col-md-6">
-                                        @Html.DisplayFor(model => item.fechaPreaviso, new { @id = "fechaPrev", htmlAttributes = new { @class = "form-control" } })
+                                        @Html.DisplayFor(model => item.fechaPreaviso, "{0:yyyy-MM-dd}", new { @id = "fechaLiq", @class = "form-control", @type = "date" })
                                     </div>
                                 </div>
 
@@ -194,12 +229,22 @@
 
                                 <div class="form-group datos-row">
                                     <div class="col-md-5">
+                                        @Html.DisplayNameFor(model => item.pagoVacacionesNG)
+                                    </div>
+                                    <div class="col-md-5">
+                                        @Html.DisplayFor(model => item.pagoVacacionesNG, new { @id = "pagoRemPen", htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group datos-row">
+                                    <div class="col-md-5">
                                         @Html.DisplayNameFor(model => item.remuPendientes)
                                     </div>
                                     <div class="col-md-5">
                                         @Html.DisplayFor(model => item.remuPendientes, new { @id = "pagoRemPen", htmlAttributes = new { @class = "form-control" } })
                                     </div>
                                 </div>
+
                                 <hr />
                                 <div class="form-group datos-row">
                                     <div class="col-md-5">
@@ -212,32 +257,9 @@
                                 <br />
                             </div>
                         </div>
-                        <hr /> <br />
-                        <div class="row">
 
-                            @{
-                                bool terminos = false;
-                            }
 
-                            <br />
 
-                            <div class="form-group datos-row">
-                                <div class="col-md-8 row">
-
-                                    <div class="col-md-1">
-                                        @Html.CheckBox("termsCheckbox", terminos, new { htmlAttributes = new { @class = "form-control" } })
-                                    </div>
-                                    <div class="col-md-11">
-                                        @Html.Label("termsCheckbox", "Estoy de acuerdo con los cálculos de liquidación generados")
-                                    </div>
-
-                                    <div class="col-md-1"></div>
-                                </div>
-                                <div class="col-md-4 row">
-                                    <input type="submit" id="submitButton" value="Procesar Liquidación" class="btn btn-outline-success" disabled />
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 }
             }
@@ -263,7 +285,11 @@
         checkbox.addEventListener('change', function () {
             button.disabled = !this.checked;
         });
-
+     
+        function redirectToNextPage() {
+            window.location.href = @Url.Action("GuardarDatos", "Liquidaciones", new { id = Model.Item1.idEmpleado, seccion = "Liquidacion" });
+        }
+        
 
         var dropdown = document.getElementById('fechaLiq')
         dropdown.addEventListener('change', function () {
@@ -277,42 +303,9 @@
         dropdown.addEventListener('change', function () {
             var seleccionado = this.value;
             document.getElementById("motivo").value = selectedValue;
-            //document.getElementById("Fechaliquida").value = selectedValue;
         })
 
 
-
-
-
-        @*$("#CalcularLiq").("click", function () {
-            var id = $('#idEmpleado').value;
-            var fechaLiq = $('#fechaLiq').value;
-            var motivo = $('#motivo').value;
-            var salarioProm = $('#salPromedio').value;
-            var aniosAntq = $('#aniosAntq').value;
-
-
-            $ajax({
-                url: '@Url.Action("CalcularLiquidacion", "Liquidaciones")',
-                method: 'POST',
-                data: {
-                    id: id,
-                    fechaLiq: fechaLiq,
-                    razon: motivo
-                },
-                success: function (data) {
-                    if (data.resultcount > 0) {
-                        document.getElementById("salPromedio").value = data.salarioProm;
-                        document.getElementById("aniosAntq").value = data.aniosAntq;
-                    }
-                    else {
-                        document.getElementById("salPromedio").value = "0";
-                        document.getElementById("aniosAntq").value = "0";
-                    }
-                }
-
-            });
-        });*@
 
     });
 

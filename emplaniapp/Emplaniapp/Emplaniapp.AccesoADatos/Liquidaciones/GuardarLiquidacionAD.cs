@@ -22,7 +22,7 @@ namespace Emplaniapp.AccesoADatos.Liquidaciones
 
         public async Task<int> Guardar(Liquidacion Liquid)
         {
-            Liquid.idEstado = 1; // Se establece el estado como "Activo" por defecto
+            Liquid.idEstado = 2; // Se establece el estado como "Inactivo" por efectos de que se ocupa para registrar
             contexto.Liquidaciones.Add(Liquid);
             EntityState estado = contexto.Entry(Liquid).State = System.Data.Entity.EntityState.Added;
             int liquidGuardado = await contexto.SaveChangesAsync();

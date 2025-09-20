@@ -42,60 +42,80 @@ namespace Emplaniapp.AccesoADatos.Remuneraciones
         {
             try
             {
-                var empleado = await _contexto.Empleados
-                    .Where(e => e.idEmpleado == remuneracionDto.idEmpleado)
-                    .Select(e => new { e.salarioPorHoraExtra, e.salarioDiario })
-                    .FirstOrDefaultAsync();
+                // Traer empleado y nombre de cargo desde tabla relacionada
+                var empleadoConCargo = await (
+                    from e in _contexto.Empleados
+                    join c in _contexto.Cargos on e.idCargo equals c.idCargo
+                    where e.idEmpleado == remuneracionDto.idEmpleado
+                    select new
+                    {
+                        e.salarioPorHoraExtra,
+                        e.salarioDiario,
+                        e.idCargo,
+                        CargoNombre = c.nombreCargo
+                    }
+                ).FirstOrDefaultAsync();
 
-                if (empleado == null)
+                if (empleadoConCargo == null)
                     throw new Exception("Empleado no encontrado.");
 
-                decimal salarioDiario = empleado.salarioDiario;
+                bool esVendedor = empleadoConCargo.CargoNombre != null &&
+                                  empleadoConCargo.CargoNombre.ToLower().Contains("vendedor");
 
-                switch (remuneracionDto.idTipoRemuneracion)
+                if (!esVendedor)
                 {
-                    case 1: // Horas Extra
-                        remuneracionDto.pagoQuincenal = remuneracionDto.horas.HasValue
-                            ? remuneracionDto.horas.Value * empleado.salarioPorHoraExtra
-                            : 0;
-                        break;
+                    decimal salarioDiario = empleadoConCargo.salarioDiario;
 
-                    case 2: // Día Feriado
-                        remuneracionDto.pagoQuincenal = remuneracionDto.TrabajoEnDia
-                            ? salarioDiario * 2
-                            : salarioDiario;
-                        break;
+                    switch (remuneracionDto.idTipoRemuneracion)
+                    {
+                        case 1: // Horas Extra
+                            remuneracionDto.pagoQuincenal = remuneracionDto.horas.HasValue
+                                ? remuneracionDto.horas.Value * empleadoConCargo.salarioPorHoraExtra
+                                : 0;
+                            break;
 
-                    case 3: // Incapacidad (primeros 3 días solamente, mitad de salario)
-                        remuneracionDto.pagoQuincenal = (salarioDiario / 2) * 3;
-                        break;
+                        case 2: // Día Feriado
+                            remuneracionDto.pagoQuincenal = remuneracionDto.TrabajoEnDia
+                                ? salarioDiario
+                                : 0;  // Si no trabajó, no paga nada
+                            break;
 
-                    case 4: // Maternidad (mitad de salario por quincena)
-                        remuneracionDto.pagoQuincenal = salarioDiario * 15 / 2;
-                        break;
+                        case 3: // Incapacidad (mitad salario * días incapacidad, máximo 3 días)
+                            int diasIncapacidad = remuneracionDto.diasTrabajados.HasValue
+                                ? (15 - remuneracionDto.diasTrabajados.Value) // Suponiendo 15 días quincena
+                                : 0;
 
-                    case 5: // Vacaciones
-                        remuneracionDto.pagoQuincenal = remuneracionDto.TrabajoEnDia
-                            ? salarioDiario
-                            : 0;
-                        break;
+                            if (diasIncapacidad > 3) diasIncapacidad = 3;
+                            if (diasIncapacidad < 0) diasIncapacidad = 0;
 
-                    case 6: // Pago Quincenal
-                        remuneracionDto.pagoQuincenal = remuneracionDto.diasTrabajados.HasValue
-                            ? remuneracionDto.diasTrabajados.Value * salarioDiario
-                            : 0;
-                        break;
+                            remuneracionDto.pagoQuincenal = (salarioDiario / 2) * diasIncapacidad;
+                            break;
 
-                    default:
-                        remuneracionDto.pagoQuincenal = 0;
-                        break;
+                        case 4: // Maternidad (mitad de salario por quincena)
+                            remuneracionDto.pagoQuincenal = salarioDiario * 15 / 2;
+                            break;
+
+                        case 5: // Vacaciones
+                            remuneracionDto.pagoQuincenal = remuneracionDto.TrabajoEnDia && remuneracionDto.diasTrabajados.HasValue
+                                ? salarioDiario * remuneracionDto.diasTrabajados.Value
+                                : 0;
+                            break;
+
+                        case 6: // Pago Quincenal
+                            remuneracionDto.pagoQuincenal = remuneracionDto.diasTrabajados.HasValue
+                                ? remuneracionDto.diasTrabajados.Value * salarioDiario
+                                : 0;
+                            break;
+
+                        default:
+                            remuneracionDto.pagoQuincenal = 0;
+                            break;
+                    }
                 }
 
-
-                Remuneracion laRemuneracionAGuardar = ConvertirDtoAEntidad(remuneracionDto);
-                _contexto.Remuneracion.Add(laRemuneracionAGuardar);
-                int cantidadDatosAgregados = await _contexto.SaveChangesAsync();
-                return cantidadDatosAgregados;
+                Remuneracion remuneracion = ConvertirDtoAEntidad(remuneracionDto, esVendedor);
+                _contexto.Remuneracion.Add(remuneracion);
+                return await _contexto.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -103,20 +123,34 @@ namespace Emplaniapp.AccesoADatos.Remuneraciones
             }
         }
 
-        private Remuneracion ConvertirDtoAEntidad(RemuneracionDto dto)
+        private Remuneracion ConvertirDtoAEntidad(RemuneracionDto dto, bool esVendedor = false)
         {
-            return new Remuneracion
+            if (esVendedor)
             {
-                idEmpleado = dto.idEmpleado,
-                idTipoRemuneracion = dto.idTipoRemuneracion,
-                fechaRemuneracion = dto.fechaRemuneracion,
-                pagoQuincenal = dto.pagoQuincenal,
-                diasTrabajados = dto.diasTrabajados,
-                horas = dto.horas,
-                comision = dto.comision,
-                idEstado = dto.idEstado
-            };
+                return new Remuneracion
+                {
+                    idEmpleado = dto.idEmpleado,
+                    idTipoRemuneracion = dto.idTipoRemuneracion,
+                    fechaRemuneracion = dto.fechaRemuneracion,
+                    comision = dto.comision,
+                    pagoQuincenal = dto.pagoQuincenal,
+                    idEstado = dto.idEstado
+                };
+            }
+            else
+            {
+                return new Remuneracion
+                {
+                    idEmpleado = dto.idEmpleado,
+                    idTipoRemuneracion = dto.idTipoRemuneracion,
+                    fechaRemuneracion = dto.fechaRemuneracion,
+                    pagoQuincenal = dto.pagoQuincenal,
+                    diasTrabajados = dto.diasTrabajados,
+                    horas = dto.horas,
+                    comision = dto.comision,
+                    idEstado = dto.idEstado
+                };
+            }
         }
-
     }
 }

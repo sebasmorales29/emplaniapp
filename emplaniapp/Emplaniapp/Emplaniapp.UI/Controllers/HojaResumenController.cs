@@ -4,16 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Host.SystemWeb;
 using Emplaniapp.Abstracciones.Entidades;
 using Emplaniapp.Abstracciones.InterfacesParaUI;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Cargos.ListarCargos;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Estados.ListarEstados;
 using Emplaniapp.Abstracciones.InterfacesParaUI.General.FiltrarEmpleados;
 using Emplaniapp.Abstracciones.InterfacesParaUI.General.ObtenerTotalEmpleados;
+using Emplaniapp.Abstracciones.InterfacesParaUI.Hoja_Resumen.AprobarEmpleadosHojaResumen;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Hoja_Resumen.ListarHojaResumen;
+using Emplaniapp.Abstracciones.InterfacesParaUI.PeriodoPago.CrearPeriodoPago;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Remuneraciones.CrearRemuneraciones;
 using Emplaniapp.Abstracciones.InterfacesParaUI.Tipo_Remuneracion;
 using Emplaniapp.Abstracciones.ModelosParaUI;
@@ -22,10 +21,17 @@ using Emplaniapp.LogicaDeNegocio.Cargos.ListarCargos;
 using Emplaniapp.LogicaDeNegocio.Estados.ListarEstados;
 using Emplaniapp.LogicaDeNegocio.General.FiltrarEmpleados;
 using Emplaniapp.LogicaDeNegocio.General.ObtenerTotalEmpleados;
+using Emplaniapp.LogicaDeNegocio.Hoja_Resumen.AprobarEmpleadosHojaResumen;
 using Emplaniapp.LogicaDeNegocio.Hoja_Resumen.ListarHojaResumen;
+using Emplaniapp.LogicaDeNegocio.PeriodoPago;
 using Emplaniapp.LogicaDeNegocio.Remuneraciones.CrearRemuneraciones;
 using Emplaniapp.LogicaDeNegocio.Tipo_Remuneracion;
 using Emplaniapp.UI.Attributes;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Host.SystemWeb;
+using Rotativa;
+using Rotativa.Options;
 
 namespace Emplaniapp.UI.Controllers
 {
@@ -39,6 +45,8 @@ namespace Emplaniapp.UI.Controllers
         private IFiltrarEmpleadosLN _filtrarEmpleadosLN;
         private IObtenerTotalEmpleadosLN _obtenerTotalEmpleadosLN;
         private ICrearRemuneracionesLN _crearRemuneracionesLN;
+        private ICrearPeriodoPagoLN _crearPeriodoPagoLN;
+        private IAprobarEmpleadosHojaResumenLN aprobarEmpleadosHojaResumenLN;
         private ApplicationUserManager _userManager;
         private ApplicationRoleManager _roleManager;
 
@@ -51,6 +59,8 @@ namespace Emplaniapp.UI.Controllers
             _filtrarEmpleadosLN = new filtrarEmpleadosLN();
             _obtenerTotalEmpleadosLN = new obtenerTotalEmpleadosLN();
             _crearRemuneracionesLN = new CrearRemuneracionesLN();
+            _crearPeriodoPagoLN = new CrearPeriodoPagoLN();
+            aprobarEmpleadosHojaResumenLN = new AprobarEmpleadosHojaResumenLN();
         }
 
         public ApplicationUserManager UserManager
@@ -80,7 +90,7 @@ namespace Emplaniapp.UI.Controllers
         {
             List<HojaResumenDto> laListaDeHojaDeResumen = _listarHojaResumenLN.ObtenerHojasResumen();
             ViewBag.Cargos = ObtenerCargos();
-            ViewBag.TotalEmpleados = _obtenerTotalEmpleadosLN.ObtenerTotalEmpleados(null, null,null,true);
+            ViewBag.TotalEmpleados = _obtenerTotalEmpleadosLN.ObtenerTotalEmpleados(null, null, null, true);
             return View(laListaDeHojaDeResumen);
         }
 
@@ -96,18 +106,45 @@ namespace Emplaniapp.UI.Controllers
         }
 
         // GET: HojaResumen/VerDetalles/5
+        // Permitir que Empleado llegue aquí (desde "Reporte de Pagos"),
+        // pero si es Empleado, siempre se le redirige a sus propios detalles.
+        [OverrideAuthorization]
+        [Authorize]
         public ActionResult VerDetalles(int id)
         {
-            // Redirige al controlador de DatosPersonales para ver los detalles del empleado
+            if (User.IsInRole("Empleado"))
+            {
+                // Empleado: no permitimos ver otros IDs; usar el propio (por claims en DatosPersonales.Detalles)
+                return RedirectToAction("Detalles", "DatosPersonales");
+            }
+
+            // Admin/Contador mantienen la funcionalidad original (ver por id)
             return RedirectToAction("Detalles", "DatosPersonales", new { id = id });
         }
 
-        // GET: HojaResumen/GenerarRemurenacionesATodosLosEmpleados
+        // GET: Exportar Hoja Resumen a PDF (con o sin filtros)
+        [HttpGet]
+        public ActionResult ExportResumenPdf(string filtro, int? idCargo)
+        {
+            var data = string.IsNullOrWhiteSpace(filtro) && idCargo == null
+                ? _listarHojaResumenLN.ObtenerHojasResumen()
+                : _filtrarEmpleadosLN.ObtenerFiltrado<HojaResumenDto>(filtro, idCargo, null);
+
+            return new ViewAsPdf("HojaResumenPDF", data)
+            {
+                FileName = $"HojaResumen_{DateTime.Now:yyyyMMdd}.pdf",
+                PageSize = Size.Letter,
+                PageOrientation = Orientation.Portrait,
+                CustomSwitches = "--print-media-type --enable-local-file-access"
+            };
+        }
+
+        // POST: HojaResumen/GenerarRemurenacionesATodosLosEmpleados
         [HttpPost]
         public ActionResult Generar()
         {
             DateTime fechaProceso = DateTime.Today;
-            //DateTime fechaProceso = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 10);
+            DateTime fechaCreacionPeriodoPago = DateTime.Today;
 
             int dia = fechaProceso.Day;
 
@@ -124,13 +161,56 @@ namespace Emplaniapp.UI.Controllers
             try
             {
                 var remuneraciones = _crearRemuneracionesLN.GenerarRemuneracionesQuincenales(fechaProceso);
-
+                var periodoPago = _crearPeriodoPagoLN.GenerarPeriodoPago(fechaCreacionPeriodoPago);
+                TempData["SuccessMessage"] = $"Periodo de pago generadas exitosamente para la fecha {fechaCreacionPeriodoPago:dd/MM/yyyy}.";
                 TempData["SuccessMessage"] = $"Remuneraciones generadas exitosamente para la fecha {fechaProceso:dd/MM/yyyy}.";
                 return RedirectToAction("listarHojaResumen");
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Error al generar remuneraciones: " + ex.Message;
+                TempData["ErrorMessage"] = "Error al generar remuneraciones y periodos de pago: " + ex.Message;
+                return RedirectToAction("listarHojaResumen");
+            }
+        }
+
+        // POST: Generar remuneraciones y descargar PDF consolidado
+        [HttpPost]
+        public ActionResult GenerarYDescargarPdf()
+        {
+            DateTime fechaProceso = DateTime.Today;
+            int dia = fechaProceso.Day;
+
+            if (dia <= 15)
+            {
+                fechaProceso = new DateTime(fechaProceso.Year, fechaProceso.Month, 15);
+            }
+            else
+            {
+                fechaProceso = new DateTime(fechaProceso.Year, fechaProceso.Month,
+                                            DateTime.DaysInMonth(fechaProceso.Year, fechaProceso.Month));
+            }
+
+            try
+            {
+                // 1) Generar datos (igual que en tu acción Generar)
+                _crearRemuneracionesLN.GenerarRemuneracionesQuincenales(fechaProceso);
+                _crearPeriodoPagoLN.GenerarPeriodoPago(DateTime.Today);
+
+                // 2) Obtener el resumen actualizado
+                var data = _listarHojaResumenLN.ObtenerHojasResumen();
+
+                // 3) Retornar el PDF de la vista HojaResumenPDF
+                return new ViewAsPdf("HojaResumenPDF", data)
+                {
+                    FileName = $"Remuneraciones_{fechaProceso:yyyyMMdd}.pdf",
+                    PageSize = Size.Letter,
+                    PageOrientation = Orientation.Portrait,
+                    CustomSwitches = "--print-media-type --enable-local-file-access"
+                };
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al generar remuneraciones y periodos de pago: " + ex.Message;
                 return RedirectToAction("listarHojaResumen");
             }
         }
@@ -164,6 +244,22 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
+        public ActionResult Aprobar(int idPagoQuincenal)
+        {
+            string idUsuario = User.Identity.GetUserId();
+
+            bool aprobado = aprobarEmpleadosHojaResumenLN.AprobarPagoQuincenal(idPagoQuincenal, idUsuario);
+
+            if (aprobado)
+            {
+                TempData["Mensaje"] = "Pago aprobado correctamente.";
+            }
+            else
+            {
+                TempData["Error"] = "No se pudo aprobar el pago.";
+            }
+
+            return RedirectToAction("listarHojaResumen");
+        }
     }
 }
-

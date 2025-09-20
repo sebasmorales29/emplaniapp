@@ -61,46 +61,92 @@ namespace Emplaniapp.UI.Controllers
             private set => _roleManager = value;
         }
 
-
-
         // ACCIÓN UNIFICADA PARA MOSTRAR EL PERFIL DEL EMPLEADO Y SUS SECCIONES
         public ActionResult Detalles(int? id, string seccion = "Datos personales")
         {
-            int idEmpleado;
-
-            if (id.HasValue)
+            // 1) Determinar rol activo (Session si existe; si no, por prioridad de claims)
+            var activeRole = Session["ActiveRole"] as string;
+            if (string.IsNullOrWhiteSpace(activeRole))
             {
-                // Si se provee un ID en la URL (ej: admin viendo un perfil)
-                idEmpleado = id.Value;
+                if (User.IsInRole("Administrador")) activeRole = "Administrador";
+                else if (User.IsInRole("Contador")) activeRole = "Contador";
+                else activeRole = "Empleado";
+            }
+
+            // 2) Resolver id desde todas las fuentes (parámetro, ruta, querystring)
+            int resolvedId = 0;
+
+            if (id.HasValue && id.Value > 0)
+            {
+                resolvedId = id.Value;
             }
             else
             {
-                // Si no hay ID, buscarlo en las claims del usuario (ej: empleado viendo su propio perfil)
-                var claimsIdentity = User.Identity as ClaimsIdentity;
-                var idEmpleadoClaim = claimsIdentity?.FindFirst("idEmpleado");
-
-                if (idEmpleadoClaim == null || !int.TryParse(idEmpleadoClaim.Value, out idEmpleado))
+                object routeIdObj;
+                if (ControllerContext != null &&
+                    ControllerContext.RouteData != null &&
+                    ControllerContext.RouteData.Values.TryGetValue("id", out routeIdObj))
                 {
-                    return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "No se pudo identificar al empleado.");
+                    int tmp;
+                    if (routeIdObj != null && int.TryParse(routeIdObj.ToString(), out tmp) && tmp > 0)
+                        resolvedId = tmp;
+                }
+
+                if (resolvedId == 0)
+                {
+                    int tmp;
+                    var qsId = Request["id"];
+                    if (!string.IsNullOrWhiteSpace(qsId) && int.TryParse(qsId, out tmp) && tmp > 0)
+                        resolvedId = tmp;
+                }
+
+                if (resolvedId == 0)
+                {
+                    int tmp;
+                    var qsIdEmp = Request["idEmpleado"];
+                    if (!string.IsNullOrWhiteSpace(qsIdEmp) && int.TryParse(qsIdEmp, out tmp) && tmp > 0)
+                        resolvedId = tmp;
                 }
             }
 
-            var empleado = _datosPersonalesLN.ObtenerEmpleadoPorId(idEmpleado);
-            
+            // 3) Si el rol activo es Empleado -> siempre su propio id (ignora cualquier id recibido)
+            if (activeRole.Equals("Empleado", StringComparison.OrdinalIgnoreCase))
+            {
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                var idEmpleadoClaim = claimsIdentity?.FindFirst("idEmpleado");
+                int claimId;
+                if (idEmpleadoClaim == null || !int.TryParse(idEmpleadoClaim.Value, out claimId))
+                {
+                    return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "No se pudo identificar al empleado.");
+                }
+                resolvedId = claimId;
+            }
+            else
+            {
+                // 4) Admin/Contador: si no se resolvió id por URL/ruta/query, usar claim como fallback
+                if (resolvedId == 0)
+                {
+                    var claimsIdentity = User.Identity as ClaimsIdentity;
+                    var idEmpleadoClaim = claimsIdentity?.FindFirst("idEmpleado");
+                    int claimId;
+                    if (idEmpleadoClaim == null || !int.TryParse(idEmpleadoClaim.Value, out claimId))
+                    {
+                        return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "No se pudo identificar al empleado.");
+                    }
+                    resolvedId = claimId;
+                }
+            }
+
+            // 5) Cargar el empleado y devolver vista
+            var empleado = _datosPersonalesLN.ObtenerEmpleadoPorId(resolvedId);
             if (empleado == null)
             {
                 return HttpNotFound();
             }
 
-            // La sección Historial se maneja directamente en la vista
-            // No es necesario redirigir
-
             ViewBag.Seccion = seccion;
             return View(empleado);
         }
-
-        
-
 
         // GET: DatosPersonales/EditarDatosPersonales/5
         public ActionResult EditarDatosPersonales(int id)
@@ -113,7 +159,6 @@ namespace Emplaniapp.UI.Controllers
 
             // 🔥 CARGAR DATOS GEOGRÁFICOS PARA DROPDOWN
             ViewBag.Provincias = ObtenerProvinciasSelectList(empleado.idProvincia);
-
 
             return View(empleado);
         }
@@ -130,7 +175,7 @@ namespace Emplaniapp.UI.Controllers
                 System.Diagnostics.Debug.WriteLine($"Nombre: {model.nombre}");
                 System.Diagnostics.Debug.WriteLine($"Primer Apellido: {model.primerApellido}");
                 System.Diagnostics.Debug.WriteLine($"ModelState.IsValid: {ModelState.IsValid}");
-                
+
                 if (!ModelState.IsValid)
                 {
                     foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
@@ -143,127 +188,68 @@ namespace Emplaniapp.UI.Controllers
                 {
                     // Obtener datos anteriores para comparar
                     var empleadoAnterior = _datosPersonalesLN.ObtenerEmpleadoPorId(model.idEmpleado);
-                    
+
                     System.Diagnostics.Debug.WriteLine($"Llamando a _datosPersonalesLN.ActualizarDatosPersonales");
                     bool resultado = _datosPersonalesLN.ActualizarDatosPersonales(model);
                     System.Diagnostics.Debug.WriteLine($"Resultado de ActualizarDatosPersonales: {resultado}");
-                    
+
                     if (resultado)
                     {
                         // Registrar evento en el historial
                         try
                         {
-                            System.Diagnostics.Debug.WriteLine($"🔍 === COMPARANDO CAMBIOS ===");
-                            System.Diagnostics.Debug.WriteLine($"🔍 Empleado ID: {model.idEmpleado}");
-                            System.Diagnostics.Debug.WriteLine($"🔍 Nombre anterior: '{empleadoAnterior.nombre}' vs nuevo: '{model.nombre}'");
-                            System.Diagnostics.Debug.WriteLine($"🔍 Primer apellido anterior: '{empleadoAnterior.primerApellido}' vs nuevo: '{model.primerApellido}'");
-                            System.Diagnostics.Debug.WriteLine($"🔍 Segundo apellido anterior: '{empleadoAnterior.segundoApellido}' vs nuevo: '{model.segundoApellido}'");
-                            
                             var cambios = new List<string>();
-                            
-                            // Comparar nombre
+
                             if (empleadoAnterior.nombre != model.nombre)
-                            {
                                 cambios.Add($"Nombre: {empleadoAnterior.nombre} → {model.nombre}");
-                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en NOMBRE: '{empleadoAnterior.nombre}' → '{model.nombre}'");
-                            }
-                            
-                            // Comparar primer apellido
+
                             if (empleadoAnterior.primerApellido != model.primerApellido)
-                            {
                                 cambios.Add($"Primer Apellido: {empleadoAnterior.primerApellido} → {model.primerApellido}");
-                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en PRIMER APELLIDO: '{empleadoAnterior.primerApellido}' → '{model.primerApellido}'");
-                            }
-                            
-                            // Comparar segundo apellido
+
                             if (empleadoAnterior.segundoApellido != model.segundoApellido)
-                            {
                                 cambios.Add($"Segundo Apellido: {empleadoAnterior.segundoApellido} → {model.segundoApellido}");
-                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en SEGUNDO APELLIDO: '{empleadoAnterior.segundoApellido}' → '{model.segundoApellido}'");
-                            }
-                            
-                            // Comparar fecha de nacimiento
+
                             if (empleadoAnterior.fechaNacimiento != model.fechaNacimiento)
-                            {
                                 cambios.Add($"Fecha Nacimiento: {empleadoAnterior.fechaNacimiento:dd/MM/yyyy} → {model.fechaNacimiento:dd/MM/yyyy}");
-                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en FECHA NACIMIENTO: '{empleadoAnterior.fechaNacimiento:dd/MM/yyyy}' → '{model.fechaNacimiento:dd/MM/yyyy}'");
-                            }
-                            
-                            // Comparar dirección detallada
+
                             if (empleadoAnterior.direccionDetallada != model.direccionDetallada)
-                            {
                                 cambios.Add($"Dirección Detallada: {empleadoAnterior.direccionDetallada} → {model.direccionDetallada}");
-                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en DIRECCIÓN: '{empleadoAnterior.direccionDetallada}' → '{model.direccionDetallada}'");
-                            }
-                            
-                            // Comparar provincia
+
                             if (empleadoAnterior.nombreProvincia != model.nombreProvincia)
-                            {
                                 cambios.Add($"Provincia: {empleadoAnterior.nombreProvincia} → {model.nombreProvincia}");
-                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en PROVINCIA: '{empleadoAnterior.nombreProvincia}' → '{model.nombreProvincia}'");
-                            }
-                            
-                            // Comparar cantón
+
                             if (empleadoAnterior.nombreCanton != model.nombreCanton)
-                            {
                                 cambios.Add($"Cantón: {empleadoAnterior.nombreCanton} → {model.nombreCanton}");
-                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en CANTÓN: '{empleadoAnterior.nombreCanton}' → '{model.nombreCanton}'");
-                            }
-                            
-                            // Comparar distrito
+
                             if (empleadoAnterior.nombreDistrito != model.nombreDistrito)
-                            {
                                 cambios.Add($"Distrito: {empleadoAnterior.nombreDistrito} → {model.nombreDistrito}");
-                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en DISTRITO: '{empleadoAnterior.nombreDistrito}' → '{model.nombreDistrito}'");
-                            }
-                            
-                            // Comparar teléfono
+
                             if (empleadoAnterior.numeroTelefonico != model.numeroTelefonico)
-                            {
                                 cambios.Add($"Teléfono: {empleadoAnterior.numeroTelefonico} → {model.numeroTelefonico}");
-                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en TELÉFONO: '{empleadoAnterior.numeroTelefonico}' → '{model.numeroTelefonico}'");
-                            }
-                            
-                            // Comparar correo
+
                             if (empleadoAnterior.correoInstitucional != model.correoInstitucional)
-                            {
                                 cambios.Add($"Correo: {empleadoAnterior.correoInstitucional} → {model.correoInstitucional}");
-                                System.Diagnostics.Debug.WriteLine($"🔄 Cambio detectado en CORREO: '{empleadoAnterior.correoInstitucional}' → '{model.correoInstitucional}'");
-                            }
-                            
-                            System.Diagnostics.Debug.WriteLine($"🔍 Total de cambios detectados: {cambios.Count}");
-                            
-                                                         if (cambios.Any())
-                             {
-                                 var descripcionCambios = string.Join("; ", cambios);
-                                 
-                                 System.Diagnostics.Debug.WriteLine($"🎯 Llamando a RegistrarEvento con:");
-                                 System.Diagnostics.Debug.WriteLine($"   - ID Empleado: {model.idEmpleado}");
-                                 System.Diagnostics.Debug.WriteLine($"   - Nombre Evento: Modificación de Datos Personales");
-                                 System.Diagnostics.Debug.WriteLine($"   - Descripción: Se actualizaron los datos personales del empleado");
-                                 System.Diagnostics.Debug.WriteLine($"   - Detalles: {descripcionCambios}");
-                                 System.Diagnostics.Debug.WriteLine($"   - Usuario: {User.Identity.GetUserId()}");
-                                 System.Diagnostics.Debug.WriteLine($"   - IP: {Request.UserHostAddress}");
-                                 
-                                 _registrarEventoHistorialLN.RegistrarEvento(
-                                     model.idEmpleado,
-                                     "Modificación de Datos Personales",
-                                     "Se actualizaron los datos personales del empleado",
-                                     descripcionCambios,
-                                     null,
-                                     null,
-                                     User.Identity.GetUserId(),
-                                     Request.UserHostAddress
-                                 );
-                                
+
+                            if (cambios.Any())
+                            {
+                                var descripcionCambios = string.Join("; ", cambios);
+
+                                _registrarEventoHistorialLN.RegistrarEvento(
+                                    model.idEmpleado,
+                                    "Modificación de Datos Personales",
+                                    "Se actualizaron los datos personales del empleado",
+                                    descripcionCambios,
+                                    null,
+                                    null,
+                                    User.Identity.GetUserId(),
+                                    Request.UserHostAddress
+                                );
+
                                 System.Diagnostics.Debug.WriteLine($"✅ Evento registrado en historial: {descripcionCambios}");
-                                System.Diagnostics.Debug.WriteLine($"✅ Usuario: {User.Identity.GetUserId()}");
-                                System.Diagnostics.Debug.WriteLine($"✅ IP: {Request.UserHostAddress}");
                             }
                         }
                         catch (Exception ex)
                         {
-                            // Log del error pero no fallar la operación principal
                             System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento en historial: {ex.Message}");
                         }
 
@@ -283,22 +269,19 @@ namespace Emplaniapp.UI.Controllers
                 System.Diagnostics.Debug.WriteLine($"Excepción en ActualizarDatosPersonales: {ex.Message}");
                 ModelState.AddModelError("", "Ocurrió un error inesperado: " + ex.Message);
             }
-            
+
             return View("EditarDatosPersonales", model);
         }
-
-
 
         // GET: DatosPersonales/EditarDatosLaborales/5
         public ActionResult EditarDatosLaborales(int id)
         {
             var empleado = _datosPersonalesLN.ObtenerEmpleadoPorId(id);
-            
             if (empleado == null)
             {
                 return HttpNotFound();
             }
-            
+
             var datosLaborales = new DatosLaboralesViewModel
             {
                 IdEmpleado = empleado.idEmpleado,
@@ -308,12 +291,10 @@ namespace Emplaniapp.UI.Controllers
                 FechaIngreso = empleado.fechaContratacion,
                 FechaSalida = empleado.fechaSalida
             };
-            
+
             ViewBag.Cargos = ObtenerCargosSelectList(empleado.idCargo);
-            
             return View(datosLaborales);
         }
-
 
         // POST: DatosPersonales/EditarDatosLaborales/5
         [HttpPost]
@@ -323,72 +304,64 @@ namespace Emplaniapp.UI.Controllers
             if (ModelState.IsValid)
             {
                 bool resultado = _datosPersonalesLN.ActualizarDatosLaborales(
-                    model.IdEmpleado, 
-                    (int)model.IdCargo, 
-                    model.FechaIngreso, 
+                    model.IdEmpleado,
+                    (int)model.IdCargo,
+                    model.FechaIngreso,
                     model.FechaSalida);
 
-                                 if (resultado)
-                 {
-                     // Registrar evento en el historial
-                     try
-                     {
-                         var empleadoAnterior = _datosPersonalesLN.ObtenerEmpleadoPorId(model.IdEmpleado);
-                         var cambios = new List<string>();
-                         
-                         // Comparar cargo
-                         if (empleadoAnterior.idCargo != model.IdCargo)
-                         {
-                             var cargoAnterior = _datosPersonalesLN.ObtenerCargos().FirstOrDefault(c => c.idCargo == empleadoAnterior.idCargo);
-                             var cargoNuevo = _datosPersonalesLN.ObtenerCargos().FirstOrDefault(c => c.idCargo == model.IdCargo);
-                             
-                             cambios.Add($"Cargo: {cargoAnterior?.nombreCargo ?? "N/A"} → {cargoNuevo?.nombreCargo ?? "N/A"}");
-                         }
-                         
-                         // Comparar fechas
-                         if (empleadoAnterior.fechaContratacion != model.FechaIngreso)
-                         {
-                             cambios.Add($"Fecha Ingreso: {empleadoAnterior.fechaContratacion:dd/MM/yyyy} → {model.FechaIngreso:dd/MM/yyyy}");
-                         }
-                         
-                         if (empleadoAnterior.fechaSalida != model.FechaSalida)
-                         {
-                             cambios.Add($"Fecha Salida: {empleadoAnterior.fechaSalida?.ToString("dd/MM/yyyy") ?? "N/A"} → {model.FechaSalida?.ToString("dd/MM/yyyy") ?? "N/A"}");
-                         }
-                         
-                         if (cambios.Any())
-                         {
-                             var descripcionCambios = string.Join("; ", cambios);
-                             
-                             _registrarEventoHistorialLN.RegistrarEvento(
-                                 model.IdEmpleado,
-                                 "Cambio de Datos Laborales",
-                                 "Se modificaron los datos laborales del empleado",
-                                 descripcionCambios,
-                                 null,
-                                 null,
-                                 User.Identity.GetUserId(),
-                                 Request.UserHostAddress
-                             );
-                             
-                             System.Diagnostics.Debug.WriteLine($"✅ Evento laboral registrado en historial: {descripcionCambios}");
-                         }
-                     }
-                     catch (Exception ex)
-                     {
-                         System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento laboral en historial: {ex.Message}");
-                     }
-                     
-                     TempData["Mensaje"] = "Datos laborales actualizados correctamente";
-                     TempData["TipoMensaje"] = "success";
-                     return RedirectToAction("Detalles", new { id = model.IdEmpleado });
-                 }
+                if (resultado)
+                {
+                    // Registrar evento en el historial
+                    try
+                    {
+                        var empleadoAnterior = _datosPersonalesLN.ObtenerEmpleadoPorId(model.IdEmpleado);
+                        var cambios = new List<string>();
+
+                        if (empleadoAnterior.idCargo != model.IdCargo)
+                        {
+                            var cargoAnterior = _datosPersonalesLN.ObtenerCargos().FirstOrDefault(c => c.idCargo == empleadoAnterior.idCargo);
+                            var cargoNuevo = _datosPersonalesLN.ObtenerCargos().FirstOrDefault(c => c.idCargo == model.IdCargo);
+                            cambios.Add($"Cargo: {cargoAnterior?.nombreCargo ?? "N/A"} → {cargoNuevo?.nombreCargo ?? "N/A"}");
+                        }
+                        if (empleadoAnterior.fechaContratacion != model.FechaIngreso)
+                            cambios.Add($"Fecha Ingreso: {empleadoAnterior.fechaContratacion:dd/MM/yyyy} → {model.FechaIngreso:dd/MM/yyyy}");
+
+                        if (empleadoAnterior.fechaSalida != model.FechaSalida)
+                            cambios.Add($"Fecha Salida: {empleadoAnterior.fechaSalida?.ToString("dd/MM/yyyy") ?? "N/A"} → {model.FechaSalida?.ToString("dd/MM/yyyy") ?? "N/A"}");
+
+                        if (cambios.Any())
+                        {
+                            var descripcionCambios = string.Join("; ", cambios);
+
+                            _registrarEventoHistorialLN.RegistrarEvento(
+                                model.IdEmpleado,
+                                "Cambio de Datos Laborales",
+                                "Se modificaron los datos laborales del empleado",
+                                descripcionCambios,
+                                null,
+                                null,
+                                User.Identity.GetUserId(),
+                                Request.UserHostAddress
+                            );
+
+                            System.Diagnostics.Debug.WriteLine($"✅ Evento laboral registrado en historial: {descripcionCambios}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento laboral en historial: {ex.Message}");
+                    }
+
+                    TempData["Mensaje"] = "Datos laborales actualizados correctamente";
+                    TempData["TipoMensaje"] = "success";
+                    return RedirectToAction("Detalles", new { id = model.IdEmpleado });
+                }
                 else
                 {
                     ModelState.AddModelError("", "Error al guardar los cambios");
                 }
             }
-            
+
             ViewBag.Cargos = ObtenerCargosSelectList(model.IdCargo);
             return View(model);
         }
@@ -397,18 +370,17 @@ namespace Emplaniapp.UI.Controllers
         public ActionResult EditarDatosFinancieros(int id)
         {
             var empleado = _datosPersonalesLN.ObtenerEmpleadoPorId(id);
-            
             if (empleado == null)
             {
                 return HttpNotFound();
             }
-            
+
             System.Diagnostics.Debug.WriteLine($"=== CARGAR DATOS FINANCIEROS GET ===");
             System.Diagnostics.Debug.WriteLine($"IdEmpleado: {empleado.idEmpleado}");
             System.Diagnostics.Debug.WriteLine($"SalarioAprobado desde BD: {empleado.salarioAprobado}");
             System.Diagnostics.Debug.WriteLine($"SalarioDiario desde BD: {empleado.salarioDiario}");
             System.Diagnostics.Debug.WriteLine($"PeriocidadPago: {empleado.periocidadPago}");
-            
+
             var datosFinancieros = new DatosFinancierosViewModel
             {
                 IdEmpleado = empleado.idEmpleado,
@@ -421,16 +393,15 @@ namespace Emplaniapp.UI.Controllers
                 IdBanco = empleado.idBanco,
                 Banco = empleado.nombreBanco
             };
-            
+
             System.Diagnostics.Debug.WriteLine($"SalarioAprobado en ViewModel: {datosFinancieros.SalarioAprobado}");
-            
+
             ViewBag.TiposMoneda = ObtenerTiposMonedasSelectList(empleado.idMoneda);
             ViewBag.Bancos = ObtenerBancosSelectList(empleado.idBanco);
             ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList(empleado.periocidadPago);
-            
+
             return View(datosFinancieros);
         }
-
 
         // POST: DatosPersonales/EditarDatosFinancieros/5
         [HttpPost]
@@ -458,9 +429,7 @@ namespace Emplaniapp.UI.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    // Obtener los datos originales del empleado para mantener salarioDiario
                     var empleadoOriginal = _datosPersonalesLN.ObtenerEmpleadoPorId(model.IdEmpleado);
-                    
                     if (empleadoOriginal == null)
                     {
                         System.Diagnostics.Debug.WriteLine("ERROR: No se encontró el empleado");
@@ -473,12 +442,10 @@ namespace Emplaniapp.UI.Controllers
 
                     System.Diagnostics.Debug.WriteLine($"SalarioAprobado original: {empleadoOriginal.salarioAprobado}, usando del formulario: {model.SalarioAprobado}");
 
-                    // Actualizar todos los campos editables: salarioAprobado, periodicidad, moneda, IBAN y banco
-                    // SalarioAprobado viene pre-cargado pero se puede modificar
                     bool resultado = _datosPersonalesLN.ActualizarDatosFinancieros(
                         model.IdEmpleado,
-                        model.SalarioAprobado,           // Usar valor del formulario (editable)
-                        empleadoOriginal.salarioDiario,  // Mantener valor original (calculado)
+                        model.SalarioAprobado,
+                        empleadoOriginal.salarioDiario,
                         model.PeriocidadPago,
                         (int)model.IdTipoMoneda,
                         model.CuentaIBAN,
@@ -486,71 +453,49 @@ namespace Emplaniapp.UI.Controllers
 
                     System.Diagnostics.Debug.WriteLine($"Resultado de ActualizarDatosFinancieros: {resultado}");
 
-                                         if (resultado)
-                     {
-                         // Registrar evento en el historial
-                         try
-                         {
-                             var cambios = new List<string>();
-                             
-                             // Comparar salario
-                             if (empleadoOriginal.salarioAprobado != model.SalarioAprobado)
-                             {
-                                 cambios.Add($"Salario: {empleadoOriginal.salarioAprobado:C} → {model.SalarioAprobado:C}");
-                             }
-                             
-                             // Comparar periodicidad
-                             if (empleadoOriginal.periocidadPago != model.PeriocidadPago)
-                             {
-                                 cambios.Add($"Periodicidad: {empleadoOriginal.periocidadPago} → {model.PeriocidadPago}");
-                             }
-                             
-                             // Comparar moneda
-                             if (empleadoOriginal.idMoneda != model.IdTipoMoneda)
-                             {
-                                 cambios.Add($"Moneda: {empleadoOriginal.nombreMoneda} → {model.TipoMoneda}");
-                             }
-                             
-                             // Comparar IBAN
-                             if (empleadoOriginal.cuentaIBAN != model.CuentaIBAN)
-                             {
-                                 cambios.Add($"IBAN: {empleadoOriginal.cuentaIBAN} → {model.CuentaIBAN}");
-                             }
-                             
-                             // Comparar banco
-                             if (empleadoOriginal.idBanco != model.IdBanco)
-                             {
-                                 cambios.Add($"Banco: {empleadoOriginal.nombreBanco} → {model.Banco}");
-                             }
-                             
-                             if (cambios.Any())
-                             {
-                                 var descripcionCambios = string.Join("; ", cambios);
-                                 
-                                 _registrarEventoHistorialLN.RegistrarEvento(
-                                     model.IdEmpleado,
-                                     "Cambio de Datos Financieros",
-                                     "Se modificaron los datos financieros del empleado",
-                                     descripcionCambios,
-                                     null,
-                                     null,
-                                     User.Identity.GetUserId(),
-                                     Request.UserHostAddress
-                                 );
-                                 
-                                 System.Diagnostics.Debug.WriteLine($"✅ Evento financiero registrado en historial: {descripcionCambios}");
-                             }
-                         }
-                         catch (Exception ex)
-                         {
-                             System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento financiero en historial: {ex.Message}");
-                         }
-                         
-                         TempData["Mensaje"] = "Datos financieros actualizados correctamente";
-                         TempData["TipoMensaje"] = "success";
-                         System.Diagnostics.Debug.WriteLine("=== ACTUALIZACIÓN EXITOSA ===");
-                         return RedirectToAction("Detalles", new { id = model.IdEmpleado });
-                     }
+                    if (resultado)
+                    {
+                        try
+                        {
+                            var cambios = new List<string>();
+                            if (empleadoOriginal.salarioAprobado != model.SalarioAprobado)
+                                cambios.Add($"Salario: {empleadoOriginal.salarioAprobado:C} → {model.SalarioAprobado:C}");
+                            if (empleadoOriginal.periocidadPago != model.PeriocidadPago)
+                                cambios.Add($"Periodicidad: {empleadoOriginal.periocidadPago} → {model.PeriocidadPago}");
+                            if (empleadoOriginal.idMoneda != model.IdTipoMoneda)
+                                cambios.Add($"Moneda: {empleadoOriginal.nombreMoneda} → {model.TipoMoneda}");
+                            if (empleadoOriginal.cuentaIBAN != model.CuentaIBAN)
+                                cambios.Add($"IBAN: {empleadoOriginal.cuentaIBAN} → {model.CuentaIBAN}");
+                            if (empleadoOriginal.idBanco != model.IdBanco)
+                                cambios.Add($"Banco: {empleadoOriginal.nombreBanco} → {model.Banco}");
+
+                            if (cambios.Any())
+                            {
+                                var descripcionCambios = string.Join("; ", cambios);
+                                _registrarEventoHistorialLN.RegistrarEvento(
+                                    model.IdEmpleado,
+                                    "Cambio de Datos Financieros",
+                                    "Se modificaron los datos financieros del empleado",
+                                    descripcionCambios,
+                                    null,
+                                    null,
+                                    User.Identity.GetUserId(),
+                                    Request.UserHostAddress
+                                );
+
+                                System.Diagnostics.Debug.WriteLine($"✅ Evento financiero registrado en historial: {descripcionCambios}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento financiero en historial: {ex.Message}");
+                        }
+
+                        TempData["Mensaje"] = "Datos financieros actualizados correctamente";
+                        TempData["TipoMensaje"] = "success";
+                        System.Diagnostics.Debug.WriteLine("=== ACTUALIZACIÓN EXITOSA ===");
+                        return RedirectToAction("Detalles", new { id = model.IdEmpleado });
+                    }
                     else
                     {
                         ModelState.AddModelError("", "Error al guardar los cambios");
@@ -564,17 +509,15 @@ namespace Emplaniapp.UI.Controllers
                 System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
                 ModelState.AddModelError("", "Ocurrió un error inesperado: " + ex.Message);
             }
-            
+
             ViewBag.TiposMoneda = ObtenerTiposMonedasSelectList(model.IdTipoMoneda);
             ViewBag.Bancos = ObtenerBancosSelectList(model.IdBanco);
             ViewBag.PeriocidadesPago = ObtenerPeriocidadesPagoSelectList(model.PeriocidadPago);
             return View(model);
         }
 
-
-
         #region Métodos Auxiliares
-        
+
         private SelectList ObtenerCargosSelectList(object selectedValue = null)
         {
             var cargos = _datosPersonalesLN.ObtenerCargos()
@@ -583,7 +526,7 @@ namespace Emplaniapp.UI.Controllers
                     Value = c.idCargo.ToString(),
                     Text = c.nombreCargo
                 }).ToList();
-            
+
             return new SelectList(cargos, "Value", "Text", selectedValue);
         }
 
@@ -595,7 +538,7 @@ namespace Emplaniapp.UI.Controllers
                     Value = m.idMoneda.ToString(),
                     Text = m.nombreMoneda
                 }).ToList();
-            
+
             return new SelectList(monedas, "Value", "Text", selectedValue);
         }
 
@@ -607,7 +550,7 @@ namespace Emplaniapp.UI.Controllers
                     Value = b.idBanco.ToString(),
                     Text = b.nombreBanco
                 }).ToList();
-            
+
             return new SelectList(bancos, "Value", "Text", selectedValue);
         }
 
@@ -623,18 +566,13 @@ namespace Emplaniapp.UI.Controllers
 
         #endregion
 
-
-
         #region Observaciones
 
-        // GET: DatosPersonales/ObtenerListaObservaciones/5
         [HttpGet]
         public ActionResult ObtenerListaObservaciones(int id, int? ano, int? mes, string usuarioId)
         {
-            // 1. Obtener TODAS las observaciones para este empleado para popular los filtros
             var todasLasObservaciones = _observacionLN.ObtenerObservacionesPorEmpleado(id);
 
-            // 2. Llenar los ViewBags para los dropdowns de filtros
             ViewBag.AnosDisponibles = todasLasObservaciones
                 .Select(o => o.FechaCreacion.Year)
                 .Distinct()
@@ -664,30 +602,20 @@ namespace Emplaniapp.UI.Controllers
             }
             ViewBag.UsuariosDisponibles = usuariosDisponibles;
 
-            // Guardar los filtros seleccionados para devolverlos a la vista
             ViewBag.AnoSeleccionado = ano;
             ViewBag.MesSeleccionado = mes;
             ViewBag.UsuarioSeleccionado = usuarioId;
             ViewBag.FiltrosActivos = ano.HasValue || mes.HasValue || !string.IsNullOrEmpty(usuarioId);
 
-
-            // 3. Filtrar la lista de observaciones según los parámetros recibidos
             var observacionesFiltradas = todasLasObservaciones;
 
             if (ano.HasValue)
-            {
                 observacionesFiltradas = observacionesFiltradas.Where(o => o.FechaCreacion.Year == ano.Value).ToList();
-            }
             if (mes.HasValue)
-            {
                 observacionesFiltradas = observacionesFiltradas.Where(o => o.FechaCreacion.Month == mes.Value).ToList();
-            }
             if (!string.IsNullOrEmpty(usuarioId))
-            {
                 observacionesFiltradas = observacionesFiltradas.Where(o => o.IdUsuarioCreo == usuarioId || o.IdUsuarioEdito == usuarioId).ToList();
-            }
 
-            // 4. Poblar los nombres de usuario para la lista filtrada
             var userIdsParaMostrar = observacionesFiltradas
                 .Select(o => o.IdUsuarioCreo)
                 .Concat(observacionesFiltradas.Select(o => o.IdUsuarioEdito))
@@ -715,15 +643,11 @@ namespace Emplaniapp.UI.Controllers
                 }
             }
 
-
-            // 5. Renderizar y devolver el resultado
             ViewBag.IdEmpleado = id;
             string partialViewHtml = RenderRazorViewToString("_ObservacionesList", observacionesFiltradas);
             return Json(new { success = true, html = partialViewHtml }, JsonRequestBehavior.AllowGet);
         }
 
-
-        // GET: DatosPersonales/AgregarObservacion
         [HttpGet]
         public ActionResult AgregarObservacion(int idEmpleado)
         {
@@ -734,7 +658,6 @@ namespace Emplaniapp.UI.Controllers
             return PartialView("_ObservacionForm", model);
         }
 
-        // POST: DatosPersonales/AgregarObservacion
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AgregarObservacion(ObservacionDto model)
@@ -744,39 +667,32 @@ namespace Emplaniapp.UI.Controllers
                 model.IdUsuarioCreo = User.Identity.GetUserId();
                 model.FechaCreacion = DateTime.Now;
 
-                                 bool resultado = _observacionLN.GuardarObservacion(model);
+                bool resultado = _observacionLN.GuardarObservacion(model);
 
-                 if (resultado)
-                 {
-                     // Registrar evento en el historial
-                     try
-                     {
-                                                   _registrarEventoHistorialLN.RegistrarEvento(
-                              model.IdEmpleado,
-                              "Agregar Observación",
-                              "Se agregó una nueva observación al empleado",
-                              $"Observación: {model.Descripcion}",
-                              null,
-                              null,
-                              User.Identity.GetUserId(),
-                              Request.UserHostAddress
-                          );
-                         
-                         System.Diagnostics.Debug.WriteLine($"✅ Evento de observación agregada registrado en historial");
-                     }
-                     catch (Exception ex)
-                     {
-                         System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento de observación en historial: {ex.Message}");
-                     }
-                     
-                     return Json(new { success = true });
-                 }
+                if (resultado)
+                {
+                    try
+                    {
+                        _registrarEventoHistorialLN.RegistrarEvento(
+                            model.IdEmpleado,
+                            "Agregar Observación",
+                            "Se agregó una nueva observación al empleado",
+                            $"Observación: {model.Descripcion}",
+                            null,
+                            null,
+                            User.Identity.GetUserId(),
+                            Request.UserHostAddress
+                        );
+                    }
+                    catch { /* log */ }
+
+                    return Json(new { success = true });
+                }
                 ModelState.AddModelError("", "Ocurrió un error al guardar la observación.");
             }
             return PartialView("_ObservacionForm", model);
         }
 
-        // GET: DatosPersonales/EditarObservacion/5
         [HttpGet]
         public ActionResult EditarObservacion(int id)
         {
@@ -788,7 +704,6 @@ namespace Emplaniapp.UI.Controllers
             return PartialView("_ObservacionForm", model);
         }
 
-        // POST: DatosPersonales/EditarObservacion/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditarObservacion(ObservacionDto model)
@@ -798,41 +713,36 @@ namespace Emplaniapp.UI.Controllers
                 model.IdUsuarioEdito = User.Identity.GetUserId();
                 model.FechaEdicion = DateTime.Now;
 
-                                 bool resultado = _observacionLN.ActualizarObservacion(model);
+                bool resultado = _observacionLN.ActualizarObservacion(model);
 
-                 if (resultado)
-                 {
-                     // Registrar evento en el historial
-                     try
-                     {
-                                                   _registrarEventoHistorialLN.RegistrarEvento(
-                              model.IdEmpleado,
-                              "Modificar Observación",
-                              "Se modificó una observación del empleado",
-                              $"Observación modificada: {model.Descripcion}",
-                              null,
-                              null,
-                              User.Identity.GetUserId(),
-                              Request.UserHostAddress
-                          );
-                         
-                         System.Diagnostics.Debug.WriteLine($"✅ Evento de observación modificada registrado en historial");
-                     }
-                     catch (Exception ex)
-                     {
-                         System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento de observación modificada en historial: {ex.Message}");
-                     }
-                     
-                     return Json(new { success = true });
-                 }
+                if (resultado)
+                {
+                    try
+                    {
+                        _registrarEventoHistorialLN.RegistrarEvento(
+                            model.IdEmpleado,
+                            "Modificar Observación",
+                            "Se modificó una observación del empleado",
+                            $"Observación modificada: {model.Descripcion}",
+                            null,
+                            null,
+                            User.Identity.GetUserId(),
+                            Request.UserHostAddress
+                        );
+                    }
+                    catch { /* log */ }
+
+                    return Json(new { success = true });
+                }
                 ModelState.AddModelError("", "Ocurrió un error al guardar los cambios.");
             }
             return PartialView("_ObservacionForm", model);
         }
 
+        #endregion
+
         #region Gestión de Roles y Permisos
 
-        // GET: Obtener roles del empleado (solo Administradores)
         [HttpGet]
         [ActiveRoleAuthorize("Administrador")]
         public async Task<JsonResult> ObtenerRolesEmpleado(int idEmpleado)
@@ -845,17 +755,15 @@ namespace Emplaniapp.UI.Controllers
                     return Json(new { success = false, message = "Empleado no encontrado." }, JsonRequestBehavior.AllowGet);
                 }
 
-                // Definir los 3 roles del sistema
                 var todosLosRoles = new[] { "Administrador", "Contador", "Empleado" };
                 var rolesAsignados = new List<string>();
 
-                // Buscar usuario por IdNetUser o por email
                 ApplicationUser user = null;
                 if (!string.IsNullOrEmpty(empleado.IdNetUser))
                 {
                     user = await UserManager.FindByIdAsync(empleado.IdNetUser);
                 }
-                
+
                 if (user == null && !string.IsNullOrEmpty(empleado.correoInstitucional))
                 {
                     user = await UserManager.FindByEmailAsync(empleado.correoInstitucional);
@@ -866,17 +774,13 @@ namespace Emplaniapp.UI.Controllers
                     rolesAsignados = (await UserManager.GetRolesAsync(user.Id)).ToList();
                 }
 
-                // Crear la respuesta con todos los roles
                 var rolesData = todosLosRoles.Select(rol => new
                 {
                     nombre = rol,
                     asignado = rolesAsignados.Contains(rol)
                 }).ToList();
 
-                return Json(new { 
-                    success = true, 
-                    roles = rolesData
-                }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, roles = rolesData }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -884,7 +788,6 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        // POST: Asignar rol al empleado (solo Administradores)
         [HttpPost]
         [ActiveRoleAuthorize("Administrador")]
         [ValidateAntiForgeryToken]
@@ -898,7 +801,6 @@ namespace Emplaniapp.UI.Controllers
                     return Json(new { success = false, message = "Empleado no encontrado." });
                 }
 
-                // Buscar usuario por IdNetUser o por email
                 ApplicationUser user = null;
                 if (!string.IsNullOrEmpty(empleado.IdNetUser))
                 {
@@ -914,47 +816,37 @@ namespace Emplaniapp.UI.Controllers
                     return Json(new { success = false, message = "No se encontró el usuario asociado a este empleado." });
                 }
 
-                // Verificar que el rol existe
                 if (!await RoleManager.RoleExistsAsync(nombreRol))
                 {
                     return Json(new { success = false, message = "El rol especificado no existe." });
                 }
 
-                // Verificar si ya tiene el rol
                 if (await UserManager.IsInRoleAsync(user.Id, nombreRol))
                 {
                     return Json(new { success = false, message = "El usuario ya tiene este rol asignado." });
                 }
 
-                                 var result = await UserManager.AddToRoleAsync(user.Id, nombreRol);
-                 if (result.Succeeded)
-                 {
-                     // Registrar evento en el historial
-                     try
-                     {
-                         _registrarEventoHistorialLN.RegistrarEvento(
-                             idEmpleado,
-                             "Asignación de Rol",
-                             $"Se asignó el rol '{nombreRol}' al empleado",
-                             $"Rol asignado: {nombreRol}",
-                             null,
-                             nombreRol,
-                             User.Identity.GetUserId(),
-                             Request.UserHostAddress
-                         );
-                         
-                         System.Diagnostics.Debug.WriteLine($"✅ Evento de asignación de rol registrado en historial: {nombreRol}");
-                     }
-                     catch (Exception ex)
-                     {
-                         System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento de rol en historial: {ex.Message}");
-                     }
-                     
-                     // Invalidar la sesión del usuario afectado para forzar actualización de roles
-                     await InvalidateUserSessions(user.Id);
-                     
-                     return Json(new { success = true, message = $"Rol '{nombreRol}' asignado correctamente a {empleado.nombre} {empleado.primerApellido}.", requiresRefresh = true });
-                 }
+                var result = await UserManager.AddToRoleAsync(user.Id, nombreRol);
+                if (result.Succeeded)
+                {
+                    try
+                    {
+                        _registrarEventoHistorialLN.RegistrarEvento(
+                            idEmpleado,
+                            "Asignación de Rol",
+                            $"Se asignó el rol '{nombreRol}' al empleado",
+                            $"Rol asignado: {nombreRol}",
+                            null,
+                            nombreRol,
+                            User.Identity.GetUserId(),
+                            Request.UserHostAddress
+                        );
+                    }
+                    catch { /* log */ }
+
+                    await InvalidateUserSessions(user.Id);
+                    return Json(new { success = true, message = $"Rol '{nombreRol}' asignado correctamente.", requiresRefresh = true });
+                }
                 else
                 {
                     return Json(new { success = false, message = "Error al asignar el rol: " + string.Join(", ", result.Errors) });
@@ -966,7 +858,6 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        // POST: Remover rol del empleado (solo Administradores)
         [HttpPost]
         [ActiveRoleAuthorize("Administrador")]
         [ValidateAntiForgeryToken]
@@ -980,7 +871,6 @@ namespace Emplaniapp.UI.Controllers
                     return Json(new { success = false, message = "Empleado no encontrado." });
                 }
 
-                // Buscar usuario por IdNetUser o por email
                 ApplicationUser user = null;
                 if (!string.IsNullOrEmpty(empleado.IdNetUser))
                 {
@@ -996,41 +886,32 @@ namespace Emplaniapp.UI.Controllers
                     return Json(new { success = false, message = "No se encontró el usuario asociado a este empleado." });
                 }
 
-                // Verificar si tiene el rol
                 if (!await UserManager.IsInRoleAsync(user.Id, nombreRol))
                 {
                     return Json(new { success = false, message = "El usuario no tiene este rol asignado." });
                 }
 
-                                 var result = await UserManager.RemoveFromRoleAsync(user.Id, nombreRol);
-                 if (result.Succeeded)
-                 {
-                     // Registrar evento en el historial
-                     try
-                     {
-                         _registrarEventoHistorialLN.RegistrarEvento(
-                             idEmpleado,
-                             "Remoción de Rol",
-                             $"Se removió el rol '{nombreRol}' del empleado",
-                             $"Rol removido: {nombreRol}",
-                             nombreRol,
-                             null,
-                             User.Identity.GetUserId(),
-                             Request.UserHostAddress
-                         );
-                         
-                         System.Diagnostics.Debug.WriteLine($"✅ Evento de remoción de rol registrado en historial: {nombreRol}");
-                     }
-                     catch (Exception ex)
-                     {
-                         System.Diagnostics.Debug.WriteLine($"❌ Error al registrar evento de rol en historial: {ex.Message}");
-                     }
-                     
-                     // Invalidar la sesión del usuario afectado para forzar actualización de roles
-                     await InvalidateUserSessions(user.Id);
-                     
-                     return Json(new { success = true, message = $"Rol '{nombreRol}' removido correctamente de {empleado.nombre} {empleado.primerApellido}.", requiresRefresh = true });
-                 }
+                var result = await UserManager.RemoveFromRoleAsync(user.Id, nombreRol);
+                if (result.Succeeded)
+                {
+                    try
+                    {
+                        _registrarEventoHistorialLN.RegistrarEvento(
+                            idEmpleado,
+                            "Remoción de Rol",
+                            $"Se removió el rol '{nombreRol}' del empleado",
+                            $"Rol removido: {nombreRol}",
+                            nombreRol,
+                            null,
+                            User.Identity.GetUserId(),
+                            Request.UserHostAddress
+                        );
+                    }
+                    catch { /* log */ }
+
+                    await InvalidateUserSessions(user.Id);
+                    return Json(new { success = true, message = $"Rol '{nombreRol}' removido correctamente.", requiresRefresh = true });
+                }
                 else
                 {
                     return Json(new { success = false, message = "Error al remover el rol: " + string.Join(", ", result.Errors) });
@@ -1042,7 +923,6 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        // POST: Validar contraseña de administrador
         [HttpPost]
         [ActiveRoleAuthorize("Administrador")]
         [ValidateAntiForgeryToken]
@@ -1071,16 +951,9 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        /// <summary>
-        /// Obtiene el rol de mayor prioridad de una lista de roles
-        /// </summary>
-        /// <param name="roles">Lista de roles del usuario</param>
-        /// <returns>Rol de mayor prioridad</returns>
         private string GetHighestPriorityRole(List<string> roles)
         {
-            // Jerarquía de roles: Administrador > Contador > Empleado
             var rolesPriority = new List<string> { "Administrador", "Contador", "Empleado" };
-            
             foreach (var priorityRole in rolesPriority)
             {
                 if (roles.Contains(priorityRole))
@@ -1089,22 +962,15 @@ namespace Emplaniapp.UI.Controllers
                     return priorityRole;
                 }
             }
-            
-            // Fallback por si no encuentra ningún rol conocido
             var fallbackRole = roles.FirstOrDefault() ?? "Empleado";
             System.Diagnostics.Debug.WriteLine($"Usando rol fallback: {fallbackRole}");
             return fallbackRole;
         }
 
-        /// <summary>
-        /// Invalida las sesiones activas de un usuario específico
-        /// </summary>
-        /// <param name="userId">ID del usuario</param>
         private async Task InvalidateUserSessions(string userId)
         {
             try
             {
-                // Actualizar el SecurityStamp del usuario para invalidar todas sus sesiones activas
                 var user = await UserManager.FindByIdAsync(userId);
                 if (user != null)
                 {
@@ -1118,10 +984,6 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        /// <summary>
-        /// Verifica si los roles del usuario actual han cambiado desde su última verificación
-        /// </summary>
-        /// <returns>JSON indicando si hay cambios en los roles</returns>
         [HttpGet]
         public async Task<JsonResult> VerificarCambiosRoles()
         {
@@ -1133,32 +995,27 @@ namespace Emplaniapp.UI.Controllers
                     return Json(new { success = false, message = "Usuario no encontrado." }, JsonRequestBehavior.AllowGet);
                 }
 
-                // Obtener roles actuales de la base de datos
                 var rolesActuales = await UserManager.GetRolesAsync(userId);
                 var rolesActualesList = rolesActuales.ToList();
 
-                // Obtener roles almacenados en la sesión (si existen)
                 var rolesEnSesion = Session["UserRoles"] as List<string> ?? new List<string>();
 
-                // Comparar roles
                 bool hayDiferencias = !rolesActualesList.OrderBy(r => r).SequenceEqual(rolesEnSesion.OrderBy(r => r));
 
                 if (hayDiferencias)
                 {
-                    // Actualizar roles en sesión
                     Session["UserRoles"] = rolesActualesList;
-                    
-                    // Verificar si el rol activo sigue siendo válido
+
                     var rolActivo = Session["ActiveRole"] as string;
                     if (!string.IsNullOrEmpty(rolActivo) && !rolesActualesList.Contains(rolActivo))
                     {
-                        // El rol activo ya no es válido, cambiar al rol de mayor prioridad disponible
                         Session["ActiveRole"] = GetHighestPriorityRole(rolesActualesList);
                     }
 
-                    return Json(new { 
-                        success = true, 
-                        hasChanges = true, 
+                    return Json(new
+                    {
+                        success = true,
+                        hasChanges = true,
                         newRoles = rolesActualesList,
                         activeRole = Session["ActiveRole"] as string
                     }, JsonRequestBehavior.AllowGet);
@@ -1172,14 +1029,8 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        #endregion
-
         #region Role Switcher Methods
 
-        /// <summary>
-        /// Obtiene información sobre los roles del usuario actual
-        /// </summary>
-        /// <returns>Información de roles en formato JSON</returns>
         [HttpGet]
         public async Task<JsonResult> GetUserRoleInfo()
         {
@@ -1188,29 +1039,25 @@ namespace Emplaniapp.UI.Controllers
                 System.Diagnostics.Debug.WriteLine($"=== GetUserRoleInfo called ===");
                 System.Diagnostics.Debug.WriteLine($"User authenticated: {User.Identity.IsAuthenticated}");
                 System.Diagnostics.Debug.WriteLine($"User name: {User.Identity.Name}");
-                
+
                 var userId = User.Identity.GetUserId();
                 var userRoles = await UserManager.GetRolesAsync(userId);
                 var rolesList = userRoles.ToList();
-                
-                // Inicializar roles en sesión para comparación futura
+
                 Session["UserRoles"] = rolesList;
-                
+
                 System.Diagnostics.Debug.WriteLine($"User roles: {string.Join(", ", rolesList)}");
-                
-                // Obtener rol activo de la sesión
+
                 var activeRole = Session["ActiveRole"] as string;
                 if (string.IsNullOrEmpty(activeRole) || !rolesList.Contains(activeRole))
                 {
-                    // Establecer rol activo según prioridad: Administrador > Contador > Empleado
                     activeRole = GetHighestPriorityRole(rolesList);
                     Session["ActiveRole"] = activeRole;
                 }
-                
+
                 System.Diagnostics.Debug.WriteLine($"Active role: {activeRole}");
-                
+
                 var hasMultipleRoles = rolesList.Count > 1;
-                System.Diagnostics.Debug.WriteLine($"Has multiple roles: {hasMultipleRoles}");
 
                 var result = new
                 {
@@ -1227,14 +1074,14 @@ namespace Emplaniapp.UI.Controllers
                 };
 
                 System.Diagnostics.Debug.WriteLine($"Returning JSON: {Newtonsoft.Json.JsonConvert.SerializeObject(result)}");
-                
+
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"ERROR in GetUserRoleInfo: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                
+
                 return Json(new
                 {
                     success = false,
@@ -1243,11 +1090,6 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        /// <summary>
-        /// Cambia el rol activo del usuario
-        /// </summary>
-        /// <param name="role">Nuevo rol a activar</param>
-        /// <returns>Resultado JSON del cambio</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> SwitchRole(string role)
@@ -1255,7 +1097,7 @@ namespace Emplaniapp.UI.Controllers
             try
             {
                 System.Diagnostics.Debug.WriteLine($"SwitchRole called with role: {role}");
-                
+
                 if (string.IsNullOrEmpty(role))
                 {
                     return Json(new { success = false, message = "El rol no puede estar vacío." });
@@ -1266,14 +1108,15 @@ namespace Emplaniapp.UI.Controllers
                 var rolesList = userRoles.ToList();
 
                 System.Diagnostics.Debug.WriteLine($"User has roles: {string.Join(", ", rolesList)}");
-                
+
                 if (rolesList.Contains(role))
                 {
                     Session["ActiveRole"] = role;
                     System.Diagnostics.Debug.WriteLine($"Role switched successfully to: {role}");
-                    
-                    return Json(new { 
-                        success = true, 
+
+                    return Json(new
+                    {
+                        success = true,
                         message = $"Rol cambiado a '{role}' exitosamente.",
                         newRole = role
                     });
@@ -1281,26 +1124,24 @@ namespace Emplaniapp.UI.Controllers
                 else
                 {
                     System.Diagnostics.Debug.WriteLine($"User does not have role: {role}");
-                    return Json(new { 
-                        success = false, 
-                        message = "No tienes permisos para acceder a este rol." 
+                    return Json(new
+                    {
+                        success = false,
+                        message = "No tienes permisos para acceder a este rol."
                     });
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"ERROR in SwitchRole: {ex.Message}");
-                return Json(new { 
-                    success = false, 
-                    message = "Error al cambiar el rol: " + ex.Message 
+                return Json(new
+                {
+                    success = false,
+                    message = "Error al cambiar el rol: " + ex.Message
                 });
             }
         }
 
-        /// <summary>
-        /// Fuerza la actualización del rol activo según la prioridad de roles
-        /// </summary>
-        /// <returns>JSON con el rol activo actualizado</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> RefreshActiveRole()
@@ -1316,15 +1157,15 @@ namespace Emplaniapp.UI.Controllers
                 var userRoles = await UserManager.GetRolesAsync(userId);
                 var rolesList = userRoles.ToList();
 
-                // Establecer el rol de mayor prioridad
                 var newActiveRole = GetHighestPriorityRole(rolesList);
                 Session["ActiveRole"] = newActiveRole;
                 Session["UserRoles"] = rolesList;
 
                 System.Diagnostics.Debug.WriteLine($"🔄 Rol activo actualizado manualmente a: {newActiveRole}");
 
-                return Json(new { 
-                    success = true, 
+                return Json(new
+                {
+                    success = true,
                     message = $"Rol activo actualizado a '{newActiveRole}'",
                     activeRole = newActiveRole,
                     availableRoles = rolesList
@@ -1352,9 +1193,8 @@ namespace Emplaniapp.UI.Controllers
         }
 
         // ===============================================
-        // 🔥 MÉTODOS AUXILIARES PARA DATOS GEOGRÁFICOS
+        // MÉTODOS AUXILIARES PARA DATOS GEOGRÁFICOS
         // ===============================================
-        
         private SelectList ObtenerProvinciasSelectList(int? selectedValue = null)
         {
             using (var contexto = new Contexto())
@@ -1363,19 +1203,10 @@ namespace Emplaniapp.UI.Controllers
                     .Select(p => new { p.idProvincia, p.nombreProvincia })
                     .OrderBy(p => p.nombreProvincia)
                     .ToList();
-                
+
                 return new SelectList(provincias, "idProvincia", "nombreProvincia", selectedValue);
             }
         }
-
-
-
-
-
-
-
-
-
-        #endregion
     }
+    #endregion
 }

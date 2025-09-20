@@ -14,27 +14,26 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
     public class EditarLiquidacionLN : IEditarLiquidacionLN
     {
         IEditarLiquidacionAD _editarLiq;
-        IMostrarCalculosPreviosLiqLN _calculosPrevios;
+        IMostrarCalculosLiqLN _calculosPrevios;
 
         public EditarLiquidacionLN() 
         { 
             _editarLiq = new EditarLiquidacionAD();
-            _calculosPrevios = new MostrarCalculosPreviosLiqLN();
+            _calculosPrevios = new MostrarCalculosLiqLN();
         }
 
-        public int Editar(EmpleadoDto emp, LiquidacionDto liquidacion)
+        // Edición de datos generales ------------------------------------------------------------
+        public int Editar(LiquidacionDto liq)
         {
-            int seActualizaLiq = _editarLiq.Editar(CambioBD(emp,liquidacion));
+            int seActualizaLiq = _editarLiq.Editar(CambioBD(liq));
             return seActualizaLiq;
         }
 
-        private Liquidacion CambioBD(EmpleadoDto emp, LiquidacionDto liq)
+        private Liquidacion CambioBD(LiquidacionDto liquid)
         {
-            LiquidacionDto liquid = _calculosPrevios.MostrarLiquidacionTotal
-                (emp, liq.fechaLiquidacion, liq.motivoLiquidacion);
             return new Liquidacion
             {
-                idLiquidacion = liq.idLiquidacion,
+                idLiquidacion = liquid.idLiquidacion,
                 idEmpleado = liquid.idEmpleado,
                 fechaLiquidacion = liquid.fechaLiquidacion,
                 motivoLiquidacion = liquid.motivoLiquidacion,
@@ -53,20 +52,18 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
         }
 
 
-
-        public int EditarFinal(EmpleadoDto emp, LiquidacionDto liquidacion)
+        // Aprobar la liquidación (cambio de estado a 1: Activo) ----------------------------------
+        public int EditarFinal(LiquidacionDto liquidacion)
         {
-            int seActualizaLiq = _editarLiq.Editar(CambioEstado(emp, liquidacion));
+            int seActualizaLiq = _editarLiq.Editar(CambioEstado(liquidacion));
             return seActualizaLiq;
         }
 
-        private Liquidacion CambioEstado(EmpleadoDto emp, LiquidacionDto liq)
+        private Liquidacion CambioEstado(LiquidacionDto liquid)
         {
-            LiquidacionDto liquid = _calculosPrevios.MostrarLiquidacionTotal
-                (emp, liq.fechaLiquidacion, liq.motivoLiquidacion);
             return new Liquidacion
             {
-                idLiquidacion = liq.idLiquidacion,
+                idLiquidacion = liquid.idLiquidacion,
                 idEmpleado = liquid.idEmpleado,
                 fechaLiquidacion = liquid.fechaLiquidacion,
                 motivoLiquidacion = liquid.motivoLiquidacion,
@@ -80,7 +77,7 @@ namespace Emplaniapp.LogicaDeNegocio.Liquidaciones
                 remuPendientes = liquid.remuPendientes,
                 costoLiquidacion = liquid.costoLiquidacion,
                 observacionLiquidacion = liquid.observacionLiquidacion,
-                idEstado = 1
+                idEstado = 1 // Que está activa -> Se guarda
             };
         }
 
