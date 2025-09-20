@@ -2,11 +2,13 @@ using System;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using System.Security.Claims;
 
 namespace Emplaniapp.UI.Attributes
 {
     /// <summary>
-    /// Atributo de autorización que verifica el rol activo en lugar de todos los roles del usuario
+    /// Atributo de autorización que verifica todos los roles del usuario (sistema unificado)
     /// </summary>
     public class ActiveRoleAuthorizeAttribute : AuthorizeAttribute
     {
@@ -30,17 +32,23 @@ namespace Emplaniapp.UI.Attributes
                 return true;
             }
 
-            // Obtener el rol activo de la sesión
-            var activeRole = httpContext.Session["ActiveRole"] as string;
+            // Obtener todos los roles del usuario desde Identity
+            var claimsIdentity = httpContext.User.Identity as ClaimsIdentity;
+            var userRoles = claimsIdentity?.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToArray();
             
-            if (string.IsNullOrEmpty(activeRole))
+            if (userRoles == null || !userRoles.Any())
             {
                 return false;
             }
 
-            // Verificar si el rol activo está en la lista de roles permitidos
+            // Verificar si el usuario tiene alguno de los roles permitidos
             var allowedRoles = SplitString(Roles);
-            return allowedRoles.Contains(activeRole, StringComparer.OrdinalIgnoreCase);
+            return allowedRoles.Any(allowedRole => 
+                userRoles.Any(userRole => 
+                    string.Equals(userRole, allowedRole, StringComparison.OrdinalIgnoreCase)));
         }
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
