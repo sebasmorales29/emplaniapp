@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNet.Identity
 @using System.Security.Claims
+@using Emplaniapp.UI.Helpers
 
 @{
     // Evitar ?. para compatibilidad con C# 5
@@ -12,43 +13,15 @@
     }
     var idEmpleado = (idEmpleadoClaim != null) ? idEmpleadoClaim.Value : null;
 
-    string userRole = "Usuario"; // Valor por defecto
-    Claim roleClaim = null;
-    if (claimsIdentity != null)
-    {
-        roleClaim = claimsIdentity.FindFirst(ClaimTypes.Role);
-    }
-    if (roleClaim != null)
-    {
-        userRole = roleClaim.Value;
-    }
+    // Obtener todos los roles del usuario
+    var userRoles = RoleHelper.GetAllUserRoles();
+    var primaryRole = RoleHelper.GetPrimaryRole();
+    var hasMultipleRoles = RoleHelper.HasMultipleRoles();
 
-    // Lee el rol activo desde Session si existe; si no, usa userRole
-    Func<string> getActiveRole = () =>
-    {
-        var activeRole = (Session != null) ? Session["ActiveRole"] as string : null;
-        if (!string.IsNullOrEmpty(activeRole))
-            return activeRole;
-        return userRole;
-    };
-
-    Func<string, bool> isInActiveRole = role =>
-    {
-        var activeRole = getActiveRole();
-        return (activeRole != null) && activeRole.Equals(role, System.StringComparison.OrdinalIgnoreCase);
-    };
-
-    Func<string[], bool> isInAnyActiveRole = roles =>
-    {
-        var activeRole = getActiveRole();
-        if (activeRole == null || roles == null) return false;
-        return roles.Any(role => string.Equals(activeRole, role, System.StringComparison.OrdinalIgnoreCase));
-    };
-
-    Func<string, bool> isNotInActiveRole = role => !isInActiveRole(role);
-
-    var activeUserRole = getActiveRole();
-
+    // Funciones de verificación de roles (sistema unificado)
+    Func<string, bool> hasRole = role => RoleHelper.HasRole(role);
+    Func<string[], bool> hasAnyRole = roles => RoleHelper.HasAnyRole(roles);
+    Func<string, bool> doesNotHaveRole = role => RoleHelper.DoesNotHaveRole(role);
 }
 <!DOCTYPE html>
 <html lang="es">
@@ -101,7 +74,7 @@
                 <nav class="iq-sidebar-menu">
                     <ul id="iq-sidebar-toggle" class="iq-menu">
 
-                        @if (isInActiveRole("Administrador"))
+                        @if (hasRole("Administrador"))
                         {
                             <!-- Menú para Administrador -->
                             <li class="">
@@ -112,7 +85,7 @@
                             </li>
                         }
 
-                        @if (isInActiveRole("Contador"))
+                        @if (hasRole("Contador"))
                         {
                             <!-- Menú para Contador -->
                             <li class="">
@@ -129,7 +102,7 @@
                             </li>
                         }
 
-                        @if (isInActiveRole("Administrador") || isInActiveRole("Contador"))
+                       @if (hasRole("Administrador") || hasRole("Contador"))
                         {
                             <li class="">
                                 <a href="@Url.Action("Index", "variablesFinancieras")">
@@ -140,7 +113,7 @@
                         }
 
 
-                        @if (isInActiveRole("Empleado")) 
+                        @if (hasRole("Empleado")) 
                         {
                             <!-- Menú para Empleado -->
 
@@ -216,9 +189,9 @@
                                 </li>
                                
                                 <!-- Si el usuario está autenticado, mostrar role switcher y botón de Salir -->
-                                <li class="">
+                              <!-- 
+                              <li class="">
                                     <a id="role-switcher-container">
-                                        <!-- Contenedor que será actualizado dinámicamente -->
                                         <div style="padding-left:10px; font-size:16px;" class="text-secondary">
                                                 @*<i class="bi bi-person-fill-check"></i>*@ 
                                             <span id="role-display" class="text-secondary">
@@ -227,7 +200,7 @@
                                         </div>
                                     </a>
                                 </li>
-                                
+                                -->
 
                                 <li class="nav-item nav-icon" id="dropdownMenuButton03">
                                     @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
@@ -302,134 +275,11 @@
     <!-- Modal de Confirmación de Contraseña de Administrador -->
     @Html.Partial("_AdminPasswordModal")
 
-
-    <!-- Role Switcher JavaScript (idéntico a tu versión; no se toca) -->
+    <!-- Sistema de roles unificado - Sin cambio de roles -->
     <script>
-        $(document).ready(function() {
-            if ($('#role-display').length === 0) {
-                console.error('Container #role-display not found!');
-                return;
-            }
-            initializeRoleSwitcher();
-        });
-
-        function initializeRoleSwitcher() {
-            $.ajax({
-                url: '@Url.Action("GetUserRoleInfo", "DatosPersonales")',
-                type: 'GET',
-                success: function(data) {
-                    if (data.success) {
-                        updateRoleDisplay(data);
-                    } else {
-                        console.log('Error al obtener roles:', data.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log('Error al cargar información de roles:', status, error);
-                }
-            });
-        }
-
-        function updateRoleDisplay(roleInfo) {
-
-            var container = $('#role-display');
-            if (roleInfo.hasMultipleRoles) {
-                var dropdownHtml = '<div class="dropdown" style="display: inline-block;">' +
-                    '<a href="#" class="dropdown-toggle btn btn-light-light text-secondary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" ' +
-                    'style="font-size:16px; text-decoration: none; padding: 5px 10px; border-round:6px; transition: all 0.3s ease;" > ' +
-                    '<i class="bi bi-caret-down-fill"></i>  '+
-                    roleInfo.activeRole +
-                    '</a>' +
-                    '<ul class="dropdown-menu  style= "min-width: 200px; border-radius: 8px; margin-top: 5px;" >'; // style="background-color: #4682A9; border: 1px solid #3a6b8a; min-width: 160px; border-radius: 8px; margin-top: 5px;"
-                roleInfo.availableRoles.forEach(function(role) {
-                    var isActive = role === roleInfo.activeRole;
-                    var checkIcon = isActive ? '<i class="bi bi-check text-primary" style="margin-right: 8px;"></i> ' : '<span style="margin-right: 20px;"></span>';
-                    var fontWeight = isActive ? 'font-weight: medium;' : '';
-                    var backgroundColor = isActive ? 'background-color: #E9E9FD;' : '';
-                    dropdownHtml += '<li class="row">' +
-                        '<a href="#" class="dropdown-menu-item" onclick="switchRole(\'' + role + '\')" ' +
-                        'style="color: gray; display: block; text-decoration: none; font-size:16px;' + fontWeight + backgroundColor + ' border-radius: 6px; margin: 2px 6px; transition: all 0.2s ease;" ' +
-                        'onmouseover="if(\'' + role + '\' !== \'' + roleInfo.activeRole + '\') this.style.backgroundColor=\'#E9E9FD\'" ' +
-                        'onmouseout="this.style.backgroundColor=\'' + (isActive ? '#E9E9FD' : 'transparent') + '\'">' +
-                        checkIcon + role +
-                        '</a>' +
-                        '</li>';
-                });
-                dropdownHtml += '</ul></div>';
-                container.html(dropdownHtml);
-                setTimeout(function() {
-                    var dropdownElement = container.find('.dropdown-toggle');
-                    dropdownElement.on('click', function(e) {
-                        e.preventDefault();
-                        var menu = $(this).next('.dropdown-menu');
-                        menu.toggle();
-                    });
-                }, 100);
-            } else {
-                container.html(roleInfo.activeRole);
-            }
-        }
-
-        window.switchRole = function(newRole) {
-            $('.dropdown-menu').hide();
-            var container = $('#role-display');
-            var originalContent = container.html();
-            container.html('<i class="bi bi-arrow-repeat text-secondary"></i> Cambiando...');
-            $.ajax({
-                url: '@Url.Action("SwitchRole", "DatosPersonales")',
-                type: 'POST',
-                data: {
-                    role: newRole,
-                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-                },
-                success: function(data) {
-                    if (data.success) {
-                        container.html(data.newRole);
-                        setTimeout(function() {
-                            window.location.href = '@Url.Action("Index", "Home")';
-                        }, 500);
-                    } else {
-                        container.html(originalContent);
-                        alert('Error: ' + data.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    container.html(originalContent);
-                    alert('Error al cambiar el rol: ' + error);
-                }
-            });
-        };
-
-        function verificarCambiosRoles() {
-            if ($('#role-switcher-container').length > 0) {
-                $.ajax({
-                    url: '@Url.Action("VerificarCambiosRoles", "DatosPersonales")',
-                    type: 'GET',
-                    cache: false,
-                    success: function(data) {
-                        if (data.success && data.hasChanges) {
-                            if (data.newRoles.length === 0) {
-                                alert('Sus permisos han sido modificados. Será redirigido al inicio de sesión.');
-                                window.location.href = '@Url.Action("Login", "Account")';
-                                return;
-                            }
-                            window.location.href = '@Url.Action("Index", "Home")';
-                        }
-                    }
-                });
-            }
-        }
-
-        @if (Request.IsAuthenticated)
-        {
-            <text>
-            $(document).ready(function() {
-                verificarCambiosRoles();
-            });
-            setInterval(verificarCambiosRoles, 10000);
-            $(window).on('focus', function() { verificarCambiosRoles(); });
-            </text>
-        }
+        // El sistema ahora muestra todos los roles del usuario sin posibilidad de cambio
+        // Los permisos se verifican automáticamente en cada acción
+        console.log('Sistema de roles unificado cargado - Sin cambio de roles');
     </script>
 </body>
 </html>

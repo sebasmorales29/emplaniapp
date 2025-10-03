@@ -1029,7 +1029,7 @@ namespace Emplaniapp.UI.Controllers
             }
         }
 
-        #region Role Switcher Methods
+        #region User Roles Info Methods
 
         [HttpGet]
         public async Task<JsonResult> GetUserRoleInfo()
@@ -1048,23 +1048,11 @@ namespace Emplaniapp.UI.Controllers
 
                 System.Diagnostics.Debug.WriteLine($"User roles: {string.Join(", ", rolesList)}");
 
-                var activeRole = Session["ActiveRole"] as string;
-                if (string.IsNullOrEmpty(activeRole) || !rolesList.Contains(activeRole))
-                {
-                    activeRole = GetHighestPriorityRole(rolesList);
-                    Session["ActiveRole"] = activeRole;
-                }
-
-                System.Diagnostics.Debug.WriteLine($"Active role: {activeRole}");
-
-                var hasMultipleRoles = rolesList.Count > 1;
-
                 var result = new
                 {
                     success = true,
-                    activeRole = activeRole,
-                    availableRoles = rolesList,
-                    hasMultipleRoles = hasMultipleRoles,
+                    userRoles = rolesList,
+                    hasMultipleRoles = rolesList.Count > 1,
                     debug = new
                     {
                         userAuthenticated = User.Identity.IsAuthenticated,
@@ -1087,93 +1075,6 @@ namespace Emplaniapp.UI.Controllers
                     success = false,
                     message = "Error al obtener información de roles: " + ex.Message
                 }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<JsonResult> SwitchRole(string role)
-        {
-            try
-            {
-                System.Diagnostics.Debug.WriteLine($"SwitchRole called with role: {role}");
-
-                if (string.IsNullOrEmpty(role))
-                {
-                    return Json(new { success = false, message = "El rol no puede estar vacío." });
-                }
-
-                var userId = User.Identity.GetUserId();
-                var userRoles = await UserManager.GetRolesAsync(userId);
-                var rolesList = userRoles.ToList();
-
-                System.Diagnostics.Debug.WriteLine($"User has roles: {string.Join(", ", rolesList)}");
-
-                if (rolesList.Contains(role))
-                {
-                    Session["ActiveRole"] = role;
-                    System.Diagnostics.Debug.WriteLine($"Role switched successfully to: {role}");
-
-                    return Json(new
-                    {
-                        success = true,
-                        message = $"Rol cambiado a '{role}' exitosamente.",
-                        newRole = role
-                    });
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"User does not have role: {role}");
-                    return Json(new
-                    {
-                        success = false,
-                        message = "No tienes permisos para acceder a este rol."
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"ERROR in SwitchRole: {ex.Message}");
-                return Json(new
-                {
-                    success = false,
-                    message = "Error al cambiar el rol: " + ex.Message
-                });
-            }
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<JsonResult> RefreshActiveRole()
-        {
-            try
-            {
-                var userId = User.Identity.GetUserId();
-                if (string.IsNullOrEmpty(userId))
-                {
-                    return Json(new { success = false, message = "Usuario no encontrado." });
-                }
-
-                var userRoles = await UserManager.GetRolesAsync(userId);
-                var rolesList = userRoles.ToList();
-
-                var newActiveRole = GetHighestPriorityRole(rolesList);
-                Session["ActiveRole"] = newActiveRole;
-                Session["UserRoles"] = rolesList;
-
-                System.Diagnostics.Debug.WriteLine($"🔄 Rol activo actualizado manualmente a: {newActiveRole}");
-
-                return Json(new
-                {
-                    success = true,
-                    message = $"Rol activo actualizado a '{newActiveRole}'",
-                    activeRole = newActiveRole,
-                    availableRoles = rolesList
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Error al actualizar rol activo: " + ex.Message });
             }
         }
 

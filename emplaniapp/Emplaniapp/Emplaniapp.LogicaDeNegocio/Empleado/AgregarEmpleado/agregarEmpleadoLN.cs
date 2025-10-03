@@ -139,6 +139,28 @@ namespace Emplaniapp.LogicaDeNegocio.Empleado.AgregarEmpleado
             {
                 bool resultado = _agregarEmpleadoAD.CrearEmpleado(empleado);
                 System.Diagnostics.Debug.WriteLine($"📊 Resultado de AccesoADatos: {resultado}");
+                
+                // Si se creó exitosamente, registrar en el historial
+                if (resultado)
+                {
+                    try
+                    {
+                        var historialLN = new Emplaniapp.LogicaDeNegocio.Historial.RegistrarEventoHistorialLN();
+                        var idEmpleadoCreado = ObtenerIdEmpleadoCreado(empleado.cedula);
+                        
+                        if (idEmpleadoCreado > 0)
+                        {
+                            historialLN.RegistrarCreacionEmpleado(idEmpleadoCreado, empleado.IdNetUser);
+                            System.Diagnostics.Debug.WriteLine($"✅ Evento de creación registrado en historial para empleado {idEmpleadoCreado}");
+                        }
+                    }
+                    catch (Exception exHistorial)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"⚠️ Advertencia: No se pudo registrar en historial: {exHistorial.Message}");
+                        // No fallar la creación por error en historial
+                    }
+                }
+                
                 return resultado;
             }
             catch (Exception ex)
@@ -146,6 +168,30 @@ namespace Emplaniapp.LogicaDeNegocio.Empleado.AgregarEmpleado
                 System.Diagnostics.Debug.WriteLine($"❌ Excepción en CrearEmpleado LN: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"📚 Stack trace: {ex.StackTrace}");
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Obtiene el ID del empleado recién creado basándose en la cédula
+        /// </summary>
+        private int ObtenerIdEmpleadoCreado(int cedula)
+        {
+            try
+            {
+                using (var contexto = new Emplaniapp.AccesoADatos.Contexto())
+                {
+                    var empleado = contexto.Empleados
+                        .Where(e => e.cedula == cedula)
+                        .OrderByDescending(e => e.idEmpleado)
+                        .FirstOrDefault();
+                    
+                    return empleado?.idEmpleado ?? 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error al obtener ID del empleado creado: {ex.Message}");
+                return 0;
             }
         }
     }
