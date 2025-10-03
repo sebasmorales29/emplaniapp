@@ -5,159 +5,181 @@
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
-<div class="container">
-    <div class="row align-items-center mb-4">
-        <div class="col-md-8">
-            <h2 class="mb-0 titulo">Hoja Resumen</h2>
-            <div class="total-empleados-box">
-                <span>Total de empleados: @ViewBag.TotalEmpleados</span>
-            </div>
+
+
+
+<!-- Título -->
+<div class="row">
+    <div class="col-md-9 mb-2">
+        <!--Título y subtítulo-->
+        <h1 class="mb-2">Hoja Resumen</h1>
+        <span class="text-secondary">Total de empleados: @ViewBag.TotalEmpleados</span>
+    </div>
+    <div class="col-md-3 align-items-center justify-content-end display-block">
+        <!-- Agregar Empleados -->
+        <div class="mb-2">
+            @* BOTÓN GENERAR REMUNERACIONES (se mantiene) *@
+            @using (Html.BeginForm("Generar", "HojaResumen", FormMethod.Post))
+            {
+                <button type="submit" class="btn btn-primary" style="width:100%;">
+                    <i class="fas fa-cogs"></i>
+                    Generar Remuneraciones
+                </button>
+            }
+        </div>
+        <div>
+            @* ÚNICO BOTÓN DE PDF: Exportar la vista actual (respeta filtros) *@
+            <a href="@Url.Action("ExportResumenPdf", "HojaResumen", new { filtro = ViewBag.Filtro, idCargo = ViewBag.idCargo })"
+               class="btn btn-danger" style="width:100%;">
+                <i class="fas fa-file-arrow-down"></i> 
+                Exportar PDF
+            </a>
         </div>
     </div>
-
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-
-    @* BOTÓN GENERAR REMUNERACIONES (se mantiene) *@
-    @using (Html.BeginForm("Generar", "HojaResumen", FormMethod.Post, new { @class = "mb-3 d-inline-block" }))
-    {
-        <button type="submit" class="btn btn-primary">
-            @*<i class="fas fa-cogs"></i>*@
-            Generar Remuneraciones
-        </button>
-    }
-
-    @* ÚNICO BOTÓN DE PDF: Exportar la vista actual (respeta filtros) *@
-    <a href="@Url.Action("ExportResumenPdf", "HojaResumen", new { filtro = ViewBag.Filtro, idCargo = ViewBag.idCargo })"
-       class="btn btn-danger d-inline-block" style="margin-left:8px">
-        <i class="fas fa-file-arrow-down"></i> Exportar PDF
-    </a>
-
-    <hr />
+</div>
     <br />
-    @using (Html.BeginForm("Filtrar", "HojaResumen", FormMethod.Post))
-    {
-        <div class="row mb-3 align-items-end">
 
-            <div class="col-md-3">
-                <input type="text" name="filtro" value="@ViewBag.Filtro" class="form-control" placeholder="Buscar por nombre o cédula " />
-            </div>
-            <div class="col-md-3">
-                @Html.DropDownList("idCargo", new SelectList(ViewBag.Cargos, "Value", "Text", ViewBag.idCargo), "Todos los cargos", new { @class = "form-control" })
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-accion-prim w-100">
-                    <i class="fas fa-search"></i>
-                    Filtrar
-                </button>
-            </div>
 
-            @if (!string.IsNullOrEmpty(ViewBag.Filtro as string) || (ViewBag.idCargo != null && ViewBag.idCargo.ToString() != "0"))
-            {
-                <div class="col-md-12 mt-2">
-                    <a href="@Url.Action("listarHojaResumen", "HojaResumen")" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Quitar Filtros
-                    </a>
+
+<!-- Mensajes de alerta -->
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <br />
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <br/>
+}
+
+
+   
+<div class="card card-block card-stretch card-height">
+    <div class="card-body">
+
+        <!-- Filtros -->
+        @using (Html.BeginForm("Filtrar", "HojaResumen", FormMethod.Post))
+        {
+            <div class="d-flex justify-content-center align-items-center mb-3 p-2">
+                <div class="m-2">
+                    <input type="text" name="filtro" value="@ViewBag.Filtro" class="form-control" placeholder="Buscar por nombre o cédula " />
                 </div>
-            }
-        </div>
-    }
+                <div class="m-2">
+                    @Html.DropDownList("idCargo", new SelectList(ViewBag.Cargos, "Value", "Text", ViewBag.idCargo), "Todos los cargos", new { @class = "form-control" })
+                </div>
+                <div class="m-2">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="fas fa-search"></i>
+                        Filtrar
+                    </button>
+                </div>
 
-    <!-- Tabla -->
-    <table class="table table-bordered table-hover table-striped tabla-centrada" id="tablaResumen">
-        <thead class="thead-light">
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().NombreEmpleado)</th>
-                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().SalarioAprobado)</th>
-                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().TotalRemuneraciones)</th>
-                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().TotalRetenciones)</th>
-                <th>Liquidación</th>
-                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().SalarioNeto)</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                // Intentamos leer nombre de estado si existe
-                var t = item.GetType();
-                var p = t.GetProperty("nombreEstado") ?? t.GetProperty("NombreEstado") ?? t.GetProperty("Estado") ?? t.GetProperty("EstadoNombre");
-                var estadoNombre = p != null ? (p.GetValue(item, null) as string) : null;
+                @if (!string.IsNullOrEmpty(ViewBag.Filtro as string) || (ViewBag.idCargo != null && ViewBag.idCargo.ToString() != "0"))
+                {
+                    <div class="m-2">
+                        <a href="@Url.Action("listarHojaResumen", "HojaResumen")" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Quitar Filtros
+                        </a>
+                    </div>
+                }
+            </div>
+        }
 
+        <!-- Tabla -->
+        <table class="table table-bordered table-hover table-striped tabla-centrada" id="tablaResumen">
+            <thead class="thead-light">
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.NombreEmpleado)</td>
-                    <td>@Html.DisplayFor(modelItem => item.SalarioAprobado)</td>
-                    <td>@Html.DisplayFor(modelItem => item.TotalRemuneraciones)</td>
-                    <td>@Html.DisplayFor(modelItem => item.TotalRetenciones)</td>
-                    <td>
-                        @if (item.MontoLiquidacion == null || item.MontoLiquidacion == 0)
-                        {
-                            @:N/A
-                        }
-                        else
-                        {
-                            <div>
-                                <strong>Monto:</strong> @Html.DisplayFor(modelItem => item.MontoLiquidacion)<br />
-                                <strong>Fecha:</strong> @(item.FechaLiquidacion)
-                            </div>
-                        }
-                    </td>
-                    <td>@Html.DisplayFor(modelItem => item.SalarioNeto)</td>
-                    <td>
-                        @Html.ActionLink("Detalles", "VerDetalles", new { id = item.IdEmpleado }, new { @class = "btn btn-info btn-sm" })
-                        @if (!item.Aprobado)
-                        {
-                            using (Html.BeginForm("Aprobar", "HojaResumen", FormMethod.Post, new { @class = "d-inline" }))
-                            {
-                                @Html.Hidden("idPagoQuincenal", item.IdPagoQuincenal)
-                                <button type="submit" class="btn btn-success btn-sm aprobar-btn" style="margin-left:6px;">
-                                    <i class="fas fa-check"></i> Aprobar
-                                </button>
-                            }
-
-                            @* Chip informativa si conocemos el estado *@
-                            if (!string.IsNullOrWhiteSpace(estadoNombre))
-                            {
-                                if (estadoNombre.Equals("Pendiente", System.StringComparison.OrdinalIgnoreCase))
-                                {
-                                    <span class="chip chip-pending" style="margin-left:6px;">
-                                        <i class="fas fa-hourglass-half"></i> Pendiente
-                                    </span>
-                                }
-                                else if (estadoNombre.Equals("Rechazado", System.StringComparison.OrdinalIgnoreCase))
-                                {
-                                    <span class="chip chip-rejected" style="margin-left:6px;">
-                                        <i class="fas fa-ban"></i> Rechazado
-                                    </span>
-                                }
-                            }
-                        }
-                        else
-                        {
-                            <span class="chip chip-approve" style="margin-left:6px;">
-                                <i class="fas fa-check"></i> Aprobado
-                            </span>
-                        }
-                    </td>
+                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().NombreEmpleado)</th>
+                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().SalarioAprobado)</th>
+                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().TotalRemuneraciones)</th>
+                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().TotalRetenciones)</th>
+                    <th>Liquidación</th>
+                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().SalarioNeto)</th>
+                    <th>Acciones</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    // Intentamos leer nombre de estado si existe
+                    var t = item.GetType();
+                    var p = t.GetProperty("nombreEstado") ?? t.GetProperty("NombreEstado") ?? t.GetProperty("Estado") ?? t.GetProperty("EstadoNombre");
+                    var estadoNombre = p != null ? (p.GetValue(item, null) as string) : null;
+
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.NombreEmpleado)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SalarioAprobado)</td>
+                        <td>@Html.DisplayFor(modelItem => item.TotalRemuneraciones)</td>
+                        <td>@Html.DisplayFor(modelItem => item.TotalRetenciones)</td>
+                        <td>
+                            @if (item.MontoLiquidacion == null || item.MontoLiquidacion == 0)
+                            {
+                                @:N/A
+                            }
+                            else
+                            {
+                                <div>
+                                    <strong>Monto:</strong> @Html.DisplayFor(modelItem => item.MontoLiquidacion)<br />
+                                    <strong>Fecha:</strong> @(item.FechaLiquidacion)
+                                </div>
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.SalarioNeto)</td>
+                        <td>
+                            @Html.ActionLink("Detalles", "VerDetalles", new { id = item.IdEmpleado }, new { @class = "btn btn-info btn-sm" })
+                            @if (!item.Aprobado)
+                            {
+                                using (Html.BeginForm("Aprobar", "HojaResumen", FormMethod.Post, new { @class = "d-inline" }))
+                                {
+                                    @Html.Hidden("idPagoQuincenal", item.IdPagoQuincenal)
+                                    <button type="submit" class="btn btn-success btn-sm aprobar-btn" style="margin-left:6px;">
+                                        <i class="fas fa-check"></i> Aprobar
+                                    </button>
+                                }
+
+                                @* Chip informativa si conocemos el estado *@
+                                if (!string.IsNullOrWhiteSpace(estadoNombre))
+                                {
+                                    if (estadoNombre.Equals("Pendiente", System.StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <span class="chip chip-pending" style="margin-left:6px;">
+                                            <i class="fas fa-hourglass-half"></i> Pendiente
+                                        </span>
+                                    }
+                                    else if (estadoNombre.Equals("Rechazado", System.StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <span class="chip chip-rejected" style="margin-left:6px;">
+                                            <i class="fas fa-ban"></i> Rechazado
+                                        </span>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <span class="chip chip-approve" style="margin-left:6px;">
+                                    <i class="fas fa-check"></i> Aprobado
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
 </div>
 
-<style>
+
+
+@*<style>
     /* Botón aprobar: misma forma que "Detalles" */
     .aprobar-btn {
         width: auto;
@@ -242,7 +264,9 @@
     .chip i {
         font-size: 11px;
     }
-</style>
+</style>*@
+
+
 
 <script>
     $(document).ready(function () {
