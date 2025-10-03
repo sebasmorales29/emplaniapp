@@ -97,7 +97,8 @@ namespace Emplaniapp.AccesoADatos
                     idBanco = empleado.idBanco,
                     nombreBanco = resultado.NombreBanco ?? "Sin banco",
                     idEstado = empleado.idEstado,
-                    nombreEstado = resultado.NombreEstado ?? "Sin estado"
+                    nombreEstado = resultado.NombreEstado ?? "Sin estado",
+                    IdNetUser = empleado.IdNetUser
                 };
             }
         }
