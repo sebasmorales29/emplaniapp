@@ -13,10 +13,14 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public int Id { get; set; }
 
         [DisplayName("Nombre")]
+        [Required(ErrorMessage = "El nombre de la remuneración es obligatorio.")]
         public string nombreTipoRemuneracion { get; set; }
 
+
         [DisplayName("Porcentaje %")]
+        [Required(ErrorMessage = "El porcentaje de remuneración es obligatorio.")]
         public double porcentajeRemuneracion { get; set; }
+
 
         [DisplayName("Estado")]
         public int idEstado { get; set; }

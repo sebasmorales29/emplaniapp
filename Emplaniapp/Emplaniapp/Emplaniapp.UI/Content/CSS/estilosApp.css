@@ -1,0 +1,78 @@
+﻿
+
+/* ESTILOS ADICIONALES DE LA APLICACIÓN */
+
+
+/* ROJO ADVERTENCIA */
+
+.advertencia {
+    margin-top: 2px;
+    color: #de6f6f;
+}
+
+.text-advertencia {
+    color: #de6f6f;
+}
+
+.btn-advertencia {
+    color: #de6f6f;
+    background-color: none; 
+    border: 1px solid #de6f6f;
+}
+
+    .btn-advertencia:hover {
+        color: #fff;
+        background-color: #de6f6f;
+        border: 1px solid #de6f6f;
+    }
+
+/* -------------------------------------- */
+
+
+.card {
+    margin-bottom: 20px;
+}
+
+dl dt {
+    font-weight: 700;
+}
+
+dl dd {
+    font-size: 1.1rem;
+}
+
+dt {
+    text-align: end;
+}
+
+dd {
+    text-align: start;
+}
+
+.form-control.text-center {
+    text-align: center;
+}
+
+
+/* -------------------------------------- */
+
+
+.datos-row {
+    display: flex;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 8px 0;
+}
+
+    .datos-row:last-child {
+        border-bottom: none;
+    }
+
+.datos-label {
+    width: 40%;
+    font-weight: bold;
+}
+
+.datos-value {
+    width: 60%;
+}
+

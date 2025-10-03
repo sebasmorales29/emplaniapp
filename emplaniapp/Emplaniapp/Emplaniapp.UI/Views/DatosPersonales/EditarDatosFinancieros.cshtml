@@ -4,80 +4,106 @@
     ViewBag.Title = "Editar Datos Financieros";
 }
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h2>Editar Datos Financieros</h2>
-            <hr />
+
+<a class="btn btn-light text-primary mb-2" href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.IdEmpleado, seccion = "Datos personales" })">
+    <i class="bi bi-arrow-left-short"></i>
+    Volver
+</a>
+
+
+
+
+
+@using (Html.BeginForm("EditarDatosFinancieros", "DatosPersonales", FormMethod.Post, new { @class = "form-horizontal", id = "editForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.IdEmpleado)
+
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger row justify-content-between m-0 align-content-center" role="alert">
+            @Html.ValidationSummary(true, "Por favor, revise que todos los datos requeridos se encuentren completos", new { @class = "text-danger" })
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <i class="bi bi-x text-danger"></i>
+            </button>
         </div>
+       <br />
+    }
+
+    
+
+    <div class="card card-block card-stretch">
+
+        <div class="card-header">
+            <h3>Editar Datos Financieros</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PeriocidadPago, htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownListFor(model => model.PeriocidadPago, (SelectList)ViewBag.PeriocidadesPago, "Seleccione una periodicidad", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PeriocidadPago, "", new { @class = "advertencia" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.SalarioAprobado, htmlAttributes: new { @class = "control-label" })
+                        <span class="help-block text-muted">
+                            <br /><i class="bi bi-info-circle text-primary"></i> Puede modificar el salario seg&uacute;n sea necesario.
+                        </span>
+                        @Html.TextBoxFor(model => model.SalarioAprobado, htmlAttributes: new { @class = "form-control", @type = "number", @step = "0.01" })
+                        @Html.ValidationMessageFor(model => model.SalarioAprobado, "", new { @class = "advertencia" })
+
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.IdTipoMoneda, htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownListFor(model => model.IdTipoMoneda, (SelectList)ViewBag.TiposMoneda, "Seleccione una moneda", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.IdTipoMoneda, "", new { @class = "advertencia" })
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CuentaIBAN, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.CuentaIBAN, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.CuentaIBAN, "", new { @class = "advertencia" })
+
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.IdBanco, htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownListFor(model => model.IdBanco, (SelectList)ViewBag.Bancos, "Seleccione un banco", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.IdBanco, "", new { @class = "advertencia" })
+
+                    </div>
+                </div>
+            </div>
+
+            <br />
+
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    @Html.ActionLink("Cancelar", "Detalles", new { id = Model.IdEmpleado }, new { @class = "btn btn-outline-secondary m-2" })
+                    <input type="submit" value="Guardar Cambios" class="btn btn-primary m-2" />
+                </div>
+            </div>
+
+        </div>
+
     </div>
+}
 
-    @using (Html.BeginForm("EditarDatosFinancieros", "DatosPersonales", FormMethod.Post, new { @class = "form-horizontal", id = "editForm" }))
-    {
-        @Html.AntiForgeryToken()
-        @Html.HiddenFor(model => model.IdEmpleado)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.PeriocidadPago, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.PeriocidadPago, (SelectList)ViewBag.PeriocidadesPago, "Seleccione una periodicidad", new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.PeriocidadPago, "", new { @class = "text-danger" })
-            </div>
-        </div>
+<!-- Renderiza el modal de confirmación -->
+@Html.Partial("_AdminPasswordModal")
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.SalarioAprobado, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.SalarioAprobado, new { @class = "form-control", @type = "number", @step = "0.01" })
-                @Html.ValidationMessageFor(model => model.SalarioAprobado, "", new { @class = "text-danger" })
-                <span class="help-block text-muted">
-                    <i class="fa fa-info-circle"></i> Puede modificar el salario según sea necesario.
-                </span>
-            </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdTipoMoneda, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.IdTipoMoneda, (SelectList)ViewBag.TiposMoneda, "Seleccione una moneda", new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.IdTipoMoneda, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CuentaIBAN, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CuentaIBAN, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CuentaIBAN, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdBanco, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.IdBanco, (SelectList)ViewBag.Bancos, "Seleccione un banco", new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.IdBanco, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group" style="margin-top: 20px;">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Guardar" class="btn btn-primary" />
-                @Html.ActionLink("Cancelar", "Detalles", new { id = Model.IdEmpleado }, new { @class = "btn btn-default" })
-            </div>
-        </div>
-    }
-
-    <!-- Renderiza el modal de confirmación -->
-    @Html.Partial("_AdminPasswordModal")
-
-    @if (!ViewData.ModelState.IsValid)
-    {
-        <div class="alert alert-danger">
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        </div>
-    }
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
@@ -87,7 +113,7 @@
 
             mainForm.on('submit', function (e) {
                 e.preventDefault();
-                
+
                 // Usar función centralizada para mostrar el modal
                 if (window.AdminPasswordModal && window.AdminPasswordModal.show) {
                     window.AdminPasswordModal.show();
@@ -131,4 +157,4 @@
             });
         });
     </script>
-} 
+}
