@@ -47,6 +47,10 @@
     {
         return !isInActiveRole(role);
     };
+
+
+    var boleano = !(Model.IdNetUser).Equals(User.Identity.GetUserId());
+
 }
 
 <!-- Estilos -->
@@ -55,14 +59,19 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 
+
 <!-- Título del empleado -->
 <div class="row">
     <div class="col-md-12">
         <h2 class="title">@Model.nombre @Model.primerApellido @Model.segundoApellido</h2>
-        <a class="btn btn-light text-primary mb-2" href="@Url.Action("listarEmpleados","Empleado")">
-            <i class="bi bi-arrow-left-short"></i>
-            Volver
-        </a>
+        
+        @if (boleano){
+
+            <a class="btn btn-light text-primary mb-2" href="@Url.Action("listarEmpleados","Empleado")">
+                <i class="bi bi-arrow-left-short"></i>
+                Volver
+            </a>
+        }
         
     </div>
 </div>
@@ -85,7 +94,7 @@
 
             <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Datos personales" })" class="@(seccionActiva == "Datos personales" ? "active" : "") nav-item nav-link">Datos personales</a>
             <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Historial" })" class="@(seccionActiva == "Historial" ? "active" : "") nav-item nav-link">Historial</a>
-            @if (isInActiveRole("Administrador"))
+            @if (isInActiveRole("Administrador") && boleano)
             {
                 <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Roles y Permisos" })" class="@(seccionActiva == "Roles y Permisos" ? "active" : "") nav-item nav-link">Roles y Permisos</a>
             }

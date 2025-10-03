@@ -79,30 +79,13 @@
                             <!-- Menú para Administrador -->
                             <li class="">
                                 <a href="@Url.Action("ListarEmpleados", "Empleado")">
-                                    <i class="bi bi-person-fill"></i>
+                                    <i class="bi bi-people-fill"></i>
                                     <span>Empleados</span>
                                 </a>
                             </li>
                         }
 
-                        @if (hasRole("Contador"))
-                        {
-                            <!-- Menú para Contador -->
-                            <li class="">
-                                <a href="@Url.Action("Index", "TableroDeControl")">
-                                    <i class="bi bi-bar-chart-fill"></i>
-                                    <span>Tablero de Control</span>
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="@Url.Action("listarHojaResumen", "HojaResumen")">
-                                    <i class="bi bi-file-earmark-ruled-fill"></i>
-                                    <span>Hoja Resumen</span>
-                                </a>
-                            </li>
-                        }
-
-                       @if (hasRole("Administrador") || hasRole("Contador"))
+                        @if (hasRole("Administrador") || hasRole("Contador"))
                         {
                             <li class="">
                                 <a href="@Url.Action("Index", "variablesFinancieras")">
@@ -112,26 +95,27 @@
                             </li>
                         }
 
-
-                        @if (hasRole("Empleado")) 
+                        @if (hasRole("Contador"))
                         {
-                            <!-- Menú para Empleado -->
-
+                            <!-- Menú para Contador -->
                             <li class="">
-                                <a href="@Url.Action("Detalles", "DatosPersonales")">
-                                    <i class="las la-home iq-arrow-left"></i>
-                                    <span>Mi Perfil</span>
+                                <a href="@Url.Action("listarHojaResumen", "HojaResumen")">
+                                    <i class="bi bi-file-earmark-ruled-fill"></i>
+                                    <span>Hoja Resumen</span>
                                 </a>
                             </li>
-
                             <li class="">
-                                <a href="@Url.Action("HistorialPagos", "ReportesPago")">
-                                    <i class="las la-home iq-arrow-left"></i>
-                                    <span>Reporte de Pagos</span>
+                                <a href="@Url.Action("Index", "TableroDeControl")">
+                                    <i class="bi bi-bar-chart-fill"></i>
+                                    <span>Tablero de Control</span>
                                 </a>
                             </li>
                         }
-                       
+
+
+
+
+
                     </ul>
                 </nav>
                 <div class="sidebar-bottom">
@@ -152,7 +136,7 @@
                 <nav class="navbar navbar-expand-lg navbar-light p-0">
 
                     <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
-                        <svg class="ri-menu-line wrapper-menu" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list" viewBox="0 0 20 20">
+                        <svg class="ri-menu-line wrapper-menu bi bi-list" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
                         </svg>
                         <a href="@Url.Action("Index", "Home")" class="header-logo">
@@ -168,9 +152,6 @@
                     <div></div>
 
 
-
-
-
                     <div class="d-flex align-items-center">
                         
                            
@@ -178,29 +159,75 @@
 
                             @if (Request.IsAuthenticated)
                             {
-                                <li class="nav-item nav-icon">
+                                <!--<li class="nav-item nav-icon">
                                     <a class="" id="dropdownMenuButton02" aria-haspopup="false" aria-expanded="false">
                                         <div style="padding-left:10px; font-size:16px;" class="text-secondary">
-                                            <i class="bi bi-person-fill"></i>
                                             @User.Identity.GetUserName()
+                                            <i class="bi bi-chevron-down"></i>
                                         </div>
                                     </a>
 
                                 </li>
-                               
-                                <!-- Si el usuario está autenticado, mostrar role switcher y botón de Salir -->
-                              <!-- 
-                              <li class="">
-                                    <a id="role-switcher-container">
-                                        <div style="padding-left:10px; font-size:16px;" class="text-secondary">
-                                                @*<i class="bi bi-person-fill-check"></i>*@ 
-                                            <span id="role-display" class="text-secondary">
-                                                @activeUserRole
-                                            </span>
+
+
+                                if (hasRole("Empleado"))
+                                {-->
+                                                        <!-- Menú para Empleado -->
+
+                                                        <!--<li class="nav-item nav-icon">
+                                        <a href="@Url.Action("Detalles", "DatosPersonales")">
+                                            <i class="bi bi-person-fill"></i>
+                                            <span>Mi Perfil</span>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item nav-icon">
+                                        <a href="@Url.Action("HistorialPagos", "ReportesPago")">
+                                            <i class="bi bi-file-earmark-check"></i>
+                                            <span>Reporte de Pagos</span>
+                                        </a>
+                                    </li>
+                                }-->
+
+                                <li class="nav-item nav-icon">
+                                    <!-- Para mantener estabilidad de -->
+                                    <a class="" id="dropdownMenuButton02" aria-haspopup="false" aria-expanded="false">
+                                        <div style="padding-left:10px; font-size:16px;" class="text-white">
+                                            .
                                         </div>
                                     </a>
                                 </li>
-                                -->
+
+                                <li class="nav-item nav-icon dropdown">
+                                    <a href="#" class="search-toggle dropdown-toggle text-secondary" id="dropdownMenuButton02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                       style="padding-left:10px; font-size:16px;">
+                                        @User.Identity.GetUserName()
+                                        @if (hasRole("Empleado"))
+                                        {<i class="bi bi-chevron-down"></i>}
+                                        </a>
+
+                                    @if (hasRole("Empleado"))
+                                    {
+                                    <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton02">
+                                        <div class="card shadow-none m-0">
+                                            <div class="card-body p-0 ">
+                                                <div class="iq-sub-card list-group p-0 bg-white bg-opacity-10">
+                                                    <a href="@Url.Action("Detalles", "DatosPersonales")"
+                                                       class="list-group-item list-group-item-action">
+                                                        <i class="bi bi-person-fill"></i>
+                                                        Mi Perfil
+                                                    </a>
+                                                    <a href="@Url.Action("Index", "variablesFinancieras")"
+                                                       class="list-group-item list-group-item-action">
+                                                        <i class="bi bi-file-earmark-check"></i>
+                                                        Reporte de Pagos
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    }
+                                </li>
 
                                 <li class="nav-item nav-icon" id="dropdownMenuButton03">
                                     @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
