@@ -5,70 +5,48 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Emplaniapp</title>
-    @Styles.Render("~/Content/css")
+
     @Scripts.Render("~/bundles/modernizr")
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; /* Prevenir scroll en la página principal */
-        }
 
-        .login-page-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="~/Content/CSS/estilosApp.css" rel="stylesheet" />
 
-        .login-main-content {
-            display: flex;
-            flex-grow: 1;
-            height: calc(100% - 40px); /* Resta la altura del footer */
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .login-form-section {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .login-form-content {
-            width: 100%;
-        }
-
-        .login-footer {
-            background-color: #4a87c7;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            height: 40px;
-            font-size: 12px;
-            position: relative;
-            z-index: 10;
-        }
-    </style>
+    <!-- Plantilla -->
+    <link href="~/Content/assets/css/backend.css" rel="stylesheet" />
 </head>
-<body>
-    <div class="login-page-container">
-        <div class="login-main-content">
-            <div class="login-form-section">
-                <div class="login-form-content">
-                    @RenderBody()
+
+
+<body class="">
+    <div class="wrapper"" >
+
+        <section class="login-content bg-primary-light"> <!--bg-gradient-->
+            <div class="container h-100">
+                <div class="row justify-content-center align-items-center height-self-center">
+                    <div class="col-md-5 col-sm-12 col-12 align-self-center">
+                        @RenderBody()
+
+
+                        <footer class="text-center mt-5 small">
+                            Emplaniapp @DateTime.Now.Year - Todos los derechos reservados
+                        </footer>
+                    </div>
                 </div>
             </div>
-        </div>
-        <footer class="login-footer">
-            Emplaniapp @DateTime.Now.Year - Todos los derechos reservados
-        </footer>
-    </div>
+        </section>
 
+
+      
+
+    </div>
+    
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+    <!-- Scripts de plantilla -->
+    <script src="~/Content/assets/js/backend-bundle.min.js"></script>  <!-- Backend Bundle JavaScript -->
+    <script src="~/Content/assets/js/app.js"></script> <!-- app JavaScript -->
+
 </body>
 </html> 

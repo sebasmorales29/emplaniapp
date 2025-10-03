@@ -15,6 +15,7 @@ namespace Emplaniapp.UI.Models
         public string Password { get; set; }
 
         [DataType(DataType.Password), Display(Name = "Confirmar contraseña")]
+        [Required]
         [Compare("Password", ErrorMessage = "La contraseña y la confirmación no coinciden.")]
         public string ConfirmPassword { get; set; }
     }
