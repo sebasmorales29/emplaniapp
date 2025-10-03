@@ -112,7 +112,24 @@
                             </li>
                         }
 
+                        @if (hasRole("Empleado"))
+                        {
+                        //Menú para Empleado
 
+                        <li class="nav-item nav-icon">
+                            <a href="@Url.Action("Detalles", "DatosPersonales")">
+                                <i class="bi bi-person-fill"></i>
+                                <span>Mi Perfil</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item nav-icon">
+                            <a href="@Url.Action("HistorialPagos", "ReportesPago")">
+                                <i class="bi bi-file-earmark-check-fill"></i>
+                                <span>Reporte de Pagos</span>
+                            </a>
+                        </li>
+                        }
 
 
 
@@ -159,39 +176,19 @@
 
                             @if (Request.IsAuthenticated)
                             {
-                                <!--<li class="nav-item nav-icon">
+                                <li class="nav-item nav-icon">
                                     <a class="" id="dropdownMenuButton02" aria-haspopup="false" aria-expanded="false">
                                         <div style="padding-left:10px; font-size:16px;" class="text-secondary">
                                             @User.Identity.GetUserName()
-                                            <i class="bi bi-chevron-down"></i>
+                                            @*<i class="bi bi-chevron-down"></i>*@
                                         </div>
                                     </a>
 
                                 </li>
 
-
-                                if (hasRole("Empleado"))
-                                {-->
-                                                        <!-- Menú para Empleado -->
-
-                                                        <!--<li class="nav-item nav-icon">
-                                        <a href="@Url.Action("Detalles", "DatosPersonales")">
-                                            <i class="bi bi-person-fill"></i>
-                                            <span>Mi Perfil</span>
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item nav-icon">
-                                        <a href="@Url.Action("HistorialPagos", "ReportesPago")">
-                                            <i class="bi bi-file-earmark-check"></i>
-                                            <span>Reporte de Pagos</span>
-                                        </a>
-                                    </li>
-                                }-->
-
-                                <li class="nav-item nav-icon">
+                                <!--<li class="nav-item nav-icon">-->
                                     <!-- Para mantener estabilidad de -->
-                                    <a class="" id="dropdownMenuButton02" aria-haspopup="false" aria-expanded="false">
+                                    <!--<a class="" id="dropdownMenuButton02" aria-haspopup="false" aria-expanded="false">
                                         <div style="padding-left:10px; font-size:16px;" class="text-white">
                                             .
                                         </div>
@@ -227,7 +224,7 @@
                                         </div>
                                     </div>
                                     }
-                                </li>
+                                </li>-->
 
                                 <li class="nav-item nav-icon" id="dropdownMenuButton03">
                                     @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
