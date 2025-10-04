@@ -31,140 +31,92 @@
     };
 }
 
-<style>
-    .observaciones-container {
-        display: flex;
-        gap: 2rem;
-    }
+<div class="text-center mb-2">
+    <h2><strong>Observaciones</strong></h2>
+    <br />
+</div>
 
-    .observaciones-sidebar {
-        flex: 0 0 200px;
-    }
 
-    .observaciones-list {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
+<div class="card card-block card-stretch">
+    <div class="card-body">
 
-    .observacion-card {
-        background-color: #fff;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
+        <div class="row">
+            <div class="col-md-3">
 
-    .observacion-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 0.75rem;
-    }
+                @if (isNotInActiveRole("Empleado"))
+                {
+                    <button type="button" class="btn btn-primary btn-block mb-3 btn-agregar-observacion"
+                            data-url="@Url.Action("AgregarObservacion", "DatosPersonales", new { idEmpleado = ViewBag.IdEmpleado })">
+                        <i class="bi bi-plus"></i>
+                        Agregar Observaci&oacute;n
+                    </button>
+                    <hr />
+                }
 
-    .observacion-titulo {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #333;
-    }
+                <div id="filtros-observaciones">
+                    <h5 class="mb-3">Filtrar por:</h5>
 
-    .observacion-meta {
-        font-size: 0.8rem;
-        color: #888;
-        margin-bottom: 1rem;
-    }
-
-    .observacion-descripcion {
-        font-size: 0.9rem;
-        color: #555;
-        line-height: 1.6;
-    }
-
-    .btn-agregar-observacion {
-        width: 100%;
-        background-color: #cce7ff;
-        border-color: #cce7ff;
-        color: #004085;
-    }
-
-    .btn-editar-observacion {
-        background-color: #e2e3e5;
-        border-color: #e2e3e5;
-        color: #383d41;
-        font-size: 0.8rem;
-        padding: 0.25rem 0.75rem;
-    }
-</style>
-
-<div class="observaciones-container">
-    <div class="observaciones-sidebar">
-        
-        @if (isNotInActiveRole("Empleado"))
-        {
-            <button type="button" class="btn btn-primary btn-block mb-3 btn-agregar-observacion"
-                    data-url="@Url.Action("AgregarObservacion", "DatosPersonales", new { idEmpleado = ViewBag.IdEmpleado })">
-                + Agregar Observación
-            </button>
-        }
-
-        <div id="filtros-observaciones">
-            <h5 class="mb-3">Filtrar por:</h5>
-            
-            <div class="form-group">
-                <label for="filtro-ano">Año</label>
-                @Html.DropDownList("filtro-ano", new SelectList(ViewBag.AnosDisponibles, ViewBag.AnoSeleccionado), "Todos", new { @class = "form-control" })
-            </div>
-            
-            <div class="form-group">
-                <label for="filtro-mes">Mes</label>
-                @Html.DropDownList("filtro-mes", new SelectList(ViewBag.MesesDisponibles, "Value", "Text", ViewBag.MesSeleccionado), "Todos", new { @class = "form-control" })
-            </div>
-
-            <div class="form-group">
-                <label for="filtro-usuario">Usuario</label>
-                @Html.DropDownList("filtro-usuario", new SelectList(ViewBag.UsuariosDisponibles, "Value", "Text", ViewBag.UsuarioSeleccionado), "Todos", new { @class = "form-control" })
-            </div>
-
-            <button type="button" id="btn-aplicar-filtros" class="btn btn-info btn-block">Aplicar Filtros</button>
-
-            @if (ViewBag.FiltrosActivos == true)
-            {
-                <button type="button" id="btn-quitar-filtros" class="btn btn-outline-secondary btn-block mt-2">Quitar Filtros</button>
-            }
-        </div>
-    </div>
-
-    <div class="observaciones-list">
-        @if (!Model.Any())
-        {
-            <p>No hay observaciones para este empleado todavía.</p>
-        }
-        else
-        {
-            foreach (var item in Model)
-            {
-                <div class="observacion-card">
-                    <div class="observacion-header">
-                        <h5 class="observacion-titulo">@item.Titulo</h5>
-                        @if (isNotInActiveRole("Empleado"))
-                        {
-                            <button type="button" class="btn btn-secondary btn-editar-observacion"
-                                    data-url="@Url.Action("EditarObservacion", "DatosPersonales", new { id = item.IdObservacion })">
-                                <i class="fas fa-pencil-alt"></i> Editar
-                            </button>
-                        }
+                    <div class="form-group">
+                        <label for="filtro-ano">A&ntilde;o</label>
+                        @Html.DropDownList("filtro-ano", new SelectList(ViewBag.AnosDisponibles, ViewBag.AnoSeleccionado), "Todos", new { @class = "form-control" })
                     </div>
-                    <div class="observacion-meta">
-                        <div>Por: @item.NombreUsuarioCreo el @item.FechaCreacion.ToString("dd 'de' MMMM, yyyy")</div>
-                        @if (item.FechaEdicion.HasValue)
-                        {
-                            <div>Editado: @item.NombreUsuarioEdito el @item.FechaEdicion.Value.ToString("dd 'de' MMMM, yyyy")</div>
-                        }
+
+                    <div class="form-group">
+                        <label for="filtro-mes">Mes</label>
+                        @Html.DropDownList("filtro-mes", new SelectList(ViewBag.MesesDisponibles, "Value", "Text", ViewBag.MesSeleccionado), "Todos", new { @class = "form-control" })
                     </div>
-                    <p class="observacion-descripcion">@item.Descripcion</p>
+
+                    <div class="form-group">
+                        <label for="filtro-usuario">Usuario</label>
+                        @Html.DropDownList("filtro-usuario", new SelectList(ViewBag.UsuariosDisponibles, "Value", "Text", ViewBag.UsuarioSeleccionado), "Todos", new { @class = "form-control" })
+                    </div>
+
+                    <button type="button" id="btn-aplicar-filtros" class="btn btn-outline-primary btn-block">Aplicar Filtros</button>
+
+                    @if (ViewBag.FiltrosActivos == true)
+                    {
+                        <button type="button" id="btn-quitar-filtros" class="btn btn-outline-danger btn-block mt-2">Quitar Filtros</button>
+                    }
                 </div>
-            }
-        }
-    </div>
+            </div>
+            <br />
+            <br />
+            <div class="col-md-9 observaciones-list">
+                @if (!Model.Any())
+                {
+                    <p>No hay observaciones para este empleado todavía.</p>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <div class="card card-block card-stretch basic-drop-shadow">
+                           
+                            <div class="card-header row justify-content-between m-0">
+                                <div>
+                                    <h5 class="card-title">@item.Titulo</h5>
+                                    <div class="text-secondary">
+                                        <div>Por: @item.NombreUsuarioCreo el @item.FechaCreacion.ToString("dd 'de' MMMM, yyyy")</div>
+                                        @if (item.FechaEdicion.HasValue)
+                                        {
+                                            <div>Editado: @item.NombreUsuarioEdito el @item.FechaEdicion.Value.ToString("dd 'de' MMMM, yyyy")</div>
+                                        }
+                                    </div>
+                                </div>
+                                @if (isNotInActiveRole("Empleado"))
+                                {
+                                    <button type="button" class="btn btn-light text-primary btn-editar-observacion"
+                                            data-url="@Url.Action("EditarObservacion", "DatosPersonales", new { id = item.IdObservacion })">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                }
+                            </div>
+                            
+                            <div class="card-body">@item.Descripcion</div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        </div>
 </div> 

@@ -31,402 +31,270 @@
     <meta http-equiv="Content-Language" content="es" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Suplidora Royal Ltda.</title>
-    @Styles.Render("~/Content/css")
+    @*@Styles.Render("~/Content/css")*@
     @Scripts.Render("~/bundles/modernizr")
 
-    <style>
-        /* === Paleta / tokens === */
-        :root {
-            --brand-primary: #0f6cf2;
-            --brand-secondary: #0a53bf;
-            --brand-bg: #4682A9; /* color de tu navbar */
-            --brand-bg-gradient: linear-gradient(135deg,var(--brand-primary),var(--brand-secondary));
-            --text: #1f2937;
-            --muted: #6b7280;
-            --ring: rgba(15,108,242,.45);
-            --card-bg: #ffffff;
-            --card-shadow: rgba(31,41,55,.10);
-            --danger-bg: #fee2e2;
-            --danger-bg2: #fecaca;
-            --danger: #b91c1c;
-            --radius-card: 20px;
-            --radius-el: 10px;
-        }
+    <!-- CSS -->
+    <link href="~/Content/CSS/estilosApp.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-        /* Tipografía + base */
-        html {
-            font-size: 16px;
-        }
-
-        html, body {
-            height: 100%;
-            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,"Helvetica Neue",sans-serif;
-            color: var(--text);
-            background: radial-gradient(1000px 600px at -10% -20%,rgba(90,155,213,.18),transparent 60%), radial-gradient(800px 400px at 110% 10%,rgba(74,135,199,.15),transparent 60%), linear-gradient(180deg,#f7f9ff 0%,#f3f6fc 100%);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        /* ===== NAVBAR ===== */
-        #main-navbar {
-            border: 0;
-            background: transparent;
-            padding: 8px 0;
-        }
-            /* NO seteamos background aquí para NO pisar tu color inline #4682A9 */
-            #main-navbar > .container {
-                border-radius: 50px !important;
-                padding: 10px 25px !important;
-                box-shadow: 0 10px 24px var(--card-shadow) !important;
-                backdrop-filter: saturate(1.2);
-            }
-
-            /* Marca */
-            #main-navbar .navbar-brand {
-                font-weight: 800;
-                letter-spacing: .2px;
-                line-height: 1.1;
-                margin-right: 14px;
-                background: linear-gradient(135deg,#ffffff,#e6f0fa);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                /* Fallback por si el navegador no soporta el clip */
-                color: #fff;
-                text-shadow: 0 1px 0 rgba(0,0,0,.06);
-            }
-
-            /* Links */
-            #main-navbar .nav-link,
-            #main-navbar .navbar-nav > li > a {
-                color: #fff !important;
-                font-weight: 600;
-                border-radius: 12px;
-                padding: 10px 12px;
-                margin: 6px 6px;
-                transition: all .18s ease;
-                text-decoration: none;
-                outline: none;
-            }
-
-                #main-navbar .nav-link:hover,
-                #main-navbar .navbar-nav > li > a:hover,
-                #main-navbar .nav-link:focus,
-                #main-navbar .navbar-nav > li > a:focus {
-                    color: #fff !important;
-                    background: rgba(255,255,255,.24);
-                    box-shadow: 0 0 0 3px rgba(255,255,255,.18);
-                    text-decoration: none;
-                }
-
-                #main-navbar .navbar-nav > li.active > a,
-                #main-navbar .navbar-nav > li > a.active {
-                    background: rgba(255,255,255,.30);
-                    color: #fff !important;
-                    box-shadow: inset 0 0 0 1px rgba(255,255,255,.28),0 6px 16px rgba(0,0,0,.12);
-                }
-
-            #main-navbar .navbar-user {
-                display: inline-flex;
-                align-items: center;
-                gap: .5rem;
-                color: #fff !important;
-            }
-
-        /* Dropdown del role switcher (usa tu azul) */
-        #role-display .dropdown-menu {
-            background-color: #4682A9;
-            border: 1px solid #3a6b8a;
-            border-radius: 10px;
-            min-width: 180px;
-            padding: 6px 0;
-            box-shadow: 0 12px 30px rgba(0,0,0,.18);
-        }
-
-            #role-display .dropdown-menu > li > a {
-                color: #fff;
-                padding: 10px 14px;
-                border-radius: 8px;
-                margin: 2px 6px;
-                transition: background .12s ease, transform .12s ease;
-            }
-
-                #role-display .dropdown-menu > li > a:hover,
-                #role-display .dropdown-menu > li > a:focus {
-                    background: rgba(255,255,255,.20);
-                    transform: translateX(2px);
-                    text-decoration: none;
-                    outline: none;
-                }
-
-        /* ===== CONTENIDO ===== */
-        .container.body-content {
-            background: var(--card-bg);
-            border-radius: var(--radius-card);
-            box-shadow: 0 15px 40px var(--card-shadow);
-            padding: 24px 26px 30px;
-            margin-top: 22px;
-            margin-bottom: 26px;
-        }
-
-        hr {
-            border-color: #e5e7eb;
-            opacity: .7;
-        }
-
-        .container.body-content footer p {
-            color: var(--muted);
-            margin: 0;
-        }
-
-        /* Controles */
-        .form-control {
-            border-radius: var(--radius-el);
-            border: 2px solid #e5e7eb;
-            box-shadow: none;
-            transition: all .15s ease;
-        }
-
-            .form-control:hover {
-                border-color: #d7dce2;
-            }
-
-            .form-control:focus {
-                border-color: var(--brand-primary);
-                box-shadow: 0 0 0 3px rgba(15,108,242,.20);
-                outline: none;
-            }
-
-        /* Botón primario (gradiente) */
-        .btn-primary, .btn.btn-primary {
-            background: var(--brand-bg-gradient);
-            border: 0;
-            font-weight: 700;
-            box-shadow: 0 8px 20px rgba(15,108,242,.35);
-            border-radius: 12px;
-            transition: transform .06s ease, filter .12s ease, box-shadow .12s ease;
-        }
-
-            .btn-primary:hover, .btn.btn-primary:hover {
-                filter: brightness(1.05);
-            }
-
-            .btn-primary:active, .btn.btn-primary:active {
-                transform: translateY(1px);
-            }
-
-        /* "Salir" como link-botón */
-        .navbar .btn.btn-link.nav-link {
-            color: #fff !important;
-            border-radius: 10px;
-        }
-
-            .navbar .btn.btn-link.nav-link:hover,
-            .navbar .btn.btn-link.nav-link:focus {
-                background: rgba(255,255,255,.24);
-                box-shadow: 0 0 0 3px rgba(255,255,255,.18);
-                text-decoration: none;
-                outline: none;
-            }
-
-        /* Validaciones */
-        .validation-summary, .validation-summary-errors {
-            background: linear-gradient(135deg,var(--danger-bg) 0%,var(--danger-bg2) 100%);
-            color: var(--danger);
-            padding: 12px 14px;
-            border-left: 4px solid #ef4444;
-            border-radius: 10px;
-            margin-bottom: 18px;
-        }
-
-        .field-validation-error {
-            color: #ef4444;
-            font-size: 12px;
-            margin-top: 6px;
-            font-weight: 600;
-        }
-
-        /* Accesibilidad */
-        a:focus-visible, button:focus-visible,
-        .nav-link:focus-visible, .navbar-nav > li > a:focus-visible,
-        input:focus-visible, select:focus-visible, textarea:focus-visible {
-            outline: none;
-            box-shadow: 0 0 0 3px var(--ring) !important;
-            border-radius: 10px;
-        }
-
-        /* Utilidades */
-        .spin {
-            animation: spin 1s linear infinite;
-        }
-
-        @@keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Responsive */
-        @@media (max-width:768px) {
-            #main-navbar .navbar-brand {
-                font-size: 18px;
-            }
-
-            .container.body-content {
-                margin: 12px 8px 20px;
-                padding: 18px;
-                border-radius: 16px;
-            }
-        }
-
-        /* Extras opcionales */
-        .btn-accion-prim {
-            background: var(--brand-bg-gradient);
-            border: 0;
-            font-weight: 400;
-            color: #fff;
-            box-shadow: 0 8px 10px rgba(74,135,199,.10);
-            border-radius: 6px;
-            transition: transform .06s ease, filter .12s ease, box-shadow .12s ease;
-        }
-
-            .btn-accion-prim:hover {
-                filter: brightness(1.05);
-                color: #fff;
-            }
-
-            .btn-accion-prim:active {
-                transform: translateY(1px);
-                color: #fff;
-            }
-
-        .btn-accion-danger {
-            background: linear-gradient(135deg,#E36869,#D05556);
-            border: 0;
-            font-weight: 400;
-            color: #fff;
-            box-shadow: 0 8px 10px rgba(146,50,51,.20);
-            border-radius: 6px;
-            transition: transform .06s ease, filter .12s ease, box-shadow .12s ease;
-        }
-
-            .btn-accion-danger:hover {
-                filter: brightness(1.05);
-                color: #fff;
-            }
-
-            .btn-accion-danger:active {
-                transform: translateY(1px);
-                color: #fff;
-            }
-
-        .titulo {
-            font-size: 40px;
-            font-weight: 700;
-            padding-bottom: 6px;
-        }
-
-        .subtitulo {
-            font-size: 30px;
-            font-weight: 500;
-            padding-bottom: 4px;
-        }
-    </style>
-
-
+    <!-- Plantilla -->
+    <link href="~/Content/assets/css/backend-plugin.min.css" rel="stylesheet" />
+    <link href="~/Content/assets/css/backend.css" rel="stylesheet" />
+    @*<link href="~/Content/assets/fontawesome/all.min.css" rel="stylesheet" />
+    <link href="~/Content/assets/lineawesome/line-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/assets/remixicon/remixicon.css" rel="stylesheet" />
+    <link href="~/Content/assets/docviewer/pdf.viewer.css" rel="stylesheet" />*@
 
 </head>
-<body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark" id="main-navbar">
-        <div class="container" style="background-color: #4682A9; border-radius: 50px; padding: 10px 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-            <a href="@Url.Action("Index", "Home")" class="navbar-brand">
-                <div>
-                    <div>Suplidora</div>
-                    <div>Royal Ltda.</div>
+
+<body class="color-light">
+    <div class="wrapper">
+
+        <!-- Menú lateral -->
+        <div class="iq-sidebar  sidebar-default">
+
+            <!-- Cabecera de menú -->
+            <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
+                <a href="@Url.Action("Index", "Home")" class="header-logo">
+                    <div>
+                        <div style="padding-left:10px; font-size:16px; font-weight:normal;">SUPLIDORA</div>
+                        <div style="padding-left: 10px; font-size: 26px; font-weight: bold;">ROYAL LDTA.</div>
+                    </div>
+                </a>
+                <div class="align-content-center">
+                    <i class="bi bi-list wrapper-menu mt-auto"></i>
                 </div>
-            </a>
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Alternar navegación" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    @if (hasRole("Administrador"))
-                    {
-                        <!-- Menú para Administrador -->
-                        <li class="nav-item">@Html.ActionLink("Empleados", "ListarEmpleados", "Empleado", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
-                        <li class="nav-item">@Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
-                    }
+            </div>
+            <hr />
 
-                    @if (hasRole("Contador"))
-                    {
-                        <!-- Menú para Contador -->
-                        <li class="nav-item">@Html.ActionLink("Tablero de Control", "Index", "TableroDeControl", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
-                        <li class="nav-item">@Html.ActionLink("Hoja Resumen", "listarHojaResumen", "HojaResumen", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
-                        <li class="nav-item">@Html.ActionLink("Variables Financieras", "Index", "VariablesFinancieras", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
-                    }
+            <!-- Contenido de menú -->
+            <div class="data-scrollbar" data-scroll="1">
 
-                    @if (hasRole("Empleado"))
-                    {
-                        <!-- Menú para Empleado -->
-                        <li class="nav-item">@Html.ActionLink("Perfil", "Detalles", "DatosPersonales", null, new { @class = "nav-link", style = "color: white;" })</li>
-                        <li class="nav-item">@Html.ActionLink("Reporte de Pagos", "HistorialPagos", "ReportesPago", null, new { @class = "nav-link", style = "color: white;" })</li>
-                    }
-                </ul>
+                <nav class="iq-sidebar-menu">
+                    <ul id="iq-sidebar-toggle" class="iq-menu">
 
-                <ul class="navbar-nav">
-                    @if (Request.IsAuthenticated)
-                    {
-                        <!-- Si el usuario está autenticado, mostrar roles y botón de Salir -->
-                        <li class="nav-item navbar-user" style="margin-right: 20px; color: white;">
-                            <i class="glyphicon glyphicon-user"></i>
-                            @if (hasMultipleRoles)
+                        @if (hasRole("Administrador"))
+                        {
+                            <!-- Menú para Administrador -->
+                            <li class="">
+                                <a href="@Url.Action("ListarEmpleados", "Empleado")">
+                                    <i class="bi bi-people-fill"></i>
+                                    <span>Empleados</span>
+                                </a>
+                            </li>
+                        }
+
+                        @if (hasRole("Administrador") || hasRole("Contador"))
+                        {
+                            <li class="">
+                                <a href="@Url.Action("Index", "variablesFinancieras")">
+                                    <i class="bi bi-currency-exchange"></i>
+                                    <span>Variables Financieras</span>
+                                </a>
+                            </li>
+                        }
+
+                        @if (hasRole("Contador"))
+                        {
+                            <!-- Menú para Contador -->
+                            <li class="">
+                                <a href="@Url.Action("listarHojaResumen", "HojaResumen")">
+                                    <i class="bi bi-file-earmark-ruled-fill"></i>
+                                    <span>Hoja Resumen</span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="@Url.Action("Index", "TableroDeControl")">
+                                    <i class="bi bi-bar-chart-fill"></i>
+                                    <span>Tablero de Control</span>
+                                </a>
+                            </li>
+                        }
+
+                        @if (hasRole("Empleado"))
+                        {
+                        //Menú para Empleado
+
+                        <li class="nav-item nav-icon">
+                            <a href="@Url.Action("Detalles", "DatosPersonales")">
+                                <i class="bi bi-person-fill"></i>
+                                <span>Mi Perfil</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item nav-icon">
+                            <a href="@Url.Action("HistorialPagos", "ReportesPago")">
+                                <i class="bi bi-file-earmark-check-fill"></i>
+                                <span>Reporte de Pagos</span>
+                            </a>
+                        </li>
+                        }
+
+
+
+                    </ul>
+                </nav>
+                <div class="sidebar-bottom">
+                </div>
+                <div class="p-3"></div>
+            </div>
+
+
+
+        </div>
+
+
+        <!-- Barra superior -->
+
+        <div class="iq-top-navbar">
+            <div class="iq-navbar-custom">
+                
+                <nav class="navbar navbar-expand-lg navbar-light p-0">
+
+                    <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
+                        <svg class="ri-menu-line wrapper-menu bi bi-list" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
+                        </svg>
+                        <a href="@Url.Action("Index", "Home")" class="header-logo">
+                            <div>
+                                <div style="padding-left:10px; font-size:16px; font-weight:bold;">SUPLIDORA ROYAL LDTA.</div>
+                                <div style="padding-left:10px; font-size:10px; font-weight:normal;">PORTAL DE EMPLANIAPP</div>
+                            </div>
+
+                        </a>
+                    </div>
+                    
+                    <!--Barra de búsqueda (espacio)-->
+                    <div></div>
+
+
+                    <div class="d-flex align-items-center">
+                        
+                           
+                        <ul class="navbar-nav ml-auto navbar-list align-items-center">
+
+                            @if (Request.IsAuthenticated)
                             {
-                                <span title="Roles: @string.Join(", ", userRoles)">@primaryRole +@(userRoles.Length - 1)</span>
+                                <li class="nav-item nav-icon">
+                                    <a class="" id="dropdownMenuButton02" aria-haspopup="false" aria-expanded="false">
+                                        <div style="padding-left:10px; font-size:16px;" class="text-secondary">
+                                            @User.Identity.GetUserName()
+                                            @*<i class="bi bi-chevron-down"></i>*@
+                                        </div>
+                                    </a>
+
+                                </li>
+
+                                <!--<li class="nav-item nav-icon">-->
+                                    <!-- Para mantener estabilidad de -->
+                                    <!--<a class="" id="dropdownMenuButton02" aria-haspopup="false" aria-expanded="false">
+                                        <div style="padding-left:10px; font-size:16px;" class="text-white">
+                                            .
+                                        </div>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item nav-icon dropdown">
+                                    <a href="#" class="search-toggle dropdown-toggle text-secondary" id="dropdownMenuButton02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                       style="padding-left:10px; font-size:16px;">
+                                        @User.Identity.GetUserName()
+                                        @if (hasRole("Empleado"))
+                                        {<i class="bi bi-chevron-down"></i>}
+                                        </a>
+
+                                    @if (hasRole("Empleado"))
+                                    {
+                                    <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton02">
+                                        <div class="card shadow-none m-0">
+                                            <div class="card-body p-0 ">
+                                                <div class="iq-sub-card list-group p-0 bg-white bg-opacity-10">
+                                                    <a href="@Url.Action("Detalles", "DatosPersonales")"
+                                                       class="list-group-item list-group-item-action">
+                                                        <i class="bi bi-person-fill"></i>
+                                                        Mi Perfil
+                                                    </a>
+                                                    <a href="@Url.Action("Index", "variablesFinancieras")"
+                                                       class="list-group-item list-group-item-action">
+                                                        <i class="bi bi-file-earmark-check"></i>
+                                                        Reporte de Pagos
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    }
+                                </li>-->
+
+                                <li class="nav-item nav-icon" id="dropdownMenuButton03">
+                                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-link">
+                                            <i class="bi bi-door-open-fill" style="width:auto; height:auto;"></i>
+                                        </button>
+                                    }
+                                </li>
                             }
                             else
                             {
-                                <span>@primaryRole</span>
+                                <!-- Si NO está autenticado, mostrar enlaces a Login-->
+                                <li class="nav-item nav-icon">
+
+                                    @Html.ActionLink("Iniciar sesión", "Login", "Account", new { area = "" }, new { @class = "btn btn-outline-primary" })
+                                </li>
                             }
-                        </li>
-                        <li class="nav-item">
-                            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "form-inline" }))
-                            {
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-link nav-link" style="padding: 0; color: white; text-decoration: none;">
-                                    <i class="glyphicon glyphicon-log-out"></i> Salir
-                                </button>
-                            }
-                        </li>
-                    }
-                    else
-                    {
-                        <!-- Si NO está autenticado, mostrar enlaces a Login y Register -->
-                        <li class="nav-item">
-                            @Html.ActionLink("Registrar", "Register", "Account", new { area = "" }, new { @class = "nav-link", style = "color: white;" })
-                        </li>
-                        <li class="nav-item">
-                            @Html.ActionLink("Iniciar sesión", "Login", "Account", new { area = "" }, new { @class = "nav-link", style = "color: white;" })
-                        </li>
-                    }
-                </ul>
+
+                        </ul>
+                       
+                    </div>
+                </nav>
             </div>
         </div>
-    </nav>
 
-    <div class="container body-content">
-        <!-- Token anti-falsificación para AJAX -->
-        @Html.AntiForgeryToken()
-        <br />
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Suplidora Royal Ltda. Todos los derechos reservados.</p>
-        </footer>
+
+        <!-- Contenido de la página -->
+
+        <div class="content-page bg-light">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- Token anti-falsificación para AJAX -->
+                        @Html.AntiForgeryToken()
+                        <br />
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
     </div>
+    <br />
+    <footer class="iq-footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6">
+                    <p>&copy; @DateTime.Now.Year - Suplidora Royal Ltda. Todos los derechos reservados.</p>
+
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+
+    <!-- Scripts de plantilla -->
+    <script src="~/Content/assets/js/backend-bundle.min.js"></script>  <!-- Backend Bundle JavaScript -->
+    <script src="~/Content/assets/js/pdf.js"></script> <!--PDF-->
+    <script src="~/Content/assets/js/app.js"></script> <!-- app JavaScript -->
+
 
     <!-- Modal de Confirmación de Contraseña de Administrador -->
     @Html.Partial("_AdminPasswordModal")

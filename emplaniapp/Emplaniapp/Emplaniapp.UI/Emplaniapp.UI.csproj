@@ -350,6 +350,12 @@
     <Compile Include="Attributes\ActiveRoleAuthorizeAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\assets\css\backend-plugin.min.css" />
+    <Content Include="Content\assets\css\backend.css" />
+    <Content Include="Content\assets\docviewer\pdf.viewer.css" />
+    <Content Include="Content\assets\js\app.js" />
+    <Content Include="Content\assets\js\backend-bundle.min.js" />
+    <Content Include="Content\assets\js\pdf.js" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -366,6 +372,10 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\CSS\estiloLayout.css" />
+    <Content Include="Content\CSS\estiloLogin.css" />
+    <Content Include="Content\CSS\estilosApp.css" />
+    <Content Include="Content\images\Emplaniapp_Logo1.png" />
     <Content Include="Content\images\imagenuno.webp" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -382,7 +392,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="App_Browsers\qt.browser" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
-    <Content Include="Content\EstilosDatos.css" />
+    <Content Include="Content\CSS\estilosDatos.css" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
     <Content Include="Scripts\jquery-3.7.0.slim.js" />
@@ -465,6 +475,12 @@
     <Content Include="Views\HojaResumen\HojaResumenPDF.cshtml" />
     <Content Include="Views\Remuneraciones\ReciboPagoPDF.cshtml" />
     <Content Include="Views\TableroDeControl\Index.cshtml" />
+    <Content Include="Views\Shared\_LoginLayout.cshtml" />
+    <Content Include="Views\DatosPersonales\EditarDatosPersonales.cshtml" />
+    <Content Include="Views\Shared\_AdminPasswordModal.cshtml" />
+    <Content Include="Views\DatosPersonales\_RolesYPermisos.cshtml" />
+    <Content Include="Views\DatosPersonales\_ObservacionesList.cshtml" />
+    <Content Include="Views\DatosPersonales\_ObservacionForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

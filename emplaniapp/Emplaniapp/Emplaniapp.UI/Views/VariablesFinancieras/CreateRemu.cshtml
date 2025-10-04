@@ -4,44 +4,53 @@
     ViewBag.Title = "Agregar Remuneración";
 }
 
-<h2>Agregar Remuneración</h2>
 
-@using (Html.BeginForm("CreateRemu", "VariablesFinancieras", FormMethod.Post, new { enctype = "multipart/form-data" }))
+<div class="row">
+    <div class="col-md-12" style="margin-bottom: 20px;">
+        <h2 class="mb-2">Agregar un Tipo de Remuneración</h2>
+        <!-- Botón de breadcrumb -->
+        <a class="btn btn-light text-primary" href="@Url.Action("Index","VariablesFinancieras")">
+            <i class="bi bi-arrow-left-short"></i>
+            Volver Variables Financieras
+        </a>
+    </div>
+</div>
 
-{
-    @Html.AntiForgeryToken()
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-block card-stretch card-height shadow-lg">
 
-    <div class="form-horizontal">
+            @using (Html.BeginForm("CreateRemu", "VariablesFinancieras", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "advertencia" })
 
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="card-body">
+                    <div class="form-horizontal">
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.nombreTipoRemuneracion, "Nombre", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.nombreTipoRemuneracion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.nombreTipoRemuneracion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.nombreTipoRemuneracion)
+                            @Html.EditorFor(model => model.nombreTipoRemuneracion, new { htmlAttributes = new { @class = "form-control"} })
+                            @Html.ValidationMessageFor(model => model.nombreTipoRemuneracion, "", new { @class = "advertencia" })
+                        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.porcentajeRemuneracion, "Porcentaje", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.porcentajeRemuneracion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.porcentajeRemuneracion, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <br />
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.porcentajeRemuneracion)
+                            @Html.EditorFor(model => model.porcentajeRemuneracion, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.porcentajeRemuneracion, "", new { @class = "advertencia" })
+                        </div>
+                        <br />
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Agregar" class="btn btn-outline-primary" />
-            </div>
+                        <div class="form-group text-center justify-content-center">
+                            <a class="btn btn-outline-secondary m-2" href="@Url.Action("Index","VariablesFinancieras")">
+                                Cancelar
+                            </a>
+                            <input type="submit" class="btn btn-primary m-2" id="submitRemu" value="Agregar"/>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
-    <br />
-}
-
-<div>
-    @Html.ActionLink("Volver a Variables Financieras", "Index")
 </div>
+

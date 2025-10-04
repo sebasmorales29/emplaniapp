@@ -54,6 +54,7 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         // Dirección
         public int? idProvincia { get; set; }
         [DisplayName("Provincia")]
+        [Required(ErrorMessage = "Por favor seleccionar una provincia.")]
         public string nombreProvincia { get; set; }
         
         [DisplayName("Cantón")]
@@ -72,7 +73,7 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public string direccionCompleta { get; set; }
 
         // Cargo
-        [DisplayName("Cargo")]
+        [DisplayName("N° de Ocupación")]
         [Required(ErrorMessage = "El cargo del empleado es obligatorio.")]
         public int? idCargo { get; set; }
 
@@ -137,9 +138,12 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public string IdNetUser { get; set; }
 
         [DisplayName("Usuario")]
+        [Required(ErrorMessage = "Por favor, crear un usuario")]
         public string UserName { get; set; }
 
         [DisplayName("Contraseña")]
+        [StringLength(100, ErrorMessage = "La {0} debe tener al menos {2} caracteres.", MinimumLength = 6)]
+        [Required(ErrorMessage = "La contraseña es obligatoria")]
         public string Password { get; set; }
 
         [DisplayName("Confirmar Contraseña")]

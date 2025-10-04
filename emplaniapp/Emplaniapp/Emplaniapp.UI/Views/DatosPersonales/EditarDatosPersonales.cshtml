@@ -4,18 +4,22 @@
     ViewBag.Title = "Editar Datos Personales";
 }
 
-<h2>Editar Datos Personales de @Model.nombre @Model.primerApellido</h2>
+<a class="btn btn-light text-primary mb-2" href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.idEmpleado, seccion = "Datos personales" })">
+    <i class="bi bi-arrow-left-short"></i>
+    Volver
+</a>
+
 
 @using (Html.BeginForm("ActualizarDatosPersonales", "DatosPersonales", FormMethod.Post, new { id = "editForm" }))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.idEmpleado)
-    
+
     @* Campos laborales ocultos - no se editan aquí pero son requeridos para validación *@
     @Html.HiddenFor(model => model.idCargo)
     @Html.HiddenFor(model => model.fechaContratacion)
     @Html.HiddenFor(model => model.fechaSalida)
-    
+
     @* Campos financieros ocultos - no se editan aquí pero son requeridos para validación *@
     @Html.HiddenFor(model => model.periocidadPago)
     @Html.HiddenFor(model => model.idMoneda)
@@ -24,127 +28,142 @@
     @Html.HiddenFor(model => model.salarioAprobado)
     @Html.HiddenFor(model => model.salarioDiario)
 
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger row justify-content-between m-0 align-content-center" role="alert">
+            @Html.ValidationSummary(true, "Por favor, revise que todos los datos requeridos se encuentren completos", new { @class = "text-danger" })
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <i class="bi bi-x text-danger"></i>
+            </button>
+        </div>
+        <br />
+    }
+
 
     <!-- LAYOUT DE DOS COLUMNAS -->
-    <div class="row">
-        <!-- COLUMNA IZQUIERDA: DATOS PERSONALES -->
-        <div class="col-md-6">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Información Personal</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.nombre, "Nombre", htmlAttributes: new { @class = "control-label" })
-                        @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.segundoNombre, "Segundo Nombre", htmlAttributes: new { @class = "control-label" })
-                        @Html.EditorFor(model => model.segundoNombre, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.segundoNombre, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.primerApellido, "Primer Apellido", htmlAttributes: new { @class = "control-label" })
-                        @Html.EditorFor(model => model.primerApellido, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.primerApellido, "", new { @class = "text-danger" })
-                    </div>
-                    
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.segundoApellido, "Segundo Apellido", htmlAttributes: new { @class = "control-label" })
-                        @Html.EditorFor(model => model.segundoApellido, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.segundoApellido, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.fechaNacimiento, "Fecha de Nacimiento", htmlAttributes: new { @class = "control-label" })
-                        @Html.TextBoxFor(model => model.fechaNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
-                        @Html.ValidationMessageFor(model => model.fechaNacimiento, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.cedula, "Cédula", htmlAttributes: new { @class = "control-label" })
-                        @Html.EditorFor(model => model.cedula, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.cedula, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.numeroTelefonico, "Teléfono", htmlAttributes: new { @class = "control-label" })
-                        @Html.EditorFor(model => model.numeroTelefonico, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.numeroTelefonico, "", new { @class = "text-danger" })
-                    </div>
-                    
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.correoInstitucional, "Correo Electrónico", htmlAttributes: new { @class = "control-label" })
-                        @Html.EditorFor(model => model.correoInstitucional, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.correoInstitucional, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
+    <div class="card card-block card-stretch">
+        <div class="card-header">
+            <h3>Editar Informaci&oacute;n Personal</h3>
         </div>
+        <div class="card-body">
 
-        <!-- COLUMNA DERECHA: DIRECCIÓN -->
-        <div class="col-md-6">
-            <div class="panel panel-warning">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Dirección</h3>
+            <div class="row">
+
+                <!-- COLUMNA IZQUIERDA: DATOS PERSONALES -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "advertencia" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.segundoNombre, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.segundoNombre, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.segundoNombre, "", new { @class = "advertencia" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.primerApellido, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.primerApellido, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.primerApellido, "", new { @class = "advertencia" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.segundoApellido, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.segundoApellido, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.segundoApellido, "", new { @class = "advertencia" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.fechaNacimiento, htmlAttributes: new { @class = "control-label" })
+                        @Html.TextBoxFor(model => model.fechaNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
+                        @Html.ValidationMessageFor(model => model.fechaNacimiento, "", new { @class = "advertencia" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.cedula, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.cedula, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.cedula, "", new { @class = "advertencia" })
+                    </div>
+
+
                 </div>
-                <div class="panel-body">
-                    <div class="row">
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.numeroTelefonico, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.numeroTelefonico, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.numeroTelefonico, "", new { @class = "advertencia" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.correoInstitucional, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.correoInstitucional, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.correoInstitucional, "", new { @class = "advertencia" })
+                    </div>
+                    <div class=" row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                @Html.LabelFor(model => model.idProvincia, "Provincia", htmlAttributes: new { @class = "control-label" })
-                                @Html.DropDownListFor(model => model.idProvincia, (SelectList)ViewBag.Provincias, "-- Seleccione provincia --", new { @class = "form-control" })
-                                @Html.ValidationMessageFor(model => model.idProvincia, "", new { @class = "text-danger" })
+                                @Html.LabelFor(model => model.idProvincia, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(
+                                              m => m.idProvincia,
+                                              ViewBag.Provincias as IEnumerable<SelectListItem>,
+                                              new { @class = "form-control", @id = "ddlProvincia" })
+                                @Html.ValidationMessageFor(model => model.idProvincia, "", new { @class = "advertencia" })
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                @Html.LabelFor(model => model.nombreCanton, "Cantón", htmlAttributes: new { @class = "control-label" })
-                                @Html.TextBoxFor(model => model.nombreCanton, new { @class = "form-control", placeholder = "Ej: San José, Escazú, Desamparados..." })
-                                @Html.ValidationMessageFor(model => model.nombreCanton, "", new { @class = "text-danger" })
+                                @Html.LabelFor(model => model.nombreCanton, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.nombreCanton, new { htmlAttributes = new { @class = "form-control", placeholder = "Ej: San Pedro, Carmen..." } })
+                                @Html.ValidationMessageFor(model => model.nombreCanton, "", new { @class = "advertencia" })
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                @Html.LabelFor(model => model.nombreDistrito, "Distrito", htmlAttributes: new { @class = "control-label" })
-                                @Html.TextBoxFor(model => model.nombreDistrito, new { @class = "form-control", placeholder = "Ej: Carmen, Centro, La Uruca..." })
-                                @Html.ValidationMessageFor(model => model.nombreDistrito, "", new { @class = "text-danger" })
+                                @Html.LabelFor(model => model.nombreDistrito, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.nombreDistrito, new { htmlAttributes = new { @class = "form-control", placeholder = "Ej: Carmen, Centro, La Uruca..." } })
+                                @Html.ValidationMessageFor(model => model.nombreDistrito, "", new { @class = "advertencia" })
                             </div>
                         </div>
                     </div>
 
 
-
                     <div class="form-group">
-                        @Html.LabelFor(model => model.direccionDetallada, "Dirección Detallada", htmlAttributes: new { @class = "control-label" })
-                        @Html.TextAreaFor(model => model.direccionDetallada, new { @class = "form-control", rows = "4", placeholder = "Detalle específico de la dirección (casa #, apartamento, referencias, etc.)" })
-                        @Html.ValidationMessageFor(model => model.direccionDetallada, "", new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.direccionDetallada, htmlAttributes: new { @class = "control-label" })
+                        @Html.TextAreaFor(model => model.direccionDetallada, new { @class = "form-control", rows = "3", placeholder = "Ingrese detalles" })
+                        @Html.ValidationMessageFor(model => model.direccionDetallada, "", new { @class = "advertencia" })
                     </div>
 
                     <!-- VISTA PREVIA DE DIRECCIÓN COMPLETA -->
-                    <div class="alert alert-info" style="margin-top: 15px;">
+                    <div class="bg-warning-light p-3" style="margin-top: 15px;">
                         <strong>Vista Previa:</strong>
                         <div id="preview-direccion">
-                            <em>Seleccione la ubicación para ver la dirección completa</em>
+                            <em>Seleccione la ubicaci&oacute;n para ver la direcci&oacute;n completa</em>
                         </div>
                     </div>
+
+                </div>
+
+
+            </div>
+            <br />
+            <br />
+            <!-- BOTONES DE ACCIÓN CENTRADOS -->
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    @Html.ActionLink("Cancelar", "Detalles", new { id = Model.idEmpleado }, new { @class = "btn btn-outline-secondary m-2" })
+                    <input type="submit" value="Guardar Cambios" class="btn btn-primary m-2" />
                 </div>
             </div>
+
+
         </div>
+
     </div>
 
-    <!-- BOTONES DE ACCIÓN CENTRADOS -->
-    <div class="row" style="margin-top: 20px;">
-        <div class="col-md-12 text-center">
-            <input type="submit" value="Guardar Cambios" class="btn btn-success btn-lg" />
-            @Html.ActionLink("Cancelar", "Detalles", new { id = Model.idEmpleado }, new { @class = "btn btn-default btn-lg" })
-        </div>
-    </div>
+
 }
 
 <!-- Renderiza el modal de confirmación -->
@@ -179,7 +198,7 @@
                 var detallada = $('#direccionDetallada').val().trim();
 
                 var partes = [];
-                
+
                 if (provincia && provincia !== '-- Seleccione provincia --') partes.push(provincia);
                 if (canton) partes.push(canton);
                 if (distrito) partes.push(distrito);
@@ -193,19 +212,19 @@
                 if (direccionCompleta) {
                     preview.html('<strong>' + direccionCompleta + '</strong>');
                 } else {
-                    preview.html('<em>Complete la ubicación para ver la dirección completa</em>');
+                    preview.html('<em>Complete la ubicaci&oacute;n para ver la direcci&oacute;n completa</em>');
                 }
             }
 
             // ==============================================
             // LÓGICA PARA MODAL DE CONTRASEÑA ADMIN
             // ==============================================
-            
+
             mainForm.on('submit', function (e) {
                 console.log('Formulario interceptado, mostrando modal de contraseña...');
                 // Prevenir el envío automático del formulario
                 e.preventDefault();
-                
+
                 // Usar función centralizada para mostrar el modal
                 if (window.AdminPasswordModal && window.AdminPasswordModal.show) {
                     window.AdminPasswordModal.show();
@@ -257,6 +276,8 @@
                     }
                 });
             });
+
+
         });
     </script>
 } 

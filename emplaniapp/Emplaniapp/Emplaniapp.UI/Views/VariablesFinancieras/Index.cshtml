@@ -5,7 +5,7 @@
     ViewBag.Title = "Variables Financieras";
 }
 
-<style>
+@*<style>
     .card-header-flex {
         display: flex;
         justify-content: space-between;
@@ -31,20 +31,26 @@
         margin-bottom: 5px;
     }
 
-</style>
+</style>*@
 
-<h1>Variables Financieras</h1>
+<h1>@ViewBag.Title</h1>
 <br />
 <br />
 
 <div class="row">
+
     <!-- Remuneraciones Card -->
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header card-header-flex">
-                <h3>Remuneraciones</h3>
-                @Html.ActionLink("Agregar", "CreateRemu", null, new { @class = "btn btn-accion-prim" })
+            <!-- Cabecera -->
+            <div class="card-header card-header-flex row justify-content-between m-0">
+                <h3>Tipos de Remuneraciones</h3>
+                <a href="@Url.Action("CreateRemu", "VariablesFinancieras")"
+                   class="btn btn-primary">
+                    <i class="bi bi-plus"></i>Agregar
+                </a>
             </div>
+            <!-- Cuerpo -->
             <div class="card-body">
                 <table id="TablaTipoRemuneraciones" class="table table-hover">
                     <thead>
@@ -64,16 +70,22 @@
                                 <td>
                                     @if (item.idEstado == 1)
                                     {
-                                        <span>Activo</span>
+                                        <span class="badge bg-success-light">Activo</span>
                                     }
                                     else
                                     {
-                                        <span>Inactivo</span>
+                                        <span class="badge bg-danger-light">Inactivo</span>
                                     }
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Editar", "EditRemu", new { id = item.Id }, new { @class = "btn btn-sm btn-accion-prim btn-block" })
-                                    @Html.ActionLink("Eliminar", "DeleteRemu", new { id = item.Id }, new { @class = "btn btn-sm btn-accion-danger btn-block" })
+                                    <a href="@Url.Action("EditRemu", "VariablesFinancieras", new { id = item.Id })"
+                                       class="btn btn-light text-primary">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a href="@Url.Action("DeleteRemu", "VariablesFinancieras", new { id = item.Id })"
+                                       class="btn btn-light" style="color: #de6f6f;">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </a>
                                 </td>
                             </tr>
                         }
@@ -86,10 +98,17 @@
     <!-- Retenciones Card -->
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header card-header-flex">
-                <h3>Retenciones</h3>
-                @Html.ActionLink("Agregar", "CreateReten", null, new { @class = "btn btn-accion-prim" })
+
+            <!-- Cabecera -->
+            <div class="card-header card-header-flex row justify-content-between m-0">
+                <h3>Tipos de Retenciones</h3>
+                <a href="@Url.Action("CreateReten", "VariablesFinancieras")"
+                   class="btn btn-primary">
+                    <i class="bi bi-plus"></i>Agregar
+                </a>
             </div>
+        
+            <!-- Cuerpo -->
             <div class="card-body">
                 <table id="TablaTipoRetenciones" class="table table-hover">
                     <thead>
@@ -109,16 +128,22 @@
                                 <td>
                                     @if (item.idEstado == 1)
                                     {
-                                        <span>Activo</span>
+                                        <span class="badge bg-success-light">Activo</span>
                                     }
                                     else
                                     {
-                                        <span>Inactivo</span>
+                                        <span class="badge bg-danger-light">Inactivo</span>
                                     }
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Editar", "EditReten", new { id = item.Id }, new { @class = "btn btn-sm btn-accion-prim btn-block" })
-                                    @Html.ActionLink("Eliminar", "DeleteReten", new { id = item.Id }, new { @class = "btn btn-sm btn-accion-danger btn-block" })
+                                    <a href="@Url.Action("EditReten", "VariablesFinancieras", new { id = item.Id })"
+                                       class="btn btn-light text-primary">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a href="@Url.Action("DeleteReten", "VariablesFinancieras", new { id = item.Id })"
+                                       class="btn btn-light" style="color: #de6f6f;">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </a>
                                 </td>
                             </tr>
                         }
