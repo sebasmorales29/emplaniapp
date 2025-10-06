@@ -82,5 +82,78 @@
             $('#modalCambiarEstado').modal('hide');
         });
 
+        // ✨ NUEVO: Validación antes de enviar el formulario
+        $('form').on('submit', function (e) {
+            var estadoSeleccionado = $('#idEstado').val();
+            console.log('🔍 DIAGNÓSTICO: Estado seleccionado:', estadoSeleccionado);
+            
+            if (!estadoSeleccionado || estadoSeleccionado === '' || estadoSeleccionado === '0') {
+                e.preventDefault(); // Prevenir envío
+                console.log('🔍 DIAGNÓSTICO: Estado no válido, mostrando error');
+                
+                // Mostrar mensaje de error
+                var errorHtml = '<div class="alert alert-warning alert-dismissible fade show" role="alert" style="margin-top: 15px;">' +
+                    '<i class="bi bi-exclamation-triangle-fill me-2"></i>' +
+                    '<strong>Advertencia:</strong> Por favor seleccione un estado válido antes de continuar.' +
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                    '</div>';
+                
+                // Remover mensajes de error anteriores
+                $('.alert').remove();
+                
+                // Agregar mensaje de error
+                $('.card-body').prepend(errorHtml);
+                
+                // Resaltar el dropdown
+                $('#idEstado').addClass('is-invalid');
+                
+                // Quitar resaltado después de 3 segundos
+                setTimeout(function() {
+                    $('#idEstado').removeClass('is-invalid');
+                }, 3000);
+                
+                return false;
+            }
+            
+            console.log('🔍 DIAGNÓSTICO: Estado válido, enviando formulario');
+            return true;
+        });
+        
+        // ✨ NUEVO: Limpiar mensajes de error cuando se cambia la selección
+        $('#idEstado').on('change', function() {
+            $('.alert').remove();
+            $(this).removeClass('is-invalid');
+        });
     });
 </script>
+
+<!-- ✨ NUEVO: Estilos para validación -->
+<style>
+    .is-invalid {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    }
+    
+    .alert {
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .alert-warning {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        color: #856404;
+        border-left: 4px solid #ffc107;
+    }
+    
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 1.2em;
+        opacity: 0.7;
+    }
+    
+    .btn-close:hover {
+        opacity: 1;
+    }
+</style>

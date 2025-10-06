@@ -9,5 +9,6 @@ namespace Emplaniapp.Abstracciones.InterfacesParaUI
         ObservacionDto ObtenerObservacionPorId(int idObservacion);
         bool GuardarObservacion(ObservacionDto observacionDto);
         bool ActualizarObservacion(ObservacionDto observacionDto);
+        bool EliminarObservacion(int idObservacion);
     }
 } 

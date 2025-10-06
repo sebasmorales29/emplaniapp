@@ -15,6 +15,11 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
         }
         public List<EmpleadoDto> ObtenerEmpleados()
         {
+            return ObtenerEmpleados(null);
+        }
+
+        public List<EmpleadoDto> ObtenerEmpleados(string usuarioActualId = null)
+        {
             // Primero obtenemos los datos básicos de empleados sin roles
             var empleadosBase = (from emp in _contexto.Empleados
                                 join estado in _contexto.Estado on emp.idEstado equals estado.idEstado
@@ -26,6 +31,8 @@ namespace Emplaniapp.AccesoADatos.Empleado.listarEmpleado
                                 join dist in _contexto.Distrito on emp.idDistrito equals dist.idDistrito
                                 join user in _contexto.Users on emp.IdNetUser equals user.Id into userGroup
                                 from user in userGroup.DefaultIfEmpty() 
+                                // ✨ MEJORA: Excluir el usuario actual del listado por seguridad
+                                where usuarioActualId == null || emp.IdNetUser != usuarioActualId
                                 orderby emp.primerApellido, emp.segundoApellido, emp.nombre
                                 select new
                                 {

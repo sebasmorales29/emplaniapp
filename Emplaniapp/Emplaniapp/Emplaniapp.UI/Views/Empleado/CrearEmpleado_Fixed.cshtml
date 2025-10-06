@@ -4,9 +4,6 @@
     ViewBag.Title = "Agregar Empleado";
 }
 
-<!-- ✨ CSS específico para CrearEmpleado -->
-<link href="~/Content/CSS/CrearEmpleado.css" rel="stylesheet" />
-
 <div class="row">
     <div class="col-md-9 mb-2">
         <h1 class="mb-2">Agregar Empleado</h1>
@@ -235,14 +232,266 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Html.Partial("_AdminPasswordModal")
+}
+
+<!-- ✨ SOLUCIÓN: JavaScript fuera de @section Scripts para evitar conflictos con Razor -->
+<script>
+    // Función de validación de email
+    function isValidEmailFormat(email) {
+        return email.indexOf("@") !== -1 && email.indexOf(".") !== -1;
+    }
     
-    <!-- ✨ SOLUCIÓN DEFINITIVA: JavaScript externo para evitar conflictos con Razor -->
-    <script>
-        // Variables globales para el JavaScript externo
-        window.userIsAdmin = @(User != null && User.IsInRole("Administrador") ? "true" : "false");
-        window.validateAdminPasswordUrl = '@Url.Action("ValidateAdminPassword", "Empleado")';
-        window.verifyUsernameUrl = '@Url.Action("VerificarUsuarioExistente", "Empleado")';
-        window.verifyEmailUrl = '@Url.Action("VerificarCorreoExistente", "Empleado")';
-    </script>
-    <script src="~/Scripts/CrearEmpleado.js"></script>
+    $(document).ready(function () {
+        console.log('🔍 DIAGNÓSTICO: jQuery cargado correctamente. Inicializando funcionalidad del formulario...');
+        
+        // Lógica para mostrar/ocultar contraseña
+        $('.toggle-password').click(function () {
+            $(this).toggleClass('fa-eye fa-eye-slash');
+            var input = $(this).closest('.password-wrapper').find('input');
+            input.attr('type', input.attr('type') === 'password' ? 'text' : 'password');
+        });
+        
+        // ✨ MEJORA: Verificar si el usuario es administrador
+        var isAdmin = @(User != null && User.IsInRole("Administrador") ? "true" : "false");
+        console.log('🔍 DIAGNÓSTICO: Usuario es admin:', isAdmin);
+        
+        // Manejar envío del formulario
+        $('#createEmployeeForm').on('submit', function (e) {
+            console.log('🔍 DIAGNÓSTICO: Formulario se está enviando...');
+            console.log('🔍 DIAGNÓSTICO: isAdmin:', isAdmin);
+            
+            // ✨ CORRECCIÓN: Validar formulario antes de mostrar modal de admin
+            var esFormularioValido = true;
+            var camposRequeridos = ['nombre', 'primerApellido', 'cedula', 'numeroTelefonico', 'correoInstitucional', 'UserName', 'Password', 'ConfirmPassword', 'idCargo', 'fechaContratacion', 'salarioAprobado', 'periocidadPago', 'idMoneda', 'cuentaIBAN', 'idBanco'];
+            
+            // Verificar campos requeridos
+            camposRequeridos.forEach(function(campo) {
+                var input = $('[name="' + campo + '"]');
+                if (input.length > 0 && (!input.val() || input.val().trim() === '')) {
+                    console.log('🔍 DIAGNÓSTICO: Campo requerido vacío:', campo);
+                    esFormularioValido = false;
+                    input.addClass('is-invalid');
+                }
+            });
+            
+            // Verificar dropdowns requeridos
+            var provincia = $('[name="idProvincia"]').val();
+            if (!provincia || provincia === '') {
+                console.log('🔍 DIAGNÓSTICO: Provincia no seleccionada');
+                esFormularioValido = false;
+                $('[name="idProvincia"]').addClass('is-invalid');
+            }
+            
+            if (!esFormularioValido) {
+                console.log('🔍 DIAGNÓSTICO: Formulario no es válido, no se puede enviar');
+                e.preventDefault();
+                alert('Por favor, complete todos los campos requeridos antes de continuar.');
+                return false;
+            }
+            
+            console.log('🔍 DIAGNÓSTICO: Formulario es válido, procediendo...');
+            
+            if (isAdmin) {
+                console.log('🔍 DIAGNÓSTICO: Usuario es admin y formulario válido, mostrando modal...');
+                e.preventDefault();
+                if (window.AdminPasswordModal && window.AdminPasswordModal.show) {
+                    window.AdminPasswordModal.show();
+                } else {
+                    $('#adminPasswordInput').val('');
+                    $('#adminPasswordError').hide();
+                    $('#adminPasswordModal').modal('show');
+                }
+            } else {
+                console.log('🔍 DIAGNÓSTICO: Usuario no es admin, enviando formulario directamente...');
+            }
+        });
+
+        $('#confirmAdminPasswordBtn').click(function () {
+            console.log('🔍 DIAGNÓSTICO: Botón de confirmación de admin presionado');
+            var password = $('#adminPasswordInput').val();
+            console.log('🔍 DIAGNÓSTICO: Contraseña ingresada:', password ? '***' : 'VACÍA');
+            
+            if (!password) {
+                console.log('🔍 DIAGNÓSTICO: Contraseña vacía, mostrando error');
+                $('#adminPasswordError').text('La contraseña no puede estar vacía.').show();
+                return;
+            }
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            console.log('🔍 DIAGNÓSTICO: Enviando AJAX para validar contraseña de admin...');
+            $.ajax({
+                url: '@Url.Action("ValidateAdminPassword", "Empleado")',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    password: password,
+                    __RequestVerificationToken: token
+                },
+                success: function (response) {
+                    console.log('🔍 DIAGNÓSTICO: Respuesta AJAX recibida:', response);
+                    if (response.success) {
+                        console.log('🔍 DIAGNÓSTICO: Contraseña válida, enviando formulario...');
+                        $('#adminPasswordModal').modal('hide');
+                        var form = $('#createEmployeeForm');
+                        if (form.length > 0) {
+                            form.off('submit').submit();
+                        } else {
+                            console.log('🔍 DIAGNÓSTICO: Contraseña inválida, mostrando error');
+                            $('#adminPasswordError').text('Contraseña incorrecta.').show();
+                        }
+                    }
+                },
+                error: function () {
+                    alert('Ocurrió un error al validar la contraseña.');
+                    $('#adminPasswordModal').modal('hide');
+                }
+            });
+        });
+
+        $('#cancelAdminPasswordBtn').click(function () {
+            $('#adminPasswordModal').modal('hide');
+        });
+
+        // ✨ NUEVO: Validación en tiempo real del nombre de usuario
+        var timeoutId;
+        $('#UserName').on('input', function() {
+            var username = $(this).val();
+            var input = $(this);
+            
+            // Limpiar timeout anterior
+            clearTimeout(timeoutId);
+            
+            // Si está vacío, no validar
+            if (!username || username.trim() === '') {
+                input.removeClass('is-valid is-invalid');
+                $('#username-feedback').remove();
+                return;
+            }
+            
+            // Esperar 500ms antes de validar (para evitar muchas consultas)
+            timeoutId = setTimeout(function() {
+                $.ajax({
+                    url: '@Url.Action("VerificarUsuarioExistente", "Empleado")',
+                    type: 'POST',
+                    data: { username: username },
+                    success: function(response) {
+                        $('#username-feedback').remove();
+                        if (response.existe) {
+                            input.addClass('is-invalid');
+                            input.after('<div id="username-feedback" class="invalid-feedback">Este nombre de usuario ya está siendo utilizado.</div>');
+                        } else {
+                            input.addClass('is-valid');
+                            input.after('<div id="username-feedback" class="valid-feedback">Nombre de usuario disponible.</div>');
+                        }
+                    },
+                    error: function() {
+                        $('#username-feedback').remove();
+                        input.removeClass('is-valid is-invalid');
+                    }
+                });
+            }, 500);
+        });
+        
+        // ✨ NUEVO: Validación en tiempo real del correo electrónico
+        var emailTimeoutId;
+        $('#correoInstitucional').on('input', function() {
+            var email = $(this).val();
+            var input = $(this);
+            
+            // Limpiar timeout anterior
+            clearTimeout(emailTimeoutId);
+            
+            // Si está vacío, no validar
+            if (!email || email.trim() === '') {
+                input.removeClass('is-valid is-invalid');
+                $('#email-feedback').remove();
+                return;
+            }
+            
+            // Validar formato de email básico
+            if (!isValidEmailFormat(email)) {
+                input.removeClass('is-valid is-invalid');
+                $('#email-feedback').remove();
+                return;
+            }
+            
+            // Esperar 500ms antes de validar
+            emailTimeoutId = setTimeout(function() {
+                $.ajax({
+                    url: '@Url.Action("VerificarCorreoExistente", "Empleado")',
+                    type: 'POST',
+                    data: { email: email },
+                    success: function(response) {
+                        $('#email-feedback').remove();
+                        if (response.existe) {
+                            input.addClass('is-invalid');
+                            input.after('<div id="email-feedback" class="invalid-feedback">Este correo electrónico ya está siendo utilizado.</div>');
+                        } else {
+                            input.addClass('is-valid');
+                            input.after('<div id="email-feedback" class="valid-feedback">Correo electrónico disponible.</div>');
+                        }
+                    },
+                    error: function() {
+                        $('#email-feedback').remove();
+                        input.removeClass('is-valid is-invalid');
+                    }
+                });
+            }, 500);
+        });
+    });
+</script>
+
+@section Styles {
+<!-- ✨ NUEVO: Estilos para validaciones en tiempo real -->
+<style>
+    .is-valid {
+        border-color: #28a745 !important;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+    }
+    
+    .is-invalid {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    }
+    
+    .valid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.875em;
+        color: #28a745;
+    }
+    
+    .invalid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.875em;
+        color: #dc3545;
+    }
+    
+    .alert {
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .alert-danger {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+    
+    .password-wrapper {
+        position: relative;
+    }
+    
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+</style>
 }

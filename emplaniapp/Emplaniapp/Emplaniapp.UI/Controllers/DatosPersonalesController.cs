@@ -176,12 +176,21 @@ namespace Emplaniapp.UI.Controllers
                 System.Diagnostics.Debug.WriteLine($"Primer Apellido: {model.primerApellido}");
                 System.Diagnostics.Debug.WriteLine($"ModelState.IsValid: {ModelState.IsValid}");
 
+                // ✨ CORRECCIÓN: Excluir campos de autenticación de la validación para edición de datos personales
+                ModelState.Remove("UserName");
+                ModelState.Remove("Password");
+                ModelState.Remove("ConfirmPassword");
+                
                 if (!ModelState.IsValid)
                 {
                     foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
                     {
                         System.Diagnostics.Debug.WriteLine($"Error de validación: {error.ErrorMessage}");
                     }
+                    
+                    // ✨ CORRECCIÓN: Cargar ViewBag.Provincias cuando ModelState no es válido
+                    ViewBag.Provincias = ObtenerProvinciasSelectList(model?.idProvincia);
+                    return View("EditarDatosPersonales", model);
                 }
 
                 if (ModelState.IsValid)
@@ -261,6 +270,9 @@ namespace Emplaniapp.UI.Controllers
                     {
                         ModelState.AddModelError("", "No se pudieron actualizar los datos.");
                         System.Diagnostics.Debug.WriteLine("Error: No se pudieron actualizar los datos personales");
+                        
+                        // ✨ CORRECCIÓN: Cargar ViewBag.Provincias cuando falla la actualización
+                        ViewBag.Provincias = ObtenerProvinciasSelectList(model?.idProvincia);
                     }
                 }
             }
@@ -270,6 +282,9 @@ namespace Emplaniapp.UI.Controllers
                 ModelState.AddModelError("", "Ocurrió un error inesperado: " + ex.Message);
             }
 
+            // ✨ CORRECCIÓN: Cargar ViewBag.Provincias antes de devolver la vista
+            ViewBag.Provincias = ObtenerProvinciasSelectList(model?.idProvincia);
+            
             return View("EditarDatosPersonales", model);
         }
 
@@ -739,6 +754,42 @@ namespace Emplaniapp.UI.Controllers
             return PartialView("_ObservacionForm", model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EliminarObservacion(int id)
+        {
+            var observacion = _observacionLN.ObtenerObservacionPorId(id);
+            if (observacion == null)
+            {
+                return Json(new { success = false, message = "Observación no encontrada." });
+            }
+
+            // ✨ NUEVO: Eliminar observación
+            bool resultado = _observacionLN.EliminarObservacion(id);
+
+            if (resultado)
+            {
+                try
+                {
+                    _registrarEventoHistorialLN.RegistrarEvento(
+                        observacion.IdEmpleado,
+                        "Eliminar Observación",
+                        "Se eliminó una observación del empleado",
+                        $"Observación eliminada: {observacion.Titulo}",
+                        null,
+                        null,
+                        User.Identity.GetUserId(),
+                        Request.UserHostAddress
+                    );
+                }
+                catch { /* log */ }
+
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false, message = "Ocurrió un error al eliminar la observación." });
+        }
+
         #endregion
 
         #region Gestión de Roles y Permisos
@@ -795,40 +846,65 @@ namespace Emplaniapp.UI.Controllers
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: AsignarRol iniciado - idEmpleado: {idEmpleado}, nombreRol: {nombreRol}");
+                Console.WriteLine($"🔍 DIAGNÓSTICO: AsignarRol iniciado - idEmpleado: {idEmpleado}, nombreRol: {nombreRol}");
+                
                 var empleado = _datosPersonalesLN.ObtenerEmpleadoPorId(idEmpleado);
                 if (empleado == null)
                 {
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR: Empleado no encontrado - idEmpleado: {idEmpleado}");
                     return Json(new { success = false, message = "Empleado no encontrado." });
                 }
+
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Empleado encontrado - Nombre: {empleado.nombre}, IdNetUser: {empleado.IdNetUser}, Email: {empleado.correoInstitucional}");
 
                 ApplicationUser user = null;
                 if (!string.IsNullOrEmpty(empleado.IdNetUser))
                 {
                     user = await UserManager.FindByIdAsync(empleado.IdNetUser);
+                    System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Buscando usuario por ID: {empleado.IdNetUser} - Encontrado: {user != null}");
                 }
                 else
                 {
                     user = await UserManager.FindByEmailAsync(empleado.correoInstitucional);
+                    System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Buscando usuario por email: {empleado.correoInstitucional} - Encontrado: {user != null}");
                 }
 
                 if (user == null)
                 {
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR: Usuario no encontrado para empleado {idEmpleado}");
                     return Json(new { success = false, message = "No se encontró el usuario asociado a este empleado." });
                 }
 
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Usuario encontrado - ID: {user.Id}, UserName: {user.UserName}");
+
                 if (!await RoleManager.RoleExistsAsync(nombreRol))
                 {
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR: Rol no existe - nombreRol: {nombreRol}");
                     return Json(new { success = false, message = "El rol especificado no existe." });
                 }
 
-                if (await UserManager.IsInRoleAsync(user.Id, nombreRol))
+                var isInRole = await UserManager.IsInRoleAsync(user.Id, nombreRol);
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Usuario {user.UserName} ya tiene rol {nombreRol}: {isInRole}");
+                
+                if (isInRole)
                 {
                     return Json(new { success = false, message = "El usuario ya tiene este rol asignado." });
                 }
 
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Agregando rol {nombreRol} al usuario {user.UserName}...");
                 var result = await UserManager.AddToRoleAsync(user.Id, nombreRol);
+                
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Resultado de AddToRoleAsync - Succeeded: {result.Succeeded}");
+                if (!result.Succeeded)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR: Errores al asignar rol: {string.Join(", ", result.Errors)}");
+                }
+                
                 if (result.Succeeded)
                 {
+                    System.Diagnostics.Debug.WriteLine($"✅ ÉXITO: Rol {nombreRol} asignado correctamente al usuario {user.UserName}");
+                    
                     try
                     {
                         _registrarEventoHistorialLN.RegistrarEvento(
@@ -841,19 +917,28 @@ namespace Emplaniapp.UI.Controllers
                             User.Identity.GetUserId(),
                             Request.UserHostAddress
                         );
+                        System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Evento de historial registrado correctamente");
                     }
-                    catch { /* log */ }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"⚠️ ADVERTENCIA: Error al registrar evento de historial: {ex.Message}");
+                    }
 
+                    System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Invalidando sesiones del usuario {user.UserName}...");
                     await InvalidateUserSessions(user.Id);
+                    
                     return Json(new { success = true, message = $"Rol '{nombreRol}' asignado correctamente.", requiresRefresh = true });
                 }
                 else
                 {
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR: Error al asignar el rol: {string.Join(", ", result.Errors)}");
                     return Json(new { success = false, message = "Error al asignar el rol: " + string.Join(", ", result.Errors) });
                 }
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR: Excepción en AsignarRol: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR: Stack trace: {ex.StackTrace}");
                 return Json(new { success = false, message = "Error al asignar rol: " + ex.Message });
             }
         }
@@ -865,35 +950,59 @@ namespace Emplaniapp.UI.Controllers
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: RemoverRol iniciado - idEmpleado: {idEmpleado}, nombreRol: {nombreRol}");
+                Console.WriteLine($"🔍 DIAGNÓSTICO: RemoverRol iniciado - idEmpleado: {idEmpleado}, nombreRol: {nombreRol}");
+                
                 var empleado = _datosPersonalesLN.ObtenerEmpleadoPorId(idEmpleado);
                 if (empleado == null)
                 {
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR: Empleado no encontrado - idEmpleado: {idEmpleado}");
                     return Json(new { success = false, message = "Empleado no encontrado." });
                 }
+
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Empleado encontrado - Nombre: {empleado.nombre}, IdNetUser: {empleado.IdNetUser}, Email: {empleado.correoInstitucional}");
 
                 ApplicationUser user = null;
                 if (!string.IsNullOrEmpty(empleado.IdNetUser))
                 {
                     user = await UserManager.FindByIdAsync(empleado.IdNetUser);
+                    System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Buscando usuario por ID: {empleado.IdNetUser} - Encontrado: {user != null}");
                 }
                 else
                 {
                     user = await UserManager.FindByEmailAsync(empleado.correoInstitucional);
+                    System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Buscando usuario por email: {empleado.correoInstitucional} - Encontrado: {user != null}");
                 }
 
                 if (user == null)
                 {
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR: Usuario no encontrado para empleado {idEmpleado}");
                     return Json(new { success = false, message = "No se encontró el usuario asociado a este empleado." });
                 }
 
-                if (!await UserManager.IsInRoleAsync(user.Id, nombreRol))
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Usuario encontrado - ID: {user.Id}, UserName: {user.UserName}");
+
+                var isInRole = await UserManager.IsInRoleAsync(user.Id, nombreRol);
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Usuario {user.UserName} tiene rol {nombreRol}: {isInRole}");
+                
+                if (!isInRole)
                 {
                     return Json(new { success = false, message = "El usuario no tiene este rol asignado." });
                 }
 
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Removiendo rol {nombreRol} del usuario {user.UserName}...");
                 var result = await UserManager.RemoveFromRoleAsync(user.Id, nombreRol);
+                
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Resultado de RemoveFromRoleAsync - Succeeded: {result.Succeeded}");
+                if (!result.Succeeded)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR: Errores al remover rol: {string.Join(", ", result.Errors)}");
+                }
+                
                 if (result.Succeeded)
                 {
+                    System.Diagnostics.Debug.WriteLine($"✅ ÉXITO: Rol {nombreRol} removido correctamente del usuario {user.UserName}");
+                    
                     try
                     {
                         _registrarEventoHistorialLN.RegistrarEvento(
@@ -906,19 +1015,28 @@ namespace Emplaniapp.UI.Controllers
                             User.Identity.GetUserId(),
                             Request.UserHostAddress
                         );
+                        System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Evento de historial registrado correctamente");
                     }
-                    catch { /* log */ }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"⚠️ ADVERTENCIA: Error al registrar evento de historial: {ex.Message}");
+                    }
 
+                    System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Invalidando sesiones del usuario {user.UserName}...");
                     await InvalidateUserSessions(user.Id);
+                    
                     return Json(new { success = true, message = $"Rol '{nombreRol}' removido correctamente.", requiresRefresh = true });
                 }
                 else
                 {
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR: Error al remover el rol: {string.Join(", ", result.Errors)}");
                     return Json(new { success = false, message = "Error al remover el rol: " + string.Join(", ", result.Errors) });
                 }
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR: Excepción en RemoverRol: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR: Stack trace: {ex.StackTrace}");
                 return Json(new { success = false, message = "Error al remover rol: " + ex.Message });
             }
         }

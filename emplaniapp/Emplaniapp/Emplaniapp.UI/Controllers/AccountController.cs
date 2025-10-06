@@ -53,6 +53,29 @@ namespace Emplaniapp.UI.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            // ✨ MEJORA: Verificar si el usuario existe antes de intentar el login
+            var user = await UserManager.FindByNameAsync(model.UserName);
+            if (user == null)
+            {
+                // ✨ Usuario no existe
+                ModelState.AddModelError("", "❌ El usuario ingresado no está registrado en el sistema. Por favor, verifique el nombre de usuario.");
+                return View(model);
+            }
+
+            // ✨ Verificar si el usuario está bloqueado
+            if (await UserManager.IsLockedOutAsync(user.Id))
+            {
+                ModelState.AddModelError("", "🔒 Su cuenta está temporalmente bloqueada debido a múltiples intentos fallidos. Por favor, espere unos minutos o contacte al administrador.");
+                return View(model);
+            }
+
+            // ✨ COMENTADO: Verificación de email confirmado no requerida para empleados internos
+            // if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+            // {
+            //     ModelState.AddModelError("", "📧 Su cuenta no ha sido verificada. Por favor, revise su correo electrónico y confirme su cuenta antes de iniciar sesión.");
+            //     return View(model);
+            // }
+
             var result = await SignInManager.PasswordSignInAsync(
                 model.UserName,
                 model.Password,
@@ -63,36 +86,77 @@ namespace Emplaniapp.UI.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    var user = await UserManager.FindByNameAsync(model.UserName);
                     if (user != null)
                     {
-                        var originalIdentity = await UserManager.CreateIdentityAsync(
-                            user, DefaultAuthenticationTypes.ApplicationCookie);
-
+                        // ✨ MEJORA: Verificar estado del empleado y roles antes de permitir login
                         using (var contexto = new Contexto())
                         {
                             var empleado = contexto.Empleados.FirstOrDefault(e => e.IdNetUser == user.Id);
-                            if (empleado != null)
+                            
+                            // ✨ Verificar si el empleado existe
+                            if (empleado == null)
                             {
+                                ModelState.AddModelError("", "❌ Su cuenta no está asociada a ningún empleado. Por favor, contacte al administrador.");
+                                return View(model);
+                            }
+                            
+                            // ✨ Verificar si el empleado está activo (estado 1 = Activo)
+                            if (empleado.idEstado != 1)
+                            {
+                                var estado = contexto.Estado.FirstOrDefault(e => e.idEstado == empleado.idEstado);
+                                var nombreEstado = estado?.nombreEstado ?? "Inactivo";
+                                
+                                ModelState.AddModelError("", $"🔒 Su cuenta está en estado '{nombreEstado}' y no puede iniciar sesión. Por favor, contacte al administrador para más información.");
+                                return View(model);
+                            }
+                            
+                            // ✨ Verificar si el usuario tiene roles asignados
+                            var userRoles = await UserManager.GetRolesAsync(user.Id);
+                            if (userRoles == null || !userRoles.Any())
+                            {
+                                // ✨ Usuario sin roles - permitir login pero mostrar mensaje
+                                var originalIdentity = await UserManager.CreateIdentityAsync(
+                                    user, DefaultAuthenticationTypes.ApplicationCookie);
+                                
                                 originalIdentity.AddClaim(new Claim("idEmpleado", empleado.idEmpleado.ToString()));
+                                originalIdentity.AddClaim(new Claim("SinRol", "true")); // Marcar que no tiene roles
+                                
                                 AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                                 AuthenticationManager.SignIn(
                                     new AuthenticationProperties { IsPersistent = model.RememberMe },
                                     originalIdentity);
+                                
+                                // ✨ Redirigir con mensaje informativo
+                                TempData["Mensaje"] = "⚠️ Ha iniciado sesión correctamente, pero no posee ningún rol asignado. Por favor, contacte al administrador para asignar los permisos correspondientes.";
+                                TempData["TipoMensaje"] = "warning";
+                                return RedirectToLocal(returnUrl);
                             }
+                            
+                            // ✨ Usuario activo con roles - login normal
+                            var identity = await UserManager.CreateIdentityAsync(
+                                user, DefaultAuthenticationTypes.ApplicationCookie);
+                            
+                            identity.AddClaim(new Claim("idEmpleado", empleado.idEmpleado.ToString()));
+                            
+                            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                            AuthenticationManager.SignIn(
+                                new AuthenticationProperties { IsPersistent = model.RememberMe },
+                                identity);
                         }
                     }
                     return RedirectToLocal(returnUrl);
 
                 case SignInStatus.LockedOut:
-                    return View("Lockout");
+                    ModelState.AddModelError("", "🔒 Su cuenta ha sido bloqueada temporalmente debido a múltiples intentos fallidos. Por favor, espere 5 minutos o contacte al administrador.");
+                    return View(model);
 
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
 
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Usuario o contraseña incorrectos.");
+                    // ✨ Contraseña incorrecta - mensaje específico
+                    ModelState.AddModelError("", "🔑 La contraseña ingresada es incorrecta. Por favor, verifique su contraseña e intente nuevamente.");
                     return View(model);
             }
         }
@@ -177,8 +241,33 @@ namespace Emplaniapp.UI.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Login", "Account");
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("🔍 DIAGNÓSTICO: LogOff iniciado");
+                
+                // Obtener información del usuario antes de cerrar sesión
+                var userId = User.Identity.GetUserId();
+                var userName = User.Identity.GetUserName();
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Cerrando sesión para usuario: {userName} (ID: {userId})");
+                
+                // Cerrar sesión
+                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                
+                System.Diagnostics.Debug.WriteLine("🔍 DIAGNÓSTICO: Sesión cerrada exitosamente, redirigiendo a Login");
+                
+                return RedirectToAction("Login", "Account");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR en LogOff: {ex.Message}");
+                // En caso de error, intentar cerrar sesión de todas formas y redirigir
+                try
+                {
+                    AuthenticationManager.SignOut();
+                }
+                catch { }
+                return RedirectToAction("Login", "Account");
+            }
         }
 
         // ========================= HELPERS =========================
