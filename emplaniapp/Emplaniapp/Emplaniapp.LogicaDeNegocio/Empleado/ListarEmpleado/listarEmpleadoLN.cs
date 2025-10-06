@@ -18,5 +18,10 @@ namespace Emplaniapp.LogicaDeNegocio.Empleado.ListarEmpleado
         {
             return _listarEmpleadoAD.ObtenerEmpleados();
         }
+
+        public List<EmpleadoDto> ObtenerEmpleados(string usuarioActualId = null)
+        {
+            return _listarEmpleadoAD.ObtenerEmpleados(usuarioActualId);
+        }
     }
 }

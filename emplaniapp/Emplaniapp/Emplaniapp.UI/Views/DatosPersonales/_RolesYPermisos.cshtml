@@ -65,6 +65,9 @@
 
 </div>
 
+<!-- ✨ NUEVO: Modal de contraseña de administrador para cambios de roles -->
+@Html.Partial("_AdminPasswordModal")
+
 <!-- Estilos -->
 
 <style>
@@ -251,6 +254,9 @@ $(document).ready(function() {
     var empleadoId = @Model.idEmpleado;
     var rolesOriginales = {}; // Para rastrear el estado original
     var cambiosPendientes = false;
+    
+    // ✨ CORRECCIÓN: Establecer el controlador correcto para el modal
+    window.currentController = 'DatosPersonales';
 
     // Cargar roles al inicializar
     cargarRoles();
@@ -305,19 +311,33 @@ $(document).ready(function() {
     }
 
     function verificarCambios() {
+        console.log('🔍 DIAGNÓSTICO: === VERIFICANDO CAMBIOS ===');
+        console.log('🔍 DIAGNÓSTICO: rolesOriginales:', rolesOriginales);
+        
         cambiosPendientes = false;
+        var cambiosDetectados = [];
 
         $('input[type="checkbox"]').each(function() {
             var rol = $(this).val();
             var estadoActual = $(this).is(':checked');
             var estadoOriginal = rolesOriginales[rol] || false;
 
+            console.log(`🔍 DIAGNÓSTICO: Rol ${rol} - Estado actual: ${estadoActual}, Estado original: ${estadoOriginal}`);
+
             if (estadoActual !== estadoOriginal) {
                 cambiosPendientes = true;
+                cambiosDetectados.push({
+                    rol: rol,
+                    actual: estadoActual,
+                    original: estadoOriginal
+                });
+                console.log(`🔍 DIAGNÓSTICO: ✅ CAMBIO DETECTADO - Rol: ${rol}, De: ${estadoOriginal} A: ${estadoActual}`);
                 return false; // break
             }
         });
 
+        console.log('🔍 DIAGNÓSTICO: cambiosPendientes:', cambiosPendientes);
+        console.log('🔍 DIAGNÓSTICO: cambiosDetectados:', cambiosDetectados);
         actualizarBotones();
     }
 
@@ -367,17 +387,17 @@ $(document).ready(function() {
 
     // Botón Confirmar Cambios
     $('#btn-confirmar').click(function() {
-        if (!cambiosPendientes) return;
-
-        // Usar función centralizada para mostrar el modal
-        if (window.AdminPasswordModal && window.AdminPasswordModal.show) {
-            window.AdminPasswordModal.show();
-        } else {
-            // Fallback si el modal centralizado no está disponible
-            $('#adminPasswordInput').val('');
-            $('#adminPasswordError').hide().text('');
-            $('#adminPasswordModal').modal('show');
+        console.log('🔍 DIAGNÓSTICO: === BOTÓN CONFIRMAR CAMBIOS PRESIONADO ===');
+        console.log('🔍 DIAGNÓSTICO: cambiosPendientes:', cambiosPendientes);
+        
+        if (!cambiosPendientes) {
+            console.log('🔍 DIAGNÓSTICO: ❌ No hay cambios pendientes, saliendo...');
+            return;
         }
+
+        console.log('🔍 DIAGNÓSTICO: ✅ Hay cambios pendientes, procediendo...');
+        console.log('🔍 DIAGNÓSTICO: Llamando a aplicarCambios()...');
+        aplicarCambios();
     });
 
     // Botón Cancelar
@@ -398,41 +418,11 @@ $(document).ready(function() {
         ocultarMensaje();
     });
 
-    // Modal de confirmación de contraseña de administrador
-    $('#confirmAdminPasswordBtn').off('click').on('click', function() {
-        var password = $('#adminPasswordInput').val();
-        var errorDiv = $('#adminPasswordError');
-
-        if (!password) {
-            errorDiv.text('La contraseña no puede estar vacía.').show();
-            return;
-        }
-
-        // Validar contraseña con el servidor
-        $.ajax({
-            url: '@Url.Action("ValidateAdminPassword", "DatosPersonales")',
-            type: 'POST',
-            data: {
-                password: password,
-                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-            },
-            success: function(response) {
-                if (response.success) {
-                    // Contraseña correcta, ocultar modal y aplicar cambios
-                    $('#adminPasswordModal').modal('hide');
-                    aplicarCambios();
-                } else {
-                    // Contraseña incorrecta
-                    errorDiv.text(response.message || 'Contraseña incorrecta.').show();
-                }
-            },
-            error: function() {
-                errorDiv.text('Error de comunicación con el servidor.').show();
-            }
-        });
-    });
+    // ✨ CORRECCIÓN: Eliminar manejador duplicado - el modal ya tiene su propio manejador
+    // Este manejador estaba causando conflictos con el del modal
 
     function aplicarCambios() {
+        console.log('🔍 DIAGNÓSTICO: aplicarCambios iniciado');
         var cambios = [];
 
         $('input[type="checkbox"]').each(function() {
@@ -440,50 +430,131 @@ $(document).ready(function() {
             var estadoActual = $(this).is(':checked');
             var estadoOriginal = rolesOriginales[rol] || false;
 
+            console.log(`🔍 DIAGNÓSTICO: Rol ${rol} - Estado actual: ${estadoActual}, Estado original: ${estadoOriginal}`);
+
             if (estadoActual !== estadoOriginal) {
                 cambios.push({
                     rol: rol,
                     accion: estadoActual ? 'asignar' : 'remover'
                 });
+                console.log(`🔍 DIAGNÓSTICO: Cambio detectado - Rol: ${rol}, Acción: ${estadoActual ? 'asignar' : 'remover'}`);
             }
         });
 
+        console.log('🔍 DIAGNÓSTICO: Cambios detectados:', cambios);
+
         if (cambios.length === 0) {
+            console.log('🔍 DIAGNÓSTICO: No hay cambios para aplicar');
             mostrarMensaje('info', 'No hay cambios para aplicar.');
             return;
         }
 
+        // ✨ NUEVO: Verificar si es administrador y mostrar modal de contraseña
+        var isAdmin = @(User != null && User.IsInRole("Administrador") ? "true" : "false");
+        console.log('🔍 DIAGNÓSTICO: Usuario es admin:', isAdmin);
+        
+        if (isAdmin) {
+            console.log('🔍 DIAGNÓSTICO: Usuario es admin, mostrando modal para cambios de roles...');
+            console.log('🔍 DIAGNÓSTICO: Guardando cambios pendientes en window.pendingRoleChanges:', cambios);
+            console.log('🔍 DIAGNÓSTICO: === GUARDANDO CAMBIOS EN WINDOW.PENDINGROLECHANGES ===');
+            
+            // Guardar los cambios para procesarlos después de validar la contraseña
+            window.pendingRoleChanges = cambios;
+            
+            // ✨ VERIFICACIÓN EXTRA: Confirmar que se guardó correctamente
+            console.log('🔍 DIAGNÓSTICO: window.pendingRoleChanges después de guardar:', window.pendingRoleChanges);
+            console.log('🔍 DIAGNÓSTICO: window.pendingRoleChanges.length después de guardar:', window.pendingRoleChanges ? window.pendingRoleChanges.length : 'N/A');
+            console.log('🔍 DIAGNÓSTICO: typeof window.pendingRoleChanges:', typeof window.pendingRoleChanges);
+            console.log('🔍 DIAGNÓSTICO: Array.isArray(window.pendingRoleChanges):', Array.isArray(window.pendingRoleChanges));
+            
+            // Mostrar modal de contraseña de administrador
+            if (window.AdminPasswordModal && window.AdminPasswordModal.show) {
+                console.log('🔍 DIAGNÓSTICO: Usando window.AdminPasswordModal.show()');
+                console.log('🔍 DIAGNÓSTICO: === MOSTRANDO MODAL DE ADMIN ===');
+                window.AdminPasswordModal.show();
+            } else {
+                console.log('🔍 DIAGNÓSTICO: Usando método directo para mostrar modal');
+                $('#adminPasswordInput').val('');
+                $('#adminPasswordError').hide();
+                $('#adminPasswordModal').modal('show');
+            }
+        } else {
+            console.log('🔍 DIAGNÓSTICO: Usuario no es admin, procesando cambios directamente...');
+            procesarCambiosDirectamente(cambios);
+        }
+    }
+
+    function procesarCambiosDirectamente(cambios) {
+        console.log('🔍 DIAGNÓSTICO: procesarCambiosDirectamente llamado con cambios:', cambios);
+        console.log('🔍 DIAGNÓSTICO: Función procesarCambiosDirectamente ejecutándose...');
+        
+        // ✨ CORRECCIÓN: Limpiar cambios pendientes al inicio
+        console.log('🔍 DIAGNÓSTICO: Limpiando window.pendingRoleChanges al inicio...');
+        window.pendingRoleChanges = null;
+        
+        // Validar que hay cambios para procesar
+        if (!cambios || cambios.length === 0) {
+            console.error('❌ ERROR: No hay cambios para procesar');
+            console.log('🔍 DIAGNÓSTICO: cambios recibidos:', cambios);
+            return;
+        }
+        
         // Mostrar mensaje de progreso
         var mensajeProgreso = cambios.length === 1
             ? 'Aplicando cambio de rol...'
             : 'Aplicando ' + cambios.length + ' cambios de roles...';
+        console.log('🔍 DIAGNÓSTICO: Mostrando mensaje:', mensajeProgreso);
         mostrarMensaje('info', mensajeProgreso);
 
         // Deshabilitar controles durante el proceso
         $('input[type="checkbox"], #btn-confirmar, #btn-cancelar').prop('disabled', true);
+        console.log('🔍 DIAGNÓSTICO: Controles deshabilitados, iniciando procesarCambios...');
 
         procesarCambios(cambios, 0);
     }
 
+    // ✨ NUEVO: Hacer la función disponible globalmente
+    window.procesarCambiosDirectamente = procesarCambiosDirectamente;
+
     function procesarCambios(cambios, indice) {
+        console.log('🔍 DIAGNÓSTICO: procesarCambios llamado con indice:', indice, 'de', cambios.length);
+        
         if (indice >= cambios.length) {
+            console.log('🔍 DIAGNÓSTICO: Todos los cambios completados');
             // Todos los cambios completados
             $('input[type="checkbox"], #btn-cancelar').prop('disabled', false);
 
-            // Mensaje más descriptivo según la cantidad de cambios
+            // ✨ NUEVO: Mostrar modal de éxito en lugar de mensaje
             var mensaje = cambios.length === 1
-                ? '¡Cambio aplicado exitosamente! El rol se actualizó correctamente.<br/><small class="text-muted">La sesión del empleado se actualizará automáticamente en unos segundos.</small>'
-                : '¡Éxito! Se aplicaron correctamente ' + cambios.length + ' cambios de roles.<br/><small class="text-muted">La sesión del empleado se actualizará automáticamente en unos segundos.</small>';
+                ? 'El cambio de rol ha sido aplicado exitosamente'
+                : 'Se aplicaron correctamente ' + cambios.length + ' cambios de roles';
 
-            mostrarMensaje('success', mensaje);
+            console.log('🔍 DIAGNÓSTICO: Mostrando modal de éxito con mensaje:', mensaje);
+            
+            // Mostrar modal de éxito
+            if (typeof window.showSuccessModal === 'function') {
+                window.showSuccessModal(mensaje);
+            } else {
+                // Fallback si el modal no está disponible
+                mostrarMensaje('success', mensaje);
+            }
+            
             cargarRoles(); // Recargar para actualizar estado
             return;
         }
 
         var cambio = cambios[indice];
+        console.log('🔍 DIAGNÓSTICO: Procesando cambio #' + (indice + 1) + ':', cambio);
+        
         var url = cambio.accion === 'asignar' ?
             '@Url.Action("AsignarRol", "DatosPersonales")' :
             '@Url.Action("RemoverRol", "DatosPersonales")';
+
+        console.log('🔍 DIAGNÓSTICO: URL de la petición:', url);
+        console.log('🔍 DIAGNÓSTICO: Datos a enviar:', {
+            idEmpleado: empleadoId,
+            nombreRol: cambio.rol
+        });
 
         $.ajax({
             url: url,
@@ -494,23 +565,44 @@ $(document).ready(function() {
                 __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
             },
             success: function(response) {
+                console.log('🔍 DIAGNÓSTICO: Respuesta AJAX recibida para cambio #' + (indice + 1) + ':', response);
                 if (response.success) {
+                    console.log('✅ ÉXITO: Cambio #' + (indice + 1) + ' aplicado correctamente');
+                    
                     // Verificar si se requiere refresh de la sesión del usuario afectado
                     if (response.requiresRefresh) {
                         console.log('🔄 Rol modificado - sesión del usuario afectado invalidada');
                     }
 
                     // Continuar con el siguiente cambio
+                    console.log('🔍 DIAGNÓSTICO: Continuando con el siguiente cambio...');
                     procesarCambios(cambios, indice + 1);
                 } else {
+                    console.error('❌ ERROR: Fallo en cambio #' + (indice + 1) + ':', response.message);
                     // Error en este cambio
                     $('input[type="checkbox"], #btn-confirmar, #btn-cancelar').prop('disabled', false);
-                    mostrarMensaje('danger', 'Error al ' + cambio.accion + ' el rol ' + cambio.rol + ': ' + response.message);
+                    
+                    // ✨ NUEVO: Mostrar modal de error
+                    var errorMessage = 'Error al ' + cambio.accion + ' el rol ' + cambio.rol + ': ' + response.message;
+                    if (typeof window.showErrorModal === 'function') {
+                        window.showErrorModal(errorMessage);
+                    } else {
+                        mostrarMensaje('danger', errorMessage);
+                    }
                 }
             },
-            error: function() {
+            error: function(xhr, status, error) {
+                console.error('❌ ERROR: Error AJAX en cambio #' + (indice + 1) + ':', status, error);
+                console.error('❌ ERROR: Respuesta del servidor:', xhr.responseText);
                 $('input[type="checkbox"], #btn-confirmar, #btn-cancelar').prop('disabled', false);
-                mostrarMensaje('danger', 'Error al ' + cambio.accion + ' el rol ' + cambio.rol + '.');
+                
+                // ✨ NUEVO: Mostrar modal de error
+                var errorMessage = 'Error al ' + cambio.accion + ' el rol ' + cambio.rol + '.';
+                if (typeof window.showErrorModal === 'function') {
+                    window.showErrorModal(errorMessage);
+                } else {
+                    mostrarMensaje('danger', errorMessage);
+                }
             }
         });
     }

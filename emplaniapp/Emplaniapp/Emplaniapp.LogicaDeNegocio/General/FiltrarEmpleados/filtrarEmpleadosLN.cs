@@ -21,5 +21,10 @@ namespace Emplaniapp.LogicaDeNegocio.General.FiltrarEmpleados
         {
             return _filtrarEmpleadosAD.ObtenerFiltrado<T>(filtro, idCargo, idEstado);
         }
+
+        public List<T> ObtenerFiltrado<T>(string filtro, int? idCargo, int? idEstado, string usuarioActualId = null) where T : class
+        {
+            return _filtrarEmpleadosAD.ObtenerFiltrado<T>(filtro, idCargo, idEstado, usuarioActualId);
+        }
     }
 }

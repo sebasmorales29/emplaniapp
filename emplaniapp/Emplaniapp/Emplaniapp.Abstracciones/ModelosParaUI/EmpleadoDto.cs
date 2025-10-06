@@ -52,17 +52,17 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
         public string nombreCompleto { get; set; }
 
         // Dirección
-        public int? idProvincia { get; set; }
         [DisplayName("Provincia")]
         [Required(ErrorMessage = "Por favor seleccionar una provincia.")]
+        public int? idProvincia { get; set; }
+        
+        [DisplayName("Provincia")]
         public string nombreProvincia { get; set; }
         
         [DisplayName("Cantón")]
-        [Required(ErrorMessage = "El cantón es obligatorio.")]
         public string nombreCanton { get; set; }
         
         [DisplayName("Distrito")]
-        [Required(ErrorMessage = "El distrito es obligatorio.")]
         public string nombreDistrito { get; set; }
 
         [DisplayName("Dirección Detallada")]

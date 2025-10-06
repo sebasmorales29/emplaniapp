@@ -325,6 +325,7 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Html.Partial("_AdminPasswordModal")
 
     <script>
         $(document).ready(function () {
@@ -427,30 +428,94 @@
                 var url = $(this).data('url');
                 modalContent.load(url, function () {
                     modalContainer.modal('show');
-                    $.validator.unobtrusive.parse(modalContent.find('form'));
+                    
+                    // ✨ CORRECCIÓN: Verificar que jQuery Unobtrusive esté disponible
+                    if (typeof $.validator !== 'undefined' && typeof $.validator.unobtrusive !== 'undefined') {
+                        $.validator.unobtrusive.parse(modalContent.find('form'));
+                    } else {
+                        console.warn('jQuery Unobtrusive no está disponible para validación');
+                    }
                 });
             });
 
             // Guardar en modal
             modalContainer.on('click', '#btn-guardar-observacion', function () {
-                var form = modalContent.find('observacionForm');
-                if (!form.valid()) return;
+                var form = modalContent.find('#observacionForm');
+                
+                // ✨ CORRECCIÓN: Validación manual si jQuery Unobtrusive no está disponible
+                var isValid = true;
+                if (typeof form.valid === 'function') {
+                    isValid = form.valid();
+                } else {
+                    // Validación manual básica
+                    var titulo = form.find('input[name="Titulo"]').val().trim();
+                    var descripcion = form.find('textarea[name="Descripcion"]').val().trim();
+                    
+                    if (!titulo || !descripcion) {
+                        isValid = false;
+                        alert('Por favor, complete todos los campos obligatorios.');
+                    }
+                }
+                
+                if (!isValid) return;
+
+                // ✨ MEJORA: Deshabilitar botón para evitar doble envío
+                var btnGuardar = $(this);
+                btnGuardar.prop('disabled', true).html('<i class="bi bi-hourglass-split"></i> Guardando...');
 
                 $.ajax({
                     url: form.attr('action'),
                     method: 'POST',
                     data: form.serialize(),
                     success: function (response) {
-                        if (response.success) {
+                        // ✨ CORRECCIÓN: Manejar respuesta como texto o JSON
+                        var responseData = response;
+                        if (typeof response === 'string') {
+                            try {
+                                responseData = JSON.parse(response);
+                            } catch (e) {
+                                // Si no es JSON, probablemente es HTML de error
+                                modalContent.html(response);
+                                if (typeof $.validator !== 'undefined' && typeof $.validator.unobtrusive !== 'undefined') {
+                                    $.validator.unobtrusive.parse(modalContent.find('form'));
+                                }
+                                return;
+                            }
+                        }
+                        
+                        if (responseData.success) {
                             modalContainer.modal('hide');
+                            
+                            // ✨ MEJORA: Mostrar mensaje de éxito elegante
+                            if (typeof window.showSuccessModal === 'function') {
+                                var mensaje = form.find('input[name="IdObservacion"]').val() > 0 
+                                    ? 'La observación ha sido actualizada exitosamente' 
+                                    : 'La observación ha sido creada exitosamente';
+                                window.showSuccessModal(mensaje);
+                            }
+                            
                             cargarObservaciones();
                         } else {
-                            modalContent.html(response);
-                            $.validator.unobtrusive.parse(modalContent.find('form'));
+                            modalContent.html(responseData);
+                            if (typeof $.validator !== 'undefined' && typeof $.validator.unobtrusive !== 'undefined') {
+                                $.validator.unobtrusive.parse(modalContent.find('form'));
+                            }
                         }
                     },
-                    error: function () {
-                        alert('Ocurrió un error de comunicación con el servidor.');
+                    error: function (xhr, status, error) {
+                        console.error('Error al guardar observación:', error);
+                        console.error('Respuesta del servidor:', xhr.responseText);
+                        
+                        // ✨ MEJORA: Mostrar mensaje de error elegante
+                        if (typeof window.showErrorModal === 'function') {
+                            window.showErrorModal('Ocurrió un error al guardar la observación. Por favor, intente nuevamente.');
+                        } else {
+                            alert('Ocurrió un error de comunicación con el servidor.');
+                        }
+                    },
+                    complete: function () {
+                        // ✨ MEJORA: Rehabilitar botón
+                        btnGuardar.prop('disabled', false).html('Guardar');
                     }
                 });
             });
@@ -458,6 +523,47 @@
 
             modalContainer.on('click', '#btn-cancelar-observacion', function () {
                 $('#modal-container').modal('hide');
+            });
+
+            // ✨ NUEVO: Eliminar observación
+            $('#contenedor-lista-observaciones').on('click', '.btn-eliminar-observacion', function () {
+                var observacionId = $(this).data('id');
+                var observacionTitulo = $(this).data('titulo');
+                
+                if (confirm('¿Está seguro de que desea eliminar la observación "' + observacionTitulo + '"? Esta acción no se puede deshacer.')) {
+                    $.ajax({
+                        url: '@Url.Action("EliminarObservacion", "DatosPersonales")',
+                        method: 'POST',
+                        data: { 
+                            id: observacionId,
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                // ✨ MEJORA: Mostrar mensaje de éxito elegante
+                                if (typeof window.showSuccessModal === 'function') {
+                                    window.showSuccessModal('La observación ha sido eliminada exitosamente');
+                                }
+                                cargarObservaciones();
+                            } else {
+                                // ✨ MEJORA: Mostrar mensaje de error elegante
+                                if (typeof window.showErrorModal === 'function') {
+                                    window.showErrorModal(response.message || 'Ocurrió un error al eliminar la observación');
+                                } else {
+                                    alert(response.message || 'Ocurrió un error al eliminar la observación');
+                                }
+                            }
+                        },
+                        error: function () {
+                            // ✨ MEJORA: Mostrar mensaje de error elegante
+                            if (typeof window.showErrorModal === 'function') {
+                                window.showErrorModal('Ocurrió un error de comunicación con el servidor');
+                            } else {
+                                alert('Ocurrió un error de comunicación con el servidor');
+                            }
+                        }
+                    });
+                }
             });
 
             // --- FIN: Lógica del modal ---

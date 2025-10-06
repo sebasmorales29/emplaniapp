@@ -140,7 +140,10 @@ namespace Emplaniapp.UI.Controllers
         // GET: Empleado
         public ActionResult ListarEmpleados()
         {
-            List<EmpleadoDto> laListaDeEmpleados = _listarEmpleadoLN.ObtenerEmpleados();
+            // ✨ MEJORA: Obtener ID del usuario actual para excluirlo del listado por seguridad
+            string usuarioActualId = User.Identity.GetUserId();
+            
+            List<EmpleadoDto> laListaDeEmpleados = _listarEmpleadoLN.ObtenerEmpleados(usuarioActualId);
             ViewBag.Cargos = ObtenerCargos();
             ViewBag.Estados = ObtenerEstados();
             ViewBag.TotalEmpleados = _obtenerTotalEmpleadosLN.ObtenerTotalEmpleados(null, null, null, true);
@@ -169,13 +172,41 @@ namespace Emplaniapp.UI.Controllers
         [HttpPost]
         public ActionResult Filtrar(string filtro, int? idCargo, int? idEstado)
         {
-            var listaFiltrada = _filtrarEmpleadosLN.ObtenerFiltrado<EmpleadoDto>(filtro, idCargo, idEstado);
+            System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Filtrar - Texto: '{filtro}', Cargo: {idCargo}, Estado: {idEstado}");
+            
+            // ✨ MEJORA: Obtener ID del usuario actual para excluirlo del filtrado por seguridad
+            string usuarioActualId = User.Identity.GetUserId();
+            
+            // ✨ NUEVO: Limpiar valores vacíos
+            if (string.IsNullOrWhiteSpace(filtro))
+                filtro = null;
+                
+            if (idCargo.HasValue && idCargo.Value <= 0)
+                idCargo = null;
+                
+            if (idEstado.HasValue && idEstado.Value <= 0)
+                idEstado = null;
+            
+            System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Filtros limpios - Texto: '{filtro}', Cargo: {idCargo}, Estado: {idEstado}");
+            
+            // ✨ NUEVO: Si no hay filtros válidos, mostrar todos los empleados
+            if (string.IsNullOrEmpty(filtro) && !idCargo.HasValue && !idEstado.HasValue)
+            {
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Sin filtros, mostrando todos los empleados");
+                return RedirectToAction("ListarEmpleados");
+            }
+            
+            var listaFiltrada = _filtrarEmpleadosLN.ObtenerFiltrado<EmpleadoDto>(filtro, idCargo, idEstado, usuarioActualId);
+            
+            System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Resultados encontrados: {listaFiltrada?.Count ?? 0}");
+            
             ViewBag.Filtro = filtro;
             ViewBag.idCargo = idCargo;
             ViewBag.idEstado = idEstado;
             ViewBag.Cargos = ObtenerCargos();
             ViewBag.Estados = ObtenerEstados();
             ViewBag.TotalEmpleados = _obtenerTotalEmpleadosLN.ObtenerTotalEmpleados(filtro, idCargo, idEstado, false);
+            
             return View("ListarEmpleados", listaFiltrada);
         }
 
@@ -192,11 +223,9 @@ namespace Emplaniapp.UI.Controllers
             {
                 fechaNacimiento = DateTime.Now.AddYears(-25),
                 fechaContratacion = DateTime.Now,
-                idProvincia = 1,
-                nombreCanton = "San José",
-                nombreDistrito = "Carmen",
-                direccionDetallada = "Dirección por defecto",
                 idEstado = 1
+                // ✨ CORRECCIÓN: Removidos valores por defecto para dirección
+                // Los campos de dirección ahora estarán vacíos como placeholders
             };
 
             CargarCombosEmpleado(model);
@@ -210,10 +239,49 @@ namespace Emplaniapp.UI.Controllers
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine($"Intento de crear empleado. UserName: {model.UserName}, Rol por defecto: Empleado");
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Iniciando CrearEmpleado");
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: UserName: {model?.UserName ?? "NULL"}");
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Email: {model?.correoInstitucional ?? "NULL"}");
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: ModelState.IsValid: {ModelState.IsValid}");
+                
+                if (!ModelState.IsValid)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ DIAGNÓSTICO: ModelState no es válido. Errores:");
+                    foreach (var error in ModelState)
+                    {
+                        if (error.Value.Errors.Any())
+                        {
+                            System.Diagnostics.Debug.WriteLine($"❌ Campo: {error.Key}, Errores: {string.Join(", ", error.Value.Errors.Select(e => e.ErrorMessage))}");
+                        }
+                    }
+                }
 
                 if (ModelState.IsValid)
                 {
+                    // ✨ NUEVO: Verificar si el nombre de usuario ya existe
+                    var usuarioExistente = await UserManager.FindByNameAsync(model.UserName);
+                    if (usuarioExistente != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ DIAGNÓSTICO: Nombre de usuario ya existe: {model.UserName}");
+                        ModelState.AddModelError("UserName", "El nombre de usuario ya está siendo utilizado. Por favor, elija otro nombre de usuario.");
+                    }
+                    
+                    // ✨ NUEVO: Verificar si el correo electrónico ya existe
+                    var correoExistente = await UserManager.FindByEmailAsync(model.correoInstitucional);
+                    if (correoExistente != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ DIAGNÓSTICO: Correo electrónico ya existe: {model.correoInstitucional}");
+                        ModelState.AddModelError("correoInstitucional", "El correo electrónico ya está siendo utilizado. Por favor, use otro correo electrónico.");
+                    }
+                    
+                    // Si hay errores de validación, no continuar
+                    if (!ModelState.IsValid)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ DIAGNÓSTICO: Errores de validación encontrados, no se puede crear el usuario");
+                        CargarCombosEmpleado(model);
+                        return View(model);
+                    }
+                    
                     var user = new ApplicationUser { UserName = model.UserName, Email = model.correoInstitucional };
                     var result = await UserManager.CreateAsync(user, model.Password);
 
@@ -295,14 +363,34 @@ namespace Emplaniapp.UI.Controllers
                     }
                 }
 
-                // Si aquí no hubo Redirect, recarga combos y devuelve la vista
+                // ✨ MEJORA: Si aquí no hubo Redirect, recarga combos y devuelve la vista con mensajes específicos
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Llegamos al final del método sin Redirect");
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Errores actuales en ModelState: {ModelState.Values.SelectMany(v => v.Errors).Count()}");
+                
                 CargarCombosEmpleado(model);
+                
+                // ✨ MEJORA: Agregar mensaje informativo si no hay errores específicos
+                if (!ModelState.Any(m => m.Value.Errors.Any()))
+                {
+                    System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: No hay errores específicos, agregando mensaje genérico");
+                    ModelState.AddModelError("", "Por favor, corrija los errores en el formulario e intente nuevamente.");
+                }
+                
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Devolviendo vista con modelo");
                 return View(model);
             }
-            catch
+            catch (Exception ex)
             {
-                // Antes devolvías View() sin modelo ni combos -> provoca el error del ViewData.
+                // ✨ MEJORA: Manejo de excepciones más específico
+                System.Diagnostics.Debug.WriteLine($"EXCEPCIÓN al crear empleado: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                
+                // Cargar combos para evitar errores de ViewData
                 CargarCombosEmpleado(model);
+                
+                // Agregar mensaje de error específico
+                ModelState.AddModelError("", $"Error inesperado al crear el empleado: {ex.Message}. Por favor, intente nuevamente o contacte al administrador.");
+                
                 return View(model);
             }
         }
@@ -350,21 +438,97 @@ namespace Emplaniapp.UI.Controllers
         }
 
         [HttpPost]
-        public ActionResult _CambiarEstado(int id, int idEstado)
+        public ActionResult _CambiarEstado(int id, int? idEstado)
         {
             try
             {
-                bool resultado = _modificarEstadoLN.CambiarEstadoEmpleado(id, idEstado);
-                TempData["Mensaje"] = resultado ? "Estado actualizado correctamente." : "Error al actualizar el estado.";
-                TempData["TipoMensaje"] = resultado ? "success" : "error";
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Cambio de estado - ID: {id}, Estado: {idEstado}");
+                
+                // ✨ NUEVO: Validación del estado seleccionado
+                if (!idEstado.HasValue || idEstado.Value <= 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ DIAGNÓSTICO: Estado no válido - {idEstado}");
+                    TempData["Mensaje"] = "Por favor seleccione un estado válido antes de continuar.";
+                    TempData["TipoMensaje"] = "warning";
+                    return RedirectToAction("ListarEmpleados");
+                }
+                
+                // ✨ NUEVO: Verificar que el empleado existe
+                var empleado = _obtenerEmpleadoLN.ObtenerEmpleadoPorId(id);
+                if (empleado == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ DIAGNÓSTICO: Empleado no encontrado - ID: {id}");
+                    TempData["Mensaje"] = "El empleado no fue encontrado.";
+                    TempData["TipoMensaje"] = "error";
+                    return RedirectToAction("ListarEmpleados");
+                }
+                
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Procesando cambio de estado...");
+                bool resultado = _modificarEstadoLN.CambiarEstadoEmpleado(id, idEstado.Value);
+                
+                System.Diagnostics.Debug.WriteLine($"🔍 DIAGNÓSTICO: Resultado del cambio: {resultado}");
+                
+                if (resultado)
+                {
+                    TempData["Mensaje"] = $"Estado del empleado {empleado.nombre} {empleado.primerApellido} actualizado correctamente.";
+                    TempData["TipoMensaje"] = "success";
+                }
+                else
+                {
+                    TempData["Mensaje"] = "Error al actualizar el estado del empleado.";
+                    TempData["TipoMensaje"] = "error";
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                TempData["Mensaje"] = "Error inesperado.";
+                System.Diagnostics.Debug.WriteLine($"❌ EXCEPCIÓN: {ex.Message}");
+                TempData["Mensaje"] = $"Error inesperado: {ex.Message}";
                 TempData["TipoMensaje"] = "error";
             }
 
             return RedirectToAction("ListarEmpleados");
+        }
+
+        // ✨ NUEVO: Método para verificar si un nombre de usuario ya existe
+        [HttpPost]
+        public async Task<JsonResult> VerificarUsuarioExistente(string username)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(username))
+                {
+                    return Json(new { existe = false });
+                }
+
+                var user = await UserManager.FindByNameAsync(username);
+                return Json(new { existe = user != null });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al verificar usuario: {ex.Message}");
+                return Json(new { existe = false });
+            }
+        }
+
+        // ✨ NUEVO: Método para verificar si un correo electrónico ya existe
+        [HttpPost]
+        public async Task<JsonResult> VerificarCorreoExistente(string email)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    return Json(new { existe = false });
+                }
+
+                var user = await UserManager.FindByEmailAsync(email);
+                return Json(new { existe = user != null });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al verificar correo: {ex.Message}");
+                return Json(new { existe = false });
+            }
         }
 
         // ===============================================
