@@ -18,10 +18,17 @@ namespace Emplaniapp.AccesoADatos.General.Filtrar
         }
         public List<T> ObtenerFiltrado<T>(string filtro, int? idCargo, int? idEstado) where T : class
         {
+            return ObtenerFiltrado<T>(filtro, idCargo, idEstado, null);
+        }
+
+        public List<T> ObtenerFiltrado<T>(string filtro, int? idCargo, int? idEstado, string usuarioActualId = null) where T : class
+        {
             var query = from empleado in _contexto.Empleados.AsNoTracking()
                         join estado in _contexto.Estado on empleado.idEstado equals estado.idEstado
                         join cargo in _contexto.Cargos on empleado.idCargo equals cargo.idCargo
                         where (idEstado == null || empleado.idEstado == idEstado)
+                        // ✨ MEJORA: Excluir el usuario actual del filtrado por seguridad
+                        && (usuarioActualId == null || empleado.IdNetUser != usuarioActualId)
                         select new { empleado, estado, cargo };
 
             // Aplicar filtros de ID

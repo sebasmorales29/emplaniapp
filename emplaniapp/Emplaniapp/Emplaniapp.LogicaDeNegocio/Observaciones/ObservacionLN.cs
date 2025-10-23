@@ -82,5 +82,10 @@ namespace Emplaniapp.LogicaDeNegocio
 
             return _observacionAD.ActualizarObservacion(observacionDto);
         }
+
+        public bool EliminarObservacion(int idObservacion)
+        {
+            return _observacionAD.EliminarObservacion(idObservacion);
+        }
     }
 } 

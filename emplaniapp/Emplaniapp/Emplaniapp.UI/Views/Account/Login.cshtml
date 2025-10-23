@@ -16,6 +16,16 @@
     <br /><br />
     <h3>Iniciar Sesión</h3>
     
+    <!-- ✨ MEJORA: Área para mostrar mensajes de error específicos -->
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="error-message-container">
+            <div class="error-icon">⚠️</div>
+            <div class="error-text">
+                @Html.ValidationSummary(true, "", new { @class = "mb-0" })
+            </div>
+        </div>
+    }
 
     <!-- Formulario de login -->
     <div class="form-input">
@@ -78,32 +88,63 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script>
         $(document).ready(function () {
-         // Efecto de loading en el botón
+            // ✨ MEJORA: Limpiar mensajes de error cuando el usuario empiece a escribir
+            $('input[name="UserName"], input[name="Password"]').on('input', function () {
+                // Ocultar mensajes de error después de 2 segundos de inactividad
+                clearTimeout(window.errorTimeout);
+                window.errorTimeout = setTimeout(function () {
+                    $('.error-message-container').fadeOut('slow');
+                }, 2000);
+                
+                // Limpiar errores de validación específicos del campo
+                $(this).next('.field-validation-error').hide();
+                $(this).removeClass('is-invalid');
+            });
+
+            // ✨ MEJORA: Efecto de loading en el botón
             $('#loginForm').submit(function () {
                 var btn = $('#loginBtn');
-                //btn.addClass('btn-loading');
-                //btn.prop('disabled', true);
+                var originalText = btn.html();
+                
+                // Mostrar loading
+                btn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Iniciando sesión...');
+                btn.prop('disabled', true);
 
                 // Si hay errores de validación, remover el loading
                 setTimeout(function () {
                     if ($('.field-validation-error:visible').length > 0 || $('.validation-summary:visible').length > 0) {
-                        btn.removeClass('btn-loading');
+                        btn.html(originalText);
                         btn.prop('disabled', false);
                     }
                 }, 100);
             });
 
-            // Efectos de focus en los inputs
+            // ✨ MEJORA: Efectos de focus en los inputs con validación visual
+            $('input[name="UserName"], input[name="Password"]').on('focus', function () {
+                $(this).addClass('focus-glow');
+            }).on('blur', function () {
+                $(this).removeClass('focus-glow');
+                
+                // Validar campo individual
+                if ($(this).val().trim() === '') {
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
 
-            // Animación de entrada
+            // ✨ MEJORA: Animación de entrada mejorada
             setTimeout(function () {
                 $('.sign-user_card').css({
                     'animation': 'slideInUp 0.6s ease-out',
                     'opacity': '1'
                 });
             }, 100);
-        });
 
-       
+            // ✨ MEJORA: Auto-hide de mensajes de error después de 5 segundos
+            setTimeout(function () {
+                $('.error-message-container').fadeOut('slow');
+            }, 5000);
+        });
     </script>
 }

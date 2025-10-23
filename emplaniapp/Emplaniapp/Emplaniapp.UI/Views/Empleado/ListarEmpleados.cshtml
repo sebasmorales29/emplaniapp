@@ -60,7 +60,7 @@
                     @Html.DropDownList("idEstado", new SelectList(ViewBag.Estados, "Value", "Text", ViewBag.idEstado), "Todos los estados", new { @class = "form-control" })
                 </div>
                 <div class="m-2">
-                    <button type="submit" class="btn btn-outline-primary">
+                    <button type="submit" class="btn btn-outline-primary" id="btnFiltrar">
                         <i class="fas fa-search"></i> Filtrar
                     </button>
                 </div>
@@ -95,8 +95,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @if (Model != null && Model.Any())
                     {
+                        foreach (var item in Model)
+                        {
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.cedula)</td>
                             <td>@($"{item.nombre} {item.segundoNombre} {item.primerApellido} {item.segundoApellido}")</td>
@@ -166,6 +168,32 @@
                                 </a>
                             </td>
                         </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <div class="alert alert-info d-inline-block">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <strong>No se encontraron empleados</strong>
+                                    @if (!string.IsNullOrEmpty(ViewBag.Filtro as string) || (ViewBag.idCargo != null && ViewBag.idCargo != 0) || (ViewBag.idEstado != null && ViewBag.idEstado != 0))
+                                    {
+                                        <br />
+                                        <small>con los filtros aplicados. Intenta ajustar los criterios de búsqueda.</small>
+                                        <br />
+                                        <a href="@Url.Action("ListarEmpleados", "Empleado")" class="btn btn-sm btn-outline-primary mt-2">
+                                            <i class="bi bi-arrow-clockwise"></i> Ver todos los empleados
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <br />
+                                        <small>No hay empleados registrados en el sistema.</small>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -187,6 +215,31 @@
             $.get(url, function (data) {
                 modal.find(".modal-content").html(data);
                 modal.modal("show");
+            });
+        });
+
+        // ✨ NUEVO: Validación del formulario de filtro
+        $(function () {
+            $('form').on('submit', function (e) {
+                var filtro = $('input[name="filtro"]').val();
+                var idCargo = $('#idCargo').val();
+                var idEstado = $('#idEstado').val();
+                
+                console.log('🔍 DIAGNÓSTICO: Filtro - Texto:', filtro, 'Cargo:', idCargo, 'Estado:', idEstado);
+                
+                // Si todos los filtros están vacíos, redirigir a la lista completa
+                if ((!filtro || filtro.trim() === '') && 
+                    (!idCargo || idCargo === '' || idCargo === '0') && 
+                    (!idEstado || idEstado === '' || idEstado === '0')) {
+                    
+                    console.log('🔍 DIAGNÓSTICO: Todos los filtros están vacíos, redirigiendo a lista completa');
+                    e.preventDefault();
+                    window.location.href = '@Url.Action("ListarEmpleados", "Empleado")';
+                    return false;
+                }
+                
+                console.log('🔍 DIAGNÓSTICO: Filtros válidos, enviando formulario');
+                return true;
             });
         });
 

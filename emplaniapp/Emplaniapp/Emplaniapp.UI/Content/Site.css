@@ -115,3 +115,159 @@ textarea {
 .home-container {
     padding-top: 50px;
 }
+
+/* ✨ MEJORA: Estilos para mensajes de error en formularios principales */
+.error-message-container {
+    background: rgba(255, 107, 107, 0.15);
+    border: 2px solid rgba(255, 107, 107, 0.4);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.2);
+    animation: slideInDown 0.5s ease-out;
+    position: relative;
+    backdrop-filter: blur(8px);
+    min-height: 60px;
+}
+
+.error-message-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, #ff6b6b, #ff5252);
+    border-radius: 2px 0 0 2px;
+}
+
+.error-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.error-text {
+    flex: 1;
+    color: #b71c1c;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.5;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.error-text ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.error-text li {
+    margin: 0;
+    padding: 0;
+}
+
+/* ✨ Animación de pulso para el ícono */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* ✨ Animaciones */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ✨ MEJORA: Estilos para mensajes de alerta */
+.alert {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    animation: slideInDown 0.5s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border-left: 4px solid #ffc107;
+    color: #856404;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    border-left: 4px solid #dc3545;
+    color: #721c24;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border-left: 4px solid #28a745;
+    color: #155724;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    border-left: 4px solid #17a2b8;
+    color: #0c5460;
+}
+
+.alert .bi {
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+.alert .btn-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.alert .btn-close:hover {
+    opacity: 1;
+}
+
+/* ✨ Responsive para mensajes */
+@media (max-width: 768px) {
+    .alert {
+        margin: 15px 0;
+        padding: 15px;
+        border-radius: 10px;
+    }
+    
+    .alert .bi {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .alert {
+        margin: 10px 0;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    
+    .alert .bi {
+        font-size: 14px;
+    }
+}

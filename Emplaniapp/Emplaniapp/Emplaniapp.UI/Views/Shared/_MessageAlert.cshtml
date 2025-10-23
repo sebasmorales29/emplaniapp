@@ -1,0 +1,42 @@
+@if (TempData["Mensaje"] != null)
+{
+    var tipoMensaje = TempData["TipoMensaje"]?.ToString() ?? "info";
+    var mensaje = TempData["Mensaje"].ToString();
+    
+    <div class="alert alert-@(tipoMensaje == "warning" ? "warning" : tipoMensaje == "error" ? "danger" : tipoMensaje == "success" ? "success" : "info") alert-dismissible fade show" role="alert" style="margin: 20px 0;">
+        <div class="d-flex align-items-center">
+            @if (tipoMensaje == "warning")
+            {
+                <i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 18px;"></i>
+            }
+            else if (tipoMensaje == "error")
+            {
+                <i class="bi bi-x-circle-fill me-2" style="font-size: 18px;"></i>
+            }
+            else if (tipoMensaje == "success")
+            {
+                <i class="bi bi-check-circle-fill me-2" style="font-size: 18px;"></i>
+            }
+            else
+            {
+                <i class="bi bi-info-circle-fill me-2" style="font-size: 18px;"></i>
+            }
+            <div>
+                @Html.Raw(mensaje)
+            </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <script>
+        // Auto-hide después de 10 segundos para mensajes informativos
+        @if (tipoMensaje == "info" || tipoMensaje == "warning")
+        {
+            <text>
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 10000);
+            </text>
+        }
+    </script>
+}

@@ -227,10 +227,10 @@
                                 </li>-->
 
                                 <li class="nav-item nav-icon" id="dropdownMenuButton03">
-                                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutFormLayout" }))
                                     {
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-link">
+                                        <button type="submit" class="btn btn-link nav-link" title="Cerrar sesión" id="logoutButton">
                                             <i class="bi bi-door-open-fill" style="width:auto; height:auto;"></i>
                                         </button>
                                     }
@@ -262,6 +262,10 @@
                         <!-- Token anti-falsificación para AJAX -->
                         @Html.AntiForgeryToken()
                         <br />
+                        
+                        <!-- ✨ MEJORA: Mostrar mensajes informativos -->
+                        @Html.Partial("_MessageAlert")
+                        
                         @RenderBody()
                     </div>
                 </div>
@@ -289,6 +293,68 @@
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 
+    <!-- Script para manejar logout -->
+    <script>
+        $(document).ready(function() {
+            // Manejar clic del botón de logout
+            $('#logoutButton').on('click', function(e) {
+                console.log('🔍 DIAGNÓSTICO: Botón de logout presionado');
+                
+                // ✨ NUEVO: Mostrar modal de confirmación en lugar de confirm nativo
+                e.preventDefault();
+                $('#logoutConfirmModal').modal('show');
+                return false;
+            });
+            
+            // ✨ NUEVO: Manejar cancelación del logout
+            $('#cancelLogoutBtn').on('click', function() {
+                console.log('🔍 DIAGNÓSTICO: Logout cancelado por el usuario');
+                $('#logoutConfirmModal').modal('hide');
+            });
+            
+            // ✨ NUEVO: Manejar confirmación del logout
+            $('#confirmLogoutBtn').on('click', function() {
+                console.log('🔍 DIAGNÓSTICO: Usuario confirmó logout, enviando formulario...');
+                
+                // Deshabilitar botón para evitar doble envío
+                var btnConfirm = $(this);
+                btnConfirm.prop('disabled', true).html('<i class="bi bi-hourglass-split me-2"></i>Cerrando sesión...');
+                
+                // Mostrar mensaje de progreso
+                var originalTitle = $('#logoutConfirmModalLabel').text();
+                $('#logoutConfirmModalLabel').html('<i class="bi bi-hourglass-split me-2"></i>Cerrando Sesión...');
+                
+                // Cerrar modal después de un breve delay
+                setTimeout(function() {
+                    $('#logoutConfirmModal').modal('hide');
+                    
+                    // Restaurar título original
+                    setTimeout(function() {
+                        $('#logoutConfirmModalLabel').html(originalTitle);
+                        btnConfirm.prop('disabled', false).html('<i class="bi bi-door-open-fill me-2"></i>Cerrar Sesión');
+                    }, 500);
+                    
+                    // Enviar formulario
+                    $('#logoutFormLayout').submit();
+                }, 1000);
+            });
+            
+            // ✨ NUEVO: Manejar envío del formulario de logout
+            $('#logoutFormLayout').on('submit', function(e) {
+                console.log('🔍 DIAGNÓSTICO: Formulario de logout enviado');
+                return true;
+            });
+            
+            // ✨ NUEVO: Restaurar estado del modal cuando se cierre
+            $('#logoutConfirmModal').on('hidden.bs.modal', function () {
+                // Restaurar título original
+                $('#logoutConfirmModalLabel').html('<i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Cierre de Sesión');
+                
+                // Restaurar botón de confirmación
+                $('#confirmLogoutBtn').prop('disabled', false).html('<i class="bi bi-door-open-fill me-2"></i>Cerrar Sesión');
+            });
+        });
+    </script>
 
     <!-- Scripts de plantilla -->
     <script src="~/Content/assets/js/backend-bundle.min.js"></script>  <!-- Backend Bundle JavaScript -->
@@ -296,8 +362,35 @@
     <script src="~/Content/assets/js/app.js"></script> <!-- app JavaScript -->
 
 
-    <!-- Modal de Confirmación de Contraseña de Administrador -->
-    @Html.Partial("_AdminPasswordModal")
+    <!-- Modal de Confirmación de Logout -->
+    <div class="modal fade" id="logoutConfirmModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="logoutConfirmModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Cierre de Sesión
+                    </h5>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-door-open-fill text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h6 class="mb-3">¿Está seguro que desea cerrar sesión?</h6>
+                    <p class="text-muted mb-0">
+                        Será redirigido a la página de inicio de sesión.
+                    </p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-outline-secondary" id="cancelLogoutBtn">
+                        <i class="bi bi-x-lg me-2"></i>Cancelar
+                    </button>
+                    <button type="button" class="btn btn-warning" id="confirmLogoutBtn">
+                        <i class="bi bi-door-open-fill me-2"></i>Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Sistema de roles unificado - Sin cambio de roles -->
     <script>

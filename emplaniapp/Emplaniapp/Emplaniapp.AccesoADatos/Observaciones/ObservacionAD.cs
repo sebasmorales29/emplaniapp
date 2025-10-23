@@ -59,5 +59,17 @@ namespace Emplaniapp.AccesoADatos
 
             return _contexto.SaveChanges() > 0;
         }
+
+        public bool EliminarObservacion(int idObservacion)
+        {
+            var observacion = _contexto.Observaciones.Find(idObservacion);
+            if (observacion == null)
+            {
+                return false;
+            }
+
+            _contexto.Observaciones.Remove(observacion);
+            return _contexto.SaveChanges() > 0;
+        }
     }
 } 

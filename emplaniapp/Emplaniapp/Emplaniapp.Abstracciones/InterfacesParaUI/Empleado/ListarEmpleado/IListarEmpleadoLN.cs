@@ -10,5 +10,6 @@ namespace Emplaniapp.Abstracciones.InterfacesParaUI.Empleado.ListarEmpleado
     public interface IListarEmpleadoLN
     {
         List<EmpleadoDto> ObtenerEmpleados();
+        List<EmpleadoDto> ObtenerEmpleados(string usuarioActualId = null);
     }
 }

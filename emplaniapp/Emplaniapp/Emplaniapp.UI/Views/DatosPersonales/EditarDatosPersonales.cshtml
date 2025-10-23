@@ -109,6 +109,7 @@
                                 @Html.DropDownListFor(
                                               m => m.idProvincia,
                                               ViewBag.Provincias as IEnumerable<SelectListItem>,
+                                              "-- Seleccione una provincia --",
                                               new { @class = "form-control", @id = "ddlProvincia" })
                                 @Html.ValidationMessageFor(model => model.idProvincia, "", new { @class = "advertencia" })
                             </div>
