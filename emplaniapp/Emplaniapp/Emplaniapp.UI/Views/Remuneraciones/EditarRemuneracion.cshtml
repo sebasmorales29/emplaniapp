@@ -1,11 +1,21 @@
 ﻿@model Emplaniapp.Abstracciones.ModelosParaUI.RemuneracionDto
 
+
+@{
+    ViewBag.Title = "Crear Remuneración";
+    ViewBag.id = Html.ValueFor(model => model.idEmpleado);
+    bool esVendedor = ViewBag.EsVendedor != null && (bool)ViewBag.EsVendedor;
+}
+
+<a class="btn btn-light text-primary mb-2" href=" @Url.Action("DetallesRemu", "Remuneraciones", new {@id = ViewBag.id })">
+    <i class="bi bi-arrow-left-short"></i>
+    Volver
+</a>
+
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-
-    <h4>Editar Remuneración</h4>
-    <hr />
     @Html.HiddenFor(m => m.idRemuneracion)
     @Html.HiddenFor(m => m.idEmpleado)
     @Html.HiddenFor(m => m.idTipoRemuneracion)
@@ -14,76 +24,92 @@
     @Html.HiddenFor(m => m.SalarioPorHoraExtra, new { id = "salarioHora" })
     @Html.HiddenFor(m => m.SalarioDiario, new { id = "salarioDia" })
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.nombreTipoRemuneracion, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.nombreTipoRemuneracion, new { @class = "form-control", @readonly = "readonly" })
-        </div>
-    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card mb-4">
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.diasTrabajados, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.diasTrabajados, new { htmlAttributes = new { @class = "form-control", @oninput = "calcularPago()" } })
-        </div>
-    </div>
+                <div class="card-header m-0">
+                    <h3>Editar una remuneración</h3>
+                </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.horas, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.horas, new { htmlAttributes = new { @class = "form-control", @oninput = "calcularPago()" } })
-        </div>
-    </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group col-md-10">
+                                @Html.LabelFor(m => m.nombreTipoRemuneracion, htmlAttributes: new { @class = "datos-label" })
+                                @Html.TextBoxFor(m => m.nombreTipoRemuneracion, new { @class = "form-control datos-value ", @readonly = "readonly" })
+                            </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.comision, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.comision, new { htmlAttributes = new { @class = "form-control" } })
-        </div>
-    </div>
+                            <div class="form-group col-md-10">
+                                @Html.LabelFor(m => m.diasTrabajados, htmlAttributes: new { @class = "datos-label" })
+                                @Html.EditorFor(m => m.diasTrabajados, new { htmlAttributes = new { @class = "form-control datos-value", @oninput = "calcularPago()" } })
+                            </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.TrabajoEnDia, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <div class="checkbox">
-                <label>
-                    @Html.CheckBoxFor(m => m.TrabajoEnDia) Trabajo en día feriado/vacaciones
-                </label>
+                            <div class="form-group col-md-10">
+                                @Html.LabelFor(m => m.horas, htmlAttributes: new { @class = "datos-label" })
+                                @Html.EditorFor(m => m.horas, new { htmlAttributes = new { @class = "form-control datos-value", @oninput = "calcularPago()" } })
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group col-md-10">
+                                @Html.LabelFor(m => m.comision, htmlAttributes: new { @class = "datos-label" })
+                                @Html.EditorFor(m => m.comision, new { htmlAttributes = new { @class = "form-control datos-label" } })
+                            </div>
+
+                            <div class="form-group col-md-10 ">
+                                @Html.LabelFor(m => m.pagoQuincenal, htmlAttributes: new { @class = "datos-label" })
+                                @Html.TextBoxFor(m => m.pagoQuincenal, new { @class = "form-control mb-4", @readonly = "readonly", id = "pagoQuincenal" })<div class="">
+                                </div>
+
+                                <div class="form-group col-md-10">
+                                    @Html.LabelFor(m => m.TrabajoEnDia, htmlAttributes: new { @class = "datos-label" })
+                                    <div>
+                                        @Html.CheckBoxFor(m => m.TrabajoEnDia) Trabajo en día feriado/vacaciones
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-12 text-center align-items-lg-center">
+                            <a class="btn btn-outline-secondary m-2" href=" @Url.Action("DetallesRemu", "Remuneraciones", new {@id = ViewBag.id })">
+                                Cancelar
+                            </a>
+                            <input type="submit" value="Guardar" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.pagoQuincenal, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.pagoQuincenal, new { @class = "form-control", @readonly = "readonly", id = "pagoQuincenal" })
-        </div>
-    </div>
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Guardar" class="btn btn-primary" />
-        </div>
-    </div>
+}
 
 
-    @section Scripts {
-        <script>
-            function calcularPago() {
-                const horas = parseFloat(document.getElementsByName("horas")[0].value) || 0;
-                const dias = parseFloat(document.getElementsByName("diasTrabajados")[0].value) || 0;
 
-                const salarioHora = parseFloat(document.getElementById("salarioHora").value) || 0;
-                const salarioDia = parseFloat(document.getElementById("salarioDia").value) || 0;
+@section Scripts {
+    <script>
+        function calcularPago() {
+            const horas = parseFloat(document.getElementsByName("horas")[0].value) || 0;
+            const dias = parseFloat(document.getElementsByName("diasTrabajados")[0].value) || 0;
 
-                let pago = (horas * salarioHora) + (dias * salarioDia);
+            const salarioHora = parseFloat(document.getElementById("salarioHora").value) || 0;
+            const salarioDia = parseFloat(document.getElementById("salarioDia").value) || 0;
 
-                document.getElementById("pagoQuincenal").value = pago.toFixed(2);
-            }
+            let pago = (horas * salarioHora) + (dias * salarioDia);
 
-            // Asignar IDs si aún no existen
-            document.getElementsByName("horas")[0].id = "horas";
-            document.getElementsByName("diasTrabajados")[0].id = "diasTrabajados";
-        </script>
-    }
+            document.getElementById("pagoQuincenal").value = pago.toFixed(2);
+        }
+
+        // Asignar IDs si aún no existen
+        document.getElementsByName("horas")[0].id = "horas";
+        document.getElementsByName("diasTrabajados")[0].id = "diasTrabajados";
+    </script>
 }

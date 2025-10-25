@@ -2,10 +2,16 @@
 
 @{
     ViewBag.Title = "Crear Remuneración";
+    ViewBag.id = Html.ValueFor(model => model.idEmpleado);
     bool esVendedor = ViewBag.EsVendedor != null && (bool)ViewBag.EsVendedor;
 }
 
-<h2 class="mb-4">Crear Remuneración Manual</h2>
+<a class="btn btn-light text-primary mb-2" href=" @Url.Action("DetallesRemu", "Remuneraciones", new {@id = ViewBag.id })">
+    <i class="bi bi-arrow-left-short"></i>
+    Volver
+</a>
+
+<!-- Tarjeta -->
 
 @using (Html.BeginForm("CrearRemuneracionManual", "Remuneraciones", FormMethod.Post, new { @id = "formCrearRemuneracion" }))
 {
@@ -13,108 +19,104 @@
     @Html.HiddenFor(m => m.idEmpleado)
     @Html.HiddenFor(m => m.idEstado)
     @Html.HiddenFor(m => m.fechaRemuneracion)
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card mb-4">
 
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="card-header m-0">
+                    <h3>Agregar una remuneración</h3>
+                </div>
 
-                <!-- Panel de Datos Básicos -->
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Datos Básicos</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group row mb-3">
-                            <label class="col-md-4 col-form-label">Tipo de Remuneración</label>
-                            <div class="col-md-8">
+                <div class="card-body row">
+
+                    <!-- Seleccionar -->
+                    <div class="col-md-6 mb-4">
+                        <div class="form-group mb-3">
+                            <label class="col-md-10 datos-label mb-3">Tipo de Remuneración</label>
+                            <div class="col-md-10 datos-value">
                                 @Html.DropDownListFor(model => model.idTipoRemuneracion,
-                                    (SelectList)ViewBag.TiposRemuneracion,
-                                    "Seleccione una opción",
-                                    new { @class = "form-control text-center", required = "required", id = "idTipoRemuneracion" })
+                                              (SelectList)ViewBag.TiposRemuneracion,
+                                              "Seleccione una opción",
+                                              new { @class = "form-control text-center", required = "required", id = "idTipoRemuneracion" })
                                 @Html.ValidationMessageFor(model => model.idTipoRemuneracion, "", new { @class = "text-danger" })
                             </div>
                         </div>
                     </div>
-                </div>
 
-                @if (esVendedor)
-                {
-                    <!-- Campos para vendedor -->
-                    <div class="card mb-4">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0">Pagos</h5>
-                        </div>
-                        <div class="card-body">
-
-                            <div class="form-group row mb-3">
-                                <label class="col-md-4 col-form-label">Pago Quincenal</label>
-                                <div class="col-md-8">
-                                    @Html.TextBoxFor(m => m.pagoQuincenal, new { @class = "form-control", type = "number", step = "0.01", min = "0", placeholder = "0.00" })
-                                    @Html.ValidationMessageFor(m => m.pagoQuincenal, "", new { @class = "text-danger" })
+                    <!-- Para admitir valores -->
+                    <div class="col-md-6 mb-4">
+                        <div class="form-group mb-3">
+                            <label class="col-md-10 datos-label mb-3"> </label>
+                            </div>
+                            @if (esVendedor)
+                            {
+                                <!-- Campos para vendedor -->
+                                <div class="form-group row mb-3">
+                                    <label class="col-md-4 col-form-label">Pago Quincenal</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(m => m.pagoQuincenal, new { @class = "form-control", type = "number", step = "0.01", min = "0", placeholder = "0.00" })
+                                        @Html.ValidationMessageFor(m => m.pagoQuincenal, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group row mb-3">
-                                <label class="col-md-4 col-form-label">Comisión ($)</label>
-                                <div class="col-md-8">
-                                    @Html.TextBoxFor(m => m.comision, new { @class = "form-control", type = "number", step = "0.01", min = "0", placeholder = "0.00" })
-                                    @Html.ValidationMessageFor(m => m.comision, "", new { @class = "text-danger" })
+                                <div class="form-group row mb-3">
+                                    <label class="col-md-4 col-form-label">Comisión ($)</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(m => m.comision, new { @class = "form-control", type = "number", step = "0.01", min = "0", placeholder = "0.00" })
+                                        @Html.ValidationMessageFor(m => m.comision, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                            </div>
+                            }
+                            else
+                            {
+                                <!-- Campos para no vendedor -->
 
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <!-- Campos para no vendedor -->
-                    <div class="card mb-4">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0">Horas y Días Trabajados</h5>
-                        </div>
-                        <div class="card-body">
-
-                            <div class="form-group row mb-3" id="grupoDiasTrabajados">
-                                <label class="col-md-4 col-form-label">Días Trabajados</label>
-                                <div class="col-md-8">
-                                    @Html.TextBoxFor(m => m.diasTrabajados, new { @class = "form-control", type = "number", min = "0", placeholder = "Ingrese los días trabajados", id = "diasTrabajados" })
-                                    @Html.ValidationMessageFor(m => m.diasTrabajados, "", new { @class = "text-danger" })
+                                <div class="form-group row mb-3" id="grupoDiasTrabajados">
+                                    <label class="col-md-4 col-form-label">Días Trabajados</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(m => m.diasTrabajados, new { @class = "form-control", type = "number", min = "0", placeholder = "Ingrese los días trabajados", id = "diasTrabajados" })
+                                        @Html.ValidationMessageFor(m => m.diasTrabajados, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group row mb-3" id="grupoHorasTrabajadas">
-                                <label class="col-md-4 col-form-label">Horas Trabajadas</label>
-                                <div class="col-md-8">
-                                    @Html.TextBoxFor(m => m.horas, new { @class = "form-control", type = "number", min = "0", placeholder = "Ingrese horas trabajadas", id = "horas" })
-                                    @Html.ValidationMessageFor(m => m.horas, "", new { @class = "text-danger" })
+                                <div class="form-group row mb-3" id="grupoHorasTrabajadas">
+                                    <label class="col-md-4 col-form-label">Horas Trabajadas</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(m => m.horas, new { @class = "form-control", type = "number", min = "0", placeholder = "Ingrese horas trabajadas", id = "horas" })
+                                        @Html.ValidationMessageFor(m => m.horas, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-check mb-3" id="grupoTrabajoEnDia">
-                                @Html.CheckBoxFor(m => m.TrabajoEnDia, new { @class = "form-check-input", id = "TrabajoEnDia" })
-                                @Html.LabelFor(m => m.TrabajoEnDia, "¿Trabajó ese día? (Feriado/Vacaciones)")
-                            </div>
+                                <div class="form-check mb-3" id="grupoTrabajoEnDia">
+                                    @Html.CheckBoxFor(m => m.TrabajoEnDia, new { @class = "form-check-input", id = "TrabajoEnDia" })
+                                    @Html.LabelFor(m => m.TrabajoEnDia, "¿Trabajó ese día? (Feriado/Vacaciones)")
+                                </div>
+                            }
 
                         </div>
                     </div>
-                }
-
-                <!-- Botones -->
-                <div class="form-group row">
-                    <div class="col-md-12 text-center">
-                        <button type="submit" class="btn btn-success mr-3 px-4">
-                            <i class="fa fa-save mr-2"></i>Guardar Remuneración
-                        </button>
-                        @Html.ActionLink("Cancelar", "DetallesRemu", "Remuneraciones", new { id = Model.idEmpleado }, new { @class = "btn btn-outline-secondary px-4" })
-                    </div>
-                </div>
-
             </div>
+
+
+            <!-- Botones -->
+            <div class="form-group row">
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-success mr-3 px-4">
+                        <i class="fa fa-save mr-2"></i>Guardar Remuneración
+                    </button>
+                    @Html.ActionLink("Cancelar", "DetallesRemu", "Remuneraciones", new { id = Model.idEmpleado }, new { @class = "btn btn-outline-secondary px-4" })
+                </div>
+            </div>
+
         </div>
     </div>
+
 }
+
+
+
 
 @section Scripts {
     <script>

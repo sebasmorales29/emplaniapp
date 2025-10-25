@@ -5,26 +5,25 @@
 }
 
 <!-- ✨ CSS específico para CrearEmpleado -->
-<link href="~/Content/CSS/CrearEmpleado.css" rel="stylesheet" />
+@*<link href="~/Content/CSS/CrearEmpleado.css" rel="stylesheet" />*@
 
+<!-- Título -->
 <div class="row">
-    <div class="col-md-9 mb-2">
-        <h1 class="mb-2">Agregar Empleado</h1>
-        <span class="text-secondary">Complete la información del nuevo empleado</span>
-    </div>
-    <div class="col-md-3 align-items-center justify-content-end display-block">
-        <h1 class="mb-2"> </h1>
-        <a href="@Url.Action("listarEmpleados","Empleado")" class="btn btn-outline-secondary" style="width:100%; float:right;">
-            <i class="bi bi-arrow-left"></i>
-            Volver a Empleados
+    <div class="col-md-12" style="margin-bottom: 20px;">
+        <!-- Botón de breadcrumb -->
+        <a class="btn btn-light text-primary mb-2" href="@Url.Action("listarEmpleados","Empleado")">
+            <i class="bi bi-arrow-left-short"></i>
+            Volver
         </a>
+        
+        <h2 class="mb-3">Agregar Nuevo Empleado</h2>
     </div>
 </div>
 
 @using (Html.BeginForm("CrearEmpleado", "Empleado", FormMethod.Post, new { @class = "form-horizontal", id = "createEmployeeForm" }))
 {
     @Html.AntiForgeryToken()
-    
+
     <!-- ✨ MEJORA: Área para mostrar mensajes de error específicos -->
     if (!ViewData.ModelState.IsValid)
     {
@@ -47,7 +46,7 @@
                     <div class="form-group">
                         @Html.LabelFor(m => m.nombre)
                         @Html.EditorFor(m => m.nombre, new { htmlAttributes = new { @class = "form-control", placeholder = "Nombre" } })
-                        @Html.ValidationMessageFor(m => m.nombre,"",new { @class = "advertencia" })
+                        @Html.ValidationMessageFor(m => m.nombre, "", new { @class = "advertencia" })
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -62,7 +61,7 @@
                     <div class="form-group">
                         @Html.LabelFor(m => m.primerApellido)
                         @Html.EditorFor(m => m.primerApellido, new { htmlAttributes = new { @class = "form-control", placeholder = "Primer Apellido" } })
-                        @Html.ValidationMessageFor(m => m.primerApellido,"",new { @class = "advertencia" })
+                        @Html.ValidationMessageFor(m => m.primerApellido, "", new { @class = "advertencia" })
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -76,31 +75,66 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         @Html.LabelFor(m => m.cedula)
-                        @Html.EditorFor(m => m.cedula, new { htmlAttributes = new { @class = "form-control", placeholder = "Cédula" } })
-                        @Html.ValidationMessageFor(m => m.cedula,"",new { @class = "advertencia" })
+                        @Html.EditorFor(m => m.cedula, new { htmlAttributes = new { @class = "form-control", placeholder = "DD-MM-YYYY" } })
+                        @Html.ValidationMessageFor(m => m.cedula, "", new { @class = "advertencia" })
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        @Html.LabelFor(m => m.numeroTelefonico)
-                        @Html.EditorFor(m => m.numeroTelefonico, new { htmlAttributes = new { @class = "form-control", placeholder = "Número Telefónico" } })
-                        @Html.ValidationMessageFor(m => m.numeroTelefonico,"",new { @class = "advertencia" })
+                        @Html.LabelFor(m => m.fechaNacimiento)
+                        @Html.EditorFor(m => m.fechaNacimiento, new { htmlAttributes = new { @class = "form-control", @type = "date"} })
+                        @Html.ValidationMessageFor(m => m.fechaNacimiento, "", new { @class = "advertencia" })
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        @Html.LabelFor(m => m.correoInstitucional)
-                        @Html.EditorFor(m => m.correoInstitucional, new { htmlAttributes = new { @class = "form-control", placeholder = "Correo Institucional" } })
-                        @Html.ValidationMessageFor(m => m.correoInstitucional,"",new { @class = "advertencia" })
+                        @Html.LabelFor(m => m.numeroTelefonico)
+                        @Html.EditorFor(m => m.numeroTelefonico, new { htmlAttributes = new { @class = "form-control", placeholder = "0000 0000" } })
+                        @Html.ValidationMessageFor(m => m.numeroTelefonico, "", new { @class = "advertencia" })
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
+                        @Html.LabelFor(m => m.correoInstitucional)
+                        @Html.EditorFor(m => m.correoInstitucional, new { htmlAttributes = new { @class = "form-control", placeholder = "ejemplo@correo.com" } })
+                        @Html.ValidationMessageFor(m => m.correoInstitucional, "", new { @class = "advertencia" })
+                    </div>
+                </div>
+
+            </div>
+            <hr />
+            <h4 class="mb-4">Residencia</h4>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
                         @Html.LabelFor(m => m.idProvincia)
                         @Html.DropDownListFor(m => m.idProvincia, ViewBag.Provincias as IEnumerable<SelectListItem>, "-- Seleccione una provincia --", new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.idProvincia,"",new { @class = "advertencia" })
+                        @Html.ValidationMessageFor(m => m.idProvincia, "", new { @class = "advertencia" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.nombreCanton)
+                        @Html.EditorFor(m => m.nombreCanton, new { htmlAttributes = new { @class = "form-control", placeholder = "Ej: Montes de Oca, Desamparados..." } })
+                        @Html.ValidationMessageFor(m => m.nombreCanton, "", new { @class = "advertencia" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.nombreDistrito)
+                        @Html.EditorFor(m => m.nombreDistrito, new { htmlAttributes = new { @class = "form-control", placeholder = "Ej: Carmen, Centro, La Uruca..." } })
+                        @Html.ValidationMessageFor(m => m.nombreDistrito, "", new { @class = "advertencia" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.direccionDetallada)
+                        @Html.TextAreaFor(m => m.direccionDetallada, new { @class = "form-control", rows = "1", placeholder = "Agregue detalles" })
+                        @Html.ValidationMessageFor(m => m.direccionDetallada, "", new { @class = "advertencia" })
                     </div>
                 </div>
             </div>
@@ -118,26 +152,30 @@
                     <div class="form-group">
                         @Html.LabelFor(m => m.UserName)
                         @Html.EditorFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control", placeholder = "Nombre de Usuario" } })
-                        @Html.ValidationMessageFor(m => m.UserName,"",new { @class = "advertencia" })
+                        @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "advertencia" })
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Rol de Usuario</label>
+                        <div class="form-control-static" style="background-color: whitesmoke; border: 1px solid lightgray; padding: 8px; border-radius: 4px;">
+                            <i class="fa fa-info-circle text-success"></i>
+                            <strong>Empleado</strong> (asignado autom&aacute;ticamente)
+                        </div>
+                        <small class="text-muted">Los roles adicionales (Contador, Administrador) se asignan posteriormente seg&uacute;n sea necesario.</small>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         @Html.LabelFor(m => m.Password)
                         <div class="password-wrapper">
-                            @Html.EditorFor(m => m.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "Contraseña", type = "password" } })
+                            @Html.EditorFor(m => m.Password, new { htmlAttributes = new { @class = "form-control", type = "password" } })
                             <i class="fa fa-eye toggle-password" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
                         </div>
-                        @Html.ValidationMessageFor(m => m.Password,"",new { @class = "advertencia" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "advertencia" })
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
                     <div class="form-group">
                         @Html.LabelFor(m => m.ConfirmPassword)
-                        @Html.EditorFor(m => m.ConfirmPassword, new { htmlAttributes = new { @class = "form-control", placeholder = "Confirmar Contraseña", type = "password" } })
-                        @Html.ValidationMessageFor(m => m.ConfirmPassword,"",new { @class = "advertencia" })
+                        @Html.EditorFor(m => m.ConfirmPassword, new { htmlAttributes = new { @class = "form-control", type = "password" } })
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "advertencia" })
                     </div>
                 </div>
             </div>
@@ -147,7 +185,7 @@
     <!-- SECCIÓN 3: INFORMACIÓN LABORAL -->
     <div class="card card-block card-stretch card-height shadow-lg">
         <div class="card-header bg-info-light">
-            <h4><i class="bi bi-briefcase-fill"></i> Información Laboral</h4>
+            <h4><i class="bi bi-briefcase-fill"></i> Informaci&oacute;n Laboral</h4>
         </div>
         <div class="card-body">
             <div class="row">
@@ -155,14 +193,14 @@
                     <div class="form-group">
                         @Html.LabelFor(m => m.idCargo)
                         @Html.DropDownListFor(m => m.idCargo, ViewBag.Cargos as IEnumerable<SelectListItem>, "-- Seleccione un cargo --", new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.idCargo,"",new { @class = "advertencia" })
+                        @Html.ValidationMessageFor(m => m.idCargo, "", new { @class = "advertencia" })
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         @Html.LabelFor(m => m.fechaContratacion)
                         @Html.EditorFor(m => m.fechaContratacion, new { htmlAttributes = new { @class = "form-control", type = "date" } })
-                        @Html.ValidationMessageFor(m => m.fechaContratacion,"",new { @class = "advertencia" })
+                        @Html.ValidationMessageFor(m => m.fechaContratacion, "", new { @class = "advertencia" })
                     </div>
                 </div>
             </div>
@@ -171,14 +209,14 @@
                     <div class="form-group">
                         @Html.LabelFor(m => m.salarioAprobado)
                         @Html.EditorFor(m => m.salarioAprobado, new { htmlAttributes = new { @class = "form-control", placeholder = "Salario Aprobado" } })
-                        @Html.ValidationMessageFor(m => m.salarioAprobado,"",new { @class = "advertencia" })
+                        @Html.ValidationMessageFor(m => m.salarioAprobado, "", new { @class = "advertencia" })
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         @Html.LabelFor(m => m.periocidadPago)
                         @Html.DropDownListFor(m => m.periocidadPago, ViewBag.PeriocidadesPago as IEnumerable<SelectListItem>, "-- Seleccione periocidad --", new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.periocidadPago,"",new { @class = "advertencia" })
+                        @Html.ValidationMessageFor(m => m.periocidadPago, "", new { @class = "advertencia" })
                     </div>
                 </div>
             </div>
@@ -188,7 +226,7 @@
     <!-- SECCIÓN 4: INFORMACIÓN BANCARIA -->
     <div class="card card-block card-stretch card-height shadow-lg">
         <div class="card-header bg-warning-light">
-            <h4><i class="bi bi-bank"></i> Información Bancaria</h4>
+            <h4><i class="bi bi-bank"></i> Informaci&oacute;n Bancaria</h4>
         </div>
         <div class="card-body">
             <div class="row">
@@ -196,14 +234,14 @@
                     <div class="form-group">
                         @Html.LabelFor(m => m.idMoneda)
                         @Html.DropDownListFor(m => m.idMoneda, ViewBag.TiposMoneda as IEnumerable<SelectListItem>, "-- Seleccione moneda --", new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.idMoneda,"",new { @class = "advertencia" })
+                        @Html.ValidationMessageFor(m => m.idMoneda, "", new { @class = "advertencia" })
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         @Html.LabelFor(m => m.cuentaIBAN)
                         @Html.EditorFor(m => m.cuentaIBAN, new { htmlAttributes = new { @class = "form-control", placeholder = "Cuenta IBAN" } })
-                        @Html.ValidationMessageFor(m => m.cuentaIBAN,"",new { @class = "advertencia" })
+                        @Html.ValidationMessageFor(m => m.cuentaIBAN, "", new { @class = "advertencia" })
                     </div>
                 </div>
             </div>
@@ -212,7 +250,7 @@
                     <div class="form-group">
                         @Html.LabelFor(m => m.idBanco)
                         @Html.DropDownListFor(m => m.idBanco, ViewBag.Bancos as IEnumerable<SelectListItem>, "-- Seleccione banco --", new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.idBanco,"",new { @class = "advertencia" })
+                        @Html.ValidationMessageFor(m => m.idBanco, "", new { @class = "advertencia" })
                     </div>
                 </div>
             </div>
@@ -235,7 +273,7 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Html.Partial("_AdminPasswordModal")
-    
+
     <!-- ✨ SOLUCIÓN DEFINITIVA: JavaScript externo para evitar conflictos con Razor -->
     <script>
         // Variables globales para el JavaScript externo

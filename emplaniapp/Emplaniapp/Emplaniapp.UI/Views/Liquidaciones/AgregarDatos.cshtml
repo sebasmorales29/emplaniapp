@@ -1,19 +1,21 @@
 ﻿@model Emplaniapp.Abstracciones.ModelosParaUI.LiquidacionDto
 
 @{
-    ViewBag.Title = "AgregarDatos";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Añadir Liquidación";
+    ViewBag.id = Html.ValueFor(model => model.idEmpleado);
 }
 
-<h2>AgregarDatos</h2>
+<a class="btn btn-light text-primary mb-2" href=" @Url.Action("Detalles", "Liquidaciones", new {@id = ViewBag.id })">
+    <i class="bi bi-arrow-left-short"></i>
+    Volver
+</a>
+
+<!-- Espacio de Ingreso de datos -->
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
-<div class="form-horizontal">
-    <h4>Añadir Datos de Liquidación</h4>
-    <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(model => model.idEmpleado)
     @Html.HiddenFor(model => model.salarioPromedio)
@@ -29,46 +31,80 @@
     @Html.HiddenFor(model => model.costoLiquidacion)
     @Html.HiddenFor(model => model.idEstado, 2)
 
-    <div class="form-group datos-row">
-        <div class="col-md-4">
-            @Html.DisplayNameFor(model => model.fechaLiquidacion)
-        </div>
-        <div class="col-md-6">
-            @Html.TextBoxFor(model => model.fechaLiquidacion, "{0:yyyy-MM-dd}", new { @id = "fechaLiq", @class = "form-control", @type = "date" })
-            @Html.ValidationMessageFor(model => model.fechaLiquidacion, "", new { @class = "text-danger" })
 
-        </div>
-    </div>
+    <div class="form-horizontal">
+        <div class="card card-block card-stretch">
 
-    <div class="form-group datos-row">
-        <div class="col-md-4">
-            @Html.DisplayNameFor(model => model.motivoLiquidacion)
-        </div>
-        <div class="col-md-6">
-            @Html.DropDownListFor(model => model.motivoLiquidacion, (IEnumerable<SelectListItem>)ViewBag.MotivosLiq,
-                "Seleccione un motivo", new { @id = "motivo", @name = "selectorMotivo", @class = "form-control ", @required = true })
-            @Html.ValidationMessageFor(model => model.motivoLiquidacion, "", new { @class = "text-danger" })
-        </div>
-    </div>
+            <!-- Título -->
+            <div class="card-header m-0">
+                <h3>Añadir Datos de Liquidación</h3>
+            </div>
 
-    <div class="form-group datos-row">
-        <div class="col-md-4">
-            @Html.DisplayNameFor(model => model.observacionLiquidacion)
-        </div>
-        <div class="col-md-6">
-            @Html.TextAreaFor(model => model.observacionLiquidacion, new { @id = "observs", @class = "form-control " })
-            @Html.ValidationMessageFor(model => model.observacionLiquidacion, "", new { @class = "text-danger" })
-        </div>
-    </div>
+            <!-- Cuerpo -->
+            <div class="card-body">
+                <div class="row">
 
-    <br />
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            @Html.ActionLink("Cancelar", "Detalles", new { @class = "btn btn-outline-secondary mb-3" })
-            <input type="submit" value="Añadir Datos" class="btn btn-outline-primary mb-3" />
+                    <!-- Columna izquierda -->
+                    <div class="col-md-6">
+                        <div class="form-group datos-row">
+                            <div class="col-md-4 datos-label">
+                                @Html.DisplayNameFor(model => model.fechaLiquidacion)
+                            </div>
+                            <div class="col-md-6 datos-value">
+                                @Html.TextBoxFor(model => model.fechaLiquidacion, "{0:yyyy-MM-dd}", new { @id = "fechaLiq", @class = "form-control", @type = "date" })
+                                @Html.ValidationMessageFor(model => model.fechaLiquidacion, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group datos-row">
+                            <div class="col-md-4 datos-label">
+                                @Html.DisplayNameFor(model => model.motivoLiquidacion)
+                            </div>
+                            <div class="col-md-6 datos-value">
+                                @Html.DropDownListFor(model => model.motivoLiquidacion, (IEnumerable<SelectListItem>)ViewBag.MotivosLiq,
+                                                        "Seleccione un motivo", new { @id = "motivo", @name = "selectorMotivo", @class = "form-control ", @required = true })
+                                @Html.ValidationMessageFor(model => model.motivoLiquidacion, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna derecha -->
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12 datos-label mb-2">
+                                @Html.DisplayNameFor(model => model.observacionLiquidacion)
+                            </div>
+                            <div class="col-md-12 datos-value">
+                                @Html.TextAreaFor(model => model.observacionLiquidacion, new { @id = "observs", @class = "form-control " })
+                                @Html.ValidationMessageFor(model => model.observacionLiquidacion, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <br />
+
+                <div class=" row form-group text-center justify-content-center m-2">
+                    <a class="btn btn-outline-secondary m-1" href=" @Url.Action("Detalles", "Liquidaciones", new {@id = ViewBag.id })">
+                        Cancelar
+                    </a>
+                    <input type="submit" value="Añadir Datos" class="btn btn-primary m-1" />
+                </div>
+
+
+            </div>
         </div>
+
+
+
+
+
+
+
+
     </div>
-</div>
 
 }
 

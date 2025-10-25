@@ -6,167 +6,130 @@
     var seccionActiva = ViewBag.SeccionRemu ?? "Remuneraciones";
 }
 
-<!-- Estilos -->
-<link type="text/css" href="@Href("~/Content/EstilosDatos.css")" rel="Stylesheet" />
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
-<div class="container">
-    @Html.ActionLink("< Volver a Hoja Resumen", "listarHojaResumen", "HojaResumen",
-        null, new { @class = "btn btn-light text-secondary mt-0 mb-4" })
-
-    <!-- Mensaje de éxito -->
-    @if (TempData["Mensaje"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["Mensaje"]
-        </div>
-    }
-
-    <!-- Título del empleado -->
-    <div class="row">
-        <div class="col-md-12">
-            <h2 class="titulo">@Model.Item1.nombre @Model.Item1.primerApellido @Model.Item1.segundoApellido</h2>
-        </div>
-    </div>
-
-
-    <!-- Enlaces de navegación -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="nav-enlaces">
-                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Datos personales" })" class="@(seccionActiva == "Datos personales" ? "active" : "")">Datos personales</a>
-                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Historial" })" class="@(seccionActiva == "Historial" ? "active" : "")">Historial</a>
-                <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Remuneraciones" ? "active" : "")">Remuneraciones</a>
-                <a href="@Url.Action("Detalles", "Retenciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")">Retenciones</a>
-                <a href="@Url.Action("Detalles", "Liquidaciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Liquidacion" ? "active" : "")">Liquidación</a>
-                <a href="@Url.Action("Detalles", "DatosPersonales", new { id = Model.Item1.idEmpleado, seccion = "Observaciones" })" class="@(seccionActiva == "Observaciones" ? "active" : "")">Observaciones</a>
-            </div>
-            <hr />
-        </div>
-    </div>
-
-
-    <!-- Contenido -->
-    <div class="row">
-        <div class="col-md-12">
-            @if (seccionActiva == "Remuneraciones")
-            {
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Remuneraciones</h2>
-                    <a href="@Url.Action("CrearRemuneracionManual", "Remuneraciones", new { idEmpleado = Model.Item1.idEmpleado })"
-                       class="btn btn-primary">
-                        <i class="fa fa-plus"></i> Agregar Remuneración
-                    </a>
-                </div>
-
-                <!-- Modal para crear remuneración -->
-                <div class="modal fade" id="crearRemuneracionModal" tabindex="-1" role="dialog"
-                     aria-labelledby="crearRemuneracionModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="crearRemuneracionModalLabel">Agregar Remuneración Manual</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body" id="modal-body-remuneracion">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    @if (Model.Item2.Any())
-                    {
-                        foreach (var item in Model.Item2)
-                        {
-                            <div class="col-md-6 col-lg-4 mb-4">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.nombreTipoRemuneracion)</h5>
-                                        <h6 class="card-subtitle mb-2 text-muted">@Html.DisplayFor(modelItem => item.fechaRemuneracion)</h6>
-                                        <hr />
-                                        @if (item.pagoQuincenal > 0)
-                                        {
-                                            <p class="card-text"><strong>Pago Quincenal:</strong> @String.Format("{0:C}", item.pagoQuincenal)</p>
-                                        }
-                                        @if (item.comision > 0)
-                                        {
-                                            <p class="card-text"><strong>Comisión:</strong> @String.Format("{0:C}", item.comision)</p>
-                                        }
-                                        @if (item.diasTrabajados > 0 || item.horas > 0)
-                                        {
-                                            <p>
-                                                <strong>Horas:</strong>
-                                                <ul class="list-unstyled ml-3">
-                                                    @if (item.diasTrabajados > 0)
-                                                    {
-                                                        <li>Trabajadas: @item.diasTrabajados</li>
-                                                    }
-                                                    @if (item.horas > 0)
-                                                    {
-                                                        <li>Extras: @item.horas</li>
-                                                    }
-                                                </ul>
-                                            </p>
-                                        }
-                                        <p><strong>Estado:</strong> <span class="badge @(item.nombreEstado == "Activo" ? "badge-success" : "badge-secondary")">@item.nombreEstado</span></p>
-                                    </div>
-                                    <div class="card-footer bg-transparent border-top-0 d-flex justify-content-end">
-                                        <a href="@Url.Action("DetallesDeRemuneracion", "Remuneraciones", new { id = item.idRemuneracion })" class="btn btn-info btn-sm" style="margin-right: 10px;">
-                                            <i class="fa fa-eye"></i> Detalles
-                                        </a>
-
-                                        <a href="@Url.Action("EditarRemuneracion", "Remuneraciones", new { id = item.idRemuneracion, idEmpleado = item.idEmpleado })" class="btn btn-warning btn-sm" style="margin-right: 10px;">
-                                            <i class="fa fa-edit"></i> Editar
-                                        </a>
-
-                                    
-                                        @* <<< FIN AGREGADO >>> *@
-
-                                        @using (Html.BeginForm("EliminarRemuneracion", "Remuneraciones", FormMethod.Post, new { @class = "d-inline" }))
-                                        {
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="id" value="@item.idRemuneracion" />
-                                            <input type="hidden" name="idEmpleado" value="@item.idEmpleado" />
-                                            <button type="submit" class="btn btn-danger btn-sm"
-                                                    onclick="return confirm('¿Está seguro de que desea eliminar esta remuneración?');">
-                                                <i class="fa fa-trash"></i> Eliminar
-                                            </button>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <div class="col-12">
-                            <div class="alert alert-info">
-                                No hay remuneraciones registradas para este empleado.
-                            </div>
-                        </div>
-                    }
-                </div>
-            }
-        </div>
+<!-- Título del empleado -->
+<div class="row">
+    <div class="col-md-12">
+        <a class="btn btn-light text-primary mb-2" href="@Url.Action( "listarHojaResumen", "HojaResumen")">
+            <i class="bi bi-arrow-left-short"></i>
+            Volver
+        </a>
+        <br />
+        <h2 class="titulo">@Model.Item1.nombre @Model.Item1.primerApellido @Model.Item1.segundoApellido</h2>
+        <br />
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            // Asegurar que el modal se limpia al cerrarse
-            $('#crearRemuneracionModal').on('hidden.bs.modal', function () {
-                $(this).find('form')[0].reset();
-                $('.panel-remuneracion').hide();
-            });
-        });
-        function cargarModalRemuneracion(idEmpleado) {
-            $('#modal-body-remuneracion').load('/Remuneraciones/_CrearRemuneracionManual?idEmpleado=' + idEmpleado);
-            $('#crearRemuneracionModal').modal('show');
+
+<!-- Enlaces de navegación -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="nav nav-tabs" role="tablist">
+            <a href="@Url.Action("DetallesRemu", "Remuneraciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Remuneraciones" ? "active" : "")  nav-item nav-link">Remuneraciones</a>
+            <a href="@Url.Action("Detalles", "Retenciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Retenciones" ? "active" : "")  nav-item nav-link">Retenciones</a>
+            <a href="@Url.Action("Detalles", "Liquidaciones", new { id = Model.Item1.idEmpleado })" class="@(seccionActiva == "Liquidacion" ? "active" : "")  nav-item nav-link">Liquidación</a>
+            <a href="@Url.Action("Detalles", "Observaciones", new { id = Model.Item1.idEmpleado, seccion = "Observaciones" })" class="@(seccionActiva == "Observaciones" ? "active" : "")  nav-item nav-link">Observaciones</a>
+        </div>
+        <br />
+    </div>
+</div>
+
+
+<!-- Contenido -->
+<div class="row">
+    <div class="col-md-12">
+        @if (seccionActiva == "Remuneraciones")
+        {
+
+
+            <div class="text-center mb-5">
+                <h2><strong>Remuneraciones</strong></h2>
+                <br />
+                <a href="@Url.Action("CrearRemuneracionManual", "Remuneraciones", new { idEmpleado = Model.Item1.idEmpleado })"
+                   class="btn btn-primary">
+                    <i class="bi bi-plus"></i> Agregar Remuneración
+                </a>
+            </div>
+
+            <!--- Tarjetas -->
+            <div class="row">
+                @if (Model.Item2.Any())
+                {
+                    foreach (var item in Model.Item2)
+                    {
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.nombreTipoRemuneracion)</h5>
+                                    <h6 class="card-subtitle text-muted">@Html.DisplayFor(modelItem => item.fechaRemuneracion)</h6>
+                                    <br />
+                                    @if (item.pagoQuincenal > 0)
+                                    {
+                                        <p class="card-text"><strong>Pago Quincenal:</strong> @String.Format("{0:C}", item.pagoQuincenal)</p>
+                                    }
+                                    @if (item.comision > 0)
+                                    {
+                                        <p class="card-text"><strong>Comisión:</strong> @String.Format("{0:C}", item.comision)</p>
+                                    }
+                                    @if (item.diasTrabajados > 0 || item.horas > 0)
+                                    {
+                                        <p>
+                                            <strong>Horas:</strong>
+                                            <ul class="list-unstyled ml-3">
+                                                @if (item.diasTrabajados > 0)
+                                                {
+                                                    <li>Trabajadas: @item.diasTrabajados</li>
+                                                }
+                                                @if (item.horas > 0)
+                                                {
+                                                    <li>Extras: @item.horas</li>
+                                                }
+                                            </ul>
+                                        </p>
+                                    }
+                                    <p><strong>Estado:</strong> <span class="badge @(item.nombreEstado == "Activo" ? "badge-success" : "badge-secondary")">@item.nombreEstado</span></p>
+
+                                </div>
+                                <div class="card-footer bg-transparent border-top-0 d-flex justify-content-end">
+                                    <a href="@Url.Action("EditarRemuneracion", "Remuneraciones", new { id = item.idRemuneracion, idEmpleado = item.idEmpleado })" class="btn btn-light text-primary">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+
+                                    @using (Html.BeginForm("EliminarRemuneracion", "Remuneraciones", FormMethod.Post, new { @class = "d-inline" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.idRemuneracion" />
+                                        <input type="hidden" name="idEmpleado" value="@item.idEmpleado" />
+                                        <button type="submit" class="btn btn-light" style="color: #de6f6f;"
+                                                onclick="return confirm('¿Está seguro de que desea eliminar esta remuneración?');">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            No hay remuneraciones registradas para este empleado.
+                        </div>
+                    </div>
+                }
+            </div>
         }
-    </script>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryval")
+
+ 
 }

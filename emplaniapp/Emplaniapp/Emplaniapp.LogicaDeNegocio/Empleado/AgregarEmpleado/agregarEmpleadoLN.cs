@@ -50,7 +50,7 @@ namespace Emplaniapp.LogicaDeNegocio.Empleado.AgregarEmpleado
             }
 
             // Validar que la cédula tenga el formato correcto (9 dígitos)
-            if (empleado.cedula < 100000000 || empleado.cedula > 999999999)
+            if (empleado.cedula <= 100000000 || empleado.cedula >= 999999999)
             {
                 System.Diagnostics.Debug.WriteLine("❌ Error: Cédula debe tener 9 dígitos: " + empleado.cedula);
                 return false;
