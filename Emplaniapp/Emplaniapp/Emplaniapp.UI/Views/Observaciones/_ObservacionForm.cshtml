@@ -1,0 +1,41 @@
+﻿@model Emplaniapp.Abstracciones.ModelosParaUI.ObservacionDto
+
+@{
+    var isEdit = Model.IdObservacion > 0;
+    var formAction = isEdit ? "EditarObservacion" : "AgregarObservacion";
+    var modalTitle = isEdit ? "Editar" : "Agregar";
+}
+
+@* Este fragmento se inyectará en el cuerpo del modal principal en Detalles.cshtml *@
+
+<div class="modal-header">
+    <h5 class="modal-title">@modalTitle</h5>
+</div>
+
+@using (Html.BeginForm(formAction, "DatosPersonales", FormMethod.Post, new { id = "observacionForm" }))
+{
+    <div class="modal-body">
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "advertencia" })
+
+        @Html.HiddenFor(model => model.IdObservacion)
+        @Html.HiddenFor(model => model.IdEmpleado)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Titulo, new { @class = "control-label" })
+            @Html.TextBoxFor(model => model.Titulo, new { @class = "form-control", placeholder = "Ej: Nota sobre el empleado" })
+            @Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "advertencia" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Descripcion, new { @class = "control-label" })
+            @Html.TextAreaFor(model => model.Descripcion, new { @class = "form-control", rows = 5, placeholder = "Escriba los detalles..." })
+            @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "advertencia" })
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" id="btn-cancelar-observacion" data-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btn-guardar-observacion">Guardar</button>
+    </div>
+}
+

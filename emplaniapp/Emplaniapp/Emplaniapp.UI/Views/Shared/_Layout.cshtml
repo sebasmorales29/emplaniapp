@@ -123,12 +123,12 @@
                             </a>
                         </li>
 
-                        <li class="nav-item nav-icon">
+                        @*<li class="nav-item nav-icon">
                             <a href="@Url.Action("HistorialPagos", "ReportesPago")">
                                 <i class="bi bi-file-earmark-check-fill"></i>
                                 <span>Reporte de Pagos</span>
                             </a>
-                        </li>
+                        </li>*@
                         }
 
 
@@ -186,45 +186,6 @@
 
                                 </li>
 
-                                <!--<li class="nav-item nav-icon">-->
-                                    <!-- Para mantener estabilidad de -->
-                                    <!--<a class="" id="dropdownMenuButton02" aria-haspopup="false" aria-expanded="false">
-                                        <div style="padding-left:10px; font-size:16px;" class="text-white">
-                                            .
-                                        </div>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item nav-icon dropdown">
-                                    <a href="#" class="search-toggle dropdown-toggle text-secondary" id="dropdownMenuButton02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                       style="padding-left:10px; font-size:16px;">
-                                        @User.Identity.GetUserName()
-                                        @if (hasRole("Empleado"))
-                                        {<i class="bi bi-chevron-down"></i>}
-                                        </a>
-
-                                    @if (hasRole("Empleado"))
-                                    {
-                                    <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton02">
-                                        <div class="card shadow-none m-0">
-                                            <div class="card-body p-0 ">
-                                                <div class="iq-sub-card list-group p-0 bg-white bg-opacity-10">
-                                                    <a href="@Url.Action("Detalles", "DatosPersonales")"
-                                                       class="list-group-item list-group-item-action">
-                                                        <i class="bi bi-person-fill"></i>
-                                                        Mi Perfil
-                                                    </a>
-                                                    <a href="@Url.Action("Index", "variablesFinancieras")"
-                                                       class="list-group-item list-group-item-action">
-                                                        <i class="bi bi-file-earmark-check"></i>
-                                                        Reporte de Pagos
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    }
-                                </li>-->
 
                                 <li class="nav-item nav-icon" id="dropdownMenuButton03">
                                     @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutFormLayout" }))
@@ -298,9 +259,6 @@
         $(document).ready(function() {
             // Manejar clic del botón de logout
             $('#logoutButton').on('click', function(e) {
-                console.log('🔍 DIAGNÓSTICO: Botón de logout presionado');
-                
-                // ✨ NUEVO: Mostrar modal de confirmación en lugar de confirm nativo
                 e.preventDefault();
                 $('#logoutConfirmModal').modal('show');
                 return false;
@@ -308,21 +266,19 @@
             
             // ✨ NUEVO: Manejar cancelación del logout
             $('#cancelLogoutBtn').on('click', function() {
-                console.log('🔍 DIAGNÓSTICO: Logout cancelado por el usuario');
                 $('#logoutConfirmModal').modal('hide');
             });
             
             // ✨ NUEVO: Manejar confirmación del logout
             $('#confirmLogoutBtn').on('click', function() {
-                console.log('🔍 DIAGNÓSTICO: Usuario confirmó logout, enviando formulario...');
                 
                 // Deshabilitar botón para evitar doble envío
                 var btnConfirm = $(this);
-                btnConfirm.prop('disabled', true).html('<i class="bi bi-hourglass-split me-2"></i>Cerrando sesión...');
+                btnConfirm.prop('disabled', true).html('<i class="bi bi-hourglass-split me-2"></i> Cerrando sesión...');
                 
                 // Mostrar mensaje de progreso
                 var originalTitle = $('#logoutConfirmModalLabel').text();
-                $('#logoutConfirmModalLabel').html('<i class="bi bi-hourglass-split me-2"></i>Cerrando Sesión...');
+                $('#logoutConfirmModalLabel').html('<i class="bi bi-hourglass-split me-2"></i> Cerrando Sesión...');
                 
                 // Cerrar modal después de un breve delay
                 setTimeout(function() {
@@ -331,7 +287,7 @@
                     // Restaurar título original
                     setTimeout(function() {
                         $('#logoutConfirmModalLabel').html(originalTitle);
-                        btnConfirm.prop('disabled', false).html('<i class="bi bi-door-open-fill me-2"></i>Cerrar Sesión');
+                        btnConfirm.prop('disabled', false).html('<i class="bi bi-door-open-fill me-2"></i> Cerrar Sesión');
                     }, 500);
                     
                     // Enviar formulario
@@ -341,17 +297,16 @@
             
             // ✨ NUEVO: Manejar envío del formulario de logout
             $('#logoutFormLayout').on('submit', function(e) {
-                console.log('🔍 DIAGNÓSTICO: Formulario de logout enviado');
                 return true;
             });
             
             // ✨ NUEVO: Restaurar estado del modal cuando se cierre
             $('#logoutConfirmModal').on('hidden.bs.modal', function () {
                 // Restaurar título original
-                $('#logoutConfirmModalLabel').html('<i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Cierre de Sesión');
+                $('#logoutConfirmModalLabel').html('<i class="bi bi-exclamation-triangle-fill me-2"></i> Confirmar Cierre de Sesión');
                 
                 // Restaurar botón de confirmación
-                $('#confirmLogoutBtn').prop('disabled', false).html('<i class="bi bi-door-open-fill me-2"></i>Cerrar Sesión');
+                $('#confirmLogoutBtn').prop('disabled', false).html('<i class="bi bi-door-open-fill me-2"></i> Cerrar Sesión');
             });
         });
     </script>
@@ -366,14 +321,14 @@
     <div class="modal fade" id="logoutConfirmModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-warning text-dark">
+                <div class="modal-header ¿">
                     <h5 class="modal-title" id="logoutConfirmModalLabel">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Cierre de Sesión
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Confirmar Cierre de Sesión
                     </h5>
                 </div>
                 <div class="modal-body text-center">
                     <div class="mb-3">
-                        <i class="bi bi-door-open-fill text-warning" style="font-size: 3rem;"></i>
+                        <i class="bi bi-door-open-fill text-primary" style="font-size: 3rem;"></i>
                     </div>
                     <h6 class="mb-3">¿Está seguro que desea cerrar sesión?</h6>
                     <p class="text-muted mb-0">
@@ -382,21 +337,15 @@
                 </div>
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="btn btn-outline-secondary" id="cancelLogoutBtn">
-                        <i class="bi bi-x-lg me-2"></i>Cancelar
+                        Cancelar
                     </button>
-                    <button type="button" class="btn btn-warning" id="confirmLogoutBtn">
-                        <i class="bi bi-door-open-fill me-2"></i>Cerrar Sesión
+                    <button type="button" class="btn btn-primary" id="confirmLogoutBtn">
+                        Cerrar Sesión
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Sistema de roles unificado - Sin cambio de roles -->
-    <script>
-        // El sistema ahora muestra todos los roles del usuario sin posibilidad de cambio
-        // Los permisos se verifican automáticamente en cada acción
-        console.log('Sistema de roles unificado cargado - Sin cambio de roles');
-    </script>
 </body>
 </html>

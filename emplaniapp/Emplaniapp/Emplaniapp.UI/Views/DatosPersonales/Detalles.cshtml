@@ -50,7 +50,7 @@
 
 
     var boleano = !(Model.IdNetUser).Equals(User.Identity.GetUserId());
-
+    ViewBag.UserBoolean = boleano;
 }
 
 <!-- Estilos -->
@@ -63,28 +63,29 @@
 <!-- Título del empleado -->
 <div class="row">
     <div class="col-md-12">
-        <h2 class="title">@Model.nombre @Model.primerApellido @Model.segundoApellido</h2>
-        
         @if (boleano){
 
             <a class="btn btn-light text-primary mb-2" href="@Url.Action("listarEmpleados","Empleado")">
                 <i class="bi bi-arrow-left-short"></i>
                 Volver
             </a>
+            <br />
         }
+        <h2 class="title">@Model.nombre @Model.primerApellido @Model.segundoApellido</h2>
+        <br />
         
     </div>
 </div>
 
 <!-- Mensaje de éxito -->
-@if (TempData["Mensaje"] != null)
+@*@if (TempData["Mensaje"] != null)
 {
     <br />
     <div class="alert alert-success">
         @TempData["Mensaje"]
     </div>
 }
-<br />
+<br />*@
 
 
 <!-- Enlaces de navegación -->

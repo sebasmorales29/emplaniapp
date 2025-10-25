@@ -16,16 +16,14 @@
     <link href="~/Content/assets/css/backend.css" rel="stylesheet" />
 </head>
 
+<body>
+    <div class="wrapper">
 
-<body class="">
-    <div class="wrapper"" >
-
-        <section class="login-content bg-primary-light"> <!--bg-gradient-->
+        <section class="login-content bg-primary-light">
             <div class="container h-100">
                 <div class="row justify-content-center align-items-center height-self-center">
                     <div class="col-md-5 col-sm-12 col-12 align-self-center">
                         @RenderBody()
-
 
                         <footer class="text-center mt-5 small">
                             Emplaniapp @DateTime.Now.Year - Todos los derechos reservados
@@ -35,18 +33,15 @@
             </div>
         </section>
 
-
-      
-
     </div>
-    
+
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+    @RenderSection("Scripts", required: false)
 
     <!-- Scripts de plantilla -->
-    <script src="~/Content/assets/js/backend-bundle.min.js"></script>  <!-- Backend Bundle JavaScript -->
-    <script src="~/Content/assets/js/app.js"></script> <!-- app JavaScript -->
-
+    <script src="~/Content/assets/js/backend-bundle.min.js"></script>
+    <script src="~/Content/assets/js/app.js"></script>
 </body>
-</html> 
+</html>
+

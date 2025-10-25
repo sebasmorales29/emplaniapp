@@ -327,6 +327,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LiquidacionesController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ObservacionesController.cs" />
     <Compile Include="Controllers\RemuneracionesController.cs" />
     <Compile Include="Controllers\ReportesPagoController.cs" />
     <Compile Include="Controllers\RetencionesController.cs" />
@@ -481,6 +482,11 @@
     <Content Include="Views\DatosPersonales\_RolesYPermisos.cshtml" />
     <Content Include="Views\DatosPersonales\_ObservacionesList.cshtml" />
     <Content Include="Views\DatosPersonales\_ObservacionForm.cshtml" />
+    <Content Include="Views\Account\ResetPasswordLinkError.cshtml" />
+    <Content Include="Views\Account\_ViewStart.cshtml" />
+    <Content Include="Views\Observaciones\Detalles.cshtml" />
+    <Content Include="Views\Observaciones\_ObservacionesList.cshtml" />
+    <Content Include="Views\Observaciones\_ObservacionForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

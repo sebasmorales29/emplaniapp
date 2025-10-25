@@ -168,7 +168,10 @@ namespace Emplaniapp.UI.Controllers
             };
 
             return View("CrearRemuneracionManual", nuevoDto);
+            
         }
+
+
 
         // POST: Remuneraciones/CrearRemuneracionManual
         [HttpPost]
