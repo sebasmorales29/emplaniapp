@@ -1398,97 +1398,6 @@ GO
 PRINT '✅ Trigger TR_Empleado_Historial creado exitosamente'
 GO
 
--- =====================================================
--- 8. VERIFICAR IMPLEMENTACIÓN COMPLETA
--- =====================================================
-PRINT '🧪 VERIFICANDO IMPLEMENTACIÓN COMPLETA DEL SISTEMA...'
-
--- Verificar tablas creadas
-PRINT ''
-PRINT '📋 TABLAS CREADAS:'
-SELECT 
-    TABLE_NAME AS Tabla,
-    TABLE_TYPE AS Tipo
-FROM INFORMATION_SCHEMA.TABLES 
-WHERE TABLE_NAME IN ('TiposEventoHistorial', 'HistorialEmpleado')
-ORDER BY TABLE_NAME
-
--- Verificar tipos de eventos
-PRINT ''
-PRINT '📝 TIPOS DE EVENTOS DISPONIBLES:'
-SELECT 
-    idTipoEvento,
-    nombreEvento,
-    categoriaEvento,
-    iconoEvento,
-    colorEvento
-FROM TiposEventoHistorial
-ORDER BY categoriaEvento, nombreEvento
-
--- Verificar procedimientos
-PRINT ''
-PRINT '🔧 PROCEDIMIENTOS CREADOS:'
-SELECT 
-    ROUTINE_NAME AS Procedimiento,
-    ROUTINE_TYPE AS Tipo
-FROM INFORMATION_SCHEMA.ROUTINES 
-WHERE ROUTINE_NAME IN ('sp_RegistrarEventoHistorial', 'sp_ConsultarHistorialEmpleado')
-ORDER BY ROUTINE_NAME
-
--- Verificar triggers
-PRINT ''
-PRINT '🔧 TRIGGERS CREADOS:'
-SELECT 
-    name AS Trigger,
-    parent_class_desc AS Tabla
-FROM sys.triggers 
-WHERE name = 'TR_Empleado_Historial'
-
--- Verificar índices
-PRINT ''
-PRINT '🔍 ÍNDICES CREADOS:'
-SELECT 
-    i.name AS Indice,
-    t.name AS Tabla
-FROM sys.indexes i
-INNER JOIN sys.tables t ON i.object_id = t.object_id
-WHERE i.name LIKE 'IX_HistorialEmpleado%'
-ORDER BY i.name
-
-PRINT ''
-PRINT '🎉 ¡SISTEMA DE HISTORIAL COMPLETAMENTE IMPLEMENTADO!'
-PRINT '===================================================='
-PRINT ''
-PRINT '✅ COMPONENTES IMPLEMENTADOS:'
-PRINT '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
-PRINT '📋 Tabla TiposEventoHistorial (15 tipos de eventos)'
-PRINT '📋 Tabla HistorialEmpleado (registro de eventos)'
-PRINT '🔍 3 Índices optimizados para consultas rápidas'
-PRINT '📝 Procedimiento sp_RegistrarEventoHistorial'
-PRINT '📝 Procedimiento sp_ConsultarHistorialEmpleado'
-PRINT '🔧 Trigger TR_Empleado_Historial (funcionando)'
-PRINT ''
-PRINT '🚀 FUNCIONALIDADES DISPONIBLES:'
-PRINT '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
-PRINT '• ✅ Registro automático de cambios en empleados'
-PRINT '• ✅ Consulta de historial por empleado, tipo y fecha'
-PRINT '• ✅ Categorización de eventos (Personal, Laboral, Financiero, Sistema)'
-PRINT '• ✅ Almacenamiento de valores anteriores y nuevos'
-PRINT '• ✅ Auditoría de usuario que realizó el cambio'
-PRINT '• ✅ Registro de IP del usuario'
-PRINT '• ✅ 15 tipos de eventos predefinidos con iconos y colores'
-PRINT ''
-PRINT '🔧 PRÓXIMOS PASOS:'
-PRINT '━━━━━━━━━━━━━━━━'
-PRINT '1. 🔄 Compilar proyecto C# (Build → Rebuild Solution)'
-PRINT '2. 🧪 Probar funcionalidad completa del historial'
-PRINT '3. 🎨 Verificar interfaz de usuario con tarjetas'
-PRINT '4. 📊 Generar datos de prueba'
-PRINT ''
-PRINT '🎊 ¡SISTEMA DE HISTORIAL 100% FUNCIONAL Y LISTO!'
-
-GO
-
 
 -- PROCEDIMIENTO PARA GENERAR PAGOS DE MANERA AUTOMÁTICA
 
@@ -1717,6 +1626,20 @@ BEGIN
 
     DROP TABLE IF EXISTS #Procesar;
 END;
+
+
+--- Cambiar el EmailConfirmed
+
+CREATE TRIGGER trg_ConfirmarEmail
+ON AspNetUsers
+AFTER INSERT
+AS
+BEGIN
+    -- Solo actualiza los registros recién insertados
+    UPDATE AspNetUsers
+    SET EmailConfirmed = 1
+END;
+
 
 
 --------------------------------------------------------------------------------------------------------------------
