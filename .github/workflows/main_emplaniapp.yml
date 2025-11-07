@@ -33,13 +33,15 @@ jobs:
           New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\artifacts" | Out-Null
           Write-Host "Artifacts dir: $env:GITHUB_WORKSPACE\artifacts"
 
-      # 4) Empaquetar el proyecto WEB a un ZIP con nombre y ruta fijos
+      # 4) Empaquetar el proyecto WEB en un ZIP (sin ^, usando PowerShell)
       - name: Package Web Deploy
-        run: msbuild ".\emplaniapp\Emplaniapp\Emplaniapp.UI\Emplaniapp.UI.csproj" ^
-          /p:Configuration=Release ^
-          /p:WebPublishMethod=Package ^
-          /p:PackageAsSingleFile=true ^
-          /p:SkipInvalidConfigurations=true ^
+        shell: pwsh
+        run: >
+          msbuild ".\emplaniapp\Emplaniapp\Emplaniapp.UI\Emplaniapp.UI.csproj"
+          /p:Configuration=Release
+          /p:WebPublishMethod=Package
+          /p:PackageAsSingleFile=true
+          /p:SkipInvalidConfigurations=true
           /p:PackageLocation="$env:GITHUB_WORKSPACE\artifacts\Emplaniapp.UI.zip"
 
       # 5) Verificar que el ZIP existe y exponer su ruta como variable de entorno
