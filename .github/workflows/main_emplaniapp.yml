@@ -1,66 +1,57 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy ASP app to Azure Web App - Emplaniapp
+name: Deploy ASP.NET MVC (.NET Framework) to Azure (auto-detect)
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
-  build:
+  build-deploy:
     runs-on: windows-latest
-    permissions:
-      contents: read #This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup MSBuild path
-        uses: microsoft/setup-msbuild@v1.0.2
-
       - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1.0.5
+        uses: NuGet/setup-nuget@v2
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Locate solution and web project
+        shell: pwsh
+        run: |
+          Write-Host "Buscando .sln y .csproj en el repo..."
+          Get-ChildItem -Recurse -Filter *.sln | ForEach-Object { "SLN: $($_.FullName)" }
+          Get-ChildItem -Recurse -Filter *.csproj | ForEach-Object { "CSPROJ: $($_.FullName)" }
+
+          $sln = Get-ChildItem -Path $env:GITHUB_WORKSPACE -Recurse -Filter *.sln | Select-Object -First 1
+          if (-not $sln) { throw "No .sln found in repository." }
+          "SOLUTION_PATH=$($sln.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+          # intenta elegir un proyecto web; si no, toma el primero
+          $web = Get-ChildItem -Recurse -Filter *.csproj | Where-Object {
+            (Select-String -Path $_.FullName -Pattern "<UseIISExpress>|<ProjectTypeGuids>|<Project Sdk" -Quiet)
+          } | Select-Object -First 1
+          if (-not $web) { $web = Get-ChildItem -Recurse -Filter *.csproj | Select-Object -First 1 }
+          if (-not $web) { throw "No .csproj found." }
+          "WEBPROJ_PATH=$($web.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+          Write-Host "SOLUTION_PATH=$env:SOLUTION_PATH"
+          Write-Host "WEBPROJ_PATH=$env:WEBPROJ_PATH"
 
       - name: Restore NuGet packages
-        run: nuget restore
+        run: nuget restore "$env:SOLUTION_PATH"
 
-      - name: Publish to folder
-        run: msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
+      - name: Build (Release)
+        run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: ASP-app
-          path: '/published/**'
-
-  deploy:
-    runs-on: windows-latest
-    needs: build
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: ASP-app
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_03442DAC07C441B792A9CBC5194AF3E8 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_8C1CCEAD9343404296CB34B6D44819EA }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_84FD1DEC4CDE47A5823527AC2700C066 }}
+      - name: Package Web Deploy
+        run: msbuild "$env:WEBPROJ_PATH" /p:Configuration=Release /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.SourcesDirectory)\artifacts"
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'Emplaniapp'
-          slot-name: 'Production'
-          package: .
-          
+          app-name: Emplaniapp
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          package: artifacts\*.zip
