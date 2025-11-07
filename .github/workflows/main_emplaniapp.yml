@@ -18,17 +18,26 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # RUTA exacta del archivo .sln
+      # 1) Restaurar paquetes sobre tu SOLUCIÓN real
       - name: Restore NuGet packages
-        run: nuget restore .\emplaniapp\Emplaniapp\Emplaniapp.sln
+        run: nuget restore ".\emplaniapp\Emplaniapp\Emplaniapp.sln"
 
+      # 2) Compilar en Release la SOLUCIÓN
       - name: Build (Release)
-        run: msbuild .\emplaniapp\Emplaniapp\Emplaniapp.sln /p:Configuration=Release
+        run: msbuild ".\emplaniapp\Emplaniapp\Emplaniapp.sln" /p:Configuration=Release
 
-      # Proyecto web (si tu UI es el que debe desplegarse)
+      # 3) Crear carpeta de artifacts en el workspace del runner
+      - name: Prepare artifacts folder
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\artifacts" | Out-Null
+          Write-Host "Artifacts dir: $env:GITHUB_WORKSPACE\artifacts"
+
+      # 4) Empaquetar el proyecto WEB en un ZIP de WebDeploy
       - name: Package Web Deploy
-        run: msbuild .\emplaniapp\Emplaniapp\Emplaniapp.UI\Emplaniapp.UI.csproj /p:Configuration=Release /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.SourcesDirectory)\artifacts"
+        run: msbuild ".\emplaniapp\Emplaniapp\Emplaniapp.UI\Emplaniapp.UI.csproj" /p:Configuration=Release /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$env:GITHUB_WORKSPACE\artifacts"
 
+      # 5) Publicar ese ZIP al App Service "Emplaniapp"
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
