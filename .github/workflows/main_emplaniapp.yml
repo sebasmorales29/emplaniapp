@@ -33,14 +33,29 @@ jobs:
           New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\artifacts" | Out-Null
           Write-Host "Artifacts dir: $env:GITHUB_WORKSPACE\artifacts"
 
-      # 4) Empaquetar el proyecto WEB en un ZIP de WebDeploy
+      # 4) Empaquetar el proyecto WEB a un ZIP con nombre y ruta fijos
       - name: Package Web Deploy
-        run: msbuild ".\emplaniapp\Emplaniapp\Emplaniapp.UI\Emplaniapp.UI.csproj" /p:Configuration=Release /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$env:GITHUB_WORKSPACE\artifacts"
+        run: msbuild ".\emplaniapp\Emplaniapp\Emplaniapp.UI\Emplaniapp.UI.csproj" ^
+          /p:Configuration=Release ^
+          /p:WebPublishMethod=Package ^
+          /p:PackageAsSingleFile=true ^
+          /p:SkipInvalidConfigurations=true ^
+          /p:PackageLocation="$env:GITHUB_WORKSPACE\artifacts\Emplaniapp.UI.zip"
 
-      # 5) Publicar ese ZIP al App Service "Emplaniapp"
+      # 5) Verificar que el ZIP existe y exponer su ruta como variable de entorno
+      - name: Verify package and set env
+        shell: pwsh
+        run: |
+          Get-ChildItem -Recurse "$env:GITHUB_WORKSPACE\artifacts"
+          $zip = Get-ChildItem "$env:GITHUB_WORKSPACE\artifacts" -Filter *.zip -Recurse | Select-Object -First 1
+          if (-not $zip) { throw "No .zip produced in artifacts folder" }
+          "PACKAGE_PATH=$($zip.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Write-Host "PACKAGE_PATH set to $($zip.FullName)"
+
+      # 6) Publicar ese ZIP al App Service "Emplaniapp"
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: Emplaniapp
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
-          package: artifacts\*.zip
+          package: ${{ env.PACKAGE_PATH }}
