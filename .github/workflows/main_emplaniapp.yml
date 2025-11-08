@@ -10,7 +10,8 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v2
@@ -18,7 +19,7 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # Localiza la solución y el proyecto web
+      # --- Localiza la solución y el proyecto Web (clásico .NET Framework) ---
       - name: Locate solution and web project
         shell: pwsh
         run: |
@@ -27,6 +28,7 @@ jobs:
           if (-not $sln) { throw "No .sln found in repository." }
           "SOLUTION_PATH=$($sln.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
+          # Heurística para detectar el proyecto web clásico (Microsoft.WebApplication.targets / UseIISExpress / ProjectTypeGuids)
           $web = Get-ChildItem -Recurse -Filter *.csproj | Where-Object {
             (Select-String -Path $_.FullName -Pattern "<ProjectTypeGuids>|<UseIISExpress>|Microsoft.WebApplication.targets" -Quiet)
           } | Select-Object -First 1
@@ -44,36 +46,38 @@ jobs:
         shell: pwsh
         run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
 
-      # === PASO CLAVE: Generar el paquete WebDeploy (.zip) ===
-      - name: Package Web Deploy (create artifacts\Emplaniapp.UI.zip)
+      # --- Publica a carpeta (FileSystem) en vez de MSDeploy Package ---
+      - name: Publish to folder (FileSystem)
         shell: pwsh
         run: |
-          $art = Join-Path $env:GITHUB_WORKSPACE 'artifacts'
-          New-Item -Path $art -ItemType Directory -Force | Out-Null
+          $pub = Join-Path $env:GITHUB_WORKSPACE 'publish'
+          if (Test-Path $pub) { Remove-Item $pub -Recurse -Force }
+          New-Item -ItemType Directory -Path $pub | Out-Null
 
-          # Invoca el target Package y fija PackageLocation de forma explícita
           msbuild "$env:WEBPROJ_PATH" `
-            /t:Package `
             /p:Configuration=Release `
-            /p:DeployOnBuild=true `
-            /p:WebPublishMethod=Package `
-            /p:PackageAsSingleFile=true `
-            /p:SkipInvalidConfigurations=true `
-            /p:PackageLocation="$art\Emplaniapp.UI.zip"
+            /p:WebPublishMethod=FileSystem `
+            /p:DeleteExistingFiles=True `
+            /p:PublishUrl="$pub"
 
-      # Verifica que el .zip existe (si no, falla para ver logs)
-      - name: Verify package and set env
+      # --- Comprime la salida publicada para Zip Deploy ---
+      - name: Create site zip
         shell: pwsh
         run: |
-          $zip = Get-ChildItem -Recurse "$env:GITHUB_WORKSPACE\artifacts\*.zip" | Select-Object -First 1
-          if (-not $zip) { throw "No .zip produced in artifacts folder" }
-          Write-Host "ZIP: $($zip.FullName)"
-          "PACKAGE_PATH=$($zip.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
-          dir "$env:GITHUB_WORKSPACE\artifacts"
+          $pub = Join-Path $env:GITHUB_WORKSPACE 'publish'
+          $art = Join-Path $env:GITHUB_WORKSPACE 'artifacts'
+          New-Item -ItemType Directory -Force -Path $art | Out-Null
+          $zipPath = Join-Path $art 'site.zip'
+          if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
+          Compress-Archive -Path "$pub\*" -DestinationPath $zipPath
+          "PACKAGE_PATH=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Write-Host "ZIP creado en: $zipPath"
+          dir $art
 
+      # --- Despliegue a Azure App Service (Zip Deploy) ---
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: Emplaniapp                  # <-- Exacto como en Azure
+          app-name: Emplaniapp                       # <-- EXACTO como se llama tu Web App en Azure
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: ${{ env.PACKAGE_PATH }}
