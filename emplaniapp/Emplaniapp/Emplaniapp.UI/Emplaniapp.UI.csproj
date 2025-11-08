@@ -455,7 +455,7 @@
     <Content Include="Views\Remuneraciones\DetallesRemu.cshtml" />
     <Content Include="Views\Shared\_.cshtml" />
     <Content Include="Views\Retenciones\Detalles.cshtml" />
-    <Content Include="Views\Remuneraciones\_CrearRemuneracion.cshtml" />
+    <Content Include="Views\Remuneraciones\_CrearRemuneracionManual.cshtml" />
     <Content Include="Views\Remuneraciones\EditarRemuneracion.cshtml" />
     <Content Include="Views\Remuneraciones\CrearRemuneracionManual.cshtml" />
     <Content Include="Views\Retenciones\_ListaRetenciones.cshtml" />
