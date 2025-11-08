@@ -19,7 +19,7 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # 1️⃣ Localiza la solución y el proyecto Web
+      # 1) Localiza la solución y el proyecto web (WebApplication .NET Framework)
       - name: Locate solution and web project
         shell: pwsh
         run: |
@@ -33,25 +33,26 @@ jobs:
           } | Select-Object -First 1
           if (-not $web) { throw "No Web .csproj found." }
           "WEBPROJ_PATH=$($web.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+
           Write-Host "SOLUTION_PATH=$env:SOLUTION_PATH"
           Write-Host "WEBPROJ_PATH=$env:WEBPROJ_PATH"
 
-      # 2️⃣ Restaurar dependencias y compilar
+      # 2) Restaurar paquetes y compilar
       - name: Restore NuGet packages
         run: nuget restore "$env:SOLUTION_PATH"
 
       - name: Build (Release)
         run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
 
-      # 3️⃣ Publicar el sitio a una carpeta local
-           - name: Publish to folder (FileSystem)
+      # 3) Publicar a carpeta (intento con DeployOnBuild y fallback a WebPublish)
+      - name: Publish to folder (FileSystem)
         shell: pwsh
         run: |
           $publish = Join-Path $env:GITHUB_WORKSPACE 'publish'
           if (Test-Path $publish) { Remove-Item $publish -Recurse -Force }
           New-Item -ItemType Directory -Path $publish | Out-Null
 
-          # 1) Intento principal: DeployOnBuild
+          # Intento principal
           & msbuild "$env:WEBPROJ_PATH" `
             /p:Configuration=Release `
             /p:Platform="Any CPU" `
@@ -61,7 +62,7 @@ jobs:
             /p:PublishUrl="$publish" `
             /verbosity:minimal
 
-          # Si quedó vacío, intentamos WebPublish (algunos proyectos sólo publican con este target)
+          # Fallback si no generó salida
           if (-not (Test-Path (Join-Path $publish 'Web.config'))) {
             Write-Host "DeployOnBuild no generó salida; probando /t:WebPublish…"
             & msbuild "$env:WEBPROJ_PATH" `
@@ -75,21 +76,11 @@ jobs:
               /verbosity:minimal
           }
 
-          # Mostrar lo que quedó publicado
           Write-Host "Contenido de publish:"
           Get-ChildItem -Recurse $publish
 
-
-      - name: List contents of publish folder
-        shell: pwsh
-        run: |
-          $publish = Join-Path $env:GITHUB_WORKSPACE 'publish'
-          Write-Host "Mostrando contenido de $publish"
-          Get-ChildItem -Recurse $publish
-
-
-      # 4️⃣ Comprimir el resultado publicado
-            - name: Create site zip
+      # 4) Crear ZIP del sitio publicado
+      - name: Create site zip
         shell: pwsh
         run: |
           $publish = Join-Path $env:GITHUB_WORKSPACE 'publish'
@@ -98,7 +89,6 @@ jobs:
           New-Item -ItemType Directory -Path $artifacts | Out-Null
           $zipPath = Join-Path $artifacts 'site.zip'
 
-          # Si publish sigue vacío, cortamos con diagnóstico claro
           if (-not (Test-Path (Join-Path $publish 'Web.config'))) {
             Write-Host "Publicación vacía. Contenido actual de publish:"
             Get-ChildItem -Recurse $publish
@@ -117,25 +107,21 @@ jobs:
           Write-Host "ZIP creado correctamente en: $zipPath"
           "PACKAGE_PATH=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-
-      # 5️⃣ Verificar el ZIP generado
+      # 5) Verificación explícita del ZIP
       - name: Verify package path
         shell: pwsh
         run: |
           if (-not (Test-Path $env:PACKAGE_PATH)) {
-            Write-Host "Contenido del directorio de artifacts:"
-            Get-ChildItem -Recurse "$env:GITHUB_WORKSPACE" | Select-String "site.zip" -List
-            throw "Zip not found at $env:PACKAGE_PATH"
+            Write-Host "No existe el ZIP en $env:PACKAGE_PATH"
+            throw "Zip not found"
           } else {
-            Write-Host "ZIP encontrado correctamente en: $env:PACKAGE_PATH"
+            Write-Host "ZIP OK: $env:PACKAGE_PATH"
           }
 
-      # 6️⃣ Desplegar en Azure App Service
+      # 6) Despliegue a Azure App Service (Zip Deploy)
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: Emplaniapp
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: ${{ env.PACKAGE_PATH }}
-
-
