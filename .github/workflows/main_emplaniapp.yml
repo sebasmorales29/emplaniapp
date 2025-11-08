@@ -1,4 +1,4 @@
-name: Deploy ASP.NET MVC (.NET Framework) to Azure (specific path)
+name: Deploy ASP.NET MVC (.NET Framework) to Azure
 
 on:
   push:
@@ -18,46 +18,62 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # 1) Restaurar paquetes sobre tu SOLUCIÓN real
-      - name: Restore NuGet packages
-        run: nuget restore ".\emplaniapp\Emplaniapp\Emplaniapp.sln"
-
-      # 2) Compilar en Release la SOLUCIÓN
-      - name: Build (Release)
-        run: msbuild ".\emplaniapp\Emplaniapp\Emplaniapp.sln" /p:Configuration=Release
-
-      # 3) Crear carpeta de artifacts en el workspace del runner
-      - name: Prepare artifacts folder
+      # Localiza la solución y el proyecto web
+      - name: Locate solution and web project
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\artifacts" | Out-Null
-          Write-Host "Artifacts dir: $env:GITHUB_WORKSPACE\artifacts"
+          Write-Host "Buscando .sln y .csproj…"
+          $sln = Get-ChildItem -Recurse -Filter *.sln | Select-Object -First 1
+          if (-not $sln) { throw "No .sln found in repository." }
+          "SOLUTION_PATH=$($sln.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-      # 4) Empaquetar el proyecto WEB en un ZIP (sin ^, usando PowerShell)
-      - name: Package Web Deploy
+          $web = Get-ChildItem -Recurse -Filter *.csproj | Where-Object {
+            (Select-String -Path $_.FullName -Pattern "<ProjectTypeGuids>|<UseIISExpress>|Microsoft.WebApplication.targets" -Quiet)
+          } | Select-Object -First 1
+          if (-not $web) { throw "No Web .csproj found." }
+          "WEBPROJ_PATH=$($web.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+          Write-Host "SOLUTION_PATH=$env:SOLUTION_PATH"
+          Write-Host "WEBPROJ_PATH=$env:WEBPROJ_PATH"
+
+      - name: Restore NuGet packages
         shell: pwsh
-        run: >
-          msbuild ".\emplaniapp\Emplaniapp\Emplaniapp.UI\Emplaniapp.UI.csproj"
-          /p:Configuration=Release
-          /p:WebPublishMethod=Package
-          /p:PackageAsSingleFile=true
-          /p:SkipInvalidConfigurations=true
-          /p:PackageLocation="$env:GITHUB_WORKSPACE\artifacts\Emplaniapp.UI.zip"
+        run: nuget restore "$env:SOLUTION_PATH"
 
-      # 5) Verificar que el ZIP existe y exponer su ruta como variable de entorno
+      - name: Build (Release)
+        shell: pwsh
+        run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
+
+      # === PASO CLAVE: Generar el paquete WebDeploy (.zip) ===
+      - name: Package Web Deploy (create artifacts\Emplaniapp.UI.zip)
+        shell: pwsh
+        run: |
+          $art = Join-Path $env:GITHUB_WORKSPACE 'artifacts'
+          New-Item -Path $art -ItemType Directory -Force | Out-Null
+
+          # Invoca el target Package y fija PackageLocation de forma explícita
+          msbuild "$env:WEBPROJ_PATH" `
+            /t:Package `
+            /p:Configuration=Release `
+            /p:DeployOnBuild=true `
+            /p:WebPublishMethod=Package `
+            /p:PackageAsSingleFile=true `
+            /p:SkipInvalidConfigurations=true `
+            /p:PackageLocation="$art\Emplaniapp.UI.zip"
+
+      # Verifica que el .zip existe (si no, falla para ver logs)
       - name: Verify package and set env
         shell: pwsh
         run: |
-          Get-ChildItem -Recurse "$env:GITHUB_WORKSPACE\artifacts"
-          $zip = Get-ChildItem "$env:GITHUB_WORKSPACE\artifacts" -Filter *.zip -Recurse | Select-Object -First 1
+          $zip = Get-ChildItem -Recurse "$env:GITHUB_WORKSPACE\artifacts\*.zip" | Select-Object -First 1
           if (-not $zip) { throw "No .zip produced in artifacts folder" }
+          Write-Host "ZIP: $($zip.FullName)"
           "PACKAGE_PATH=$($zip.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
-          Write-Host "PACKAGE_PATH set to $($zip.FullName)"
+          dir "$env:GITHUB_WORKSPACE\artifacts"
 
-      # 6) Publicar ese ZIP al App Service "Emplaniapp"
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: Emplaniapp
+          app-name: Emplaniapp                  # <-- Exacto como en Azure
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: ${{ env.PACKAGE_PATH }}
