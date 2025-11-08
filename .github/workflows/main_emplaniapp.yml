@@ -19,32 +19,33 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # 1) Localiza la solución y el proyecto web (WebApplication .NET Framework)
+      # 1️⃣ Localiza la solución y el proyecto Web
       - name: Locate solution and web project
         shell: pwsh
         run: |
-          Write-Host "Buscando .sln y .csproj…"
+          Write-Host "Buscando .sln y .csproj..."
           $sln = Get-ChildItem -Recurse -Filter *.sln | Select-Object -First 1
-          if (-not $sln) { throw "No .sln found in repository." }
+          if (-not $sln) { throw "No se encontró ningún archivo .sln en el repositorio." }
           "SOLUTION_PATH=$($sln.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
           $web = Get-ChildItem -Recurse -Filter *.csproj | Where-Object {
             (Select-String -Path $_.FullName -Pattern "<ProjectTypeGuids>|<UseIISExpress>|Microsoft.WebApplication.targets" -Quiet)
           } | Select-Object -First 1
-          if (-not $web) { throw "No Web .csproj found." }
+          if (-not $web) { throw "No se encontró ningún proyecto web (.csproj)." }
           "WEBPROJ_PATH=$($web.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-          Write-Host "SOLUTION_PATH=$env:SOLUTION_PATH"
-          Write-Host "WEBPROJ_PATH=$env:WEBPROJ_PATH"
+          Write-Host "Solución encontrada: $env:SOLUTION_PATH"
+          Write-Host "Proyecto web encontrado: $env:WEBPROJ_PATH"
 
-      # 2) Restaurar paquetes y compilar
+      # 2️⃣ Restaurar paquetes NuGet
       - name: Restore NuGet packages
         run: nuget restore "$env:SOLUTION_PATH"
 
+      # 3️⃣ Compilar en Release
       - name: Build (Release)
         run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
 
-      # 3) Publicar a carpeta (intento con DeployOnBuild y fallback a WebPublish)
+      # 4️⃣ Publicar a carpeta (FileSystem)
       - name: Publish to folder (FileSystem)
         shell: pwsh
         run: |
@@ -53,22 +54,21 @@ jobs:
           New-Item -ItemType Directory -Path $publish | Out-Null
 
           # Intento principal
+          Write-Host "Ejecutando DeployOnBuild..."
           & msbuild "$env:WEBPROJ_PATH" `
             /p:Configuration=Release `
-            /p:Platform="Any CPU" `
             /p:DeployOnBuild=true `
             /p:WebPublishMethod=FileSystem `
             /p:DeleteExistingFiles=True `
             /p:PublishUrl="$publish" `
             /verbosity:minimal
 
-          # Fallback si no generó salida
+          # Fallback (si no generó salida)
           if (-not (Test-Path (Join-Path $publish 'Web.config'))) {
-            Write-Host "DeployOnBuild no generó salida; probando /t:WebPublish…"
+            Write-Host "DeployOnBuild no generó salida; probando /t:WebPublish..."
             & msbuild "$env:WEBPROJ_PATH" `
               /t:WebPublish `
               /p:Configuration=Release `
-              /p:Platform="Any CPU" `
               /p:WebPublishMethod=FileSystem `
               /p:PublishProvider=FileSystem `
               /p:DeleteExistingFiles=True `
@@ -76,10 +76,10 @@ jobs:
               /verbosity:minimal
           }
 
-          Write-Host "Contenido de publish:"
+          Write-Host "Contenido final de publish:"
           Get-ChildItem -Recurse $publish
 
-      # 4) Crear ZIP del sitio publicado
+      # 5️⃣ Crear ZIP del sitio publicado
       - name: Create site zip
         shell: pwsh
         run: |
@@ -99,7 +99,7 @@ jobs:
           Compress-Archive -Path (Join-Path $publish '*') -DestinationPath $zipPath -Force
 
           if (-not (Test-Path $zipPath)) {
-            Write-Host "Contenido de publish (para debug):"
+            Write-Host "Contenido de publish (debug):"
             Get-ChildItem -Recurse $publish
             throw "No se pudo crear el ZIP en $zipPath"
           }
@@ -107,18 +107,18 @@ jobs:
           Write-Host "ZIP creado correctamente en: $zipPath"
           "PACKAGE_PATH=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-      # 5) Verificación explícita del ZIP
+      # 6️⃣ Verificar el ZIP generado
       - name: Verify package path
         shell: pwsh
         run: |
           if (-not (Test-Path $env:PACKAGE_PATH)) {
-            Write-Host "No existe el ZIP en $env:PACKAGE_PATH"
+            Write-Host "El archivo ZIP no existe: $env:PACKAGE_PATH"
             throw "Zip not found"
           } else {
             Write-Host "ZIP OK: $env:PACKAGE_PATH"
           }
 
-      # 6) Despliegue a Azure App Service (Zip Deploy)
+      # 7️⃣ Desplegar a Azure App Service (Zip Deploy)
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
