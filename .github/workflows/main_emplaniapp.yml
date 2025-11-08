@@ -19,7 +19,7 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # --- Localiza la solución y el proyecto Web (clásico .NET Framework) ---
+      # Localiza la solución y el proyecto Web clásico (.NET Framework)
       - name: Locate solution and web project
         shell: pwsh
         run: |
@@ -28,7 +28,6 @@ jobs:
           if (-not $sln) { throw "No .sln found in repository." }
           "SOLUTION_PATH=$($sln.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-          # Heurística para detectar el proyecto web clásico (Microsoft.WebApplication.targets / UseIISExpress / ProjectTypeGuids)
           $web = Get-ChildItem -Recurse -Filter *.csproj | Where-Object {
             (Select-String -Path $_.FullName -Pattern "<ProjectTypeGuids>|<UseIISExpress>|Microsoft.WebApplication.targets" -Quiet)
           } | Select-Object -First 1
@@ -46,7 +45,7 @@ jobs:
         shell: pwsh
         run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
 
-      # --- Publica a carpeta (FileSystem) en vez de MSDeploy Package ---
+      # Publica a carpeta (FileSystem)
       - name: Publish to folder (FileSystem)
         shell: pwsh
         run: |
@@ -60,24 +59,39 @@ jobs:
             /p:DeleteExistingFiles=True `
             /p:PublishUrl="$pub"
 
-      # --- Comprime la salida publicada para Zip Deploy ---
+      # Comprime la salida publicada en artifacts/site.zip
       - name: Create site zip
         shell: pwsh
         run: |
           $pub = Join-Path $env:GITHUB_WORKSPACE 'publish'
           $art = Join-Path $env:GITHUB_WORKSPACE 'artifacts'
           New-Item -ItemType Directory -Force -Path $art | Out-Null
-          $zipPath = Join-Path $art 'site.zip'
-          if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
-          Compress-Archive -Path "$pub\*" -DestinationPath $zipPath
-          "PACKAGE_PATH=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append
-          Write-Host "ZIP creado en: $zipPath"
+
+          $zipPathWin = Join-Path $art 'site.zip'
+          if (Test-Path $zipPathWin) { Remove-Item $zipPathWin -Force }
+          Compress-Archive -Path "$pub\*" -DestinationPath $zipPathWin
+
+          # Exporta variable con RUTA RELATIVA usando barras normales (para el glob del action)
+          "PACKAGE_PATH=artifacts/site.zip" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+          Write-Host "ZIP creado en: $zipPathWin"
           dir $art
 
-      # --- Despliegue a Azure App Service (Zip Deploy) ---
+      # Verifica que el zip exista donde espera el action
+      - name: Verify package path
+        shell: pwsh
+        run: |
+          Write-Host "PACKAGE_PATH=$env:PACKAGE_PATH"
+          if (-not (Test-Path (Join-Path $env:GITHUB_WORKSPACE $env:PACKAGE_PATH))) {
+            Write-Host "Contenido de artifacts:"
+            dir (Join-Path $env:GITHUB_WORKSPACE 'artifacts') -Force
+            throw "Zip not found at $env:PACKAGE_PATH"
+          }
+
+      # Despliegue a Azure App Service (Zip Deploy)
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: Emplaniapp                       # <-- EXACTO como se llama tu Web App en Azure
+          app-name: Emplaniapp
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: ${{ env.PACKAGE_PATH }}
