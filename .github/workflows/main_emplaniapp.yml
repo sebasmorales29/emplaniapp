@@ -56,6 +56,14 @@ jobs:
             /p:DeleteExistingFiles=True `
             /p:PublishUrl="$publish"
 
+      - name: List contents of publish folder
+        shell: pwsh
+        run: |
+          $publish = Join-Path $env:GITHUB_WORKSPACE 'publish'
+          Write-Host "Mostrando contenido de $publish"
+          Get-ChildItem -Recurse $publish
+
+
       # 4️⃣ Comprimir el resultado publicado
       - name: Create site zip
         shell: pwsh
@@ -89,3 +97,4 @@ jobs:
           app-name: Emplaniapp
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: ${{ env.PACKAGE_PATH }}
+
