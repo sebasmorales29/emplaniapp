@@ -19,7 +19,7 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # Localiza la solución y el proyecto Web clásico (.NET Framework)
+      # 1️⃣ Localiza la solución y el proyecto Web
       - name: Locate solution and web project
         shell: pwsh
         run: |
@@ -33,62 +33,56 @@ jobs:
           } | Select-Object -First 1
           if (-not $web) { throw "No Web .csproj found." }
           "WEBPROJ_PATH=$($web.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
-
           Write-Host "SOLUTION_PATH=$env:SOLUTION_PATH"
           Write-Host "WEBPROJ_PATH=$env:WEBPROJ_PATH"
 
+      # 2️⃣ Restaurar dependencias y compilar
       - name: Restore NuGet packages
-        shell: pwsh
         run: nuget restore "$env:SOLUTION_PATH"
 
       - name: Build (Release)
-        shell: pwsh
         run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
 
-      # Publica a carpeta (FileSystem)
+      # 3️⃣ Publicar el sitio a una carpeta local
       - name: Publish to folder (FileSystem)
         shell: pwsh
         run: |
-          $pub = Join-Path $env:GITHUB_WORKSPACE 'publish'
-          if (Test-Path $pub) { Remove-Item $pub -Recurse -Force }
-          New-Item -ItemType Directory -Path $pub | Out-Null
-
+          $publish = Join-Path $env:GITHUB_WORKSPACE 'publish'
+          if (Test-Path $publish) { Remove-Item $publish -Recurse -Force }
+          New-Item -ItemType Directory -Path $publish | Out-Null
           msbuild "$env:WEBPROJ_PATH" `
             /p:Configuration=Release `
             /p:WebPublishMethod=FileSystem `
             /p:DeleteExistingFiles=True `
-            /p:PublishUrl="$pub"
+            /p:PublishUrl="$publish"
 
-      # Comprime la salida publicada en artifacts/site.zip
+      # 4️⃣ Comprimir el resultado publicado
       - name: Create site zip
         shell: pwsh
         run: |
-          $pub = Join-Path $env:GITHUB_WORKSPACE 'publish'
-          $art = Join-Path $env:GITHUB_WORKSPACE 'artifacts'
-          New-Item -ItemType Directory -Force -Path $art | Out-Null
+          $publish = Join-Path $env:GITHUB_WORKSPACE 'publish'
+          $artifacts = Join-Path $env:GITHUB_WORKSPACE 'artifacts'
+          if (Test-Path $artifacts) { Remove-Item $artifacts -Recurse -Force }
+          New-Item -ItemType Directory -Path $artifacts | Out-Null
+          $zipPath = Join-Path $artifacts 'site.zip'
+          Compress-Archive -Path "$publish\*" -DestinationPath $zipPath -Force
+          if (-not (Test-Path $zipPath)) { throw "No se pudo crear el ZIP en $zipPath" }
+          Write-Host "ZIP creado en: $zipPath"
+          "PACKAGE_PATH=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-          $zipPathWin = Join-Path $art 'site.zip'
-          if (Test-Path $zipPathWin) { Remove-Item $zipPathWin -Force }
-          Compress-Archive -Path "$pub\*" -DestinationPath $zipPathWin
-
-          # Exporta variable con RUTA RELATIVA usando barras normales (para el glob del action)
-          "PACKAGE_PATH=artifacts/site.zip" | Out-File -FilePath $env:GITHUB_ENV -Append
-
-          Write-Host "ZIP creado en: $zipPathWin"
-          dir $art
-
-      # Verifica que el zip exista donde espera el action
+      # 5️⃣ Verificar el ZIP generado
       - name: Verify package path
         shell: pwsh
         run: |
-          Write-Host "PACKAGE_PATH=$env:PACKAGE_PATH"
-          if (-not (Test-Path (Join-Path $env:GITHUB_WORKSPACE $env:PACKAGE_PATH))) {
-            Write-Host "Contenido de artifacts:"
-            dir (Join-Path $env:GITHUB_WORKSPACE 'artifacts') -Force
+          if (-not (Test-Path $env:PACKAGE_PATH)) {
+            Write-Host "Contenido del directorio de artifacts:"
+            Get-ChildItem -Recurse "$env:GITHUB_WORKSPACE" | Select-String "site.zip" -List
             throw "Zip not found at $env:PACKAGE_PATH"
+          } else {
+            Write-Host "ZIP encontrado correctamente en: $env:PACKAGE_PATH"
           }
 
-      # Despliegue a Azure App Service (Zip Deploy)
+      # 6️⃣ Desplegar en Azure App Service
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
