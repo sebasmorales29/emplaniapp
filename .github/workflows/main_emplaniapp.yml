@@ -11,18 +11,18 @@ jobs:
 
     steps:
 
-    # 1️⃣ Obtener código
+    # 1️⃣ Código fuente
     - name: Checkout
       uses: actions/checkout@v4
 
-    # 2️⃣ Configurar NuGet y MSBuild
+    # 2️⃣ Configurar herramientas
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v2
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # 3️⃣ Detectar automáticamente la solución y el proyecto web
+    # 3️⃣ Detectar solución y proyecto web
     - name: Locate solution and web project
       shell: pwsh
       run: |
@@ -39,40 +39,42 @@ jobs:
         Write-Host "✅ SLN: $env:SOLUTION_PATH"
         Write-Host "✅ Web project: $env:WEBPROJ_PATH"
 
-    # 4️⃣ Restaurar paquetes NuGet
+    # 4️⃣ Restaurar dependencias
     - name: Restore NuGet packages
       run: nuget restore "$env:SOLUTION_PATH"
 
-    # 5️⃣ Compilar en Release
-    - name: Build solution (Release)
-      run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
+    # 5️⃣ Construir y empaquetar para publicación
+    - name: Build and package web app (Release)
+      run: |
+        msbuild "$env:WEBPROJ_PATH" /p:Configuration=Release /p:DeployOnBuild=true `
+          /p:WebPublishMethod=Package /p:PackageAsSingleFile=false `
+          /p:SkipInvalidConfigurations=true `
+          /p:PackageLocation=".\obj\Release\Package"
 
-    # 6️⃣ Detectar carpeta de publicación (Package o PackageTmp)
+    # 6️⃣ Detectar carpeta de publicación
     - name: Locate publish output
       shell: pwsh
       run: |
-        $pkg = Get-ChildItem -Recurse -Directory -Filter Package | Select-Object -First 1
+        $pkg = Get-ChildItem -Recurse -Directory -Filter PackageTmp | Select-Object -First 1
         if (-not $pkg) {
-          $pkg = Get-ChildItem -Recurse -Directory -Filter PackageTmp | Select-Object -First 1
+          $pkg = Get-ChildItem -Recurse -Directory -Filter Package | Select-Object -First 1
         }
         if (-not $pkg) { throw "❌ No se encontró carpeta Package o PackageTmp (sitio publicado)." }
 
         "PKG_PATH=$($pkg.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
         Write-Host "📦 Carpeta de publicación encontrada: $($pkg.FullName)"
 
-    # 7️⃣ Crear ZIP para ZipDeploy
+    # 7️⃣ Crear ZIP
     - name: Create deployable ZIP
       shell: pwsh
       run: |
         $zipPath = Join-Path $env:GITHUB_WORKSPACE "site.zip"
         if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
-
         Compress-Archive -Path (Join-Path $env:PKG_PATH '*') -DestinationPath $zipPath -Force
-
         "PACKAGE_PATH=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append
         Write-Host "✅ ZIP creado en: $zipPath"
 
-    # 8️⃣ Desplegar en Azure App Service
+    # 8️⃣ Desplegar en Azure
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
       with:
