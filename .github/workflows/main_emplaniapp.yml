@@ -2,7 +2,7 @@ name: Deploy ASP.NET MVC (.NET Framework) to Azure
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -10,65 +10,75 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # 0) Código
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      # 1) Herramientas de build
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v2
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
 
-      # 2) Ubicar solución y proyecto web (.csproj Web Application)
-      - name: Locate solution and web project
-        shell: pwsh
-        run: |
-          $sln = Get-ChildItem -Recurse -Filter *.sln | Select-Object -First 1
-          if (-not $sln) { throw "No se encontró ningún archivo .sln en el repositorio." }
-          "SOLUTION_PATH=$($sln.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+    # Ubicar .sln y proyecto Web
+    - name: Locate solution and web project
+      shell: pwsh
+      run: |
+        $sln = Get-ChildItem -Recurse -Filter *.sln | Select-Object -First 1
+        if (-not $sln) { throw "No se encontró .sln" }
+        "SOLUTION_PATH=$($sln.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-          $web = Get-ChildItem -Recurse -Filter *.csproj | Where-Object {
-            (Select-String -Path $_.FullName -Pattern "<ProjectTypeGuids>|Microsoft.WebApplication.targets|<UseIISExpress>" -Quiet)
-          } | Select-Object -First 1
-          if (-not $web) { throw "No se encontró ningún proyecto web (.csproj) de tipo Web Application." }
-          "WEBPROJ_PATH=$($web.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+        $web = Get-ChildItem -Recurse -Filter *.csproj | Where-Object {
+          (Select-String -Path $_.FullName -Pattern "Microsoft.WebApplication.targets" -Quiet)
+        } | Select-Object -First 1
+        if (-not $web) { throw "No se encontró proyecto web" }
+        "WEBPROJ_PATH=$($web.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-          Write-Host "Solución: $env:SOLUTION_PATH"
-          Write-Host "Proyecto Web: $env:WEBPROJ_PATH"
+    - name: Restore NuGet packages
+      run: nuget restore "$env:SOLUTION_PATH"
 
-      # 3) Restore + Build
-      - name: Restore NuGet packages
-        run: nuget restore "$env:SOLUTION_PATH"
+    - name: Build solution
+      run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
 
-      - name: Build solution (Release)
-        run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release /m
+    # PUBLICAR A CARPETA (transforma Web.Release.config)
+    - name: Publish to folder (FileSystem)
+      shell: pwsh
+      run: |
+        $publish = Join-Path $env:GITHUB_WORKSPACE "publish"
+        if (Test-Path $publish) { Remove-Item $publish -Recurse -Force }
+        New-Item -ItemType Directory -Path $publish | Out-Null
 
-      # 4) Empaquetar como MSDeploy ZIP (aplica Web.Release.config)
-      - name: Package web app (MSDeploy .zip)
-        shell: pwsh
-        run: |
-          & msbuild "$env:WEBPROJ_PATH" `
-            /p:Configuration=Release `
-            /t:Package `
-            /p:WebPublishMethod=Package `
-            /p:PackageAsSingleFile=true `
-            /p:SkipInvalidConfigurations=true
+        & msbuild "$env:WEBPROJ_PATH" `
+          /p:Configuration=Release `
+          /p:DeployOnBuild=true `
+          /p:WebPublishMethod=FileSystem `
+          /p:DeleteExistingFiles=True `
+          /p:PublishUrl="$publish" `
+          /verbosity:minimal
 
-          # Buscar el .zip dentro de obj\Release\Package
-          $pkg = Get-ChildItem -Path (Split-Path $env:WEBPROJ_PATH) -Recurse -Filter *.zip |
-            Where-Object { $_.FullName -match '\\obj\\Release\\Package\\' } |
-            Select-Object -First 1
+        if (-not (Test-Path "$publish/Web.config")) {
+          Write-Host "No se generó Web.config"
+          Get-ChildItem -Recurse $publish
+          throw "Error: No Web.config"
+        }
 
-          if (-not $pkg) { throw "No se encontró el paquete .zip en obj\Release\Package\*.zip." }
-          "PACKAGE_PATH=$($pkg.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
-          Write-Host "Paquete generado: $($pkg.FullName)"
+    # Crear ZIP válido para ZIPDEPLOY
+    - name: Create site ZIP
+      shell: pwsh
+      run: |
+        $publish = Join-Path $env:GITHUB_WORKSPACE "publish"
+        $zipPath = Join-Path $env:GITHUB_WORKSPACE "site.zip"
 
-      # 5) Desplegar a Azure App Service usando el publish profile
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: Emplaniapp
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
-          package: ${{ env.PACKAGE_PATH }}
+        if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
+
+        Compress-Archive -Path "$publish/*" -DestinationPath $zipPath -Force
+
+        "PACKAGE_PATH=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append
+        Write-Host "ZIP creado: $zipPath"
+
+    # DEPLOY A AZURE WEB APP (ZIPDEPLOY)
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: Emplaniapp
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+        package: ${{ env.PACKAGE_PATH }}
