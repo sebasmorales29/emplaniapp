@@ -20,27 +20,46 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
+    # ⬅️ UBICAR SOLUCIÓN Y PROYECTO WEB AUTOMÁTICAMENTE
+    - name: Locate solution and web project
+      shell: pwsh
+      run: |
+        $sln = Get-ChildItem -Recurse -Filter *.sln | Select-Object -First 1
+        if (-not $sln) { throw "NO SE ENCONTRÓ NINGÚN .sln EN EL REPO" }
+        "SOLUTION_PATH=$($sln.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+        $web = Get-ChildItem -Recurse -Filter *.csproj | Where-Object {
+          (Select-String -Path $_.FullName -Pattern "Microsoft.WebApplication.targets" -Quiet)
+        } | Select-Object -First 1
+
+        if (-not $web) { throw "NO SE ENCONTRÓ NINGÚN PROYECTO WEB (.csproj)" }
+        "WEBPROJ_PATH=$($web.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+        Write-Host "SLN: $env:SOLUTION_PATH"
+        Write-Host "WEB PROJECT: $env:WEBPROJ_PATH"
+
+    # ⬅️ RESTORE NUGET BIEN HECHO
     - name: Restore NuGet packages
-      run: nuget restore "**/*.sln"
+      run: nuget restore "$env:SOLUTION_PATH"
 
+    # ⬅️ BUILD RELEASE
     - name: Build solution (Release)
-      run: msbuild "**/*.sln" /p:Configuration=Release
+      run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
 
-    # USAR PackageTmp COMO SITIO PUBLICADO
+    # ⬅️ UBICAR PackageTmp QUE YA PRODUCE TU PROYECTO
     - name: Locate PackageTmp output
-      id: findpkg
       shell: pwsh
       run: |
         $pkg = Get-ChildItem -Recurse -Directory -Filter PackageTmp |
-               Where-Object { $_.FullName -match 'obj\\Release\\Package\\PackageTmp$' } |
+               Where-Object { $_.FullName -match "obj\\Release\\Package\\PackageTmp$" } |
                Select-Object -First 1
 
-        if (-not $pkg) { throw "NO SE ENCONTRÓ PackageTmp. Revisar proyecto." }
+        if (-not $pkg) { throw "NO SE ENCONTRÓ PackageTmp. ESTE DIRECTORIO ES EL SITIO PUBLICADO." }
 
-        Write-Host "Encontrado PackageTmp: $($pkg.FullName)"
         "PKGTMP=$($pkg.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+        Write-Host "PackageTmp encontrado en: $($pkg.FullName)"
 
-    # ZIPDEPLOY ZIP
+    # ⬅️ CREAR ZIP PARA ZIPDEPLOY
     - name: Create deployable ZIP
       shell: pwsh
       run: |
@@ -48,10 +67,11 @@ jobs:
         if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
 
         Compress-Archive -Path "$env:PKGTMP/*" -DestinationPath $zipPath -Force
-        "PACKAGE_PATH=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append
-        Write-Host "ZIP creado en: $zipPath"
 
-    # DEPLOY A AZURE
+        "PACKAGE_PATH=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append
+        Write-Host "ZIP creado: $zipPath"
+
+    # ⬅️ DEPLOY A AZURE (ZIPDEPLOY)
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
       with:
