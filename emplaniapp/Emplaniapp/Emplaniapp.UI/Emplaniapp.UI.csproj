@@ -257,6 +257,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Net.Http" />
