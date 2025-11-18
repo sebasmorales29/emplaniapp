@@ -19,11 +19,10 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # 1) Localiza la solución y el proyecto web
+      # Localiza el .sln y el proyecto web (.csproj)
       - name: Locate solution and web project
         shell: pwsh
         run: |
-          Write-Host "Buscando .sln y .csproj..."
           $sln = Get-ChildItem -Recurse -Filter *.sln | Select-Object -First 1
           if (-not $sln) { throw "No se encontró ningún archivo .sln en el repositorio." }
           "SOLUTION_PATH=$($sln.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
@@ -34,18 +33,16 @@ jobs:
           if (-not $web) { throw "No se encontró ningún proyecto web (.csproj)." }
           "WEBPROJ_PATH=$($web.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-          Write-Host "Solución encontrada: $env:SOLUTION_PATH"
-          Write-Host "Proyecto web encontrado: $env:WEBPROJ_PATH"
+          Write-Host "Solución: $env:SOLUTION_PATH"
+          Write-Host "Proyecto web: $env:WEBPROJ_PATH"
 
-      # 2) Restaurar NuGet
       - name: Restore NuGet packages
         run: nuget restore "$env:SOLUTION_PATH"
 
-      # 3) Compilar Release
       - name: Build (Release)
         run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
 
-      # 4) Publicar a carpeta (aplicando Web.Release.config)
+      # Publica con transforms de Web.Release.config (WPP) a una carpeta
       - name: Publish to folder (FileSystem) with transforms
         shell: pwsh
         run: |
@@ -53,39 +50,30 @@ jobs:
           if (Test-Path $publish) { Remove-Item $publish -Recurse -Force }
           New-Item -ItemType Directory -Path $publish | Out-Null
 
-          Write-Host "Ejecutando DeployOnBuild + WPP (con transforms Release)..."
           & msbuild "$env:WEBPROJ_PATH" `
             /p:Configuration=Release `
             /p:DeployOnBuild=true `
             /p:WebPublishMethod=FileSystem `
             /p:UseWPP_CopyWebApplication=true `
-            /p:PipelineDependsOnBuild=false `   # <— clave para romper el ciclo
+            /p:PipelineDependsOnBuild=false `
             /p:AutoParameterizationWebConfigConnectionStrings=false `
             /p:DeleteExistingFiles=True `
             /p:PublishUrl="$publish" `
             /verbosity:minimal
 
           if (-not (Test-Path (Join-Path $publish 'Web.config'))) {
-            throw "No se generó Web.config en publish (falló el publish)."
+            Write-Host "Contenido de 'publish' (debug):"
+            Get-ChildItem -Recurse $publish
+            throw "No se generó Web.config en 'publish'. Falló el publish."
           }
 
-          Write-Host "Contenido final de publish:"
-          Get-ChildItem -Recurse $publish
-
-      # 4.1) Ver resumen del Web.config transformado
+      # (Opcional) imprime un resumen de cambios en Web.config ya transformado
       - name: Show Web.config summary
         shell: pwsh
         run: |
           $cfg = Join-Path $env:GITHUB_WORKSPACE 'publish\Web.config'
-          if (Test-Path $cfg) {
-            Write-Host "==== WEB.CONFIG (extracto) ===="
-            Select-String -Path $cfg -Pattern 'customErrors|compilation|connectionStrings|httpErrors' | ForEach-Object { $_.Line }
-            Write-Host "================================"
-          } else {
-            Write-Host "No se encontró Web.config en publish"
-          }
+          Select-String -Path $cfg -Pattern 'customErrors|compilation|connectionStrings|httpErrors' | ForEach-Object { $_.Line }
 
-      # 5) Crear ZIP
       - name: Create site zip
         shell: pwsh
         run: |
@@ -94,22 +82,15 @@ jobs:
           if (Test-Path $artifacts) { Remove-Item $artifacts -Recurse -Force }
           New-Item -ItemType Directory -Path $artifacts | Out-Null
           $zipPath = Join-Path $artifacts 'site.zip'
-
           Compress-Archive -Path (Join-Path $publish '*') -DestinationPath $zipPath -Force
-
-          if (-not (Test-Path $zipPath)) { throw "No se pudo crear el ZIP en $zipPath" }
-
           "PACKAGE_PATH=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append
-          Write-Host "ZIP creado: $zipPath"
 
-      # 6) Verificar ZIP
       - name: Verify package path
         shell: pwsh
         run: |
           if (-not (Test-Path $env:PACKAGE_PATH)) { throw "Zip not found: $env:PACKAGE_PATH" }
           Write-Host "ZIP OK: $env:PACKAGE_PATH"
 
-      # 7) Deploy a Azure App Service
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
