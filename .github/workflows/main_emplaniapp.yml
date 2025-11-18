@@ -19,22 +19,22 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # Localiza el .sln y el proyecto web (.csproj)
+      # Localiza solución y proyecto web
       - name: Locate solution and web project
         shell: pwsh
         run: |
           $sln = Get-ChildItem -Recurse -Filter *.sln | Select-Object -First 1
-          if (-not $sln) { throw "No se encontró ningún archivo .sln en el repositorio." }
+          if (-not $sln) { throw "No se encontró ningún archivo .sln" }
           "SOLUTION_PATH=$($sln.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
           $web = Get-ChildItem -Recurse -Filter *.csproj | Where-Object {
-            (Select-String -Path $_.FullName -Pattern "<ProjectTypeGuids>|<UseIISExpress>|Microsoft.WebApplication.targets" -Quiet)
+            (Select-String -Path $_.FullName -Pattern "<ProjectTypeGuids>|Microsoft.WebApplication.targets" -Quiet)
           } | Select-Object -First 1
-          if (-not $web) { throw "No se encontró ningún proyecto web (.csproj)." }
+          if (-not $web) { throw "No se encontró ningún proyecto Web (.csproj)" }
           "WEBPROJ_PATH=$($web.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
           Write-Host "Solución: $env:SOLUTION_PATH"
-          Write-Host "Proyecto web: $env:WEBPROJ_PATH"
+          Write-Host "Proyecto Web: $env:WEBPROJ_PATH"
 
       - name: Restore NuGet packages
         run: nuget restore "$env:SOLUTION_PATH"
@@ -42,37 +42,52 @@ jobs:
       - name: Build (Release)
         run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
 
-      # Publica con transforms de Web.Release.config (WPP) a una carpeta
-      - name: Publish to folder (FileSystem) with transforms
+      # PUBLICA a carpeta usando el pipeline de predeploy (aplica Web.Release.config)
+      - name: Publish (PipelinePreDeployCopyAllFilesToOneFolder)
         shell: pwsh
         run: |
           $publish = Join-Path $env:GITHUB_WORKSPACE 'publish'
           if (Test-Path $publish) { Remove-Item $publish -Recurse -Force }
           New-Item -ItemType Directory -Path $publish | Out-Null
 
+          # Método recomendado: copia todo el sitio ya transformado a $publish
           & msbuild "$env:WEBPROJ_PATH" `
+            /t:PipelinePreDeployCopyAllFilesToOneFolder `
+            /p:_PackageTempDir="$publish" `
             /p:Configuration=Release `
-            /p:DeployOnBuild=true `
-            /p:WebPublishMethod=FileSystem `
             /p:UseWPP_CopyWebApplication=true `
-            /p:PipelineDependsOnBuild=false `
             /p:AutoParameterizationWebConfigConnectionStrings=false `
-            /p:DeleteExistingFiles=True `
-            /p:PublishUrl="$publish" `
             /verbosity:minimal
 
           if (-not (Test-Path (Join-Path $publish 'Web.config'))) {
-            Write-Host "Contenido de 'publish' (debug):"
-            Get-ChildItem -Recurse $publish
-            throw "No se generó Web.config en 'publish'. Falló el publish."
+            Write-Host "No se generó Web.config con PreDeploy. Probando FileSystem publish…"
+            & msbuild "$env:WEBPROJ_PATH" `
+              /p:Configuration=Release `
+              /p:DeployOnBuild=true `
+              /p:WebPublishMethod=FileSystem `
+              /p:DeleteExistingFiles=True `
+              /p:UseWPP_CopyWebApplication=true `
+              /p:PipelineDependsOnBuild=false `
+              /p:AutoParameterizationWebConfigConnectionStrings=false `
+              /p:PublishUrl="$publish" `
+              /verbosity:minimal
           }
 
-      # (Opcional) imprime un resumen de cambios en Web.config ya transformado
-      - name: Show Web.config summary
+          if (-not (Test-Path (Join-Path $publish 'Web.config'))) {
+            Write-Host "Contenido de publish (debug):"
+            Get-ChildItem -Recurse $publish
+            throw "No se generó Web.config en 'publish'."
+          }
+
+      - name: Show Web.config summary (optional)
         shell: pwsh
         run: |
           $cfg = Join-Path $env:GITHUB_WORKSPACE 'publish\Web.config'
-          Select-String -Path $cfg -Pattern 'customErrors|compilation|connectionStrings|httpErrors' | ForEach-Object { $_.Line }
+          if (Test-Path $cfg) {
+            Write-Host "==== EXTRACTO WEB.CONFIG ===="
+            Select-String -Path $cfg -Pattern 'customErrors|compilation|httpErrors|connectionStrings'
+            Write-Host "============================="
+          }
 
       - name: Create site zip
         shell: pwsh
@@ -94,6 +109,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: Emplaniapp
+          app-name: Emplaniapp           # <-- cambia si tu App Service se llama distinto
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: ${{ env.PACKAGE_PATH }}
