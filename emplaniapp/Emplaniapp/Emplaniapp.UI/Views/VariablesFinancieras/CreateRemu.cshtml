@@ -54,3 +54,19 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var inp = document.getElementById('porcentajeRemuneracion') || document.querySelector('[name="porcentajeRemuneracion"]');
+        if (!inp) return;
+        inp.addEventListener('blur', function () {
+            if (inp.value.indexOf('.') !== -1) {
+                inp.value = inp.value.replace(/\./g, ',');
+            }
+        });
+        inp.addEventListener('input', function () {
+            if (inp.value.indexOf('.') !== -1) {
+                inp.value = inp.value.replace(/\./g, ',');
+            }
+        });
+    });
+</script>
