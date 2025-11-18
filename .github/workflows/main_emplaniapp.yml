@@ -41,36 +41,40 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore "$env:SOLUTION_PATH"
 
-      # 3️⃣ Compilar en Release
+      # 3️⃣ Compilar en Release (solución)
       - name: Build (Release)
         run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
 
-      # 4️⃣ Publicar a carpeta (FileSystem)
-      - name: Publish to folder (FileSystem)
+      # 4️⃣ Publicar a carpeta (FileSystem) con TRANSFORMS aplicados
+      - name: Publish to folder (FileSystem) with transforms
         shell: pwsh
         run: |
           $publish = Join-Path $env:GITHUB_WORKSPACE 'publish'
           if (Test-Path $publish) { Remove-Item $publish -Recurse -Force }
           New-Item -ItemType Directory -Path $publish | Out-Null
 
-          # Intento principal
-          Write-Host "Ejecutando DeployOnBuild..."
+          Write-Host "Ejecutando DeployOnBuild + WPP (con transforms Release)..."
           & msbuild "$env:WEBPROJ_PATH" `
             /p:Configuration=Release `
             /p:DeployOnBuild=true `
             /p:WebPublishMethod=FileSystem `
+            /p:UseWPP_CopyWebApplication=true `
+            /p:PipelineDependsOnBuild=true `
+            /p:AutoParameterizationWebConfigConnectionStrings=false `
             /p:DeleteExistingFiles=True `
             /p:PublishUrl="$publish" `
             /verbosity:minimal
 
-          # Fallback (si no generó salida)
+          # Fallback (por si algún target no corrió)
           if (-not (Test-Path (Join-Path $publish 'Web.config'))) {
             Write-Host "DeployOnBuild no generó salida; probando /t:WebPublish..."
             & msbuild "$env:WEBPROJ_PATH" `
               /t:WebPublish `
               /p:Configuration=Release `
               /p:WebPublishMethod=FileSystem `
-              /p:PublishProvider=FileSystem `
+              /p:UseWPP_CopyWebApplication=true `
+              /p:PipelineDependsOnBuild=true `
+              /p:AutoParameterizationWebConfigConnectionStrings=false `
               /p:DeleteExistingFiles=True `
               /p:PublishUrl="$publish" `
               /verbosity:minimal
@@ -78,6 +82,19 @@ jobs:
 
           Write-Host "Contenido final de publish:"
           Get-ChildItem -Recurse $publish
+
+      # 4.1️⃣ (Opcional) Verificar transform aplicado en Web.config
+      - name: Show Web.config summary
+        shell: pwsh
+        run: |
+          $cfg = Join-Path $env:GITHUB_WORKSPACE 'publish\Web.config'
+          if (Test-Path $cfg) {
+            Write-Host "==== WEB.CONFIG (extracto) ===="
+            Select-String -Path $cfg -Pattern 'customErrors|compilation|httpErrors' | ForEach-Object { $_.Line }
+            Write-Host "================================"
+          } else {
+            Write-Host "No se encontró Web.config en publish"
+          }
 
       # 5️⃣ Crear ZIP del sitio publicado
       - name: Create site zip
@@ -124,4 +141,4 @@ jobs:
         with:
           app-name: Emplaniapp
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
-          package: ${{ env.PACKAGE_PATH }}
+          package: ${{ env:PACKAGE_PATH }}
