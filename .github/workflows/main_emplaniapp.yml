@@ -11,67 +11,70 @@ jobs:
 
     steps:
 
+    # 1️⃣ Código fuente
     - name: Checkout
       uses: actions/checkout@v4
 
+    # 2️⃣ Configurar herramientas
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v2
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # ⬅️ UBICAR SOLUCIÓN Y PROYECTO WEB AUTOMÁTICAMENTE
+    # 3️⃣ Detectar solución y proyecto web
     - name: Locate solution and web project
       shell: pwsh
       run: |
         $sln = Get-ChildItem -Recurse -Filter *.sln | Select-Object -First 1
-        if (-not $sln) { throw "NO SE ENCONTRÓ NINGÚN .sln EN EL REPO" }
+        if (-not $sln) { throw "❌ No se encontró ningún archivo .sln en el repositorio." }
         "SOLUTION_PATH=$($sln.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
         $web = Get-ChildItem -Recurse -Filter *.csproj | Where-Object {
           (Select-String -Path $_.FullName -Pattern "Microsoft.WebApplication.targets" -Quiet)
         } | Select-Object -First 1
-
-        if (-not $web) { throw "NO SE ENCONTRÓ NINGÚN PROYECTO WEB (.csproj)" }
+        if (-not $web) { throw "❌ No se encontró ningún proyecto web (.csproj)." }
         "WEBPROJ_PATH=$($web.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-        Write-Host "SLN: $env:SOLUTION_PATH"
-        Write-Host "WEB PROJECT: $env:WEBPROJ_PATH"
+        Write-Host "✅ SLN: $env:SOLUTION_PATH"
+        Write-Host "✅ Web project: $env:WEBPROJ_PATH"
 
-    # ⬅️ RESTORE NUGET BIEN HECHO
+    # 4️⃣ Restaurar dependencias
     - name: Restore NuGet packages
       run: nuget restore "$env:SOLUTION_PATH"
 
-    # ⬅️ BUILD RELEASE
-    - name: Build solution (Release)
-      run: msbuild "$env:SOLUTION_PATH" /p:Configuration=Release
+    # 5️⃣ Construir y empaquetar para publicación
+    - name: Build and package web app (Release)
+      run: |
+        msbuild "$env:WEBPROJ_PATH" /p:Configuration=Release /p:DeployOnBuild=true `
+          /p:WebPublishMethod=Package /p:PackageAsSingleFile=false `
+          /p:SkipInvalidConfigurations=true `
+          /p:PackageLocation=".\obj\Release\Package"
 
-    # ⬅️ UBICAR PackageTmp QUE YA PRODUCE TU PROYECTO
-    - name: Locate PackageTmp output
+    # 6️⃣ Detectar carpeta de publicación
+    - name: Locate publish output
       shell: pwsh
       run: |
-        $pkg = Get-ChildItem -Recurse -Directory -Filter PackageTmp |
-               Where-Object { $_.FullName -match "obj\\Release\\Package\\PackageTmp$" } |
-               Select-Object -First 1
+        $pkg = Get-ChildItem -Recurse -Directory -Filter PackageTmp | Select-Object -First 1
+        if (-not $pkg) {
+          $pkg = Get-ChildItem -Recurse -Directory -Filter Package | Select-Object -First 1
+        }
+        if (-not $pkg) { throw "❌ No se encontró carpeta Package o PackageTmp (sitio publicado)." }
 
-        if (-not $pkg) { throw "NO SE ENCONTRÓ PackageTmp. ESTE DIRECTORIO ES EL SITIO PUBLICADO." }
+        "PKG_PATH=$($pkg.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+        Write-Host "📦 Carpeta de publicación encontrada: $($pkg.FullName)"
 
-        "PKGTMP=$($pkg.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
-        Write-Host "PackageTmp encontrado en: $($pkg.FullName)"
-
-    # ⬅️ CREAR ZIP PARA ZIPDEPLOY
+    # 7️⃣ Crear ZIP
     - name: Create deployable ZIP
       shell: pwsh
       run: |
         $zipPath = Join-Path $env:GITHUB_WORKSPACE "site.zip"
         if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
-
-        Compress-Archive -Path "$env:PKGTMP/*" -DestinationPath $zipPath -Force
-
+        Compress-Archive -Path (Join-Path $env:PKG_PATH '*') -DestinationPath $zipPath -Force
         "PACKAGE_PATH=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append
-        Write-Host "ZIP creado: $zipPath"
+        Write-Host "✅ ZIP creado en: $zipPath"
 
-    # ⬅️ DEPLOY A AZURE (ZIPDEPLOY)
+    # 8️⃣ Desplegar en Azure
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
       with:
