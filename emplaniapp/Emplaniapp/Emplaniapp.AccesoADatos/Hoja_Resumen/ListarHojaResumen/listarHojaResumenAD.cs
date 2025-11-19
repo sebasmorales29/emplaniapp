@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using Emplaniapp.Abstracciones.InterfacesAD.Hoja_Resumen.ListarHojaResumen;
+using Emplaniapp.Abstracciones.ModelosAD;
 using Emplaniapp.Abstracciones.ModelosParaUI;
 
 namespace Emplaniapp.AccesoADatos.Hoja_Resumen
@@ -96,8 +99,8 @@ namespace Emplaniapp.AccesoADatos.Hoja_Resumen
 
                
             }).ToList();
-
             return hojasResumen;
         }
+
     }
 }

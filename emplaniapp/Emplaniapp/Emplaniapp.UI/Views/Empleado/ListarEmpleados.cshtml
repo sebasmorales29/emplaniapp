@@ -220,26 +220,25 @@
         });
 
         // ✨ NUEVO: Validación del formulario de filtro
-        $(function () {
-            $('#formFiltrarEmpleado').on('submit', function (e) {
-                var filtro = $(this).find('input[name="filtro"]').val();
-                // usar name->id: los DropDowns generan id igual al name por defecto
-                var idCargo = $(this).find('select[name="idCargo"]').val();
-                var idEstado = $(this).find('select[name="idEstado"]').val();
+        $('#formFiltrarEmpleado').on('submit', function (e) {
+            var filtro = $(this).find('input[name="filtro"]').val();
+            // usar name->id: los DropDowns generan id igual al name por defecto
+            var idCargo = $(this).find('select[name="idCargo"]').val();
+            var idEstado = $(this).find('select[name="idEstado"]').val();
 
                 console.log('🔍 DIAGNÓSTICO: Filtro - Texto:', filtro, 'Cargo:', idCargo, 'Estado:', idEstado);
-
+                
                 // Si todos los filtros están vacíos, redirigir a la lista completa
-                if ((!filtro || filtro.trim() === '') &&
-                    (!idCargo || idCargo === '' || idCargo === '0') &&
+                if ((!filtro || filtro.trim() === '') && 
+                    (!idCargo || idCargo === '' || idCargo === '0') && 
                     (!idEstado || idEstado === '' || idEstado === '0')) {
-
+                    
                     console.log('🔍 DIAGNÓSTICO: Todos los filtros están vacíos, redirigiendo a lista completa');
                     e.preventDefault();
                     window.location.href = '@Url.Action("ListarEmpleados", "Empleado")';
                     return false;
                 }
-
+                
                 console.log('🔍 DIAGNÓSTICO: Filtros válidos, enviando formulario');
                 return true;
             });
