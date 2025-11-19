@@ -487,6 +487,9 @@
     <Content Include="Views\Retenciones\_EditarRetencionModal.cshtml" />
     <Content Include="Views\Retenciones\_EliminarRetencionModal.cshtml" />
     <Content Include="Views\Retenciones\_ListaRetenciones.cshtml" />
+    <Content Include="Views\Shared\UnauthorizedRole.cshtml" />
+    <Content Include="Views\Shared\_MessageAlert.cshtml" />
+    <Content Include="Views\Shared\_RoleHelper.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
