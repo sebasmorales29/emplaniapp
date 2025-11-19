@@ -20,10 +20,10 @@
         <div class="form-group">
             @Html.LabelFor(m => m.IdTipoRetencion, "Tipo de Retención")
             @Html.DropDownListFor(m => m.IdTipoRetencion, Model.TiposRetencion,
-                                  "-- Seleccione --",
-                                  new { id = "ddlTipo", @class = "form-control" })
+                                       "-- Seleccione --",
+                                       new { id = "ddlTipo", @class = "form-control" })
             @Html.ValidationMessageFor(m => m.IdTipoRetencion, "",
-                                      new { @class = "text-danger" })
+                                           new { @class = "text-danger" })
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -40,7 +40,7 @@
         <div class="form-group">
             @Html.LabelFor(m => m.FechaRetencion, "Fecha")
             @Html.TextBoxFor(m => m.FechaRetencion, "{0:yyyy-MM-dd}",
-                new { @class = "form-control", type = "date" })
+                     new { @class = "form-control", type = "date" })
         </div>
     </div>
     <div class="modal-footer">
@@ -52,3 +52,4 @@
         </button>
     </div>
 }
+

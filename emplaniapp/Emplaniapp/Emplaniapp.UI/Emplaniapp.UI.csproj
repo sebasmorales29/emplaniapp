@@ -1,12 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion></ProductVersion>
+    <ProductVersion>
+    </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{21CA7761-CE53-4A70-8B5E-1CC88B8B6175}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
@@ -15,10 +16,9 @@
     <RootNamespace>Emplaniapp.UI</RootNamespace>
     <AssemblyName>Emplaniapp.UI</AssemblyName>
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <!-- Forzar versión de lenguaje C# -->
     <LangVersion>latest</LangVersion>
     <MvcBuildViews>false</MvcBuildViews>
-
-    <!-- Solo para desarrollo local con IIS Express -->
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort>44370</IISExpressSSLPort>
@@ -26,10 +26,9 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
-    <NuGetPackageImportStamp></NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
-
-  <!-- Debug -->
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -39,8 +38,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-
-  <!-- Release -->
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
@@ -50,8 +47,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-
-  <!-- Referencias -->
   <ItemGroup>
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
       <HintPath>..\packages\BouncyCastle.Cryptography.2.5.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
@@ -65,8 +60,6 @@
     <Reference Include="MailKit, Version=4.13.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
       <HintPath>..\packages\MailKit.4.13.0\lib\net48\MailKit.dll</HintPath>
     </Reference>
-
-    <!-- Paquetes AspNetCore (KeyDerivation/DataProtection) sobre .NET Framework -->
     <Reference Include="Microsoft.AspNetCore.Authentication, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Authentication.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.dll</HintPath>
     </Reference>
@@ -115,12 +108,8 @@
     <Reference Include="Microsoft.AspNetCore.WebUtilities, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.WebUtilities.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.WebUtilities.dll</HintPath>
     </Reference>
-
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.5\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\lib\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Extensions.Configuration.Abstractions, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
@@ -218,12 +207,29 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions" />
-    <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.2.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.Helpers.dll</HintPath>
@@ -239,8 +245,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.9\lib\net45\System.Web.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Routing" />
-    <Reference Include="System.Web.Services" />
     <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.dll</HintPath>
@@ -252,19 +256,6 @@
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.WebRequest" />
-    <Reference Include="Microsoft.Web.Infrastructure, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.Web.Infrastructure.2.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -278,8 +269,6 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
-
-  <!-- Paquetes de identidad/OWIN -->
   <ItemGroup>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.4\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -303,10 +292,10 @@
       <HintPath>..\packages\Microsoft.Owin.Security.4.2.2\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin.Security.Cookies">
-      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.4.2.2\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.Facebook">
       <HintPath>..\packages\Microsoft.Owin.Security.Facebook.4.2.2\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.4.2.2\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin.Security.Google">
       <HintPath>..\packages\Microsoft.Owin.Security.Google.4.2.2\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
@@ -320,9 +309,10 @@
     <Reference Include="Microsoft.Owin.Security.OAuth">
       <HintPath>..\packages\Microsoft.Owin.Security.OAuth.4.2.2\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
   </ItemGroup>
-
-  <!-- Code files -->
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\EmailService.cs" />
@@ -360,8 +350,6 @@
     <Compile Include="Helpers\RoleHelper.cs" />
     <Compile Include="Attributes\ActiveRoleAuthorizeAttribute.cs" />
   </ItemGroup>
-
-  <!-- Content / Vistas / Scripts -->
   <ItemGroup>
     <Content Include="Content\assets\css\backend-plugin.min.css" />
     <Content Include="Content\assets\css\backend.css" />
@@ -388,38 +376,34 @@
     <Content Include="Content\CSS\estiloLayout.css" />
     <Content Include="Content\CSS\estiloLogin.css" />
     <Content Include="Content\CSS\estilosApp.css" />
-    <Content Include="Content\CSS\estilosDatos.css" />
     <Content Include="Content\images\Emplaniapp_Logo1.png" />
     <Content Include="Content\images\imagenuno.webp" />
-    <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />
-
     <Content Include="Global.asax" />
-
+    <Content Include="Content\Site.css" />
     <Content Include="Rotativa\help-wkhtmltoimage.txt" />
     <Content Include="Rotativa\help-wkhtmltopdf.txt" />
     <Content Include="Rotativa\wkhtmltoimage.exe" />
     <Content Include="Rotativa\wkhtmltopdf.exe" />
-
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="App_Browsers\qt.browser" />
+    <None Include="Scripts\jquery-3.7.0.intellisense.js" />
+    <Content Include="Content\CSS\estilosDatos.css" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
     <Content Include="Scripts\jquery-3.7.0.slim.js" />
     <Content Include="Scripts\jquery-3.7.0.slim.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-
-    <None Include="Scripts\jquery-3.7.0.intellisense.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -427,20 +411,13 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Shared\_LoginLayout.cshtml" />
-    <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Shared\_AdminPasswordModal.cshtml" />
-    <Content Include="Views\Shared\_.cshtml" />
-
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
@@ -451,72 +428,70 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
-    <Content Include="Views\Account\ResetPasswordLinkError.cshtml" />
     <Content Include="Views\Account\SendCode.cshtml" />
     <Content Include="Views\Account\VerifyCode.cshtml" />
-    <Content Include="Views\Account\_ViewStart.cshtml" />
-
     <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
     <Content Include="Views\Manage\ChangePassword.cshtml" />
     <Content Include="Views\Manage\Index.cshtml" />
     <Content Include="Views\Manage\ManageLogins.cshtml" />
     <Content Include="Views\Manage\SetPassword.cshtml" />
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
-
+    <Content Include="Views\Shared\Lockout.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Empleado\ListarEmpleados.cshtml" />
-    <Content Include="Views\Empleado\CrearEmpleado.cshtml" />
-    <Content Include="Views\Empleado\_CambiarEstado.cshtml" />
-
     <Content Include="Views\VariablesFinancieras\Index.cshtml" />
+    <Content Include="Views\HojaResumen\listarHojaResumen.cshtml" />
     <Content Include="Views\VariablesFinancieras\CreateRemu.cshtml" />
     <Content Include="Views\VariablesFinancieras\EditRemu.cshtml" />
     <Content Include="Views\VariablesFinancieras\CreateReten.cshtml" />
     <Content Include="Views\VariablesFinancieras\DeleteRemu.cshtml" />
     <Content Include="Views\VariablesFinancieras\EditReten.cshtml" />
     <Content Include="Views\VariablesFinancieras\DeleteReten.cshtml" />
-
     <Content Include="Views\DatosPersonales\Detalles.cshtml" />
     <Content Include="Views\DatosPersonales\EditarDatosFinancieros.cshtml" />
     <Content Include="Views\DatosPersonales\EditarDatosLaborales.cshtml" />
-    <Content Include="Views\DatosPersonales\EditarDatosPersonales.cshtml" />
-    <Content Include="Views\DatosPersonales\_RolesYPermisos.cshtml" />
-    <Content Include="Views\DatosPersonales\_ObservacionesList.cshtml" />
-    <Content Include="Views\DatosPersonales\_ObservacionForm.cshtml" />
-
-    <Content Include="Views\Remuneraciones\CrearRemuneracionManual.cshtml" />
+    <Content Include="Views\Empleado\CrearEmpleado.cshtml" />
+    <Content Include="Views\Empleado\_CambiarEstado.cshtml" />
+    <Content Include="Views\Remuneraciones\DetallesRemu.cshtml" />
+    <Content Include="Views\Shared\_.cshtml" />
+    <Content Include="Views\Retenciones\Detalles.cshtml" />
     <Content Include="Views\Remuneraciones\_CrearRemuneracionManual.cshtml" />
     <Content Include="Views\Remuneraciones\EditarRemuneracion.cshtml" />
+    <Content Include="Views\Remuneraciones\CrearRemuneracionManual.cshtml" />
+    <Content Include="Views\Liquidaciones\Detalles.cshtml" />
     <Content Include="Views\Remuneraciones\_EditarRemuneracion.cshtml" />
-    <Content Include="Views\Remuneraciones\DetallesRemu.cshtml" />
-    <Content Include="Views\Remuneraciones\ReciboPagoPDF.cshtml" />
-
-    <Content Include="Views\Retenciones\Detalles.cshtml" />
-    <Content Include="Views\Retenciones\_ListaRetenciones.cshtml" />
-    <Content Include="Views\Retenciones\_CrearRetencionModal.cshtml" />
-    <Content Include="Views\Retenciones\_EditarRetencionModal.cshtml" />
-    <Content Include="Views\Retenciones\_EliminarRetencionModal.cshtml" />
-
+    <Content Include="Views\Remuneraciones\EditarRemuneracion.cshtml" />
+    <Content Include="Views\Remuneraciones\CrearRemuneracionManual.cshtml" />
     <Content Include="Views\Liquidaciones\AgregarDatos.cshtml" />
     <Content Include="Views\Liquidaciones\EditDatos.cshtml" />
-    <Content Include="Views\Liquidaciones\Detalles.cshtml" />
-    <Content Include="Views\Liquidaciones\GuardarDatos.cshtml" />
-
     <Content Include="Views\Historial\Empleado.cshtml" />
     <Content Include="Views\Historial\EmpleadoCompleto.cshtml" />
     <Content Include="Views\Historial\_HistorialContent.cshtml" />
     <Content Include="Views\Historial\_HistorialSimple.cshtml" />
-
-    <Content Include="Views\HojaResumen\listarHojaResumen.cshtml" />
+    <Content Include="Views\Liquidaciones\GuardarDatos.cshtml" />
     <Content Include="Views\HojaResumen\HojaResumenPDF.cshtml" />
-
+    <Content Include="Views\Remuneraciones\ReciboPagoPDF.cshtml" />
     <Content Include="Views\TableroDeControl\Index.cshtml" />
+    <Content Include="Views\Shared\_LoginLayout.cshtml" />
+    <Content Include="Views\DatosPersonales\EditarDatosPersonales.cshtml" />
+    <Content Include="Views\Shared\_AdminPasswordModal.cshtml" />
+    <Content Include="Views\DatosPersonales\_RolesYPermisos.cshtml" />
+    <Content Include="Views\DatosPersonales\_ObservacionesList.cshtml" />
+    <Content Include="Views\DatosPersonales\_ObservacionForm.cshtml" />
+    <Content Include="Views\Account\ResetPasswordLinkError.cshtml" />
+    <Content Include="Views\Account\_ViewStart.cshtml" />
+    <Content Include="Views\Observaciones\Detalles.cshtml" />
+    <Content Include="Views\Observaciones\_ObservacionesList.cshtml" />
+    <Content Include="Views\Observaciones\_ObservacionForm.cshtml" />
+    <Content Include="Views\Retenciones\_CrearRetencionModal.cshtml" />
+    <Content Include="Views\Retenciones\_EditarRetencionModal.cshtml" />
+    <Content Include="Views\Retenciones\_EliminarRetencionModal.cshtml" />
+    <Content Include="Views\Retenciones\_ListaRetenciones.cshtml" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\ReportesPago\" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
     <Content Include="Content\bootstrap.rtl.css.map" />
@@ -534,6 +509,7 @@
     <Content Include="Content\bootstrap-grid.rtl.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <None Include="packages.config" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Scripts\bootstrap.js.map" />
     <Content Include="Scripts\bootstrap.esm.min.js.map" />
@@ -542,10 +518,7 @@
     <Content Include="Scripts\bootstrap.bundle.js.map" />
     <Content Include="Scripts\jquery-3.7.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.0.min.map" />
-    <None Include="packages.config" />
   </ItemGroup>
-
-  <!-- Referencias a otros proyectos -->
   <ItemGroup>
     <ProjectReference Include="..\Emplaniapp.AccesoADatos\Emplaniapp.AccesoADatos.csproj">
       <Project>{9d7d935e-57b1-468a-938d-9f359cd6ba87}</Project>
@@ -560,33 +533,27 @@
       <Name>Emplaniapp.Abstracciones</Name>
     </ProjectReference>
   </ItemGroup>
-
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
-
-  <!-- Microsoft.CSharp.targets define 'Build' -->
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-
-  <!-- Import único de WebApplication.targets (sin duplicar) -->
-  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets"
-          Condition="'$(VSToolsPath)' != '' AND Exists('$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets')" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v17.0\WebApplications\Microsoft.WebApplication.targets"
-          Condition="( ('$(VSToolsPath)' == '') OR ( !Exists('$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets') ) )
-                     AND Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v17.0\WebApplications\Microsoft.WebApplication.targets')" />
-
-  <!-- Empaquetado WebDeploy -->
+  <!-- Si existe VSToolsPath (entornos con VS instalado), úsalo -->
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <!-- Forzar targets de Web Application en agentes con VS2022/2019 -->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v17.0\WebApplications\Microsoft.WebApplication.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v17.0\WebApplications\Microsoft.WebApplication.targets')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v16.0\WebApplications\Microsoft.WebApplication.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v16.0\WebApplications\Microsoft.WebApplication.targets')" />
+  <!-- (El import v10.0 se mantiene deshabilitado como estaba) -->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- Garantiza que el empaquetado WebDeploy se ejecute -->
   <PropertyGroup>
     <UseWPP_CopyWebApplication>true</UseWPP_CopyWebApplication>
+    <PipelineDependsOnBuild>true</PipelineDependsOnBuild>
     <IsWebProject>true</IsWebProject>
-    <!-- IMPORTANTE: NO definir PipelineDependsOnBuild para evitar ciclo -->
   </PropertyGroup>
-
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
   </Target>
-
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
@@ -598,24 +565,26 @@
           <IISUrl>https://localhost:44370/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl></CustomServerUrl>
+          <CustomServerUrl>
+          </CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-
-  <!-- Checks de NuGet -->
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. El archivo que falta es {0}.</ErrorText>
+      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
     </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
   </Target>
-
   <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
-  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
-
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
 </Project>

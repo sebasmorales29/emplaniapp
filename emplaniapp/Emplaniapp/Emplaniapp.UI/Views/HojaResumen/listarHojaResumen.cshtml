@@ -15,27 +15,6 @@
         <h1 class="mb-2">Hoja Resumen</h1>
         <span class="text-secondary">Total de empleados: @ViewBag.TotalEmpleados</span>
     </div>
-    <!--<div class="col-md-3 align-items-center justify-content-end display-block">
-        <!-- Agregar Empleados -->
-    <!--<div class="mb-2">-->
-    @* BOTÓN GENERAR REMUNERACIONES (se mantiene) *@
-    <!--@using (Html.BeginForm("Generar", "HojaResumen", FormMethod.Post))
-            {
-                <button type="submit" class="btn btn-primary" style="width:100%;">
-                    <i class="fas fa-cogs"></i>
-                    Generar Remuneraciones
-                </button>
-            }
-        </div>
-        <div>
-            @* ÚNICO BOTÓN DE PDF: Exportar la vista actual (respeta filtros) *@
-            <a href="@Url.Action("ExportResumenPdf", "HojaResumen", new { filtro = ViewBag.Filtro, idCargo = ViewBag.idCargo })"
-               class="btn btn-danger" style="width:100%;">
-                <i class="fas fa-file-arrow-down"></i>
-                Exportar PDF
-            </a>
-        </div>
-    </div>-->
 </div>
 <br />
 
@@ -52,6 +31,22 @@
     </div>
 }
 @if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <br />
+    </div>
+}
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <br />
+    </div>
+}
+@if (TempData["Error"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
@@ -175,20 +170,19 @@
 
                             <div class="mb-1">
 
-
                                 @if (!item.Aprobado)
                                 {
                                     using (Html.BeginForm("Aprobar", "HojaResumen", FormMethod.Post, new { @class = "d-inline" }))
                                     {
                                         @Html.Hidden("idPagoQuincenal", item.IdPagoQuincenal)
-                                        <button type="submit" class="btn btn-outline-success mt-0 aprobar-btn" style="min-width: 130px;">
+                                        <button type="submit" class="btn btn-outline-success mt-0" id="aprobar-btn" name="aprobar-btn" style="min-width: 130px;">
                                             <i class="fas fa-check"></i> Aprobar
                                         </button>
                                     }
                                 }
                                 else
                                 {
-                                    <span class="btn disabled bg-success fw-semibold text-center " style="min-width: 130px; color: black;">
+                                    <span class="btn disabled bg-success fw-semibold text-center" style="min-width: 130px; color: black;">
                                         <i class="fas fa-check"></i> Aprobado
                                     </span>
                                 }
@@ -305,7 +299,8 @@
             });
         });
 
-        $(".aprobar-btn").click(function () {
+        // Sin deshabilitar el botón para no interferir con el submit.
+        $(".aprobar-btn").on("click", function () {
             var btn = $(this);
             if (!btn.hasClass("btn-success")) {
                 btn.removeClass("btn-outline-success").addClass("btn-success").text("Aprobado");

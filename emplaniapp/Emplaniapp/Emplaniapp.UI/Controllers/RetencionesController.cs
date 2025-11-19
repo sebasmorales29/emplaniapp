@@ -117,7 +117,7 @@ namespace Emplaniapp.UI.Controllers
             };
             _agregarRetencionLN.AgregarRetencion(dto);
 
-            return Json(new { success = true });
+            return Json(new { success = true, reload = true });
         }
 
         // --- 5) Edit GET ---
@@ -181,7 +181,7 @@ namespace Emplaniapp.UI.Controllers
             };
             _editarRetencionLN.EditarRetencion(dto);
 
-            return Json(new { success = true });
+            return Json(new { success = true, reload = true });
         }
 
         // --- 7) Delete GET ---
@@ -206,7 +206,7 @@ namespace Emplaniapp.UI.Controllers
         public ActionResult Delete(RetencionViewModel vm)
         {
             _eliminarRetencionLN.EliminarRetencion(vm.IdRetencion);
-            return Json(new { success = true });
+            return Json(new { success = true, reload = true });
         }
     }
 }
