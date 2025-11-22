@@ -19,6 +19,7 @@ namespace Emplaniapp.Abstracciones.ModelosParaUI
 
         [DisplayName("Porcentaje %")]
         [Required(ErrorMessage = "El porcentaje de remuneración es obligatorio.")]
+        [RegularExpression("^([0-9])$", ErrorMessage ="Valor debe ser un número")]
         public double porcentajeRemuneracion { get; set; }
 
 

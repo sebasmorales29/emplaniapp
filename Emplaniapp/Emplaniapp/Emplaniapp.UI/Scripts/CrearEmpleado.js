@@ -26,9 +26,17 @@ $(document).ready(function () {
         
         // ✨ CORRECCIÓN: Validar formulario antes de mostrar modal de admin
         var esFormularioValido = true;
-        var camposRequeridos = ['nombre', 'primerApellido', 'cedula', 'numeroTelefonico', 'correoInstitucional', 'UserName', 'Password', 'ConfirmPassword', 'idCargo', 'fechaContratacion', 'salarioAprobado', 'periocidadPago', 'idMoneda', 'cuentaIBAN', 'idBanco'];
-        
+
+        // Verificar que la cédula no sean 0
+        var identificacion = $('[name="cedula"]').val();
+        if (identificacion === 0) {
+            console.log('🔍 DIAGNÓSTICO: Identificación vacía');
+            esFormularioValido = false;
+            $('[name="cedula"]').addClass('is-invalid');
+        }
+
         // Verificar campos requeridos
+        var camposRequeridos = ['nombre', 'primerApellido', 'cedula', 'numeroTelefonico', 'correoInstitucional', 'UserName', 'Password', 'ConfirmPassword', 'idCargo', 'fechaContratacion', 'salarioAprobado', 'periocidadPago', 'idMoneda', 'cuentaIBAN', 'idBanco'];
         camposRequeridos.forEach(function(campo) {
             var input = $('[name="' + campo + '"]');
             if (input.length > 0 && (!input.val() || input.val().trim() === '')) {

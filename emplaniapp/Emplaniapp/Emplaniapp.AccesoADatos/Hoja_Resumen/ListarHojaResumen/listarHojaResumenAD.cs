@@ -31,7 +31,7 @@ namespace Emplaniapp.AccesoADatos.Hoja_Resumen
 
             var empleados = (from empleado in _contexto.Empleados.AsNoTracking()
                              join cargos in _contexto.Cargos on empleado.idCargo equals cargos.idCargo
-                             where empleado.idEstado == 1
+                             where empleado.idEstado == 1 && empleado.salarioAprobado != 0
                              select new { empleado, cargos }).ToList(); // Traer datos a memoria
 
             var hojasResumen = empleados.Select(e => new HojaResumenDto
